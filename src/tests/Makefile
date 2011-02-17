@@ -9,7 +9,6 @@ CFLAGS += -I..
 
 BeetleObjs = ../storage.o ../tests.o ../step.o ../run.o ../lib.o \
 	     ../debug.o ../loadobj.o ../saveobj.o ../noecho.o
-TestHeaders = beetle.h opcodes.h debug.h btests.h
 BTests = aritmtit brancht comparet createt doloopt initialt libt literalt \
 	logict memoryt stackt stept runt loadobjt saveobjt exceptst linkt
 BTestsO = aritmtit.o brancht.o comparet.o createt.o doloopt.o initialt.o \
