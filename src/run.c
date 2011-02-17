@@ -15,7 +15,10 @@
 
 CELL run(void)
 {
-    while (1)
-#include "execute.c"
-#include "excepts.c"
+    int ret;
+
+    while ((ret = single_step()) == 0)
+        ;
+
+    return ret;
 }

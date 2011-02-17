@@ -32,7 +32,7 @@ runt: runt.o $(BeetleObjs)
 
 # Other dependencies
 
-step.o: beetle.h opcodes.h execute.c excepts.c
-run.o: beetle.h opcodes.h execute.c excepts.c
+step.o: beetle.h opcodes.h
+run.o: beetle.h opcodes.h
 storage.o: beetle.h
 debug.o: beetle.h opcodes.h debug.h
