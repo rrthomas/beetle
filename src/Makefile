@@ -15,7 +15,7 @@ BeetleObjs = storage.o tests.o step.o run.o lib.o debug.o loadobj.o saveobj.o no
 all: beetle
 
 clean:
-	rm -f $(BeetleObjs) beetle
+	rm -f $(BeetleObjs) beetle beetle.o runt.o
 
 check: runt
 	./runt
