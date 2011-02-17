@@ -1,16 +1,16 @@
-# Makefile for C Beetle
-# Reuben Thomas   11/94-17/2/11
+# Source Makefile.am
 
-AM_CPPFLAGS = -I$(top_srcdir)
-#LDADD = $(top_builddir)/lib/libgnu.a
+SUBDIRS = tests
+
+noinst_LIBRARIES = libbeetle.a
+libbeetle_a_SOURCES = storage.c tests.c step.c run.c lib.c debug.c loadobj.c saveobj.c noecho.c \
+	beetle.h debug.h lib.h noecho.h opcodes.h tests.h
 
 bin_PROGRAMS = beetle
+beetle_LDADD = libbeetle.a
+beetle_SOURCES = beetle.c
 
-#beetle_LDADD = $(LDADD) $(LIBOBJS)
+CLOC = cloc --force-lang="C",h
 
-beetle_base_SOURCES = storage.c tests.c step.c run.c lib.c debug.c loadobj.c saveobj.c noecho.c
-
-beetle_SOURCES = $(beetle_base_SOURCES) beetle.c
-
-check-local:
-	$(MAKE) -C tests check
+loc:
+	$(CLOC) $(libbeetle_a_SOURCES) $(beetle_SOURCES)

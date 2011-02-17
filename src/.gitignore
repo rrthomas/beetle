@@ -1,2 +1,6 @@
 /.deps
+/libbeetle.a
 /beetle
+/config.h
+/config.h.in
+/stamp-h1

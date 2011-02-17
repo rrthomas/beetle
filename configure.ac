@@ -5,6 +5,7 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 dnl Check for programs
 AC_PROG_CC
+AC_PROG_RANLIB
 
 dnl Extra CFLAGS if we have gcc
 if test "$GCC" = yes; then
@@ -18,7 +19,6 @@ dnl Check for header files
 AC_HEADER_STDC
 
 dnl Generate output files
-dnl AC_CONFIG_FILES(Makefile)
-AC_CONFIG_HEADER(config.h)
-AC_CONFIG_FILES(Makefile src/Makefile)
+AC_CONFIG_HEADER(src/config.h)
+AC_CONFIG_FILES(Makefile src/Makefile src/tests/Makefile)
 AC_OUTPUT
