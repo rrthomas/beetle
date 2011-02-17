@@ -1,5 +1,6 @@
 *.o
 *~
+/beetle*.tar.gz
 Makefile
 Makefile.in
 TAGS
