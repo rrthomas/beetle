@@ -17,7 +17,7 @@ CELL run(void)
 {
     int ret;
 
-    while ((ret = single_step()) == 0)
+    while ((ret = single_step()) == -260)
         ;
 
     return ret;

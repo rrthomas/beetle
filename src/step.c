@@ -586,19 +586,18 @@ CELL single_step(void)
         *--SP = -256;
         goto throw;
     }
-    return 0;	/* terminated OK */
-
+    return -260; /* terminated OK */
 
     /* Deal with address exceptions during execution cycle. */
  invadr:
     SP--;
-    if ((UCELL)((BYTE *)SP - M0) >= MEMORY || (unsigned int)SP & 3)
+    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * sizeof(CELL) || (unsigned int)SP & 3)
       return -258;
     *SP = -9;
     goto throw;
  aliadr:
     SP--;
-    if ((UCELL)((BYTE *)SP - M0) >= MEMORY || (unsigned int)SP & 3)
+    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * sizeof(CELL) || (unsigned int)SP & 3)
       return -258;
     *SP = -23;
     goto throw;

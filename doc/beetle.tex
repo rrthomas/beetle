@@ -3,11 +3,8 @@
 %
 % Reuben Thomas
 %
-% 1/6-29/10/93; revised 1/8/94-4/5/95
+% Started 1/6-29/10/93; revised 1/8/94-4/5/95
 % corrected 21/2/96
-% body separated out 2/3/96
-% italics changed from \it to \textit 29/1/98
-% corrected 24/2/98, 11/5/98
 %
 
 
@@ -55,8 +52,7 @@ address of a cell is that of the byte in it with the lowest address.
 \subsection{Registers}
 \label{registers}
 
-The registers, each with its function and pronunciation, are set out in table
-\ref{regtable}.
+The registers, each with its function and pronunciation, are set out in table~\ref{regtable}.
 
 \begin{table}[htbp]
 \begin{center}
@@ -98,7 +94,7 @@ it would normally have the same width as addresses on the host computer. The
 values of {\tt MEMORY}, {\tt 'BAD} and {\tt -ADDRESS} are available in Beetle's
 address space; {\tt 'THROW} must be physically held there so that it can be
 changed as well as read by programs. Their addresses relative to {\tt M0} are
-shown in table \ref{mappedtable}.
+shown in table~\ref{mappedtable}.
 
 \begin{table}[htbp]
 \begin{center}
@@ -116,7 +112,7 @@ shown in table \ref{mappedtable}.
 \end{table}
 
 To ease efficient implementation, Beetle's stack pointers may only be accessed
-by bForth instructions (see section \ref{registerinst}).
+by bForth instructions (see section~\ref{registerinst}).
 
 
 \subsection{Memory}
@@ -154,7 +150,7 @@ Before Beetle is started, {\tt M0}, {\tt MEMORY} and {\tt ENDISM} should be set
 to implementation-dependent values; {\tt 'THROW} should be set to point to the
 exception handler, and {\tt EP} to the bForth code that is to be executed. {\tt
 CHECKED} should be set to 0 or 1 as desired. The other registers should be
-initialised as shown in table \ref{inittable}, except for {\tt I} and {\tt A},
+initialised as shown in table~\ref{inittable}, except for {\tt I} and {\tt A},
 which need not be initialised.
 
 \begin{table}[htbp]
@@ -173,11 +169,11 @@ which need not be initialised.
 
 {\tt MEMORY} should be copied to 4h; its value and those of {\tt ENDISM} and
 {\tt CHECKED} must not change while Beetle is executing. Next, the action of
-{\tt NEXT} should be performed (see section \ref{miscinst}): {\tt A} is loaded
+{\tt NEXT} should be performed (see section~\ref{miscinst}): {\tt A} is loaded
 from the cell to which {\tt EP} points, and four is added to {\tt EP}.
 
 Beetle is started by a call to the interface calls {\bf run()} or {\bf
-single\_step()} (see section \ref{calls}). In the former case, the execution
+single\_step()} (see section~\ref{calls}). In the former case, the execution
 cycle is entered:
 
 \begin{tabbing}
@@ -201,14 +197,14 @@ initialisation specified above; that must be performed before calling them.
 
 \subsection{Termination}
 
-When Beetle encounters a {\tt HALT} instruction (see section \ref{exceptinst}),
+When Beetle encounters a {\tt HALT} instruction (see section~\ref{exceptinst}),
 it returns the top data stack item as the reason code, unless {\tt SP} does not
-point to a valid cell, in which case reason code -258 is returned (see section
-\ref{exceptions}). After a call to {\bf single\_step()} which terminates without
+point to a valid cell, in which case reason code $-258$ is returned (see section~\ref{exceptions}).
+After a call to {\bf single\_step()} which terminates without
 an exception being raised, reason code 0 is returned.
 
-Reason codes which are also valid exception codes (either reserved (see section
-\ref{exceptions}) or user exception codes) should not normally be used. This
+Reason codes which are also valid exception codes (either reserved (see section~\ref{exceptions})
+or user exception codes) should not normally be used. This
 allows exception codes to be passed back by an exception handler to the calling
 program, so that the calling program can handle certain exceptions without
 confusing exception codes and reason codes.
@@ -217,28 +213,28 @@ confusing exception codes and reason codes.
 \subsection{Exceptions}
 \label{exceptions}
 
-When a {\tt THROW} instruction (see section \ref{exceptinst}) is executed, an
+When a {\tt THROW} instruction (see section~\ref{exceptinst}) is executed, an
 {\bf exception} is said to have been {\bf raised}. Some exceptions are raised by
 other instructions, for example by {\tt /} when division by zero is attempted;
 these also execute a {\tt THROW}. The exception code is the number on top of the
 stack at the time the exception is raised.
 
-Exception codes are signed numbers. -1 to -255 are reserved for ANS Forth
-exception codes, and -256 to -511 for Beetle's own exception codes; the meanings
-of those that may be raised by Beetle are shown in table \ref{excepttable}. ANS
-Forth compilers may raise other exceptions in the range -1 to -255 and
-additionally reserve exceptions -512 to -4095 for their own exceptions
+Exception codes are signed numbers. $-1$ to $-255$ are reserved for ANS Forth
+exception codes, and $-256$ to $-511$ for Beetle's own exception codes; the meanings
+of those that may be raised by Beetle are shown in table~\ref{excepttable}. ANS
+Forth compilers may raise other exceptions in the range $-1$ to $-255$ and
+additionally reserve exceptions $-512$ to $-4095$ for their own exceptions
 (see~\cite[section 9.3.1]{ANSIforth}).
 
 \begin{table}[htbp]
 \begin{center}
 \begin{tabular}{|c|l|} \hline
 \rule[-2mm]{0mm}{6mm}\bf Code & \bf Meaning \\ \hline
--9 & Invalid address (see below). \\
--10 & Division by zero attempted (see section \ref{arithmetic}). \\
--23 & Address alignment exception (see below). \\
--256 & Illegal opcode (see section \ref{opcodes}). \\
--257 & Library routine not implemented (see section \ref{accessinst}). \\ \hline
+$-9$ & Invalid address (see below). \\
+$-10$ & Division by zero attempted (see section~\ref{arithmetic}). \\
+$-23$ & Address alignment exception (see below). \\
+$-256$ & Illegal opcode (see section~\ref{opcodes}). \\
+$-257$ & Library routine not implemented (see section~\ref{accessinst}). \\ \hline
 \end{tabular}
 \end{center}
 \vspace{-2mm}
@@ -263,16 +259,16 @@ especially useful for stand-alone Beetles.
 
 If {\tt SP} is unaligned when an exception is raised, or putting the code on the
 stack would cause {\tt SP} to be out of range, the effect of a {\tt HALT} with
-code -258 is performed (although the actual mechanics are not, as that too would
+code $-258$ is performed (although the actual mechanics are not, as that too would
 involve putting a number on the stack). Similarly, if {\tt 'THROW} contains an
-invalid address, the effect of {\tt HALT} with code -259 is performed.
+invalid address, the effect of {\tt HALT} with code $-259$ is performed.
 
 
 \section{Instruction set}
 \label{instset}
 
-The bForth instruction set is listed in sections \ref{stackinst} to
-\ref{recurseinst}, with the instructions grouped according to function. The
+The bForth instruction set is listed in sections~\ref{stackinst} to~\ref{recurseinst},
+with the instructions grouped according to function. The
 instructions are given in the following format:
 
 \begin{description}
@@ -299,7 +295,7 @@ are a representation of the top-most items on the stack, and are written
 
 where the \spic{i$_k$} are stack items, each of which occupies a whole number of
 cells, with \spic{i$_n$} being on top of the stack. The symbols denoting
-different types of stack item are shown in table \ref{typetable}.
+different types of stack item are shown in table~\ref{typetable}.
 
 \begin{table}[htbp]
 \begin{center}
@@ -326,7 +322,7 @@ Types are only used to indicate how instructions treat their arguments and
 results; Beetle does not distinguish between stack items of different types. In
 stack pictures the most general argument types with which each instruction can
 be supplied are given; subtypes may be substituted. Using the phrase ``$i
-\Rightarrow j$'' to denote ``$i$\/ is a subtype of $j$\/'', table \ref{reltable}
+\Rightarrow j$'' to denote ``$i$\/ is a subtype of $j$\/'', table~\ref{reltable}
 shows the subtype relationships. The subtype relation is transitive.
 
 \begin{table}[htbp]
@@ -361,7 +357,7 @@ indeterminate numbers of specified types of cell.
 If an instruction does not modify the return stack, the corresponding stack
 picture is omitted. Some instructions have two forms, the latter ending in
 ``{\tt I}''. This denotes {\tt I}mmediate addressing: the instruction's argument
-is included in the instruction cell (see section \ref{conventions}), rather than
+is included in the instruction cell (see section~\ref{conventions}), rather than
 being placed separately in the next available cell.
 
 
@@ -372,8 +368,8 @@ Since branch destinations must be cell-aligned, some instruction sequences may
 contain gaps. These must be padded with {\tt NEXT} (opcode 00h).
 
 Literals and branch addresses should be placed in memory as follows. If a
-literal (see section \ref{literals}) or branch address (see section
-\ref{control}) will fit in the rest of the cell directly after its instruction
+literal (see section~\ref{literals}) or branch address (see section~\ref{control})
+will fit in the rest of the cell directly after its instruction
 (see below), it should be placed there, and the immediate form of the
 instruction used. Otherwise it should be placed in the cell after the
 instruction. Further instructions may still be stored in the current cell. If
@@ -458,7 +454,7 @@ Addition and subtraction:
 \begin{description}
 \instp{+}{plus}{1Eh}{\noru1 \noru2 -- \noru3}{Add \noru2 to \noru1, giving the sum \noru3.}
 \instp{-}{minus}{1Fh}{\noru1 \noru2 -- \noru3}{Subtract \noru2 from \noru1, giving the difference \noru3.}
-\instp{>-<}{reverse-minus}{20h}{\noru1 \noru2 -- \n3{\tt |}\U3}{Perform the action of {\tt SWAP} (see section \ref{stackinst}) followed by {\tt -}.}
+\instp{>-<}{reverse-minus}{20h}{\noru1 \noru2 -- \n3{\tt |}\U3}{Perform the action of {\tt SWAP} (see section~\ref{stackinst}) followed by {\tt -}.}
 \instp{1+}{one-plus}{21h}{\noru1 -- \noru2}{Add one to \n1{\tt |}\U1, giving the sum \noru2.}
 \instp{1-}{one-minus}{22h}{\noru1 -- \noru2}{Subtract one from \noru1, giving the difference \noru2.}
 \instp{CELL+}{cell-plus}{23h}{\noru1 -- \noru2}{Add four to \n1{\tt |}\U1, giving the sum \noru2.}
@@ -466,7 +462,7 @@ Addition and subtraction:
 \end{description}
 
 Multiplication and division (note that all division instructions raise exception
--10 if division by zero is attempted, and round the quotient towards minus
+$-10$ if division by zero is attempted, and round the quotient towards minus
 infinity, except for {\tt S/REM}, which rounds the quotient towards zero):
 
 \nopagebreak
@@ -548,7 +544,7 @@ also an instruction to add a number to another stored in memory.
 \subsection{Registers}
 \label{registerinst}
 
-As mentioned in section \ref{registers}, the stack pointers {\tt SP} and {\tt
+As mentioned in section~\ref{registers}, the stack pointers {\tt SP} and {\tt
 RP} may only be accessed through special instructions:
 
 \begin{description}
@@ -621,8 +617,8 @@ These instructions encode literal values which are placed on the stack.
 These instructions give access to Beetle's exception mechanisms.
 
 \begin{description}
-\instp{THROW}{throw}{54h}{--}{Put the contents of {\tt EP} into {\tt 'BAD}, then load {\tt EP} from {\tt 'THROW}. Perform the action of {\tt NEXT}. If {\tt 'THROW} contains an out of range or unaligned address stop Beetle, returning reason code -259 to the calling program (see section \ref{calls}).}
-\inst{HALT}{55h}{x --}{Stop Beetle, returning reason code \spic{x} to the calling program (see section \ref{calls}). If {\tt SP} is out of range or unaligned, -258 is returned as the reason code.}
+\instp{THROW}{throw}{54h}{--}{Put the contents of {\tt EP} into {\tt 'BAD}, then load {\tt EP} from {\tt 'THROW}. Perform the action of {\tt NEXT}. If {\tt 'THROW} contains an out of range or unaligned address stop Beetle, returning reason code -259 to the calling program (see section~\ref{calls}).}
+\inst{HALT}{55h}{x --}{Stop Beetle, returning reason code \spic{x} to the calling program (see section~\ref{calls}). If {\tt SP} is out of range or unaligned, $-258$ is returned as the reason code.}
 \end{description}
 
 
@@ -669,7 +665,7 @@ interface calls {\bf run()} and {\bf single\_step()}.
 \subsection{Opcodes}
 \label{opcodes}
 
-In table \ref{opcodetable} are listed the opcodes in numerical order. All
+In table~\ref{opcodetable} are listed the opcodes in numerical order. All
 undefined opcodes (5Ch--FEh) raise exception -256.
 
 \begin{table}[htb]
@@ -735,8 +731,8 @@ The first six bytes of an object module should be the ASCII codes of the letters
 the {\tt ENDISM} register of the Beetle which saved the module. The next four
 bytes should contain the number of cells the code occupies. The number must have
 the same endianness as that indicated in the previous byte. Then follows the
-code, which must fill a whole number of cells. The format is summarised in table
-\ref{objecttable} (the bytes in each cell are shown in the order in which they
+code, which must fill a whole number of cells. The format is summarised in table~\ref{objecttable}
+(the bytes in each cell are shown in the order in which they
 are stored in the file, regardless of the endianness of the machine on which the
 file is written).
 
@@ -775,7 +771,7 @@ passed to {\tt LIB} to call that routine), then a cell with the length of the
 routine in bytes, then the machine code itself, padded if necessary with 00h to
 a whole number of cells. The number of routines, routine numbers and lengths
 should be stored with the same endianness as that indicated earlier. The format
-is summarised in table \ref{libtable} (the bytes in each cell are shown in the
+is summarised in table~\ref{libtable} (the bytes in each cell are shown in the
 order in which they are stored in the file, regardless of the endianness of the
 machine on which the file is written).
 
@@ -819,24 +815,27 @@ Beetle must provide:
 
 \begin{description}
 \iface{run}{}{integer}{Start Beetle by entering the execution cycle as
-    described in section \ref{operation}. If Beetle ever executes a {\tt
-    HALT} instruction (see section \ref{exceptinst}), the reason code is
+    described in section~\ref{operation}. If Beetle ever executes a {\tt
+    HALT} instruction (see section~\ref{exceptinst}), the reason code is
     returned as the result.}
 \iface{single\_step}{}{integer}{Execute a single pass of the execution
-    cycle, and return reason code 0, unless a {\tt HALT} instruction was
-    obeyed (see section \ref{exceptinst}), in which case the reason code
+    cycle, and return reason code $-260$, unless a {\tt HALT} instruction was
+    obeyed (see section~\ref{exceptinst}), in which case the reason code
     passed to it is returned.}
 \iface{load\_object}{file, address}{integer}{Load the object module
     specified by \textit{file}, which may be a filename or some other
     specifier, to the Beetle address \textit{address}. First the module's
     header is checked; if the first seven bytes are not as specified above
-    in section \ref{object}, or the endianness value is not 0 or 1, then
+    in section~\ref{object}, or the endianness value is not 0 or 1, then
     return -2. If the code will not fit into memory at the address given, or the
-    address is out of range, return -1. Otherwise load the bForth code into
+    address is out of range, return $-1$. Otherwise load the bForth code into
     memory, resexing it if the endianness value is different from the current
     value of {\tt ENDISM}. The result is 0 if successful, and some other
     implementation-defined value if there is a filing system or other error.}
-\iface{save\_object}{file, address, length}{integer}{Save the \textit{length}        cells in Beetle's memory starting at \textit{address} as an object module        under the filename or other specifier \textit{file}. The result is 0 if          successful, -1 if there is a Beetle error (the address is out of range or
+\iface{save\_object}{file, address, length}{integer}{Save the \textit{length}
+    cells in Beetle's memory starting at \textit{address} as an object module
+    under the filename or other specifier \textit{file}. The result is 0 if
+    successful, $-1$ if there is a Beetle error (the address is out of range or
     the area extends beyond {\tt MEMORY}), and some other
     implementation-defined value if there is a filing system or other error.}
 \iface{load\_library}{file}{integer}{Load the library specified by
@@ -853,9 +852,9 @@ Beetle must provide:
     starting at \textit{start}. The library calls specified in the list of
     cells \textit{libs} should be linked to the executable, and the current
     values of the registers should be stored. The result is 0 if successful,
-    -1 if the area extends beyond {\tt MEMORY}, or some other
+    $-1$ if the area extends beyond {\tt MEMORY}, or some other
     implementation-defined value if there is a filing system or other error. See
-    section \ref{standalone} for the behaviour required of the stand-alone
+    section~\ref{standalone} for the behaviour required of the stand-alone
     Beetle.}
 \end{description}
 
@@ -881,7 +880,7 @@ program should then terminate.
 
 Any library calls which were linked to the stand-alone Beetle must execute
 correctly when called by the {\tt LIB} instruction. Any other parameter passed
-to {\tt LIB} should raise exception -257 (library call not implemented).
+to {\tt LIB} should raise exception $-257$ (library call not implemented).
 
 
 \section{Libraries}
@@ -889,8 +888,8 @@ to {\tt LIB} should raise exception -257 (library call not implemented).
 
 Beetle has one standard library, the core I/O library. Its routines mimic the
 four system-dependent I/O words in the ANS Forth Core Word Set. The descriptions
-below are identical to those given for bForth instructions (see section
-\ref{instset}), except that the opcode is replaced by the routine number, which
+below are identical to those given for bForth instructions (see section~\ref{instset}),
+except that the opcode is replaced by the routine number, which
 is passed to {\tt LIB} to call the routine.
 
 \begin{description}
