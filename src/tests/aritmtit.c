@@ -1,25 +1,6 @@
 /* ARITMTIT.C
 
-    Vrsn  Date   Comment
-    ----|-------|---------------------------------------------------------------
-    0.00 18nov94 Test 0, 1, -1, CELL and -CELL.
-    0.01 19nov94 Added code to test +, -, >-<, 1+, 1-, CELL+, CELL-, *, /,
-    	    	 MOD and /MOD.
-    0.02 20nov94 Added code to test 2/ and CELLS.
-    0.03 22nov94 Changed to work with new version of debug.h; added code to
-    	    	 test ABS, NEGATE, MAX and MIN.
-    0.04 23nov94 Removed spurious variable from main.
-    0.05 28nov94 Changed reference to b_mem to one to M0.
-    0.06 29nov94 Modified so that testing is automatic, and can run with or
-    	    	 without debugging information.
-    0.07 30nov94 Modified to give return value from main.
-    0.08 13jan95 Added code to test U/MOD and S/REM.
-    0.09 17feb95 Modified to work with new storage.c, and use btests.h rather
-    	    	 than bintern.h.
-    0.10 28feb95 Corrected printf format error.
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1994-1995
 
     Test the arithmetic operators. Also uses the NEXT, SWAP, ROT, DROP, and
     (LITERAL)I instructions. Since overtest.c supposedly tests the compiler's
@@ -35,10 +16,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "beetle.h" 	/* main header */
+#include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"  	/* debugging functions */
+#include "debug.h"      /* debugging functions */
 
 
 char *correct[] = { "", "0", "0 1", "0 1 -1", "0 1 -1 " QCELL_W,
@@ -78,10 +59,10 @@ int main(void)
 #ifdef B_DEBUG
         show_data_stack();  printf("Correct stack: %s\n\n", correct[i]);
 #endif
-    	if (strcmp(correct[i], val_data_stack())) {
-    	    printf("Error in AritmtiT: EP = %ld\n", val_EP());
-    	    exit(1);
-    	}
+        if (strcmp(correct[i], val_data_stack())) {
+            printf("Error in AritmtiT: EP = %ld\n", val_EP());
+            exit(1);
+        }
         single_step();
         if (I == O_NEXT00) i--;
 #ifdef B_DEBUG

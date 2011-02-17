@@ -1,40 +1,6 @@
 /* BPORTAB.H
 
-    Vrsn  Date   Comment
-    ----|-------|--------------------------------------------------------------
-    0.00 07nov94
-    0.01 09nov94 ENDISM given an explicit type, as per specification, and
-                 ARSHIFT macro added.
-    0.02 18nov94 SYMMETRIC added, and definitions of floored division and
-                 remainder to work on symmetric division compilers (most of
-                 them!).
-    0.03 19nov94 Corrected MOD, and added ABS and SGN to do so.
-    0.04 25nov94 Added LINK macro to implement the LINK instruction.
-    0.05 01dec94 FLIP macro added to comply with debugged specification. ENDISM
-                 made dependent on whether BIG_ENDIAN is defined.
-    0.06 12jan95 Division macros changed so that both symmetric and floored
-                 division are provided in accordance with modified Beetle
-                 specification.
-    0.07 18jan95 SYMMETRIC changed to FLOORED, and made valueless. Added
-                 LRSHIFT, and #defines for BIG_ENDIAN, FLOORED and LRSHIFT.
-    0.08 05feb95 LINK changed to make it update SP so that the pointer can
-                 occupy multiple stack items as specified.
-    0.09 02apr95 Added GETCH.
-    0.10 03apr95 Added PUTCH and NEWL.
-    0.11 18apr95 Debugged LINK, DIV and SDIV.
-    0.12 06jun96 Moved machine-dependent parts to machine-specific header files
-                 in bportab/. These are now included according to the machine
-                 type symbol defined.
-    0.13 16jun96 Reduced number of machine types.
-    0.14 06jul96 Added missing include of bportab/unix.h.
-    0.15 30mar97 Removed nested comments.
-    0.16 06jul04 Replaced include of bportab/unix.h with bportab/bsd.h and
-                 bportab/sysv.h. Split unix into bsd and sysv. Give an error if
-                 no platform macro defined. Rename BIG_ENDIAN to
-                 BEETLE_BIG_ENDIAN to fix clash with system headers.
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1994-2011
 
     Header for C Beetle defining the machine-dependent types and
     definitions used in beetle.h.

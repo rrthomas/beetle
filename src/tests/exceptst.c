@@ -1,14 +1,6 @@
 /* EXCEPTST.C
 
-    Vrsn  Date   Comment
-    ----|-------|---------------------------------------------------------------
-    0.00 25mar95
-    0.01 01apr95 Incorrect printf format changed.
-    0.02 26may96 Incorrect return code for test 5 changed. Added test 13 to test
-    		 for invalid contents of 'THROW.
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1995-1996
 
     Test the Beetle-generated exceptions and HALT codes.
 
@@ -17,10 +9,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "beetle.h" 	/* main header */
+#include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"  	/* debugging functions */
+#include "debug.h"      /* debugging functions */
 
 
 int test[] = { 16, 20, 28, 40, 52, 56, 60, 64, 72, 76, 80, 84 };
@@ -71,25 +63,25 @@ int main(void)
     for (i = 0; i < 12; i++) {
         SP = S0;    /* reset stack pointer */
 
-    	EP = (CELL *)(M0 + test[i]);
-    	NEXT;   /* load first instruction word */
+        EP = (CELL *)(M0 + test[i]);
+        NEXT;   /* load first instruction word */
         res = run();
 
 #ifdef B_DEBUG
-    	printf("Test %d\n", i + 1);
+        printf("Test %d\n", i + 1);
         printf("Return code is %d; should be %d\n", res, result[i]);
         if (result[i] != 0) printf("'BAD = %d; should be %d\n", BAD, bad[i]);
         if (result[i] <= -258 || result[i] == 9 || result[i] == -23)
             printf("-ADDRESS = %d; should be %d\n", ADDRESS, address[i]);
         putchar('\n');
 #endif
-    	if (result[i] != res || (result[i] != 0 && bad[i] != BAD) ||
-    	    ((result[i] <= -258 || result[i] == 9 || result[i] == -23) &&
-    	    address[i] != ADDRESS)) {
-    	    printf("Error in ExceptsT: test %d failed; EP = %d\n", i + 1,
-    	    	(BYTE *) EP - M0);
-    	    exit(1);
-    	}
+        if (result[i] != res || (result[i] != 0 && bad[i] != BAD) ||
+            ((result[i] <= -258 || result[i] == 9 || result[i] == -23) &&
+            address[i] != ADDRESS)) {
+            printf("Error in ExceptsT: test %d failed; EP = %d\n", i + 1,
+                (BYTE *) EP - M0);
+            exit(1);
+        }
     }
 
     printf("ExceptsT ran OK\n");

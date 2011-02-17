@@ -1,12 +1,7 @@
-/* NOECHO_BSD.C
+/* NOECHO.C
 
-    Vrsn  Date   Comment
-    ----|-------|---------------------------------------------------------------
-    0.00 02apr95 Adapted from Martin Richards's code.
-    0.01 06jul04 Added System V support (also adapted from Martin's code).
-
-    Reuben Thomas
-
+    (c) Martin Richards 2004 (and certainly earlier)
+    (c) Reuben Thomas 1995-2004
 
     void init_keyb(void)  initialises the keyboard interface.
     void restore_keyb(void) restores the keyboard to its original state.

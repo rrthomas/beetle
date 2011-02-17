@@ -1,23 +1,6 @@
 /* STEPT.C
 
-    Vrsn  Date   Comment
-    ----|-------|---------------------------------------------------------------
-    0.00 09nov94
-    0.01 14nov94 Start value of EP changed to avoid registers stored in low
-    	    	 memory. Action of NEXT performed when initialising EP as per
-    	    	 specification. Added check message at end.
-    0.02 18nov94 Made printing of EP use debug.h function.
-    0.03 28nov94 Changed reference to b_mem to one to M0.
-    0.03 30nov94 Modified so that testing is automatic, and can run with or
-    	    	 without debugging information. Modified to give a return value
-    	    	 from main.
-    0.04 17feb95 Modified to work with new version of storage.c, and use
-    	    	 btests.h rather than bintern.h.
-    0.05 28feb95 Removed printf format error.
-    0.06 24mar95 Added code to test address alignment and bounds checking on EP.
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1994-1995
 
     Test that single_step works, and that address alignment and bounds
     checking is properly performed on EP.
@@ -27,9 +10,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "beetle.h" 	/* main header */
+#include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
-#include "debug.h"  	/* debugging functions */
+#include "debug.h"      /* debugging functions */
 
 
 int main(void)

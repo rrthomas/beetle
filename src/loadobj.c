@@ -1,18 +1,6 @@
 /* LOADOBJ.C
 
-    Vrsn  Date   Comment
-    ----|-------|---------------------------------------------------------------
-    0.00 24jan95
-    0.01 24feb95 Made internal routines and globals static, and made the array
-		 magic in load_object one byte smaller, as it can be. A bug in
-		 detecting when a module would not fit in memory was corrected,
-		 and CELL_W used to replace 4 where appropriate.
-    0.02 01apr95 Made length be read correctly on big-endian machines.
-    0.03 21may96 Made error -1 be returned always if address = MEMORY.
-    0.04 23may96 Fixed some unbalanced brackets.
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1995-1996
 
     The interface call load_object(file, address) : integer.
 
@@ -30,9 +18,9 @@ static void reverse(CELL *start, UCELL length)
     UCELL i;
 
     for (i = 0; i < length; i++)
-	start[i] = (CELL)(((UCELL) start[i] << 24) | ((UCELL)start[i] >> 24) |
-	    (((UCELL)start[i] & 0xff00) << 8) |
-	    (((UCELL)start[i] & 0xff0000) >> 8));
+        start[i] = (CELL)(((UCELL) start[i] << 24) | ((UCELL)start[i] >> 24) |
+            (((UCELL)start[i] & 0xff00) << 8) |
+            (((UCELL)start[i] & 0xff0000) >> 8));
 }
 
 
@@ -54,24 +42,24 @@ int load_object(FILE *file, CELL *address)
     if ((err = setjmp(env)) == 0) {
         for (i = 0; i < 7; i++) magic[i] = get(file);
         magic[7] = '\0';
-	if (strcmp(magic, "BEETLE")) { err = -2; goto error; }
+        if (strcmp(magic, "BEETLE")) { err = -2; goto error; }
 
         endism = get(file);
-	if (endism != 0 && endism != 1) { err = -2; goto error; }
-	reversed = endism ^ ENDISM;
+        if (endism != 0 && endism != 1) { err = -2; goto error; }
+        reversed = endism ^ ENDISM;
 
-	for (i = 0; i < CELL_W; i++) length |= get(file) << (8 * i);
-	if (endism) reverse((CELL *)&length, 1);
-	if ((((address - (CELL *)M0) + length) * CELL_W > MEMORY) ||
-	    (address - (CELL *)M0) * CELL_W == MEMORY) {
-	    err = -1;
-	    goto error;
-	}
+        for (i = 0; i < CELL_W; i++) length |= get(file) << (8 * i);
+        if (endism) reverse((CELL *)&length, 1);
+        if ((((address - (CELL *)M0) + length) * CELL_W > MEMORY) ||
+            (address - (CELL *)M0) * CELL_W == MEMORY) {
+            err = -1;
+            goto error;
+        }
 
-	for (i = 0; i < length * CELL_W; i++) ((BYTE *)address)[i] = get(file);
-	if (reversed) reverse(address, length);
+        for (i = 0; i < length * CELL_W; i++) ((BYTE *)address)[i] = get(file);
+        if (reversed) reverse(address, length);
 
-	return 0;
+        return 0;
     } else {
 error:  return err;
     }

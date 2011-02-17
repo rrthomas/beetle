@@ -1,11 +1,6 @@
 /* LINKT.C
 
-    Vrsn  Date   Comment
-    ----|-------|---------------------------------------------------------------
-    0.00 18apr95
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1995
 
     Test the LINK instruction. Assumes 4-byte addresses.
 
@@ -14,10 +9,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "beetle.h" 	/* main header */
+#include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"  	/* debugging functions */
+#include "debug.h"      /* debugging functions */
 
 
 void test(void)
@@ -49,10 +44,10 @@ int main(void)
         show_data_stack();
         printf("%p\n", test);
 #endif
-    	if (*SP != 37) {
-    	    printf("Error in LinkT: incorrect value on top of stack\n");
-    	    exit(1);
-    	}
+        if (*SP != 37) {
+            printf("Error in LinkT: incorrect value on top of stack\n");
+            exit(1);
+        }
 
     printf("LinkT ran OK\n");
     return 0;

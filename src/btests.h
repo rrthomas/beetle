@@ -1,11 +1,6 @@
 /* BTESTS.H
 
-    Vrsn  Date   Comment
-    ----|-------|-------------------------------------------------------------
-    0.00 17feb95
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1995
 
     Header for Beetle tests.
 

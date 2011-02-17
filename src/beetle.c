@@ -1,13 +1,6 @@
 /* BEETLE.C
 
-    Vrsn  Date   Comment
-    ----|-------|---------------------------------------------------------------
-    0.00 02may95 Loads and runs bobj (the pForth image file).
-    0.01 05jun96 Takes the image file from the command line.
-    0.02 06jul04 No longer include noecho.c.
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1995-2011
 
     A minimal shell for Beetle which simply loads and runs the specified
     object file (syntax: beetle <filename>).

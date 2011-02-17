@@ -1,15 +1,6 @@
 /* OPCODES.H
 
-    Vrsn  Date   Comment
-    ----|-------|-----------------------------------------------------------
-    0.00 10nov94
-    0.01 20nov94 Removed UM/MOD, FM/MOD and SM/REM.
-    0.02 11jan95 Added 0<>, U/MOD and S/REM; removed (LEAVE), (LEAVE)I and
-                 UM*; renamed (LEAP) to UNLOOP.
-    0.03 17feb11 Set correct opcode value for NEXTFF.
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1994-2011
 
     enum type for the opcodes to make the interpreter more readable. Opcode
     names which are not valid C identifiers have been altered.

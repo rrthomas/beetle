@@ -1,68 +1,6 @@
 /* UIFACE.C
 
-    Vrsn  Date   Comment
-    ----|-------|---------------------------------------------------------------
-    0.00 10feb95 Coded search and started parse, and tested them.
-    0.01 12feb95 Added number conversion code.
-    0.02 13feb95 Added argument parsing code, and dummy statements to print what
-                 action is carried out.
-    0.03 14feb95 Added code to parse double arguments (to DIASSEMBLE, DUMP &c.).
-                 Removed aliases for QUIT. Changed syntax for displaying
-                 registers & memory locations. Added code to parse STEP's
-                 arguments. Tested all the above loosely.
-    0.04 15feb95 Added code to parse numbers given to assignments. Code tested
-                 loosely. Enumerations renamed to avoid clashes with Beetle
-                 headers.
-    0.05 17feb95 Modified to work with new storage.c, and use btests.h rather
-                 than bintern.h.
-    0.06 19feb95 Added code to parse instruction mnemonics, and to abort a
-                 command when a syntactically invalid operand is given to it.
-    0.07 20feb95 Added code to execute register assignment and display commands,
-                 and some of the other commands.
-    0.08 23feb95 Finished adding code for all commands that can be implemented
-                 to date except LOAD.
-    0.09 24feb95 Added code for LOAD and shell escape (!).
-    0.10 26feb95 Added code for SAVE.
-    0.11 27feb95 Debugged for SAVE, added debug code for shell escape command
-                 (!). Set 'THROW to 0 by default.
-    0.12 28feb95 Removed printf format errors. Zero the memory on startup.
-    0.13 02mar95 Added command FROM. Added missing '\n's to printfs, and removed
-                 other bugs from output. Added pseudo-registers R0 and S0.
-                 Changed disassemble to print "Undefined instruction" where
-                 appropriate.
-    0.14 03mar95 Changed order of R> and RETURN commands (there's no reason why
-                 they shouldn't be in alphabetic order).
-    0.15 23mar95 Added missing ; that was somehow deleted, and added const
-                 qualifier to variable token in function diassemble.
-    0.16 30mar95 Debugged disassemble to cope with non-immediate operands
-                 correctly. Added code to implement RUN. Added INITIALISE
-                 command, and changed behaviour of LOAD.
-    0.17 31mar95 Debugged disassemble to cope with non-immediate operands
-                 even more correctly.
-    0.18 01apr95 Changed parse to stop displaying an error message for an empty
-                 input line.
-    0.19 02apr95 Added UNIX keyboard hack.
-    0.20 04apr95 Changed REGISTERS to display only EP, I and A.
-    0.21 05apr95 Bug in STEP TO command removed.
-    0.22 18apr95 Incorrect printf format changed. Restore keyboard on QUIT.
-    0.23 25apr95 Added COUNTS command. Made number given to STEP unsigned.
-    0.24 19may95 Changed file access modes to binary.
-    0.25 02mar96 Changed c_COUNT to c_COUNTS for consistency.
-    0.26 23may96 Changed REGISTERS to display all on one line; changed
-                 do_display to take a formatting string with which to print its
-                 argument; added TRACE command; changed hex printing to upper
-                 case.
-    0.27 14jun96 Debugged upper (only showed up on some compilers).
-    0.28 19oct96 Debugged search (len ought to be a size_t, not an int).
-    0.29 16nov96 Changed input routine to use fgets with maximum limit rather
-                 than gets.
-    0.30 30mar97 Use FLIP to access and display byte locations, so that it
-                 works on big-endian machines. Use calloc to allocate memory
-                 for Beetle.
-    0.31 06jul04 No longer include noecho.c.
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1995-2011
 
     A user interface for Beetle.
 
@@ -773,7 +711,8 @@ int main(void)
     long i;
     CELL *mem;
 
-    printf("Beetle shell v0.31\n(c) Reuben Thomas 1995-2004\n\n");
+    /* FIXME: Add some sort of version. */
+    printf("Beetle shell\n(c) Reuben Thomas 1995-2011\n\n");
 
     if (!(mem = (CELL *)calloc(CELL_W, MEMSIZE))) {
         printf("uiface: couldn't claim memory for Beetle\n");

@@ -1,23 +1,6 @@
 /* STACKT.C
 
-    Vrsn  Date   Comment
-    ----|-------|-----------------------------------------------------------
-    0.00 14nov94 Test DUP, DROP, SWAP, OVER, ROT, -ROT, TUCK and NIP.
-    0.01 16nov94 Also test PICK and ROLL.
-    0.02 17nov94 Also test ?DUP, >R, R> and R@; use functions from debug.h.
-    0.03 18nov94 Finished tidying up to work with debug.h, and included
-    	    	 disassembly of current instruction.
-    0.04 22nov94 Changed to work with new version of debug.h.
-    0.05 23nov94 Removed spurious variable from main.
-    0.06 28nov94 Changed reference to b_mem to one to M0.
-    0.07 30nov94 Modified so that testing is automatic, and can run with or
-    	    	 without debugging information. Modified to give a return value
-    	    	 from main.
-    0.08 17feb95 Modified to work with new version of storage.c, and use
-    	    	 btests.h rather than bintern.h.
-    0.09 28feb95 Removed printf format error.
-
-    Reuben Thomas
+    (c) Reuben Thomas 1994-1995
 
 
     Test the stack operators. Also uses the 0 and NEXT instructions.
@@ -28,10 +11,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "beetle.h" 	/* main header */
+#include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"  	/* debugging functions */
+#include "debug.h"      /* debugging functions */
 
 
 char *correct[] = { "1 2 3", "1 2 3 3", "1 2 3", "1 3 2", "1 3 2 3", "1 2 3 3",
@@ -65,9 +48,9 @@ int main(void)
         show_data_stack();  printf("Correct stack: %s\n\n", correct[i - i / 5]);
 #endif
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-    	    printf("Error in StackT: EP = %ld\n", val_EP());
-    	    exit(1);
-    	}
+            printf("Error in StackT: EP = %ld\n", val_EP());
+            exit(1);
+        }
         single_step();
 #ifdef B_DEBUG
         printf("I = %s\n", disass(I));
@@ -86,9 +69,9 @@ int main(void)
         show_data_stack();  printf("Correct stack: %s\n\n", correct[i - i / 5]);
 #endif
         if (strcmp(correct[i - i / 5], val_data_stack()) && i != first) {
-    	    printf("Error in StackT: EP = %ld\n", val_EP());
-    	    exit(1);
-    	}
+            printf("Error in StackT: EP = %ld\n", val_EP());
+            exit(1);
+        }
         single_step();
 #ifdef B_DEBUG
         printf("I = %s\n", disass(I));

@@ -1,19 +1,6 @@
 /* COMPARET.C
 
-    Vrsn  Date   Comment
-    ----|-------|---------------------------------------------------------------
-    0.00 22nov94 Test <, >, =, <>, 0<, 0>, 0=, U< and U>.
-    0.01 23nov94 Unused variable removed from main.
-    0.02 28nov94 Changed reference to b_mem to one to M0.
-    0.03 29nov94 Unused variable removed from main; type specifiers added to
-    	    	 parameters of step. Modified so that testing is automatic, and
-    	    	 can run with or without debugging information.
-    0.04 17feb95 Modified to work with new version of storage.c, and use
-    	    	 btests.h rather than bintern.h.
-    0.05 28feb95 Removed printf format error.
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1994-1995
 
     Test the comparison operators. Also uses the NEXT instruction. We
     only test simple cases here, assuming that the C compiler's comparison
@@ -25,10 +12,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "beetle.h" 	/* main header */
+#include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"  	/* debugging functions */
+#include "debug.h"      /* debugging functions */
 
 
 CELL correct[] = { 0, -1, 0, -1, -1, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, 0,
@@ -68,12 +55,12 @@ void step(int start, int end)
         if (I != O_NEXT00) {
 #ifdef B_DEBUG
             printf("Result: %d; correct result: %d\n\n", *SP,
-            	correct[i - i / 5]);
+                correct[i - i / 5]);
 #endif
-    	    if (correct[i - i / 5] != *SP) {
-    	    	printf("Error in CompareT: EP = %ld\n", val_EP());
-    	    	exit(1);
-    	    }
+            if (correct[i - i / 5] != *SP) {
+                printf("Error in CompareT: EP = %ld\n", val_EP());
+                exit(1);
+            }
             SP++;	/* drop result of comparison */
         }
 #ifdef B_DEBUG
@@ -100,21 +87,21 @@ int main(void)
 
     NEXT;   /* load first instruction word */
 
-    stack1();	    /* set up the stack with four standard pairs to compare */
-    step(0, 4);	    /* do the < tests */
+    stack1();       /* set up the stack with four standard pairs to compare */
+    step(0, 4);     /* do the < tests */
     stack1();
-    step(5, 9);	    /* do the > tests */
-    stack2();	    /* set up the stack with two standard pairs to compare */
+    step(5, 9);     /* do the > tests */
+    stack2();       /* set up the stack with two standard pairs to compare */
     step(10, 11);   /* do the = tests */
     stack2();
     step(12, 14);   /* do the <> tests */
-    stack3();	    /* set up the stack with three standard values */
+    stack3();       /* set up the stack with three standard values */
     step(15, 17);   /* do the 0< tests */
     stack3();
     step(18, 21);   /* do the 0> tests */
     SP = S0;  *--SP = 237; *--SP = 0;	/* set up the stack with two values */
     step(22, 24);   /* do the 0= tests */
-    stack1();	    /* set up the stack with four standard pairs to compare */
+    stack1();       /* set up the stack with four standard pairs to compare */
     step(25, 29);   /* do the U< tests */
     stack1();
     step(30, 34);   /* do the U> tests */

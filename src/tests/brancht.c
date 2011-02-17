@@ -1,20 +1,6 @@
 /* BRANCHT.C
 
-    Vrsn  Date   Comment
-    ----|-------|---------------------------------------------------------------
-    0.00 23nov94 Test BRANCH, BRANCHI, ?BRANCH, and ?BRANCHI.
-    0.01 24nov94 Finished tests for ?BRANCH and ?BRANCHI; added tests for
-    	    	 EXECUTE, @EXECUTE, CALL, CALLI and EXIT.
-    0.02 28nov94 Changed reference to b_mem to one to M0.
-    0.03 29nov94 Modified so that testing is automatic, and can run with or
-    	    	 without debugging information.
-    0.04 30nov94 Modified to give a return value from main.
-    0.05 17feb95 Modified to work with new storage.c, and to use btests.h rather
-    	    	 than bintern.h.
-    0.06 28feb95 Removed printf format error.
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1994-1995
 
     Test the branch instructions. Also uses other instructions with lower
     opcodes than the instructions tested (i.e. those already tested). Doesn't
@@ -26,10 +12,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "beetle.h" 	/* main header */
+#include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"  	/* debugging functions */
+#include "debug.h"      /* debugging functions */
 
 
 int correct[] = { 20, 100, 52, 10004, 10004, 10008, 10008, 10012, 10012, 11004,
@@ -103,10 +89,10 @@ int main(void)
 #ifdef B_DEBUG
         printf("EP = %d; should be %d\n\n", val_EP(), correct[i]);
 #endif
-    	if (correct[i] != val_EP()) {
-    	    printf("Error in BranchT: EP = %ld\n", val_EP());
-    	    exit(1);
-    	}
+        if (correct[i] != val_EP()) {
+            printf("Error in BranchT: EP = %ld\n", val_EP());
+            exit(1);
+        }
         single_step();
 #ifdef B_DEBUG
         printf("I = %s\n", disass(I));

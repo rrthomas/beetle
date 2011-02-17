@@ -1,11 +1,6 @@
 /* RUNT.C
 
-    Vrsn  Date   Comment
-    ----|-------|---------------------------------------------------------------
-    0.00 24mar95
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1995
 
     Test that run works, and that the return value of the HALT instruction is
     correctly returned.
@@ -15,10 +10,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "beetle.h" 	/* main header */
+#include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"  	/* debugging functions */
+#include "debug.h"      /* debugging functions */
 
 
 int main(void)

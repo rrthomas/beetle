@@ -1,29 +1,6 @@
 /* STORAGE.C
 
-    Vrsn  Date   Comment
-    ----|-------|---------------------------------------------------------------
-    0.00 09nov94
-    0.01 11nov94 SP and RP changed to pointers; definition of memory vector
-                 changed to ensure it is aligned on a 4-byte boundary.
-    0.02 22nov94 b_mem is now initialised explicitly to zero (unnecessary,
-                 but helpful).
-    0.03 23nov94 Changed THROW to a pointer, so that it is phyiscally held
-                 in Beetle's address space as required. Made init_regs copy
-                 registers to memory as specified, and changed scope of cast
-                 in assignments to SP and RP to make them correct.
-    0.04 28nov94 Removed b_mem, which was identical with M0.
-    0.05 19jan95 Added compiler tests from tests.c to init_regs.
-    0.06 17feb95 Parametrised init_regs (now init_beetle), and removed
-                 allocation of memory array and now unnecessary reference to
-                 bintern.h. init_beetle made to return a value (1 if e0 is not
-                 aligned, 0 if it's OK).
-    0.07 24feb95 Added code to init_beetle to initialise 'THROW.
-    0.08 23mar95 Added code to init_beetle to check whether e0 is in range (and
-                 return 1 if not), and changed e0 to type UCELL.
-    0.09 17feb11 #include <stdlib.h> for exit.
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1994-2011
 
     Allocate storage for the registers and memory.
 

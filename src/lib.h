@@ -1,11 +1,6 @@
 /* LIB.H
 
-    Vrsn  Date   Comment
-    ----|-------|-----------------------------------------------------------
-    0.00 30mar97
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1997
 
     Prototype for lib function.
 

@@ -1,17 +1,6 @@
 /* TESTS.C
 
-    Vrsn  Date   Comment
-    ----|-------|--------------------------------------------------------------
-    0.00 18jan95
-    0.01 19jan95 Error messages added and division test debugged.
-    0.02 17feb95 Now includes tests.h (unnecessary, but worthwhile for
-                 consistency checks).
-    0.03 12jun96 Changed error messages for ENDISM check.
-    0.04 06jul04 BIG_ENDIAN renamed to BEETLE_BIG_ENDIAN.
-    0.05 17feb11 Fix overflow check.
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1995-2011
 
     Test that C Beetle has been compiled properly. The following tests are run:
 

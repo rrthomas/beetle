@@ -1,44 +1,6 @@
 /* DEBUG.C
 
-    Vrsn  Date   Comment
-    ----|-------|------------------------------------------------------------
-    0.00 17nov94
-    0.01 18nov94 Made disassembly give proper bForth instruction names rather
-		 than the C Beetle versions. Changed showEP to val_EP, making
-		 it just return the value rather than printing it. Added
-		 endass.
-    0.02 20nov94 Removed double-cell division instructions from disass.
-    0.03 21nov94 Added lit, and #included debug.h.
-    0.04 22nov94 Added ibytes and current to allow proper assembly of
-                 literals, and ilit for assembly of immediate literals; added
-                 start_ass, and changed name of endass to end_ass.
-    0.05 23nov94 Changed lit so that it works when the (LITERAL) instruction
-                 is the last in its instruction word. Initialisation of
-                 instrs moved to its declaration from start_ass, so that the
-		 instruction count remains valid when pieces of code are
-		 assembled in different locations with multiple calls to
-		 start_ass and end_ass. Debugged setting of instrs by ilit.
-		 Added "Undefined instruction" message to disass. icell now
-		 set to 0 in start_ass.
-    0.06 28nov94 Replaced reference to b_mem with one to M0. Made val_EP more
-		 efficient. Added R0 and show_return_stack.
-    0.07 29nov94 Added val_data_stack, and changed show_data_stack to use it.
-    0.08 12jan95 Changed opcodes recognised by disass to match new version of
-		 opcodes.h (0.02).
-    0.09 17feb95 Removed the now unnecessary inclusion of bintern.h.
-    0.10 18feb95 Added toass, and modified disass to use the string array
-		 mnemonic, which is also used by toass.
-    0.11 19feb95 Debugged toass.
-    0.12 28feb95 Debugged wrong printf formats.
-    0.13 02mar95 Changed output format of show_data_stack and
-                 show_return_stack.
-    0.14 05apr95 Increased size of string to in val_data_stack to cope with
-		 large stacks; changed show_data_stack not to use
-		 val_data_stack in any case.
-    0.15 16apr95 Changed (THROW) to THROW, which it should be.
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1994-1995
 
     Functions useful for debugging Beetle.
 
@@ -131,7 +93,7 @@ BYTE toass(char *token)
     int i;
 
     for (i = 0; i < 0x5c; i++)
-	if (strcmp(token, mnemonic[i]) == 0) return i;
+        if (strcmp(token, mnemonic[i]) == 0) return i;
 
     if (strcmp(token, mnemonic[0xff]) == 0) return 0xff;
 

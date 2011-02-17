@@ -1,18 +1,6 @@
 /* DEBUG.H
 
-    Vrsn  Date   Comment
-    ----|-------|---------------------------------------------------------------
-    0.00 17nov94
-    0.01 18nov94 Changed showEP to val_EP. Added endass.
-    0.02 21nov94 Added lit.
-    0.03 22nov94 Added ibytes and current; added start_ass, renamed endass
-                 to end_ass, and added ilit.
-    0.04 28nov94 Added R0 and show_return_stack.
-    0.05 29nov94 Added val_data_stack.
-    0.06 19feb95 Added toass. Return type of disass changed to const char *.
-
-    Reuben Thomas
-
+    (c) Reuben Thomas 1994-1995
 
     Header for debug.c.
 
