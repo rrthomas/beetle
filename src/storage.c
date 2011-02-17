@@ -29,8 +29,10 @@ CELL ADDRESS;	/* -ADDRESS is not a valid C identifier */
 
 int init_beetle(BYTE *b_array, long size, UCELL e0)
 {
-    if (tests()) exit(1);   /* ensure Beetle was compiled properly */
-    if (e0 & 3 || e0 >= size * CELL_W) return 1;
+    if (tests()) /* ensure Beetle was compiled properly */
+      exit(1);
+    if (e0 & 3 || e0 >= size * CELL_W)
+      return 1;
 
     M0 = (BYTE *)b_array;
     EP = (CELL *)(M0 + e0);
