@@ -1,0 +1,19 @@
+#/bin/sh
+
+./aritmtit
+./brancht
+./comparet
+./createt
+./doloopt
+./initialt
+./libt < testtext
+./literalt
+./logict
+./memoryt
+./stackt
+./stept
+./runt
+./loadobjt
+./saveobjt
+./exceptst
+./linkt

@@ -1,0 +1,48 @@
+%
+% Documentation for Beetle User-Interface
+%
+% Reuben Thomas
+%
+% 27/2-8/5/95
+% body separated out 2/3/96
+% changed to LaTeX2e and made to use external bibliography 12/6/96
+% copyright banner added 2/4/97
+% bibliography rejigged and changed for PDF compatibility 25/1/98
+%
+
+\documentclass{article}
+\usepackage[english]{babel}
+\usepackage{a4,copyrght,url}
+
+% Alter some default parameters for general typesetting
+
+%\emergencystretch=7pt
+
+\frenchspacing
+
+%\renewcommand{\copyrightyear}{1996}
+
+
+% Macros
+
+% Put an object in angle brackets for syntax descriptions
+
+\newcommand{\angb}[1]{$\langle #1\rangle$}
+
+
+\title{A simple user-interface for the Beetle virtual processor}
+\author{Reuben Thomas}
+\date{12th June 1996}
+
+\begin{document}
+\maketitle
+
+
+\input{uiface.tex}
+
+
+\bibliographystyle{plain}
+\bibliography{vm,rrt}
+
+
+\end{document}

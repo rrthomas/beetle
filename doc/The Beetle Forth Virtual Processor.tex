@@ -1,0 +1,128 @@
+%
+% The definition of Beetle (self-contained paper)
+%
+% Reuben Thomas
+%
+% body separated out 2/3/96
+% changed to LaTeX2e and copyright banner added 2/4/97
+% tidied up (bibliography rejigged and made suitable for PDF) 25/1/98
+% corrected bugs in stack item macros 11/5/98
+% made HeVeA-friendly 1/6/06
+%
+
+\documentclass{article}
+\usepackage[english]{babel}
+\usepackage{a4wide,copyrght,url}
+
+
+% Alter some default parameters for general typesetting
+
+\parindent=0pt
+\parskip=1.5ex plus 0.5ex
+\topskip=0pt
+
+\frenchspacing
+
+\renewcommand{\copyrightyear}{1995}
+
+
+% Macros for this document
+
+% Font for stack pictures; macro \spic includes italic correction
+
+\newfont{\spfont}{cmsltt10 scaled 1000}
+\newcommand{\spic}[1]{{\spfont \setlength{\baselineskip}{\normalbaselineskip} #1\/}}
+
+% Common stack items
+
+\newcommand{\x}[1]{\spic{x$_{#1}$}}
+\newcommand{\n}[1]{\spic{n$_{#1}$}}
+\newcommand{\U}[1]{\spic{u$_{#1}$}}
+\newcommand{\noru}[1]{\spic{n$_#1${\tt |}u$_{#1}$}}
+\newcommand{\aaddr}[1]{\spic{a-addr$_{#1}$}}
+
+% Lay out a bForth instruction definition
+
+% Define the widths of the stack comment and description columns
+\newlength{\itemwidth}\itemwidth=\textwidth \advance\itemwidth by -0.1in
+\newlength{\instname}\instname=0.5in
+\newlength{\pronunc}\pronunc=1.7in
+\newlength{\opcode}\opcode=0.5in
+\newlength{\stackcom}\stackcom=3.0in
+\newlength{\beforestackcom} \advance\beforestackcom by \instname
+    \advance\beforestackcom by \pronunc \advance\beforestackcom by \opcode
+
+% With no pronunciation or return stack
+\newcommand{\inst}[4]{\item[]\parbox{\itemwidth}%
+{\makebox[\instname][l]{\tt #1}\makebox[\pronunc][r]{}\makebox[\opcode][r]%
+{#2}\makebox[\stackcom][r]{\tt ( \spic{#3} )}\\[0.5ex]#4}}
+
+% With pronunciation only
+\newcommand{\instp}[5]{\item[]\parbox{\itemwidth}%
+{\makebox[\instname][l]{\tt #1}\makebox[\pronunc][r]{``#2''}%
+\makebox[\opcode][r]{#3}\makebox[\stackcom][r]{\tt ( \spic{#4} )}\\[0.5ex]%
+#5}}
+
+% With return stack only
+\newcommand{\instr}[5]{\item[]\parbox{\itemwidth}%
+{\makebox[\instname][l]{\tt #1}\makebox[\pronunc][r]{}\makebox[\opcode][r]%
+{#2}\makebox[\stackcom][r]{\tt ( \spic{#3} )}\\\makebox[\beforestackcom]{}%
+\makebox[\stackcom][r]{\tt R: ( \spic{#4} )}\\[0.5ex]#5}}
+
+% With pronunciation and return stack
+\newcommand{\instpr}[6]{\item[]\parbox{\itemwidth}%
+{\makebox[\instname][l]{\tt #1}\makebox[\pronunc][r]{``#2''}%
+\makebox[\opcode][r]{#3}\makebox[\stackcom][r]{\tt ( \spic{#4} )}\\%
+\makebox[\beforestackcom]{}\makebox[\stackcom][r]{\tt R: ( \spic{#5} )}%
+\\[0.5ex]#6}}
+
+% Lay out an external interface call
+
+\newlength{\innerwidth}\innerwidth=\itemwidth \advance\innerwidth by -0.5in
+\newcommand{\iface}[4]{\item[]\parbox{\itemwidth}{{\bf #1} ({\it #2}\/) :
+#3\\[0.5ex]\hspace*{0.4in}\parbox{\innerwidth}{#4}}}
+
+% Lay out a line of the opcode table
+
+\newcommand{\opcodetbl}[6]{#1h & {\tt #2} & #3h & {\tt #4} & #5h & {\tt #6}
+\\}
+
+
+\title{The Beetle Forth Virtual Processor}
+\author{Reuben Thomas}
+\date{29th October 1993; revised 4th May 1995}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent The design of the Beetle Forth virtual processor is described.
+Beetle's purpose is to provide an easily portable environment for ANS Forth
+compilers: to move a compiler from one system to another only Beetle and the I/O
+libraries need be rewritten. Like most interpreters, Beetle gains portability
+and compactness at the expense of speed, but it retains flexibility by providing
+instructions to call machine code and access the operating system.
+\end{abstract}
+
+
+\subsection*{Typographical notes}
+
+bForth instructions and Beetle's registers are shown in {\tt Typewriter} font;
+interface calls are shown in {\bf Bold} type, and followed by empty parentheses.
+Quoted pronunciations of instructions and registers are given with components
+separated by dashes; single letters should be pronounced as the name of the
+letter.
+
+Addresses are given in bytes and refer to Beetle's address space except where
+stated. Addresses are written in hexadecimal; all hex numbers are followed by
+``h''.
+
+
+\input{beetle.tex}
+
+
+\bibliographystyle{plain}
+\bibliography{vm,rrt}
+
+
+\end{document}

@@ -1,0 +1,12 @@
+Support objects in pForth.
+
+Support locals in pForth.
+
+Have instructions which perform multiple stack operations directly such as
+SWAP OVER. This could make the ARM version of Beetle faster than native
+pForth for some operations.
+
+Have stacks in separate address spaces with (potentially) the ability to grow
+and shrink on demand.
+
+Compile at load time using ideas in DDJ article.
