@@ -11,17 +11,11 @@ LD = gcc -o $@
 # If your machine is big-endian, you should uncomment the next line
 #ENDISM = -DBEETLE_BIG_ENDIAN
 
-# If you're running on a System V type OS (including Linux), uncomment the next line
-PLATFORM = -Dsysv
-
-# If you're running on a BSD type OS, uncomment the next line
-#PLATFORM = -Dbsd
-
 # Flags for the C compiler; the uncommented version of CCflags is recommended
 # as the commented one is meant for development
 # If you change CCflags, make sure it still ends in $(ENDISM)
 # add -DB_DEBUG for debugging output
-CFLAGS = -O3 $(ENDISM) $(PLATFORM) -DB_DEBUG
+CFLAGS = -O3 $(ENDISM) -DB_DEBUG
 #CFLAGS = -pedantic-errors -Wall $(ENDISM)
 
 
