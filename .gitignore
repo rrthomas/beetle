@@ -1,7 +1,10 @@
 *.o
-*.zip
 *~
+Makefile
+Makefile.in
+TAGS
 /dissertation
+/INSTALL
 /README.dg
 /aclocal.m4
 /autom4te.cache
@@ -13,3 +16,4 @@
 /install-sh
 /missing
 /stamp-h1
+/depcomp
