@@ -4,7 +4,7 @@
 
 include ../defaults.mak
 
-CFLAGS += -I..
+CFLAGS += -I.. -I../..
 
 
 BeetleObjs = ../storage.o ../tests.o ../step.o ../run.o ../lib.o \
@@ -18,7 +18,24 @@ BTestsO = aritmtit.o brancht.o comparet.o createt.o doloopt.o initialt.o \
 
 # Targets
 
-btests: $(BTests)
+check: $(BTests)
+	./aritmtit
+	./brancht
+	./comparet
+	./createt
+	./doloopt
+	./initialt
+	./libt
+	./literalt
+	./logict
+	./memoryt
+	./stackt
+	./stept
+	./runt
+	./loadobjt
+	./saveobjt
+	./exceptst
+	./linkt
 
 clean:
 	rm $(BTests) $(BTestsO)
