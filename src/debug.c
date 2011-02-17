@@ -1,6 +1,6 @@
 /* DEBUG.C
 
-    (c) Reuben Thomas 1994-1995
+    (c) Reuben Thomas 1994-2011
 
     Functions useful for debugging Beetle.
 
@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <inttypes.h>
 #include "beetle.h"	/* main header */
 #include "opcodes.h"	/* opcode enumeration */
 #include "debug.h"	/* the header we're implementing */
@@ -113,7 +114,7 @@ char *val_data_stack(void)
 
     picture[0] = '\0';
     for (i = S0 - 1; i >= SP; i--) {
-        sprintf(item, "%ld", *i);
+        sprintf(item, "%"PRId32, *i);
         strcat(picture, item);
         if (i != SP) strcat(picture, " ");
     }
@@ -126,7 +127,8 @@ void show_data_stack(void)
     CELL *i;
 
     printf("Data stack: ");
-    for (i = S0 - 1; i >= SP; i--) printf("%ld ", *i);
+    for (i = S0 - 1; i >= SP; i--)
+      printf("%"PRId32" ", *i);
     putchar('\n');
 }
 
@@ -135,6 +137,7 @@ void show_return_stack(void)
     CELL *i;
 
     printf("Return stack: ");
-    for (i = R0 - 1; i >= RP; i--) printf("%lxh ", *i);
+    for (i = R0 - 1; i >= RP; i--)
+      printf("%"PRIX32"h ", *i);
     putchar('\n');
 }

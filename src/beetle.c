@@ -9,6 +9,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
+#include <stdbool.h>
 #include <ctype.h>
 #include <string.h>
 #include <setjmp.h>
@@ -18,6 +20,9 @@
 #include "debug.h"
 #include "noecho.h"
 
+
+/* User interface debug control */
+bool debug = false;
 
 #define MEMSIZE 16384	/* size of Beetle's memory in cells */
 
@@ -45,7 +50,7 @@ static long count[256] = { 0 };
 int range(CELL adr, CELL limit, char *quantity)
 {
     if (adr < limit) return 0;
-    printf("%s must be in the range {0..%lXh} ({0..%ld})\n", quantity, limit,
+    printf("%s must be in the range {0..%"PRIX32"h} ({0..%"PRId32"})\n", quantity, limit,
         limit);
     return 1;
 }
@@ -139,7 +144,7 @@ void disassemble(CELL start, CELL end)
     const char *token;
 
     while ((BYTE *)p < M0 + end) {
-        printf("%08lXh: ", (CELL)((BYTE *)p - M0));
+        printf("%08"PRIX32"h: ", (CELL)((BYTE *)p - M0));
         a = *p++;
 
         do {
@@ -153,16 +158,16 @@ void disassemble(CELL start, CELL end)
 
             if (load_op(i)) {
                 if (i != O_LITERAL)
-                    printf(" %lXh", *p);
+                    printf(" %"PRIX32"h", *p);
                 else
-                    printf(" %ld (%lXh)", *p, *p);
+                    printf(" %"PRId32" (%"PRIX32"h)", *p, *p);
                 p++;
             } else {
                 if (imm_op(i)) {
                     if (i != O_LITERALI)
-                        printf(" %lXh", a * 4 + ((BYTE *)p - M0));
+                        printf(" %"PRIX32"h", a * 4 + ((BYTE *)p - M0));
                     else
-                        printf(" %ld (%lXh)", a, a);
+                        printf(" %"PRId32" (%"PRIX32"h)", a, a);
                     a = 0;
                 }
             }
@@ -206,17 +211,17 @@ void do_ass(char *token)
 
     switch (no) {
         case r_A:
-            if (B_DEBUG)
+            if (debug)
                 printf("Assign A %lX\n", value);
             A = value;
             break;
         case r_ADDRESS:
-            if (B_DEBUG)
+            if (debug)
                 printf("Assign -ADDRESS %lX\n", value);
             *((CELL *)M0 + 3) = ADDRESS = value;
             break;
         case r_BAD:
-            if (B_DEBUG)
+            if (debug)
                 printf("Assign 'BAD %lX\n", value);
             *((CELL *)M0 + 2) = BAD = value;
             break;
@@ -233,7 +238,7 @@ void do_ass(char *token)
                 printf("EP must be cell-aligned\n");
                 break;
             }
-            if (B_DEBUG)
+            if (debug)
                 printf("Assign EP %lX\n", value);
             EP = (CELL *)(M0 + value);
             break;
@@ -242,8 +247,8 @@ void do_ass(char *token)
                 printf("I must be assigned a byte\n");
                 break;
             }
-            if (B_DEBUG)
-                printf("Assign I %X\n", value);
+            if (debug)
+                printf("Assign I %lX\n", value);
             I = value;
             break;
         case r_M0:
@@ -259,7 +264,7 @@ void do_ass(char *token)
                 printf("RP must be cell-aligned\n");
                 break;
             }
-            if (B_DEBUG)
+            if (debug)
                 printf("Assign RP %lX\n", value);
             RP = (CELL *)(M0 + value);
             break;
@@ -270,7 +275,7 @@ void do_ass(char *token)
                 printf("R0 must be cell-aligned\n");
                 break;
             }
-            if (B_DEBUG)
+            if (debug)
                 printf("Assign R0 %lX\n", value);
             R0 = (CELL *)(M0 + value);
             break;
@@ -281,7 +286,7 @@ void do_ass(char *token)
                 printf("SP must be cell-aligned\n");
                 break;
             }
-            if (B_DEBUG)
+            if (debug)
                 printf("Assign SP %lX\n", value);
             SP = (CELL *)(M0 + value);
             break;
@@ -292,7 +297,7 @@ void do_ass(char *token)
                 printf("S0 must be cell-aligned\n");
                 break;
             }
-            if (B_DEBUG)
+            if (debug)
                 printf("Assign S0 %lX\n", value);
             S0 = (CELL *)(M0 + value);
             break;
@@ -303,7 +308,7 @@ void do_ass(char *token)
                 printf("'THROW must be cell-aligned\n");
                 break;
             }
-            if (B_DEBUG)
+            if (debug)
                 printf("Assign 'THROW %lX\n", value);
             *THROW = value;
         default:
@@ -317,8 +322,8 @@ void do_ass(char *token)
                         "address\n");
                     return;
                 }
-                if (B_DEBUG)
-                    printf("Assign %lX to memory location %lX%s\n", value, adr,
+                if (debug)
+                    printf("Assign %lX to memory location %"PRIX32"%s\n", value, adr,
                            ((byte == 1 && (adr & 3) == 0) ? " (byte)" : ""));
                 if (byte == 1)
                     *(M0 + FLIP(adr)) = (BYTE)value;
@@ -335,13 +340,13 @@ void do_display(char *token, char *format)
 
     switch (no) {
         case r_A:
-            sprintf(display, "A = %lXh", A);
+            sprintf(display, "A = %"PRIX32"h", A);
             break;
         case r_ADDRESS:
-            sprintf(display, "-ADDRESS = %lXh (%ld)", ADDRESS, ADDRESS);
+            sprintf(display, "-ADDRESS = %"PRIX32"h (%"PRId32")", ADDRESS, ADDRESS);
             break;
         case r_BAD:
-            sprintf(display, "'BAD = %lXh (%ld)", BAD, BAD);
+            sprintf(display, "'BAD = %"PRIX32"h (%"PRId32")", BAD, BAD);
             break;
         case r_CHECKED:
             sprintf(display, "CHECKED = %d", CHECKED);
@@ -350,7 +355,7 @@ void do_display(char *token, char *format)
             sprintf(display, "ENDISM = %d", ENDISM);
             break;
         case r_EP:
-            sprintf(display, "EP = %05lXh (%ld)", (CELL)((BYTE *)EP - M0),
+            sprintf(display, "EP = %05"PRIX32"h (%"PRId32")", (CELL)((BYTE *)EP - M0),
                     (CELL)((BYTE *)EP - M0));
             break;
         case r_I:
@@ -360,40 +365,40 @@ void do_display(char *token, char *format)
             sprintf(display, "M0 = %p", M0);
             break;
         case r_MEMORY:
-            sprintf(display, "MEMORY = %lXh (%ld)", MEMORY, MEMORY);
+            sprintf(display, "MEMORY = %"PRIX32"h (%"PRId32")", MEMORY, MEMORY);
             break;
         case r_RP:
-            sprintf(display, "RP = %lXh (%ld)", (CELL)((BYTE *)RP - M0),
+            sprintf(display, "RP = %"PRIX32"h (%"PRId32")", (CELL)((BYTE *)RP - M0),
                     (CELL)((BYTE *)RP - M0));
             break;
         case r_R0:
-            sprintf(display, "R0 = %lXh (%ld)", (CELL)((BYTE *)R0 - M0),
+            sprintf(display, "R0 = %"PRIX32"h (%"PRId32")", (CELL)((BYTE *)R0 - M0),
                     (CELL)((BYTE *)R0 - M0));
             break;
         case r_SP:
-            sprintf(display, "SP = %lXh (%ld)", (CELL)((BYTE *)SP - M0),
+            sprintf(display, "SP = %"PRIX32"h (%"PRId32")", (CELL)((BYTE *)SP - M0),
                     (CELL)((BYTE *)SP - M0));
             break;
         case r_S0:
-            sprintf(display, "S0 = %lXh (%ld)", (CELL)((BYTE *)S0 - M0),
+            sprintf(display, "S0 = %"PRIX32"h (%"PRId32")", (CELL)((BYTE *)S0 - M0),
                     (CELL)((BYTE *)S0 - M0));
             break;
         case r_THROW:
-            sprintf(display, "'THROW = %lXh (%ld)", *THROW, *THROW);
+            sprintf(display, "'THROW = %"PRIX32"h (%"PRId32")", *THROW, *THROW);
             break;
         default:
             {
                 CELL adr = (CELL)single_arg(token);
 
-                if (B_DEBUG)
-                    printf("Display contents of memory location %lX\n", adr);
+                if (debug)
+                    printf("Display contents of memory location %"PRIX32"\n", adr);
                 if (range(adr, MEMORY, "Address"))
                     return;
                 if (adr & 3)
-                    sprintf(display, "%lXh: %Xh (%d) (byte)", adr,
+                    sprintf(display, "%"PRIX32"h: %Xh (%d) (byte)", adr,
                             *(M0 + FLIP(adr)), *(M0 + FLIP(adr)));
                 else
-                    sprintf(display, "%lXh: %lXh (%ld) (cell)", adr,
+                    sprintf(display, "%"PRIX32"h: %"PRIX32"h (%"PRId32") (cell)", adr,
                             *(CELL *)(M0 + adr), *(CELL *)(M0 + adr));
             }
     }
@@ -402,7 +407,7 @@ void do_display(char *token, char *format)
 
 void do_registers(void)
 {
-    if (B_DEBUG)
+    if (debug)
         printf("Display EP, I and A\n");
     do_display("EP", "%-25s");
     do_display("I", "%-22s");
@@ -416,7 +421,7 @@ void do_command(int no)
             {
                 long value = single_arg(strtok(NULL, " "));
 
-                if (B_DEBUG)
+                if (debug)
                     printf("Push %ld on to the data stack\n", value);
                 if (range((CELL)((BYTE *)SP - M0), MEMORY + 1, "SP"))
                     return;
@@ -431,7 +436,7 @@ void do_command(int no)
             {
                 long value = single_arg(strtok(NULL, " "));
 
-                if (B_DEBUG)
+                if (debug)
                     printf("Push %ld on to the return stack\n", value);
                 if (range((CELL)((BYTE *)SP - M0), MEMORY + 1, "RP"))
                     return;
@@ -473,28 +478,32 @@ void do_command(int no)
                     printf("Address/offset must be cell-aligned\n");
                     return;
                 }
-                if (B_DEBUG)
+                if (debug)
                     printf("Disassemble from %lX to %lX\n", start, end);
                 disassemble((CELL)start, (CELL)end);
             }
             break;
         case c_DFROM:
-            if (B_DEBUG)
+            if (debug)
                 printf("Pop a number from the data stack and display it\n");
             if (range((CELL)((BYTE *)SP - M0), MEMORY, "SP"))
                 return;
-            printf("%ld (%lXh)\n", *SP, *SP);
+            printf("%"PRId32" (%"PRIX32"h)\n", *SP, *SP);
             SP++;
             break;
         case c_DATA:
         case c_STACKS:
-            if (B_DEBUG)
+            if (debug)
                 printf("Display the data stack\n");
             if (!range((CELL)((BYTE *)RP - M0), MEMORY + 1, "SP") &&
-                !range((CELL)((BYTE *)S0 - M0), MEMORY + 1, "S0"))
-                if (SP == S0) printf("Data stack empty\n");
-                else if (SP > S0) printf("Data stack underflow\n");
-                     else show_data_stack();
+                !range((CELL)((BYTE *)S0 - M0), MEMORY + 1, "S0")) {
+                if (SP == S0)
+                    printf("Data stack empty\n");
+                else if (SP > S0)
+                    printf("Data stack underflow\n");
+                else
+                    show_data_stack();
+            }
             if (no == c_STACKS) goto c_ret;
             break;
         case c_DUMP:
@@ -509,7 +518,7 @@ void do_command(int no)
                     printf("Start address must be less than end address\n");
                     return;
                 }
-                if (B_DEBUG)
+                if (debug)
                     printf("Dump memory from %lX to %lX\n", start, end);
                 while (start < end) {
                     printf("%08lXh: ", start);
@@ -532,11 +541,11 @@ void do_command(int no)
                         printf("Address must be cell-aligned\n");
                         break;
                     }
-                    if (B_DEBUG)
+                    if (debug)
                         printf("Set EP to %lXh\n", adr);
                     EP = (CELL *)(M0 + adr);
                 }
-                if (B_DEBUG)
+                if (debug)
                     printf("Perform NEXT\n");
                 NEXT;
             }
@@ -545,7 +554,7 @@ void do_command(int no)
         case c_LOAD:
             {
                 long i;
-                if (B_DEBUG)
+                if (debug)
                     printf("Initialise Beetle\n");
                 for (i = 0; i < MEMSIZE; i++) ((CELL*)M0)[i] = 0;
                 for (i = 0; i < 256; i++) count[i] = 0;
@@ -571,7 +580,7 @@ c_load:     {
                     printf("Cannot open file %s\n", file);
                     return;
                 }
-                if (B_DEBUG)
+                if (debug)
                     printf("Load binary image %s to address %lX\n", file, adr);
                 ret = load_object(handle, (CELL *)(M0 + adr));
                 fclose(handle);
@@ -596,14 +605,14 @@ c_load:     {
             do_registers();
             break;
         case c_RFROM:
-            if (B_DEBUG)
+            if (debug)
                 printf("Pop a number from the return stack and display it\n");
             if (range((CELL)((BYTE *)RP - M0), MEMORY, "RP")) return;
-            printf("%lXh (%ld)\n", *RP, *RP);
+            printf("%"PRIX32"h (%"PRId32")\n", *RP, *RP);
             RP++;
             break;
 c_ret:      case c_RETURN:
-            if (B_DEBUG)
+            if (debug)
                 printf("Display the return stack\n");
             if (range((CELL)((BYTE *)RP - M0), MEMORY + 1, "RP"))
                 return;
@@ -624,7 +633,7 @@ c_ret:      case c_RETURN:
                 CELL ret;
 
                 ret = run();
-                printf("HALT code %ld was returned\n", ret);
+                printf("HALT code %"PRId32" was returned\n", ret);
             }
             break;
         case c_STEP:
@@ -635,10 +644,10 @@ c_ret:      case c_RETURN:
                 CELL ret = 0;
 
                 if (arg == NULL) {
-                    if (B_DEBUG)
+                    if (debug)
                         printf("Step once\n");
-                    if (ret = single_step())
-                        printf("HALT code %ld was returned\n", ret);
+                    if ((ret = single_step()))
+                        printf("HALT code %"PRId32" was returned\n", ret);
                     if (no == c_TRACE) do_registers();
                     count[I]++;
                 } else {
@@ -651,7 +660,7 @@ c_ret:      case c_RETURN:
                 }
                 if (range(limit, MEMORY, "Address"))
                     return;
-                if (B_DEBUG)
+                if (debug)
                     printf("STEP TO %lX\n", limit);
                 while ((BYTE *)EP - M0 != limit && ret == 0) {
                     ret = single_step();
@@ -659,19 +668,19 @@ c_ret:      case c_RETURN:
                     count[I]++;
                 }
                 if (ret != 0)
-                    printf("HALT code %ld was returned at EP = %Xh ",
+                    printf("HALT code %"PRId32" was returned at EP = %Xh ",
                            ret, (BYTE *)EP - M0);
                     } else {
                         limit = single_arg(arg);
-                        if (B_DEBUG)
-                            printf("STEP for %ld instructions\n", limit);
+                        if (debug)
+                            printf("STEP for %lu instructions\n", limit);
                         for (i = 0; i < limit && ret == 0; i++) {
                             ret = single_step();
                             if (no == c_TRACE) do_registers();
                             count[I]++;
                         }
                         if (ret != 0)
-                            printf("HALT code %ld was returned after %ld "
+                            printf("HALT code %"PRId32" was returned after %lu "
                                 "steps\n", ret, i);
                     }
                 }
@@ -698,7 +707,7 @@ c_ret:      case c_RETURN:
                     printf("Cannot open file %s\n", file);
                     return;
                 }
-                if (B_DEBUG)
+                if (debug)
                     printf("Save memory to file %s from %lX to %lX\n", file, start,
                            end);
                 ret = save_object(handle, (CELL *)(M0 + start),
@@ -726,7 +735,7 @@ void parse(char *input)
     int i, no, ass = 0;
 
     if (input[0] == '!') {
-        if (B_DEBUG)
+        if (debug)
             printf("Send %s to the environment\n", input + 1);
         system(input + 1);
         return;
