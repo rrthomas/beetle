@@ -19,7 +19,7 @@
 #include "tests.h"
 
 
-int twos_complement(void)
+static int twos_complement(void)
 {
     if (!(-1) != 0) {
         printf("Beetle cannot work as the C compiler does not use "
@@ -29,7 +29,7 @@ int twos_complement(void)
     return 0;
 }
 
-int arshift(void)
+static int arshift(void)
 {
     CELL x = -1;
 
@@ -45,7 +45,7 @@ int arshift(void)
     return 0;
 }
 
-int overflow(void)
+static int overflow(void)
 {
     long x = LONG_MAX;
     long y;

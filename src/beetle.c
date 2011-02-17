@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>
+#include <stdint.h>
 #include <stdbool.h>
 #include <ctype.h>
 #include <string.h>
@@ -47,7 +48,7 @@ static int registers = 14;
 static long count[256] = { 0 };
 
 
-int range(CELL adr, CELL limit, char *quantity)
+static int range(CELL adr, CELL limit, char *quantity)
 {
     if (adr < limit) return 0;
     printf("%s must be in the range {0..%"PRIX32"h} ({0..%"PRId32"})\n", quantity, limit,
@@ -56,28 +57,27 @@ int range(CELL adr, CELL limit, char *quantity)
 }
 
 
-void upper(char *s)
+static void upper(char *s)
 {
-    int i;
-    size_t len = strlen(s);
+    size_t i, len = strlen(s);
 
     for (i = 0; i < len; i++, s++)
         *s = toupper(*s);
 }
 
-int search(char *token, char *list[], int entries)
+static size_t search(char *token, char *list[], size_t entries)
 {
-    int i;
-    size_t len = strlen(token);
+    size_t i, len = strlen(token);
 
     for (i = 0; i < entries; i++)
-        if (strncmp(token, list[i], len) == 0) return i;
+        if (strncmp(token, list[i], len) == 0)
+            return i;
 
-    return -1;
+    return SIZE_MAX;
 }
 
 
-long single_arg(char *s)
+static long single_arg(char *s)
 {
     long n;
     char *endp;
@@ -97,10 +97,11 @@ long single_arg(char *s)
     return n;
 }
 
-void double_arg(char *s, long *start, long *end)
+static void double_arg(char *s, long *start, long *end)
 {
     char *token, copy[MAXLEN];
-    int i, plus = 0;
+    size_t i;
+    bool plus = false;
 
     if (s == NULL) { printf("Too few arguments\n"); longjmp(env, 1); }
 
@@ -110,8 +111,10 @@ void double_arg(char *s, long *start, long *end)
         longjmp(env, 1);
     }
 
-    for (i = strlen(token); s[i] == ' ' && i < strlen(s); i++);
-    if (i < strlen(s)) plus = s[i] == '+';
+    for (i = strlen(token); s[i] == ' ' && i < strlen(s); i++)
+        ;
+    if (i < strlen(s))
+        plus = s[i] == '+';
 
     *start = single_arg(token);
 
@@ -126,18 +129,18 @@ void double_arg(char *s, long *start, long *end)
 }
 
 
-int load_op(BYTE o)
+static int load_op(BYTE o)
 {
     return (o == O_BRANCH || o == O_QBRANCH || o == O_CALL || o == O_LOOP ||
         o == O_PLOOP || o == O_LITERAL);
 }
 
-int imm_op(BYTE o)
+static int imm_op(BYTE o)
 {
     return (load_op(o & 0xFE));
 }
 
-void disassemble(CELL start, CELL end)
+static void disassemble(CELL start, CELL end)
 {
     CELL a, *p = (CELL *)(M0 + start);
     BYTE i;
@@ -179,7 +182,7 @@ void disassemble(CELL start, CELL end)
 }
 
 
-void do_ass(char *token)
+static void do_ass(char *token)
 {
     int no = search(token, regist, registers);
     char *number = strtok(NULL, " ");
@@ -333,7 +336,7 @@ void do_ass(char *token)
     }
 }
 
-void do_display(char *token, char *format)
+static void do_display(char *token, char *format)
 {
     char display[80];
     int no = search(token, regist, registers);
@@ -405,7 +408,7 @@ void do_display(char *token, char *format)
     printf(format, display);
 }
 
-void do_registers(void)
+static void do_registers(void)
 {
     if (debug)
         printf("Display EP, I and A\n");
@@ -414,7 +417,7 @@ void do_registers(void)
     do_display("A", "%-16s\n");
 }
 
-void do_command(int no)
+static void do_command(int no)
 {
     switch (no) {
         case c_TOD:
@@ -662,7 +665,7 @@ c_ret:      case c_RETURN:
                     return;
                 if (debug)
                     printf("STEP TO %lX\n", limit);
-                while ((BYTE *)EP - M0 != limit && ret == 0) {
+                while ((unsigned long)((BYTE *)EP - M0) != limit && ret == 0) {
                     ret = single_step();
                     if (no == c_TRACE) do_registers();
                     count[I]++;
@@ -729,10 +732,11 @@ c_ret:      case c_RETURN:
 }
 
 
-void parse(char *input)
+static void parse(char *input)
 {
     char *token, copy[MAXLEN];
-    int i, no, ass = 0;
+    size_t i, no;
+    bool ass = false;
 
     if (input[0] == '!') {
         if (debug)
@@ -746,11 +750,14 @@ void parse(char *input)
     if (token == NULL || strlen(token) == 0) return;
     upper(token);
 
-    for (i = strlen(token); input[i] == ' ' && i < strlen(input); i++);
-    if (i < strlen(input)) ass = input[i] == '=';
+    for (i = strlen(token); input[i] == ' ' && i < strlen(input); i++)
+        ;
+    if (i < strlen(input))
+        ass = input[i] == '=';
 
     no = search(token, command, commands);
-    if (no != -1) do_command(no);
+    if (no != SIZE_MAX)
+        do_command(no);
     else {
         if (ass) do_ass(token);
         else do_display(token, "%s\n");

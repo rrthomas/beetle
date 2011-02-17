@@ -591,13 +591,13 @@ CELL single_step(void)
     /* Deal with address exceptions during execution cycle. */
  invadr:
     SP--;
-    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * sizeof(CELL) || (unsigned int)SP & 3)
+    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * CELL_W || (unsigned int)SP & 3)
       return -258;
     *SP = -9;
     goto throw;
  aliadr:
     SP--;
-    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * sizeof(CELL) || (unsigned int)SP & 3)
+    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * CELL_W || (unsigned int)SP & 3)
       return -258;
     *SP = -23;
     goto throw;

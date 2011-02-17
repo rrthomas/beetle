@@ -43,11 +43,11 @@ extern CELL *EP;        /* note EP is a pointer, not a Beetle address */
 extern BYTE I;
 extern CELL A;
 extern BYTE *M0;
-extern CELL MEMORY;
+extern UCELL MEMORY;
 extern CELL *SP, *RP;	/* note RP and SP are pointers, not Beetle addresses */
 extern CELL *THROW;     /* 'THROW is not a valid C identifier */
-extern CELL BAD;        /* 'BAD is not a valid C identifier */
-extern CELL ADDRESS;	/* -ADDRESS is not a valid C identifier */
+extern UCELL BAD;       /* 'BAD is not a valid C identifier */
+extern UCELL ADDRESS;	/* -ADDRESS is not a valid C identifier */
 #define CHECKED 1
 
 
@@ -69,7 +69,7 @@ int save_object(FILE *file, CELL *address, UCELL length);
 
 /* Additional routines, macros and quantities provided by C Beetle */
 
-int init_beetle(BYTE *b_array, long size, UCELL e0);
+int init_beetle(BYTE *b_array, size_t size, UCELL e0);
 
 #define B_TRUE ((CELL)0xFFFFFFFF)   /* Beetle's TRUE flag */
 #define B_FALSE ((CELL)0)           /* Beetle's FALSE flag */

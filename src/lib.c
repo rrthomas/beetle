@@ -16,7 +16,7 @@
 #define CHECKA(x)
 #define PTRS 16
 
-void getstr(unsigned char *s, UCELL adr)
+static void getstr(unsigned char *s, UCELL adr)
 {
     int i;
 

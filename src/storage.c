@@ -18,16 +18,16 @@ CELL *EP;
 BYTE I;
 CELL A;
 BYTE *M0;
-CELL MEMORY;
+UCELL MEMORY;
 CELL *SP, *RP;
 CELL *THROW;	/* 'THROW is not a valid C identifier */
-CELL BAD;	/* 'BAD is not a valid C identifier */
-CELL ADDRESS;	/* -ADDRESS is not a valid C identifier */
+UCELL BAD;	/* 'BAD is not a valid C identifier */
+UCELL ADDRESS;	/* -ADDRESS is not a valid C identifier */
 
 
 /* Initialise registers that are not fixed */
 
-int init_beetle(BYTE *b_array, long size, UCELL e0)
+int init_beetle(BYTE *b_array, size_t size, UCELL e0)
 {
     if (tests()) /* ensure Beetle was compiled properly */
       exit(1);
