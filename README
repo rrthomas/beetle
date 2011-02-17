@@ -5,7 +5,7 @@
 
 
 This package comprises a C implementation of the virtual processor Beetle,
-and mForth for Beetle v0.02. See the various PDF files for documentation.
+and mForth for Beetle v0.02.
 
 The URL for the primary distribution is:
 
