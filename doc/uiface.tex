@@ -10,34 +10,26 @@
 
 \section{Introduction}
 
-The Beetle virtual processor \cite{beetledis} provides a portable environment
-for the pForth Forth compiler \cite{beetledis}, a compiler for ANSI Standard
-Forth \cite{ANSIforth}. C Beetle \cite{beetledis} is a version of Beetle
-written in ANSI C so that it is itself easily portable. This paper describes
-a simple user-interface for Beetle which uses C Beetle, as it is itself
-written in C, though with suitable calling-interface glue it could be made to
-work with a native code Beetle. The user-interface provides access to
-Beetle's registers, allows the stacks to be displayed, and provides
-disassembly and single-stepping.
+The Beetle virtual processor \cite{beetledis} provides a portable
+environment for the pForth Forth compiler \cite{beetledis}, a compiler
+for ANSI Standard Forth \cite{ANSIforth}. C Beetle \cite{beetledis} is
+a version of Beetle written in ISO C with POSIX APIs so that it is
+itself easily portable. This paper describes a simple user-interface
+for Beetle which uses C Beetle, as it is itself written in C, though
+with suitable calling-interface glue it could be made to work with a
+native code Beetle. The user-interface provides access to Beetle's
+registers, allows the stacks to be displayed, and provides disassembly
+and single-stepping.
 
 
 \section{Compilation}
 
-As supplied, the program consists of one C file, {\tt uiface.c}, which is
-part of the C Beetle distribution, and is compiled when the entire
-distribution is made, resulting in the executable file {\tt uiface}. It can
-be made separately as the Make target {\tt uiface}. {\tt uiface} is a command
-which takes no parameters.
-
-There is a possible difficulty with compilation: on Unix and similar systems,
-the macros {\tt GETCH} and {\tt PUTCH(c)} required by C Beetle in {\tt
-bportab.h} are unwieldy to define. They should be set to {\tt getchar()} and
-{\tt putchar(c)} respectively ({\tt NEWL} may be defined as
-\verb$putchar('\n')$), and in the same place the symbol {\tt unix} should be
-defined (if it is not defined automatically by the C compiler). Extra code is
-then included from {\tt noecho.c} to initialise and reset the keyboard before
-and after invoking Beetle within the user-interface. If this does not work,
-then {\tt noecho.c} and {\tt uiface.c} must be modified.
+As supplied, the program consists of one C file, {\tt beetle.c}, which
+is part of the C Beetle distribution, and is compiled when the entire
+distribution is made, resulting in the executable file {\tt beetle}.
+It can be made separately as the Make target {\tt beetle}. {\tt
+  beetle} is a command which takes one optional parameter: the name of
+an object file. If supplied, the given object file is loaded and run.
 
 
 \section{Initialisation}

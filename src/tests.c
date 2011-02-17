@@ -5,14 +5,13 @@
     Test that C Beetle has been compiled properly. The following tests are run:
 
     1. The C compiler uses twos-complement arithmetic.
-    2. BYTE, CELL and UCELL are correctly set.
-    3. ARSHIFT performs an arithmetic right shift on signed quantities.
-    4. The C compiler performs ordinary modular arithmetic on overflow.
-    5. MOD and DIV perform floored division.
-    6. ENDISM is set correctly.
+    2. ARSHIFT performs an arithmetic right shift on signed quantities.
+    3. The C compiler performs ordinary modular arithmetic on overflow.
 
 */
 
+
+#include "config.h"
 
 #include <stdio.h>
 #include <limits.h>
@@ -30,28 +29,6 @@ int twos_complement(void)
     return 0;
 }
 
-int types(void)
-{
-    int ret = 0;
-
-    if (sizeof(BYTE) != 1 || (BYTE)(0xff) < 0) {
-        printf("Type BYTE is incorrectly defined in bportab.h\n");
-        ret = 1;
-    }
-
-    if (sizeof(CELL) != 4 || (CELL)(0x80000000) > 0) {
-        printf("Type CELL is incorrectly defined in bportab.h\n");
-        ret = 1;
-    }
-
-    if (sizeof(UCELL) != 4  || (UCELL)(0x80000000) < 0) {
-        printf("Type UCELL is incorrectly defined in bportab.h\n");
-        ret = 1;
-    }
-
-    return ret;
-}
-
 int arshift(void)
 {
     CELL x = -1;
@@ -62,8 +39,8 @@ int arshift(void)
 #else
     if (ARSHIFT(x, 1) != -1) {
         printf("LRSHIFT should be defined in bportab.h\n");
-#endif
         return 1;
+#endif
     }
     return 0;
 }
@@ -86,40 +63,7 @@ int overflow(void)
     return 1;
 }
 
-int division(void)
-{
-    CELL x = -10, y = 7, t;
-
-    if (DIV(x, y) != -2 || MOD(x, y, t) != 4) {
-#ifdef FLOORED
-        printf("FLOORED should be undefined in bportab.h\n");
-#else
-        printf("FLOORED should be defined in bportab.h\n");
-#endif
-        return 1;
-    }
-    return 0;
-}
-
-int endism(void)
-{
-    CELL x = 1;
-    BYTE *p = (BYTE *)&x;
-
-    if (!((*p == 1) ^ ENDISM)) {
-#ifdef BEETLE_BIG_ENDIAN
-        printf("BEETLE_BIG_ENDIAN should not be defined\n");
-#else
-        printf("BEETLE_BIG_ENDIAN should be defined\n");
-#endif
-        return 1;
-    }
-    return 0;
-}
-
-
 int tests(void)
 {
-    return (twos_complement() | types() | arshift() | overflow() | division() |
-        endism());
+    return (twos_complement() | arshift() | overflow());
 }

@@ -1,7 +1,7 @@
 /* NOECHO.C
 
     (c) Martin Richards 2004 (and certainly earlier)
-    (c) Reuben Thomas 1995-2004
+    (c) Reuben Thomas 1995-2011
 
     void init_keyb(void)  initialises the keyboard interface.
     void restore_keyb(void) restores the keyboard to its original state.
@@ -16,8 +16,7 @@
 
 
 /* Use this variable to remember original terminal attributes */
-struct termios saved_stdin;
-struct termios saved_stdout;
+static struct termios saved_stdin;
 
 int init_keyb(void)
 {
@@ -44,17 +43,4 @@ int restore_keyb(void)
 {
     tcsetattr(STDIN_FILENO, TCSANOW, &saved_stdin);
     return 0;
-}
-
-int getch(void)
-{
-    char ch;
-
-    read(STDIN_FILENO, &ch, 1);
-    return ch;
-}
-
-void putch(char ch)
-{
-    write(STDOUT_FILENO, &ch, 1);
 }

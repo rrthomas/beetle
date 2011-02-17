@@ -1,4 +1,15 @@
-/dissertation
-/README.dg
 *.o
 *.zip
+*~
+/dissertation
+/README.dg
+/aclocal.m4
+/autom4te.cache
+/config.h
+/config.h.in
+/config.log
+/config.status
+/configure
+/install-sh
+/missing
+/stamp-h1
