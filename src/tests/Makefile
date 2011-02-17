@@ -25,7 +25,7 @@ check: $(BTests)
 	./createt
 	./doloopt
 	./initialt
-	./libt
+	echo "Reverse this text" | ./libt
 	./literalt
 	./logict
 	./memoryt
