@@ -15,18 +15,15 @@ BeetleObjs = storage.o tests.o step.o run.o lib.o debug.o loadobj.o saveobj.o no
 all: beetle
 
 clean:
-	rm -f $(BeetleObjs) beetle beetle.o runt.o
+	rm -f $(BeetleObjs) beetle beetle.o
 
-check: runt
-	./runt
+check:
+	$(MAKE) -C tests check
 
 dist:
 	cd .. && zip -r beetle.zip src/
 
 beetle: beetle.o $(BeetleObjs)
-	$(CC) -o $@ $@.o $(BeetleObjs)
-
-runt: runt.o $(BeetleObjs)
 	$(CC) -o $@ $@.o $(BeetleObjs)
 
 
