@@ -1,6 +1,6 @@
 /* RUNT.C
 
-    (c) Reuben Thomas 1995
+    (c) Reuben Thomas 1995-2011
 
     Test that run works, and that the return value of the HALT instruction is
     correctly returned.
@@ -37,17 +37,13 @@ int main(void)
     NEXT;
     ret = run();
 
-#ifdef B_DEBUG
     printf("Return value should be 37 and is %ld\n", ret);
-#endif
     if (ret != 37) {
         printf("Error in RunT: incorrect return value from run\n");
         exit(1);
     }
 
-#ifdef B_DEBUG
     printf("EP should now be 56\n");
-#endif
     if (val_EP() != 60) {
         printf("Error in RunT: EP = %ld\n", val_EP());
         exit(1);

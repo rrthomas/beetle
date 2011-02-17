@@ -1,6 +1,6 @@
 /* EXCEPTST.C
 
-    (c) Reuben Thomas 1995-1996
+    (c) Reuben Thomas 1995-2011
 
     Test the Beetle-generated exceptions and HALT codes.
 
@@ -67,14 +67,12 @@ int main(void)
         NEXT;   /* load first instruction word */
         res = run();
 
-#ifdef B_DEBUG
         printf("Test %d\n", i + 1);
         printf("Return code is %d; should be %d\n", res, result[i]);
         if (result[i] != 0) printf("'BAD = %d; should be %d\n", BAD, bad[i]);
         if (result[i] <= -258 || result[i] == 9 || result[i] == -23)
             printf("-ADDRESS = %d; should be %d\n", ADDRESS, address[i]);
         putchar('\n');
-#endif
         if (result[i] != res || (result[i] != 0 && bad[i] != BAD) ||
             ((result[i] <= -258 || result[i] == 9 || result[i] == -23) &&
             address[i] != ADDRESS)) {

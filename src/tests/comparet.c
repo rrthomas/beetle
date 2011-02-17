@@ -1,6 +1,6 @@
 /* COMPARET.C
 
-    (c) Reuben Thomas 1994-1995
+    (c) Reuben Thomas 1994-2011
 
     Test the comparison operators. Also uses the NEXT instruction. We
     only test simple cases here, assuming that the C compiler's comparison
@@ -49,23 +49,18 @@ void step(int start, int end)
 
     for (i = start; i <= end; i++) {
         single_step();
-#ifdef B_DEBUG
         printf("I = %s\n", disass(I));
-#endif
         if (I != O_NEXT00) {
-#ifdef B_DEBUG
             printf("Result: %d; correct result: %d\n\n", *SP,
                 correct[i - i / 5]);
-#endif
             if (correct[i - i / 5] != *SP) {
                 printf("Error in CompareT: EP = %ld\n", val_EP());
                 exit(1);
             }
             SP++;	/* drop result of comparison */
         }
-#ifdef B_DEBUG
-        else putchar('\n');
-#endif
+        else
+          putchar('\n');
     }
 }
 

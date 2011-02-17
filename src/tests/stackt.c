@@ -1,7 +1,6 @@
 /* STACKT.C
 
-    (c) Reuben Thomas 1994-1995
-
+    (c) Reuben Thomas 1994-2011
 
     Test the stack operators. Also uses the 0 and NEXT instructions.
 
@@ -44,38 +43,30 @@ int main(void)
     NEXT;   /* load first instruction word */
 
     for (i = 0; i < 10; i++) {
-#ifdef B_DEBUG
-        show_data_stack();  printf("Correct stack: %s\n\n", correct[i - i / 5]);
-#endif
+        show_data_stack();
+        printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
             printf("Error in StackT: EP = %ld\n", val_EP());
             exit(1);
         }
         single_step();
-#ifdef B_DEBUG
         printf("I = %s\n", disass(I));
-#endif
     }
 
     SP = S0;	/* reset stack */
     *--SP = 2; *--SP = 1; *--SP = 0;	/* initialise the stack */
-#ifdef B_DEBUG
     printf("Next stack is wrong!\n");
-#endif
 
     first = i;
     for (; i <= instrs; i++) {
-#ifdef B_DEBUG
-        show_data_stack();  printf("Correct stack: %s\n\n", correct[i - i / 5]);
-#endif
+        show_data_stack();
+        printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack()) && i != first) {
             printf("Error in StackT: EP = %ld\n", val_EP());
             exit(1);
         }
         single_step();
-#ifdef B_DEBUG
         printf("I = %s\n", disass(I));
-#endif
     }
 
     printf("StackT ran OK\n");

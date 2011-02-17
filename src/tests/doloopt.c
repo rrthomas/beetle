@@ -1,6 +1,6 @@
 /* DOLOOPT.C
 
-    (c) Reuben Thomas 1994-1995
+    (c) Reuben Thomas 1994-2011
 
     Test the DO...LOOP support instructions. Also uses instructions with
     lower opcodes.
@@ -47,9 +47,8 @@ int main(void)
     NEXT;   /* load first instruction word */
 
     while (val_EP() < 36) single_step();
-#ifdef B_DEBUG
-    show_data_stack();  printf("Correct stack: %s\n\n", correct[0]);
-#endif
+    show_data_stack();
+    printf("Correct stack: %s\n\n", correct[0]);
     if (strcmp(correct[0], val_data_stack())) {
         printf("Error in DoLoopT: EP = %ld\n", val_EP());
         exit(1);
@@ -57,9 +56,8 @@ int main(void)
     SP = S0;
 
     while (val_EP() < 48) single_step();
-#ifdef B_DEBUG
-    show_data_stack();  printf("Correct stack: %s\n\n", correct[1]);
-#endif
+    show_data_stack();
+    printf("Correct stack: %s\n\n", correct[1]);
     if (strcmp(correct[1], val_data_stack())) {
         printf("Error in DoLoopT: EP = %ld\n", val_EP());
         exit(1);
@@ -67,9 +65,8 @@ int main(void)
     SP = S0;
 
     while (val_EP() < 56) single_step();
-#ifdef B_DEBUG
-    show_data_stack();  printf("Correct stack: %s\n\n", correct[2]);
-#endif
+    show_data_stack();
+    printf("Correct stack: %s\n\n", correct[2]);
     if (strcmp(correct[2], val_data_stack())) {
         printf("Error in DoLoopT: EP = %ld\n", val_EP());
         exit(1);
@@ -77,9 +74,8 @@ int main(void)
     SP = S0;
 
     for (i = 0; i < 12; i++) single_step();
-#ifdef B_DEBUG
-    show_data_stack();  printf("Correct stack: %s\n\n", correct[3]);
-#endif
+    show_data_stack();
+    printf("Correct stack: %s\n\n", correct[3]);
     if (strcmp(correct[3], val_data_stack())) {
         printf("Error in DoLoopT: EP = %ld\n", val_EP());
         exit(1);
@@ -88,18 +84,15 @@ int main(void)
 
     EP = (CELL *)(64 + M0);  NEXT;	/* start execution at 64 */
     while (((BYTE *)EP - M0) < 76) single_step();
-#ifdef B_DEBUG
     printf("3rd item on return stack is %d (should be %d).\n", *(RP + 2), *SP);
-#endif
     if (*(RP + 2) != *SP) {
         printf("Error in DoLoopT: EP = %ld\n", val_EP());
         exit(1);
     }
 
     single_step(); single_step();
-#ifdef B_DEBUG
-    show_data_stack();  printf("Correct stack: %s\n\n", correct[4]);
-#endif
+    show_data_stack();
+    printf("Correct stack: %s\n\n", correct[4]);
     if (strcmp(correct[4], val_data_stack())) {
         printf("Error in DoLoopT: EP = %ld\n", val_EP());
         exit(1);

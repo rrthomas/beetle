@@ -1,10 +1,10 @@
 /* LIBT.C
 
-    (c) Reuben Thomas 1994-1995
+    (c) Reuben Thomas 1994-2011
 
     Also uses instructions with lower opcodes. The value of BL is printed, a
     number of CRs are printed, and some text is accepted by KEY and then
-    EMITted. This test program is interdependent with test/doloop.c.
+    EMITted. This test program is interdependent with doloopt.c.
 
 */
 
@@ -43,9 +43,7 @@ int main(void)
     NEXT;   /* load first instruction word */
 
     single_step();  single_step();
-#ifdef B_DEBUG
     printf("BL should be %d, and is %d\n\n", (unsigned char)(' '), *SP);
-#endif
     if (*SP++ != (unsigned char)(' ')) {
         printf("Error in LibT: EP = %ld\n", val_EP());
         exit(1);
@@ -59,14 +57,10 @@ int main(void)
     printf("\n0 1 2 should be at the start of separate lines.\n"
         "N.B. this is NOT automatically checked!\n\n");
 
-#ifdef B_DEBUG
     printf("Type some text (may not be echoed) terminated with a linefeed. It"
         "\nshould be displayed with the characters in reverse order.\n\n");
-#else
-    printf("\"txet emos si sihT\" should be displayed below.\n"
-        "N.B. this is NOT automatically checked!\n\n");
-#endif
-    while (val_EP() < 64) single_step();
+    while (val_EP() < 64)
+      single_step();
 
     printf("\nLibT ran OK (unless one of the unchecked tests failed - see "
         "above)\n");

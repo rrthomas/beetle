@@ -1,6 +1,6 @@
 /* BRANCHT.C
 
-    (c) Reuben Thomas 1994-1995
+    (c) Reuben Thomas 1994-2011
 
     Test the branch instructions. Also uses other instructions with lower
     opcodes than the instructions tested (i.e. those already tested). Doesn't
@@ -86,17 +86,13 @@ int main(void)
     NEXT;   /* load first instruction word */
 
     for (i = 0; i <= instrs; i++) {
-#ifdef B_DEBUG
         printf("EP = %d; should be %d\n\n", val_EP(), correct[i]);
-#endif
         if (correct[i] != val_EP()) {
             printf("Error in BranchT: EP = %ld\n", val_EP());
             exit(1);
         }
         single_step();
-#ifdef B_DEBUG
         printf("I = %s\n", disass(I));
-#endif
     }
 
     printf("BranchT ran OK\n");

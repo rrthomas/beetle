@@ -1,7 +1,6 @@
 /* SAVEOBJT.C
 
-    (c) Reuben Thomas 1995
-
+    (c) Reuben Thomas 1995-2011
 
     Test save_object().
 
@@ -21,10 +20,8 @@ int try(char *file, CELL *address, UCELL length)
     FILE *fp = fopen(file, "w");
     int ret = save_object(fp, address, length);
 
-#ifdef B_DEBUG
     printf("save_object(\"%s\", M0 + %#lx, %#lx) returns %d", file,
         (BYTE *)address - M0, length, ret);
-#endif
     fclose(fp);
 
     return ret;
@@ -44,10 +41,9 @@ int main(void)
 
     for (i = 0; i < 3; i++) {
         res = try("saveobj", (CELL *)(M0 + adr[i]), len[i]);
-        if (i != 2) remove("saveobj");
-#ifdef B_DEBUG
+        if (i != 2)
+          remove("saveobj");
         printf(" should be %d\n", correct[i]);
-#endif
         if (res != correct[i]) {
             printf("Error in SaveObjT test %d\n", i + 1);
             exit(1);
@@ -67,10 +63,8 @@ int main(void)
         remove("saveobj");
     }
     for (i = 0; i < 4; i++) {
-#ifdef B_DEBUG
         printf("Word %d of memory is %lx; should be %lx\n", i,
             ((CELL *)M0)[i + 4], ((CELL *)M0)[i]);
-#endif
         if (((CELL *)M0)[i + 4] != ((CELL *)M0)[i]) {
             printf("Error in SaveObjT: loaded file does not match data "
                 "saved\n");

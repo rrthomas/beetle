@@ -1,8 +1,8 @@
 /* LINKT.C
 
-    (c) Reuben Thomas 1995
+    (c) Reuben Thomas 1995-2011
 
-    Test the LINK instruction. Assumes 4-byte addresses.
+    Test the LINK instruction. FIXME: Assumes 32-bit addresses.
 
 */
 
@@ -39,11 +39,9 @@ int main(void)
         exit(1);
     }
 
-#ifdef B_DEBUG
         printf("Top of stack is %d; should be %d\n", *SP, 37);
         show_data_stack();
         printf("%p\n", test);
-#endif
         if (*SP != 37) {
             printf("Error in LinkT: incorrect value on top of stack\n");
             exit(1);

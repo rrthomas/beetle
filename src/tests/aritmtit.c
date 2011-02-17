@@ -1,6 +1,6 @@
 /* ARITMTIT.C
 
-    (c) Reuben Thomas 1994-1995
+    (c) Reuben Thomas 1994-2011
 
     Test the arithmetic operators. Also uses the NEXT, SWAP, ROT, DROP, and
     (LITERAL)I instructions. Since overtest.c supposedly tests the compiler's
@@ -56,18 +56,16 @@ int main(void)
     NEXT;   /* load first instruction word */
 
     for (i = 0; i <= instrs - instrs / 5; i++) {
-#ifdef B_DEBUG
-        show_data_stack();  printf("Correct stack: %s\n\n", correct[i]);
-#endif
+        show_data_stack();
+        printf("Correct stack: %s\n\n", correct[i]);
         if (strcmp(correct[i], val_data_stack())) {
             printf("Error in AritmtiT: EP = %ld\n", val_EP());
             exit(1);
         }
         single_step();
-        if (I == O_NEXT00) i--;
-#ifdef B_DEBUG
+        if (I == O_NEXT00)
+          i--;
         printf("I = %s\n", disass(I));
-#endif
     }
 
     printf("AritmtiT ran OK\n");

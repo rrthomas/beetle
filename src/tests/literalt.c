@@ -1,6 +1,6 @@
 /* LITERALT.C
 
-    (c) Reuben Thomas 1994-1995
+    (c) Reuben Thomas 1994-2011
 
     Test the literal instructions. Also uses the NEXT instruction.
 
@@ -37,17 +37,14 @@ int main(void)
     NEXT;   /* load first instruction word */
 
     for (i = 0; i <= instrs; i++) {
-#ifdef B_DEBUG
-        show_data_stack();  printf("Correct stack: %s\n\n", correct[i - i / 5]);
-#endif
+        show_data_stack();
+        printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
             printf("Error in LiteralT: EP = %ld\n", val_EP());
             exit(1);
         }
         single_step();
-#ifdef B_DEBUG
         printf("I = %s\n", disass(I));
-#endif
     }
     printf("LiteralT ran OK\n");
     return 0;
