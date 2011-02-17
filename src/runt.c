@@ -37,17 +37,15 @@ int main(void)
     NEXT;
     ret = run();
 
-#ifdef B_DEBUG
-    printf("Return value should be 37 and is %ld\n", ret);
-#endif
+    if (B_DEBUG)
+      printf("Return value should be 37 and is %ld\n", ret);
     if (ret != 37) {
         printf("Error in RunT: incorrect return value from run\n");
         exit(1);
     }
 
-#ifdef B_DEBUG
-    printf("EP should now be 56\n");
-#endif
+    if (B_DEBUG)
+      printf("EP should now be 56\n");
     if (val_EP() != 60) {
         printf("Error in RunT: EP = %ld\n", val_EP());
         exit(1);
