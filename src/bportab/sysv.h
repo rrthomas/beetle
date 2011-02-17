@@ -20,13 +20,6 @@
 #define BEETLE_BPORTAB_SYSV
 
 
-/* Types required by CBeetle */
-
-typedef unsigned char BYTE;	/* should work on most compilers */
-typedef signed int CELL;	/* ditto */
-typedef unsigned int UCELL;	/* ditto */
-
-
 /* GCC has arithmetic right shift, and division is symmetric */
 
 

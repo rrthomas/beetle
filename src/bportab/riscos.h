@@ -21,13 +21,6 @@
 #define BEETLE_BPORTAB_RISCOS
 
 
-/* Types required by CBeetle */
-
-typedef unsigned char BYTE; 	/* should work on most compilers */
-typedef signed long CELL;   	/* ditto */
-typedef unsigned long UCELL;	/* ditto */
-
-
 /* GCC has arithmetic right shift, and division is symmetric */
 
 

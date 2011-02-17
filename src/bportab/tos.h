@@ -21,13 +21,6 @@
 #define BEETLE_BPORTAB_TOS
 
 
-/* Types required by CBeetle */
-
-typedef unsigned char BYTE;     /* should work on most compilers */
-typedef signed long CELL;       /* ditto */
-typedef unsigned long UCELL;    /* ditto */
-
-
 /* 680x0 processors are big-endian */
 
 #define BEETLE_BIG_ENDIAN

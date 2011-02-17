@@ -4,27 +4,27 @@
     ----|-------|--------------------------------------------------------------
     0.00 07nov94
     0.01 09nov94 ENDISM given an explicit type, as per specification, and
-		 ARSHIFT macro added.
+                 ARSHIFT macro added.
     0.02 18nov94 SYMMETRIC added, and definitions of floored division and
-		 remainder to work on symmetric division compilers (most of
-		 them!).
+                 remainder to work on symmetric division compilers (most of
+                 them!).
     0.03 19nov94 Corrected MOD, and added ABS and SGN to do so.
     0.04 25nov94 Added LINK macro to implement the LINK instruction.
     0.05 01dec94 FLIP macro added to comply with debugged specification. ENDISM
-		 made dependent on whether BIG_ENDIAN is defined.
+                 made dependent on whether BIG_ENDIAN is defined.
     0.06 12jan95 Division macros changed so that both symmetric and floored
-		 division are provided in accordance with modified Beetle
-		 specification.
+                 division are provided in accordance with modified Beetle
+                 specification.
     0.07 18jan95 SYMMETRIC changed to FLOORED, and made valueless. Added
-	         LRSHIFT, and #defines for BIG_ENDIAN, FLOORED and LRSHIFT.
+                 LRSHIFT, and #defines for BIG_ENDIAN, FLOORED and LRSHIFT.
     0.08 05feb95 LINK changed to make it update SP so that the pointer can
-		 occupy multiple stack items as specified.
+                 occupy multiple stack items as specified.
     0.09 02apr95 Added GETCH.
     0.10 03apr95 Added PUTCH and NEWL.
     0.11 18apr95 Debugged LINK, DIV and SDIV.
     0.12 06jun96 Moved machine-dependent parts to machine-specific header files
-		 in bportab/. These are now included according to the machine
-		 type symbol defined.
+                 in bportab/. These are now included according to the machine
+                 type symbol defined.
     0.13 16jun96 Reduced number of machine types.
     0.14 06jul96 Added missing include of bportab/unix.h.
     0.15 30mar97 Removed nested comments.
@@ -56,6 +56,9 @@
 
 #ifndef BEETLE_BPORTAB
 #define BEETLE_BPORTAB
+
+
+#include <stdint.h>
 
 
 /* Include the machine-specific definitions. These are included based on the
@@ -93,9 +96,9 @@
 /* Types required by CBeetle: BYTE should be an unsigned eight-bit quantity,
    CELL a signed four-byte quantity, and UCELL an unsigned CELL. */
 
-/* typedef unsigned char BYTE;  should work on most compilers */
-/* typedef signed long CELL;    ditto */
-/* typedef unsigned long UCELL; ditto */
+typedef uint8_t BYTE;
+typedef int32_t CELL;
+typedef uint32_t UCELL;
 
 
 /* Define the value of ENDISM. This is fixed at compile-time, which seems
@@ -142,11 +145,11 @@
     #define MOD(a, b, t) (a % b)
     #define SDIV(a, b) ((a) / (b) + ((((a) ^ (b)) < 0) && ((a) % (b)) != 0))
     #define SMOD(a, b, t) (t = (a) % (b), (((a) ^ (b)) >= 0 || t == 0)) ? t : \
-	SGN(a) * (ABS(b)-ABS(t))
+        SGN(a) * (ABS(b)-ABS(t))
 #else
     #define DIV(a, b) ((a) / (b) - ((((a) ^ (b)) < 0) && ((a) % (b)) != 0))
     #define MOD(a, b, t) (t = (a) % (b), (((a) ^ (b)) >= 0 || t == 0)) ? t : \
-	SGN(b) * (ABS(b)-ABS(t))
+        SGN(b) * (ABS(b)-ABS(t))
     #define SDIV(a, b) (a / b)
     #define SMOD(a, b, t) (a % b)
 #endif
