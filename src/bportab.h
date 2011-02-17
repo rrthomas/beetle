@@ -61,36 +61,17 @@
 #include <stdint.h>
 
 
-/* Include the machine-specific definitions. These are included based on the
-   system name symbol declared; those currently recognised are the symbols
-   defined by GCC on the corresponding machines.
+/* Define a macro to call the function pointed to by the top item(s) on Beetle's
+   data stack and increment the stack pointer to drop the pointer */
 
-   The current machine types recognised, and the corresponding symbol(s) that
-   should be defined for each type are:
+#define LINK SP++; (*(void (*)(void))*(SP - 1))()
 
-   Machine type		Symbol(s)
-   ------------		---------
 
-   RISC OS		riscos
-   MSDOS		MSDOS
-   Atari TOS            atarist
-   BSD                  bsd
-   SysV (e.g. Linux)    sysv
-*/
+/* Define unbuffered I/O macros */
 
-#ifdef riscos
-    #include "bportab/riscos.h"
-#elif defined(MSDOS)
-    #include "bportab/msdos.h"
-#elif defined(atarist)
-    #include "bportab/tos.h"
-#elif defined(bsd)
-    #include "bportab/bsd.h"
-#elif defined(sysv)
-    #include "bportab/sysv.h"
-#else
-    #error "No platform defined!"
-#endif
+#define GETCH getchar()
+#define PUTCH(c) putchar(c)
+#define NEWL putchar('\n')
 
 
 /* Types required by CBeetle: BYTE should be an unsigned eight-bit quantity,

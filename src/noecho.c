@@ -14,34 +14,6 @@
 */
 
 
-#ifdef bsd
-
-#define BSD_COMP
-#include <stdio.h>
-#include <sys/ioctl.h>
-#include <sgtty.h>
-
-
-void init_keyb(void)
-{
-    struct sgttyb ttyb;
-
-    ioctl(0, TIOCGETP, &ttyb);
-    ttyb.sg_flags = CBREAK + EVENP + ODDP + CRMOD;
-    ioctl(0, TIOCSETP, &ttyb);
-}
-
-void restore_keyb(void)
-{
-    struct sgttyb ttyb;
-    ioctl(0, TIOCGETP, &ttyb);
-    ttyb.sg_flags = ECHO + EVENP + ODDP + CRMOD;
-    ioctl(0, TIOCSETP, &ttyb);
-}
-
-
-#elif defined(sysv)
-
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -91,5 +63,3 @@ void putch(char ch)
 {
     write(STDOUT_FILENO, &ch, 1);
 }
-
-#endif

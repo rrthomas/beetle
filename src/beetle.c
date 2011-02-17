@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include "beetle.h"	 /* main header */
+#include "beetle.h"      /* main header */
 
 
 #define MEMSIZE 16384	/* size of Beetle's memory in cells */
@@ -47,14 +47,9 @@ int main(int argc, char *argv[])
     load_object(handle, (CELL *)(M0 + adr));
     fclose(handle);
 
-#ifdef unix
     init_keyb();
-#endif
     ret = run();
-#ifdef unix
     restore_keyb();
-#endif
-
 
     return ret;
 }
