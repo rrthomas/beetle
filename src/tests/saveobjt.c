@@ -9,18 +9,19 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 #include "beetle.h"     /* main header */
 
 
 int correct[] = { -1, -1, 0 };
 
 
-int try(char *file, CELL *address, UCELL length)
+static int try(char *file, CELL *address, UCELL length)
 {
     FILE *fp = fopen(file, "w");
     int ret = save_object(fp, address, length);
 
-    printf("save_object(\"%s\", M0 + %#lx, %#lx) returns %d", file,
+    printf("save_object(\"%s\", M0 + %#"PRIX32", %#"PRIX32") returns %d", file,
         (BYTE *)address - M0, length, ret);
     fclose(fp);
 
@@ -31,10 +32,10 @@ int try(char *file, CELL *address, UCELL length)
 int main(void)
 {
     int i, res;
-    CELL adr[3] = { 0 };
+    CELL adr[] = { 0, 0, 0 };
     UCELL len[] = { 16, 2000, 16 };
 
-    init_beetle((BYTE *)malloc(1024), 256, 4);
+    init_beetle((BYTE *)calloc(1024, 1), 256, 4);
     adr[0] = MEMORY + CELL_W;
     ((CELL *)M0)[0] = 0x01020304;
     ((CELL *)M0)[1] = 0x05060708;
@@ -63,7 +64,7 @@ int main(void)
         remove("saveobj");
     }
     for (i = 0; i < 4; i++) {
-        printf("Word %d of memory is %lx; should be %lx\n", i,
+        printf("Word %d of memory is %"PRIX32"; should be %"PRIX32"\n", i,
             ((CELL *)M0)[i + 4], ((CELL *)M0)[i]);
         if (((CELL *)M0)[i + 4] != ((CELL *)M0)[i]) {
             printf("Error in SaveObjT: loaded file does not match data "

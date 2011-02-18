@@ -31,7 +31,7 @@ static int try(char *file, CELL *address)
 
 static char *obj_name(char *prefix, char *file)
 {
-    char *s = malloc(strlen(prefix) + strlen(file) + 1);
+    char *s = malloc(strlen(prefix) + strlen(file) + 2);
     assert(s);
     strcpy(s, prefix);
     strcat(s, "/"); /* FIXME: Use gnulib's concat-filename */
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    init_beetle((BYTE *)malloc(1024), 256, 16);
+    init_beetle((BYTE *)calloc(1024, 1), 256, 16);
 
     for (i = 0; i < 4; i++) {
         char *s = obj_name(prefix, files[i]);
@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
     for (; i < 6; i++) {
         char *s = obj_name(prefix, files[i]);
         res = try(s, (CELL *)M0);
+        free(s);
         printf(" should be %d\n", correct[i]);
         printf("Word 0 of memory is %"PRIX32"; should be 1020304\n", *(CELL*)M0);
         if (*(CELL*)M0 != 0x1020304) {

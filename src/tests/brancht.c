@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 #include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
@@ -88,7 +89,7 @@ int main(void)
     for (i = 0; i <= instrs; i++) {
         printf("EP = %d; should be %d\n\n", val_EP(), correct[i]);
         if (correct[i] != val_EP()) {
-            printf("Error in BranchT: EP = %ld\n", val_EP());
+            printf("Error in BranchT: EP = %"PRId32"d\n", val_EP());
             exit(1);
         }
         single_step();
