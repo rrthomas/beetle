@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 #include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
@@ -23,7 +24,7 @@ int main(void)
 {
     int i;
 
-    init_beetle((BYTE *)malloc(1024), 256, 16);
+    init_beetle((BYTE *)calloc(1024, 1), 256, 16);
     here = EP;
     S0 = SP;	/* save base of stack */
 
@@ -40,7 +41,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in LiteralT: EP = %ld\n", val_EP());
+            printf("Error in LiteralT: EP = %"PRId32"\n", val_EP());
             exit(1);
         }
         single_step();
