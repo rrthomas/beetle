@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 #include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
@@ -46,7 +47,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in StackT: EP = %ld\n", val_EP());
+            printf("Error in StackT: EP = %"PRId32"\n", val_EP());
             exit(1);
         }
         single_step();
@@ -62,7 +63,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack()) && i != first) {
-            printf("Error in StackT: EP = %ld\n", val_EP());
+            printf("Error in StackT: EP = %"PRId32"\n", val_EP());
             exit(1);
         }
         single_step();

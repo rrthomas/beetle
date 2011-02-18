@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 #include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
@@ -37,7 +38,7 @@ int main(void)
     NEXT;
     ret = run();
 
-    printf("Return value should be 37 and is %ld\n", ret);
+    printf("Return value should be 37 and is %"PRId32"\n", ret);
     if (ret != 37) {
         printf("Error in RunT: incorrect return value from run\n");
         exit(1);
@@ -45,7 +46,7 @@ int main(void)
 
     printf("EP should now be 56\n");
     if (val_EP() != 60) {
-        printf("Error in RunT: EP = %ld\n", val_EP());
+        printf("Error in RunT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
 

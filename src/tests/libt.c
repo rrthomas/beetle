@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 #include "beetle.h"	/* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
@@ -45,7 +46,7 @@ int main(void)
     single_step();  single_step();
     printf("BL should be %d, and is %d\n\n", (unsigned char)(' '), *SP);
     if (*SP++ != (unsigned char)(' ')) {
-        printf("Error in LibT: EP = %ld\n", val_EP());
+        printf("Error in LibT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
 

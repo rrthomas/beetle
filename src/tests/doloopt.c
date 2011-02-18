@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 #include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
@@ -50,7 +51,7 @@ int main(void)
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[0]);
     if (strcmp(correct[0], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %ld\n", val_EP());
+        printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
     SP = S0;
@@ -59,7 +60,7 @@ int main(void)
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[1]);
     if (strcmp(correct[1], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %ld\n", val_EP());
+        printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
     SP = S0;
@@ -68,7 +69,7 @@ int main(void)
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[2]);
     if (strcmp(correct[2], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %ld\n", val_EP());
+        printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
     SP = S0;
@@ -77,16 +78,16 @@ int main(void)
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[3]);
     if (strcmp(correct[3], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %ld\n", val_EP());
+        printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
     SP = S0;
 
     EP = (CELL *)(64 + M0);  NEXT;	/* start execution at 64 */
     while (((BYTE *)EP - M0) < 76) single_step();
-    printf("3rd item on return stack is %d (should be %d).\n", *(RP + 2), *SP);
+    printf("3rd item on return stack is %"PRId32" (should be %"PRId32").\n", *(RP + 2), *SP);
     if (*(RP + 2) != *SP) {
-        printf("Error in DoLoopT: EP = %ld\n", val_EP());
+        printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
 
@@ -94,7 +95,7 @@ int main(void)
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[4]);
     if (strcmp(correct[4], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %ld\n", val_EP());
+        printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
 

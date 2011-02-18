@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 #include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
@@ -22,7 +23,7 @@ CELL correct[] = { 0, -1, 0, -1, -1, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, 0,
     -1, 0, 0, -1, 0, 0, -1, 0, 0, -1};
 
 
-void stack1(void)
+static void stack1(void)
 {
     SP = S0;	/* empty the stack */
 
@@ -30,20 +31,20 @@ void stack1(void)
     *--SP = 3; *--SP = 1;
 }
 
-void stack2(void)
+static void stack2(void)
 {
     SP = S0;	/* empty the stack */
     *--SP = 1; *--SP = -1; *--SP = 237; *--SP = 237;
 }
 
-void stack3(void)
+static void stack3(void)
 {
     SP = S0;	/* empty the stack */
 
     *--SP = -1; *--SP = 0; *--SP = 237;
 }
 
-void step(int start, int end)
+static void step(int start, int end)
 {
     int i;
 
@@ -54,7 +55,7 @@ void step(int start, int end)
             printf("Result: %d; correct result: %d\n\n", *SP,
                 correct[i - i / 5]);
             if (correct[i - i / 5] != *SP) {
-                printf("Error in CompareT: EP = %ld\n", val_EP());
+                printf("Error in CompareT: EP = %"PRId32"\n", val_EP());
                 exit(1);
             }
             SP++;	/* drop result of comparison */

@@ -9,13 +9,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 #include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
 #include "debug.h"      /* debugging functions */
 
 
-void test(void)
+static void test(void)
 {
     *--SP = 37;
 }
@@ -35,17 +36,16 @@ int main(void)
     NEXT;   /* load first instruction word */
     res = run();
     if (res != 0) {
-        printf("Error in LinkT: test aborted with return code %ld\n", res);
+        printf("Error in LinkT: test aborted with return code %"PRId32"\n", res);
         exit(1);
     }
 
-        printf("Top of stack is %d; should be %d\n", *SP, 37);
-        show_data_stack();
-        printf("%p\n", test);
-        if (*SP != 37) {
-            printf("Error in LinkT: incorrect value on top of stack\n");
-            exit(1);
-        }
+    printf("Top of stack is %d; should be %d\n", *SP, 37);
+    show_data_stack();
+    if (*SP != 37) {
+        printf("Error in LinkT: incorrect value on top of stack\n");
+        exit(1);
+    }
 
     printf("LinkT ran OK\n");
     return 0;

@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 #include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "debug.h"      /* debugging functions */
@@ -50,7 +51,7 @@ int main(void)
 
     printf("EP should now be 56\n");
     if (val_EP() != 60) {
-        printf("Error in StepT: EP = %ld\n", val_EP());
+        printf("Error in StepT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
 
