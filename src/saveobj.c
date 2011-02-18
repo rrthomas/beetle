@@ -18,7 +18,8 @@ jmp_buf env;
 static void put(int c, FILE *fp)
 {
     int t = putc(c, fp);
-    if (t == EOF) longjmp(env, -3);
+    if (t == EOF)
+        longjmp(env, -3);
 }
 
 int save_object(FILE *file, CELL *address, UCELL length)
