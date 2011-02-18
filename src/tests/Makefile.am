@@ -7,14 +7,15 @@ LDADD = $(top_builddir)/src/libbeetle.a
 check_PROGRAMS = aritmtit brancht comparet createt doloopt initialt libt literalt \
 	logict memoryt stackt stept runt loadobjt saveobjt exceptst linkt
 
-do_loadobjt: loadobjt
-	$(builddir)/loadobjt $(srcdir)
-
-do_libt: libt
-	echo "Reverse this text" | $(builddir)/libt
-
 TESTS = aritmtit brancht comparet createt doloopt initialt literalt \
 	logict memoryt stackt stept runt saveobjt exceptst linkt
+TESTS_ENVIRONMENT = $(VALGRIND)
+
+do_loadobjt: loadobjt
+	$(TESTS_ENVIRONMENT) $(builddir)/loadobjt $(srcdir)
+
+do_libt: libt
+	echo "Reverse this text" | $(TESTS_ENVIRONMENT) $(builddir)/libt
 
 check-local: do_loadobjt do_libt
 

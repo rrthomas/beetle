@@ -5,11 +5,18 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 dnl Check for programs
 AC_PROG_CC
+AX_CFLAGS_WARN_ALL
 AC_PROG_RANLIB
+
+dnl Valgrind
+AX_WITH_PROG(VALGRIND, valgrind)
+if test -n "$VALGRIND"; then
+  VALGRIND="$VALGRIND --error-exitcode=1 --leak-check=full"
+fi
 
 dnl Extra CFLAGS if we have gcc
 if test "$GCC" = yes; then
-    CFLAGS="$CFLAGS -Wall -W -Wmissing-prototypes -Wstrict-prototypes -pedantic"
+  CFLAGS="$CFLAGS -W -Wmissing-prototypes -Wstrict-prototypes -D_FORTIFY_SOURCE=2 -pedantic"
 fi
 
 dnl Check features
