@@ -7,12 +7,13 @@
 % body separated out 2/3/96
 % updated bibliography citations and list of machine architectures 1/6/06
 % fixed one last citation 17/2/11
+% changed "processor" to "machine" 19/2/11
 %
 
 
 \section{Introduction}
 
-The Beetle virtual processor \cite{beetledis} provides a portable environment
+The Beetle virtual machine \cite{beetledis} provides a portable environment
 for the pForth Forth compiler \cite{beetledis}, a compiler for ANSI Standard
 Forth \cite{ANSIforth}. To move pForth between different machines and
 operating systems, only Beetle need be rewritten. However, even this can be
@@ -20,7 +21,7 @@ avoided if Beetle is itself written in ANSI C, since almost all machines have
 an ANSI C compiler available for them.
 
 Writing Beetle in C necessarily leads to a loss of performance for a system
-which is already relatively slow by virtue of using a virtual processor
+which is already relatively slow by virtue of using a virtual machine
 rather than compiling native code. However, pForth is intended mainly as a
 didactic tool, offering a concrete Forth environment which may be used to
 explore the language, and particularly the implementation of the compiler, on
@@ -28,7 +29,7 @@ a simple architecture designed to support Forth. Thus speed is not crucial,
 and on modern systems even a C implementation of Beetle can be expected to
 run at an acceptable speed.
 
-C Beetle provides only the virtual processor, not a user interface. A simple
+C Beetle provides only the virtual machine, not a user interface. A simple
 user interface is described in \cite{beetledis}.
 
 The interface to an embedded Beetle is described in \cite{beetledis}. This paper
