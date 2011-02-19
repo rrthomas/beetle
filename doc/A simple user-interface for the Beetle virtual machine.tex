@@ -3,24 +3,24 @@
 %
 % Reuben Thomas
 %
-% 27/2-8/5/95
+% 27/2-8/5/95, 2/3, 6/6/96
 % body separated out 2/3/96
 % changed to LaTeX2e and made to use external bibliography 12/6/96
 % copyright banner added 2/4/97
 % bibliography rejigged and changed for PDF compatibility 25/1/98
+% "processor" changed to "machine" 19/2/11
+% body re-inlined and copyright banner removed 19/2/11
 %
 
 \documentclass{article}
 \usepackage[english]{babel}
-\usepackage{a4,copyrght,url}
+\usepackage{a4,url}
 
 % Alter some default parameters for general typesetting
 
 %\emergencystretch=7pt
 
 \frenchspacing
-
-%\renewcommand{\copyrightyear}{1996}
 
 
 % Macros
@@ -32,13 +32,326 @@
 
 \title{A simple user-interface for the Beetle virtual processor}
 \author{Reuben Thomas}
-\date{12th June 1996}
+\date{19th February 2011}
 
 \begin{document}
 \maketitle
 
 
-\input{uiface.tex}
+\section{Introduction}
+
+The Beetle virtual machine \cite{beetledis} provides a portable
+environment for the pForth Forth compiler \cite{beetledis}, a compiler
+for ANSI Standard Forth \cite{ANSIforth}. C Beetle \cite{beetledis} is
+a version of Beetle written in ISO C with POSIX APIs so that it is
+itself easily portable. This paper describes a simple user-interface
+for Beetle which uses C Beetle, as it is itself written in C, though
+with suitable calling-interface glue it could be made to work with a
+native code Beetle. The user-interface provides access to Beetle's
+registers, allows the stacks to be displayed, and provides disassembly
+and single-stepping.
+
+
+\section{Compilation}
+
+As supplied, the program consists of one C file, {\tt beetle.c}, which
+is part of the C Beetle distribution, and is compiled when the entire
+distribution is made, resulting in the executable file {\tt beetle}.
+It can be made separately as the Make target {\tt beetle}. {\tt
+  beetle} is a command which takes one optional parameter: the name of
+an object file. If supplied, the given object file is loaded and run.
+
+
+\section{Initialisation}
+\label{uifaceinit}
+
+When the user-interface is started, an embedded Beetle with 16384 cells of
+memory is created. The registers which are set to system-dependent values are
+initialised as shown in table \ref{uinittable}.
+
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|c|c|} \hline
+\rule[-2mm]{0mm}{6mm}\bf Register & \bf Initial value \\ \hline
+{\tt EP} & 10h \\
+{\tt MEMORY} & 10000h \\
+{\tt 'THROW} & 0h \\ \hline
+\end{tabular}
+\caption{\label{uinittable}Registers with system-dependent initial values}
+\end{center}
+\end{table}
+
+{\tt I} is uninitialised. {\tt A} is set to zero: this has the effect that
+when a {\tt STEP} or {\tt RUN} command is given, a {\tt NEXT} instruction
+will be performed. Thus, when initialisation is performed by a {\tt LOAD}
+command (see section \ref{uifaceload}), the Beetle may be started with {\tt
+RUN} or {\tt STEP} immediately after the {\tt LOAD} command, without the need
+for {\tt FROM}. The memory from byte 16 upwards is zeroed.
+
+
+\section{Commands}
+\label{commands}
+
+The user-interface is command-driven. All commands and register names may be
+abbreviated to their first few letters; where commands start with the same
+letters, there is a set order of precedence, aimed at giving the most
+commonly used commands the shortest minimum abbreviations (see section
+\ref{abbrev}). All commands are case-insensitive.
+
+If an unrecognised command is given, or the command has too few arguments, or
+they are badly formed, an error message is displayed. Command lines
+containing extraneous characters after a valid command are generally
+accepted, and the extra characters ignored.
+
+Numbers are all integral, and may be given in either decimal or hexadecimal
+(which must be followed directly by ``h'' or ``H''), with an optional minus
+sign.
+
+For some arguments a machine instruction may also be used, preceded by ``{\tt
+O}'', for opcode. The value of a machine instruction is its opcode. Opcodes
+are byte-wide values; when used as a cell, the most significant three bytes
+are set to zero.
+
+The syntax of the commands is shown below; literal text such as command names
+and other characters are shown in {\tt Typewriter font}; meta-parameters such
+as numbers are shown in angle brackets, thus: \angb{number}. Vertical bars
+separate alternatives, and square brackets enclose optional syntax.
+
+There are three types of numeric meta-parameter: \angb{number}, which is any
+number; \angb{address}, which is a valid address (between zero and {\tt
+MEMORY} $-$ 1 inclusive, or zero and {\tt MEMORY} if assigning to {\tt RP},
+{\tt R0}, {\tt SP} or {\tt S0}); and \angb{value}, which is a number or an
+opcode.
+
+\subsection{Registers}
+
+Beetle's registers may be displayed by typing their name. The names used are
+slightly different from the names given in \cite{beetledis}, and in fact follow
+the names used for the corresponding variables in C Beetle. This is to avoid
+the necessity of typing awkward characters in the names of registers such as
+{\tt 'THROW} and {\tt -ADDRESS}. The registers which have different names
+from those in \cite{beetledis} are given in table \ref{uregtable}.
+
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|c|c|} \hline
+\rule[-2mm]{0mm}{6mm}\bf Register & \bf Name \\ \hline
+{\tt 'THROW} & {\tt THROW} \\
+{\tt 'BAD} & {\tt BAD} \\
+{\tt -ADDRESS} & {\tt ADDRESS} \\ \hline
+\end{tabular}
+\caption{\label{uregtable}Registers and their user-interface names}
+\end{center}
+\end{table}
+
+The registers may also (where appropriate) be assigned to using the syntax
+
+\begin{center}\angb{register} $=$ \angb{value}\end{center}
+
+where \angb{value} is in the form given in section \ref{commands}. An error
+message is displayed if an attempt is made to assign to a register such as
+{\tt CHECKED}, which cannot be assigned to, or to assign an unaligned or out
+of range address to a register which must hold an aligned address, such as
+{\tt SP}. The {\tt FROM} command (see section \ref{from}) should be used in
+preference to assigning to {\tt EP}.
+
+Two additional pseudo-registers are provided by the user-interface: they are
+called {\tt S0} and {\tt R0}, and are the address of the base of the data and
+return stacks respectively. They are set to the initial values of {\tt RP}
+and {\tt SP}, and are provided so that they can be changed if the stacks are
+moved, so the stack display commands will still work correctly.
+
+The command {\tt REGISTERS} displays the contents of {\tt EP}, {\tt I} and
+{\tt A}, useful when following the execution of a program.
+
+\subsection{The stacks}
+
+The stacks may be manipulated crudely using the registers {\tt SP} and {\tt
+RP} but it is usually more convenient to use the commands
+
+\begin{center}
+{\tt >D} \angb{number}\\
+{\tt D>}
+\end{center}
+
+which respectively push a number on to the data stack and pop one, displaying
+it, and
+
+\begin{center}
+{\tt >R} \angb{number}\\
+{\tt R>}
+\end{center}
+
+which do the same for the return stack.
+
+The command {\tt DATA} displays the contents of the data stack, and {\tt
+RETURN} the contents of the return stack. {\tt STACKS} displays both stacks.
+
+If a stack underflows, or the base pointer or top of stack pointer is out of
+range or unaligned, an appropriate error message is displayed.
+
+\subsection{Memory}
+
+The contents of an address may be displayed by giving the address as a
+command. If the address is cell-aligned the whole cell is displayed,
+otherwise the byte at that address is shown.
+
+A larger section of memory may be displayed with the command {\tt DUMP},
+which may be used in the two forms
+
+\begin{center}
+{\tt DUMP} \angb{address} \tt{+} \angb{number}\\
+{\tt DUMP} \angb{address_1} \angb{address_2}
+\end{center}
+
+where the first displays \angb{number} bytes starting at address
+\angb{address}, and the second displays memory from address \angb{address_1}
+up to, but not including, address \angb{address_2}. An error message is
+displayed if the start address is less than or equal to the end address or if
+either address is out of range.
+
+A command of the form
+
+\begin{center}\angb{address} $=$ \angb{value}\end{center}
+
+assigns the value \angb{value} to the address \angb{address}. If the address
+is not cell-aligned, the value must fit in a byte, and only that byte is
+assigned to. When assigning to an aligned memory location, a whole cell is
+assigned unless the number given fits in a byte, and is given using the
+minimum number of digits required. This should be noted the other way around:
+to assign a byte-sized significand to a cell, it should be padded with a
+leading zero.
+
+\subsection{Execution}
+
+The command {\tt INITIALISE} initialises Beetle as in section
+\ref{uifaceinit}.
+
+The command {\tt STEP} may be used to single-step through a program. It has
+three forms:
+
+\begin{center}
+{\tt STEP}\\
+{\tt STEP} \angb{number}\\
+{\tt STEP TO} \angb{address}
+\end{center}
+
+Without arguments, {\tt STEP} executes one instruction. Given a number, {\tt
+STEP} executes \angb{number} instructions. {\tt STEP TO} executes
+instructions until {\tt EP} is equal to \angb{address}.
+
+The command {\tt TRACE}, has the same syntax as {\tt STEP}, and performs the
+same function; in addition, it performs the action of the {\tt REGISTERS}
+command after each bForth instruction is executed.
+
+The command {\tt RUN} allows Beetle to execute until it reaches a {\tt HALT}
+instruction, if ever. The code passed to {\tt HALT} is then displayed. The
+code is also displayed if a {\tt HALT} instruction is ever executed during a
+{\tt STEP} command.
+
+\label{from}
+The command {\tt FROM} sets the point of execution. It has two forms:
+
+\begin{center}
+{\tt FROM}\\
+{\tt FROM} \angb{address}
+\end{center}
+
+Without arguments, {\tt FROM} performs the function of Beetle's {\tt NEXT}
+instruction, that is, it loads {\tt A} from the cell pointed to by {\tt EP},
+and adds four to {\tt EP}. With an argument, {\tt FROM} sets {\tt EP} to
+\angb{address}, and then performs the function of {\tt NEXT}. {\tt FROM}
+should be used in preference to assigning directly to {\tt EP}.
+
+The command {\tt DISASSEMBLE} disassembles bForth code. It may be used in the
+two forms
+
+\begin{center}
+{\tt DISASSEMBLE} \angb{address} \tt{+} \angb{number}\\
+{\tt DISASSEMBLE} \angb{address_1} \angb{address_2}
+\end{center}
+
+where the first disassembles \angb{number} bytes starting at address
+\angb{address}, and the second from address \angb{address_1} up to, but not
+including, address \angb{address_2}. The addresses must be cell-aligned, and
+the number of bytes must be a multiple of four. An error message is displayed
+if the start address is less than or equal to the end address, or if either
+the address or number of bytes is not aligned or is out of range.
+
+The command {\tt COUNTS} displays, if {\tt CHECKED} is 1, the number of times
+that each Beetle instruction has been executed since the last initialisation
+(including loads).
+
+\subsection{Object modules}
+
+The command
+
+\label{uifaceload}
+\begin{center}{\tt LOAD} \angb{file} \angb{address}\end{center}
+
+initialises Beetle as in section \ref{uifaceinit}, then loads the object
+module in file \angb{file} into memory at address \angb{address}. The address
+must be cell-aligned; if it is not, or if the module would not fit in memory
+at the address given, or there is some filing error, an error message is
+displayed.
+
+The command {\tt SAVE} saves an object module. It has the two forms
+
+\begin{center}
+{\tt SAVE} \angb{file} \angb{address} \tt{+} \angb{number}\\
+{\tt SAVE} \angb{file} \angb{address_1} \angb{address_2}
+\end{center}
+
+where the first saves \angb{number} bytes starting at address \angb{address},
+and the second saves from address \angb{address_1} up to, but not including,
+address \angb{address_2}. The addresses must be cell-aligned, and the number
+of bytes must be a multiple of four. An error message is displayed if the
+start address is less than or equal to the end address, or if either the
+address or number of bytes is not aligned or out of range.
+
+The module is saved to the file \angb{file}. An error message is displayed if
+there is some filing error, but no warning is given if a file of that name
+already exists; it is overwritten.
+
+\subsection{Exiting}
+
+The command {\tt QUIT} exits the user-interface. No warning is given.
+
+
+\section{Command abbreviations} \label{abbrev}
+
+Below are listed the commands, each with its minimum abbreviation. Register
+names may be abbreviated similarly, as long as the abbreviation does not
+clash with a command abbreviation: if there is an ambiguity, it is assumed
+that the command was intended.
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|c|c|} \hline
+\rule[-2mm]{0mm}{6mm}\bf Command & \bf Minimum abbreviation \\ \hline
+{\tt >D} & {\tt >} \\
+{\tt >R} & {\tt >R} \\
+{\tt COUNTS} & {\tt C} \\
+{\tt DISASSEMBLE} & {\tt D} \\
+{\tt D>} & {\tt D>} \\
+{\tt DATA} & {\tt DA} \\
+{\tt DUMP} & {\tt DU} \\
+{\tt FROM} & {\tt F} \\
+{\tt INITIALISE} & {\tt I} \\
+{\tt LOAD} & {\tt L} \\
+{\tt QUIT} & {\tt Q} \\
+{\tt REGISTERS} & {\tt R} \\
+{\tt R>} & {\tt R>} \\
+{\tt RETURN} & {\tt RET} \\
+{\tt RUN} & {\tt RU} \\
+{\tt STEP} & {\tt S} \\
+{\tt SAVE} & {\tt SA} \\
+{\tt STACKS} & {\tt ST} \\
+{\tt TRACE} & {\tt T} \\ \hline
+\end{tabular}
+\caption{Minimum abbreviations of commands}
+\end{center}
+\end{table}
 
 
 \bibliographystyle{plain}
