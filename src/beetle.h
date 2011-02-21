@@ -54,14 +54,7 @@ CELL single_step(void);
 int load_object(FILE *file, CELL *address);
 int save_object(FILE *file, CELL *address, UCELL length);
 
-
-/* Define a macro for arithmetic right shifting (the behaviour of >>
-   on signed quantities is implementation-defined in C99). */
-#define ARSHIFT(n, p) ((n) = ((n) >> (p)) | (-((n) < 0) << (32 - p)))
-
-
 /* Additional routines, macros and quantities provided by C Beetle */
-
 int init_beetle(BYTE *b_array, size_t size, UCELL e0);
 
 #define B_TRUE ((CELL)0xFFFFFFFF)   /* Beetle's TRUE flag */
@@ -76,6 +69,10 @@ int init_beetle(BYTE *b_array, size_t size, UCELL e0);
 #else
 #define FLIP(addr) (addr)
 #endif
+
+/* Portable arithmetic right shift (the behaviour of >> on signed
+   quantities is implementation-defined in C99). */
+#define ARSHIFT(n, p) ((n) = ((n) >> (p)) | (-((n) < 0) << (32 - p)))
 
 /* Division macros */
 #define ABS(x) ((x) >= 0 ? (x) : -(x))
