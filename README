@@ -4,8 +4,9 @@
                        by Reuben Thomas (rrt@sc3d.org)
 
 
-This package comprises a C implementation of the virtual processor Beetle,
-and mForth for Beetle v0.02.
+This package comprises a C implementation of the virtual processor
+Beetle, and mForth for Beetle v0.02. Detailed documentation is in the
+doc directory.
 
 The URL for the primary distribution is:
 
@@ -15,10 +16,11 @@ http://rrt.sc3d.org/Software/Beetle
 Copyright and Disclaimer
 ------------------------
 
-The package is distributed under the GNU Public License version 3, or, at
-your option, any later version.
+The package is distributed under the GNU Public License version 3, or,
+at your option, any later version.
 
-THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER'S RISK.
+THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER'S
+RISK.
 
 
 Systems tested
@@ -30,11 +32,11 @@ Previous releases were known to work on Acorn RISC OS, Digital UNIX
 V3.2, UNIX System V Release 4.0, ULTRIX 4.3, NetBSD 1.2 and MSDOS, all
 with GNU C.
 
-Beetle has also been tested on Atari TOS with Prospero C, and works after a
-workaround has been applied to the program to cope with a bug in the
-compiler's unsigned division routines. I believe that it would work fine with
-GNU C, but I would particularly appreciate a report from anyone who finds
-that it does.
+Beetle has also been tested on Atari TOS with Prospero C, and works
+after a workaround has been applied to the program to cope with a bug
+in the compiler's unsigned division routines. I believe that it would
+work fine with GNU C, but I would particularly appreciate a report
+from anyone who finds that it does.
 
 Reports on compatibility, whether positive or negative, are welcomed.
 
@@ -42,27 +44,29 @@ Reports on compatibility, whether positive or negative, are welcomed.
 Hand-written assembler version
 ------------------------------
 
-ARMbeetle.bas contains a hand-written assembler version of Beetle for the ARM
-processor, written in the BBC BASIC assembler (for RISC OS). beetle,ff8 is a
-RISC OS 3 (26-bit) executable built with this version of Beetle.
+ARMbeetle.bas contains a hand-written assembler version of Beetle for
+the ARM processor, written in the BBC BASIC assembler (for RISC OS).
+beetle,ff8 is a RISC OS 3 (26-bit) executable built with this version
+of Beetle.
 
 
 mForth
 ------
 
-mForth is a minimal Forth compiler. It is ANS compliant, but omits many
-features required by the ANSI standard. However, file reading and writing is
-possible, so it can be extended.
+mForth is a minimal Forth compiler. It is ANS compliant, but omits
+many features required by the ANSI standard. However, file reading and
+writing is possible, so it can be extended.
 
 
 Bugs and comments
 -----------------
 
-There are no known bugs, but there are bound to be some. Please send me bug
-reports and comments; I may well fix any bugs, but I don't intend to do
-further work on Beetle. I'm especially interested to know of fixes that let
-Beetle compile on platforms on which it currently doesn't work.
+There are no known bugs, but there are bound to be some. Please send
+me bug reports and comments; I may well fix any bugs, but I don't
+intend to do further work on Beetle. I'm especially interested to know
+of fixes that let Beetle compile on platforms on which it currently
+doesn't work.
 
 You should ignore most of the references in the documentation to my
-bachelor's dissertation; all the relevant bits of it are included as separate
-documents.
+bachelor's dissertation; all the relevant bits of it are included as
+separate documents.
