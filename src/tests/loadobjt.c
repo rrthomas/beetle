@@ -34,7 +34,7 @@ static char *obj_name(char *prefix, char *file)
     char *s = malloc(strlen(prefix) + strlen(file) + 2);
     assert(s);
     strcpy(s, prefix);
-    strcat(s, "/"); /* FIXME: Use gnulib's concat-filename */
+    strcat(s, "/");
     strcat(s, file);
     return s;
 }
