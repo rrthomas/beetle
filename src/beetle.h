@@ -55,9 +55,8 @@ int load_object(FILE *file, CELL *address);
 int save_object(FILE *file, CELL *address, UCELL length);
 
 
-/* Define a macro for arithmetic right shifting (the ISO standard
-   makes the behaviour of >> on signed quantities
-   implementation-defined). */
+/* Define a macro for arithmetic right shifting (the behaviour of >>
+   on signed quantities is implementation-defined in C99). */
 #define ARSHIFT(n, p) ((n) = ((n) >> (p)) | (-((n) < 0) << (32 - p)))
 
 
