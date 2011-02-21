@@ -2,13 +2,14 @@
 
     (c) Reuben Thomas 1994-2011
 
-    Test the arithmetic operators. Also uses the NEXT, SWAP, ROT, DROP, and
-    (LITERAL)I instructions. Since overtest.c supposedly tests the compiler's
-    arithmetic in overflow conditions, we only test the stack handling and basic
-    correctness of the operators here, assuming that if the arithmetic works in
-    one case, it will work in all. Note that the correct stack values are not
-    quite independent of the cell size (in CELL_W and QCELL_W); some stack
-    pictures implicitly refer to it.
+    Test the arithmetic operators. Also uses the NEXT, SWAP, ROT,
+    DROP, and (LITERAL)I instructions. Since tests.c tests the
+    compiler's arithmetic in overflow conditions, we only test the
+    stack handling and basic correctness of the operators here,
+    assuming that if the arithmetic works in one case, it will work in
+    all. Note that the correct stack values are not quite independent
+    of the cell size (in CELL_W and QCELL_W); some stack pictures
+    implicitly refer to it.
 
 */
 
@@ -65,7 +66,7 @@ int main(void)
         }
         single_step();
         if (I == O_NEXT00)
-          i--;
+            i--;
         printf("I = %s\n", disass(I));
     }
 
