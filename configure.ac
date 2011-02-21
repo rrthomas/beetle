@@ -7,6 +7,7 @@ dnl Check for programs
 AC_PROG_CC
 AX_CFLAGS_WARN_ALL
 AC_PROG_RANLIB
+AX_WITH_PROG(LATEXMK, latexmk, true)
 
 dnl Valgrind
 AX_WITH_PROG(VALGRIND, valgrind)
@@ -27,5 +28,5 @@ AC_HEADER_STDC
 
 dnl Generate output files
 AC_CONFIG_HEADER(src/config.h)
-AC_CONFIG_FILES(Makefile src/Makefile src/tests/Makefile)
+AC_CONFIG_FILES(Makefile doc/Makefile src/Makefile src/tests/Makefile)
 AC_OUTPUT

@@ -1,2 +1,12 @@
-primes
+*.aux
+*.blg
+*.fdb_latexmk
+*.log
 *.pdf
+/A simple user-interface for the Beetle virtual machine.tex
+/An Introduction to the Beetle Forth Virtual Processor.tex
+/An implementation of the Beetle virtual machine in ANSI C.tex
+/Encoding literals in a portable byte-stream interpreter.tex
+/The Beetle Forth Virtual Machine.tex
+/Tradeoffs in the implementation of the Beetle virtual machine.tex
+/primes
