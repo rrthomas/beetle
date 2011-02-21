@@ -6,7 +6,7 @@
 
     1. The C compiler uses twos-complement arithmetic.
     2. ARSHIFT performs an arithmetic right shift on signed quantities.
-    3. The C compiler performs ordinary modular arithmetic on overflow.
+    3. The C compiler performs modular reduction on overflow of signed types.
 
 */
 
@@ -21,7 +21,7 @@
 
 static int twos_complement(void)
 {
-    if (!(-1) != 0) {
+    if (~(-1) != 0) {
         printf("Beetle cannot work as the C compiler does not use "
             "twos-complement arithmetic\n");
         return 1;
