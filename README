@@ -52,8 +52,8 @@ Hand-written assembler version
 
 ARMbeetle.bas contains a hand-written assembler version of Beetle for
 the ARM processor, written in the BBC BASIC assembler (for RISC OS).
-beetle,ff8 is a RISC OS 3 (26-bit) executable built with this version
-of Beetle.
+It produces AOF format objects equivalent to those produced by run.c
+and step.c, which can be linked in their place.
 
 
 Bugs and comments
