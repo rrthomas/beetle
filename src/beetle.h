@@ -6,9 +6,6 @@
     calls specified in the definition of Beetle. This is the header file to
     include in programs using an embedded Beetle.
 
-    This header relies on bportab.h for machine dependencies. It is itself
-    machine-independent.
-
 */
 
 
@@ -58,13 +55,10 @@ int load_object(FILE *file, CELL *address);
 int save_object(FILE *file, CELL *address, UCELL length);
 
 
-/* Define a macro for arithmetic right shifting (the standard makes
-   the behaviour of >> on signed quantities implementation-defined). */
-#ifdef LRSHIFT
-#define ARSHIFT(n, p) ((n) = ((n) >> (p)) | (-((n) < 0) << (p)))
-#else
-#define ARSHIFT(n, p) ((n) >>= (p))
-#endif
+/* Define a macro for arithmetic right shifting (the ISO standard
+   makes the behaviour of >> on signed quantities
+   implementation-defined). */
+#define ARSHIFT(n, p) ((n) = ((n) >> (p)) | (-((n) < 0) << (32 - p)))
 
 
 /* Additional routines, macros and quantities provided by C Beetle */

@@ -105,25 +105,14 @@ compiler about pointer conversions. These occur because offsets into Beetle's
 address space are represented as four-byte numbers. As long as Beetle is
 never allocated more than 4Gb for its memory, this will not be a problem.
 
-The following macros should be defined:
-
-\begin{description}
-\item[{\tt LRSHIFT}]should be defined if right shifts of signed
-  quantities do not extend the sign bit.
-\item[{\tt LINK}]should be set to a macro that, calls the C function
-  at the machine address held on top of Beetle's stack. This address
-  will typically occupy one cell, but may occupy more. The macro must
-  then alter {\tt SP} so that the address is popped from the stack.
-\end{description}
-
 The register {\tt CHECKED} must be set (in {\tt beetle.h}) at compile-time:
 set to one, address checking will be enabled, and set to zero it will be
 disabled. Its value cannot be altered at run-time. {\tt MEMORY} can similarly
 be altered from its default value of 16384 if desired.
 
-The C compiler must use twos-complement arithmetic, and handle integer
-overflow as modular arithmetic. This, along with the setting of {\tt
-  LRSHIFT}, is tested when the Beetle tests are run.
+The C compiler must use twos-complement arithmetic, and perform
+modular reduction on signed integer overflow. This is tested when the
+Beetle tests are run.
 
 
 \subsection{Compilation}
