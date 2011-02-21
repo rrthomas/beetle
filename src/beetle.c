@@ -802,8 +802,7 @@ int main(int argc, char *argv[])
         return ret;
     }
 
-    /* FIXME: Add some sort of version. */
-    printf("Beetle shell\n(c) Reuben Thomas 1995-2011\n\n");
+    printf("Beetle shell (C Beetle release "PACKAGE_VERSION")\n(c) Reuben Thomas 1995-2011\n\n");
 
     while (1) {
         if (setjmp(env) == 0) {
