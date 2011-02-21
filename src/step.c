@@ -255,21 +255,21 @@ CELL single_step(void)
         CHECKA(SP + 1);
         DIVZERO(*SP);
         SP++;
-        *SP = DIV(*SP, *(SP - 1));
+        *SP = FDIV(*SP, *(SP - 1));
         break;
     case O_MOD:
         CHECKA(SP);
         CHECKA(SP + 1);
         DIVZERO(*SP);
         SP++;
-        *SP = MOD(*SP, *(SP - 1), temp);
+        *SP = FMOD(*SP, *(SP - 1), temp);
         break;
     case O_SLASHMOD:
         CHECKA(SP);
         CHECKA(SP + 1);
         DIVZERO(*SP);
-        temp = MOD(*(SP + 1), *SP, i);
-        *SP = DIV(*(SP + 1), *SP);
+        temp = FMOD(*(SP + 1), *SP, i);
+        *SP = FDIV(*(SP + 1), *SP);
         *(SP + 1) = temp;
         break;
     case O_USLASHMOD:
@@ -284,8 +284,8 @@ CELL single_step(void)
         CHECKA(SP);
         CHECKA(SP + 1);
         DIVZERO(*SP);
-        temp = SMOD(*(SP + 1), *SP, i);
-        *SP = SDIV(*(SP + 1), *SP);
+        temp = *(SP + 1) % *SP;
+        *SP = *(SP + 1) / *SP;
         *(SP + 1) = temp;
         break;
     case O_SLASH2:

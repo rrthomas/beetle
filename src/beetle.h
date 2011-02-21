@@ -76,13 +76,11 @@ int init_beetle(BYTE *b_array, size_t size, UCELL e0);
 
 /* Division macros */
 #define ABS(x) ((x) >= 0 ? (x) : -(x))
-#define SGN(x) ((x) > 0 ? 1 : -1 )  /* not a proper sign function! */
+#define SGN(x) ((x) > 0 ? 1 : -1)  /* not a proper sign function! */
 
-#define DIV(a, b) ((a) / (b) - ((((a) ^ (b)) < 0) && ((a) % (b)) != 0))
-#define MOD(a, b, t) (t = (a) % (b), (((a) ^ (b)) >= 0 || t == 0)) ? t : \
+#define FDIV(a, b) ((a) / (b) - ((((a) ^ (b)) < 0) && ((a) % (b)) != 0))
+#define FMOD(a, b, t) (t = (a) % (b), (((a) ^ (b)) >= 0 || t == 0)) ? t : \
   SGN(b) * (ABS(b)-ABS(t))
-#define SDIV(a, b) (a / b)
-#define SMOD(a, b, t) (a % b)
 
 /* A macro to call the function pointed to by the top item(s) on Beetle's
    data stack and increment the stack pointer to drop the pointer */
