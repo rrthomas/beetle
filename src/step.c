@@ -13,7 +13,6 @@
 #include "lib.h"        /* lib function */
 
 
-#if CHECKED == 1
 #define CHECKC(a)                                                       \
     if ((UCELL)((BYTE *)(a) - M0) >= MEMORY) {                          \
         *(CELL *)(M0 + 12) = ADDRESS = (BYTE *)(a) - M0;                \
@@ -28,11 +27,6 @@
 #define NEXTC                                   \
     CHECKA(EP);                                 \
     NEXT
-#else
-#define CHECKC(a)
-#define CHECKA(a)
-#define NEXTC NEXT
-#endif
 
 #define DIVZERO(x)                                      \
     if (x == 0) {                                       \
