@@ -83,7 +83,10 @@ static long single_arg(char *s)
     char *endp;
     int len;
 
-    if (s == NULL) { printf("Too few arguments\n"); longjmp(env, 1); }
+    if (s == NULL) {
+        printf("Too few arguments\n");
+        longjmp(env, 1);
+    }
     len = strlen(s);
 
     if (s[len - 1] == 'H' || s[len - 1] == 'h') {
@@ -92,7 +95,10 @@ static long single_arg(char *s)
     }
     else n = strtol(s, &endp, 10);
 
-    if (endp != &s[len]) { printf("Invalid number\n"); longjmp(env, 1); }
+    if (endp != &s[len]) {
+        printf("Invalid number\n");
+        longjmp(env, 1);
+    }
 
     return n;
 }
@@ -103,7 +109,10 @@ static void double_arg(char *s, long *start, long *end)
     size_t i;
     bool plus = false;
 
-    if (s == NULL) { printf("Too few arguments\n"); longjmp(env, 1); }
+    if (s == NULL) {
+        printf("Too few arguments\n");
+        longjmp(env, 1);
+    }
 
     strcpy(copy, s);
     if ((token = strtok(copy, " +")) == NULL) {
@@ -125,19 +134,20 @@ static void double_arg(char *s, long *start, long *end)
 
     *end = single_arg(token);
 
-    if (plus) *end += *start;
+    if (plus)
+        *end += *start;
 }
 
 
 static int load_op(BYTE o)
 {
-    return (o == O_BRANCH || o == O_QBRANCH || o == O_CALL || o == O_LOOP ||
-        o == O_PLOOP || o == O_LITERAL);
+    return o == O_BRANCH || o == O_QBRANCH || o == O_CALL || o == O_LOOP ||
+        o == O_PLOOP || o == O_LITERAL;
 }
 
 static int imm_op(BYTE o)
 {
-    return (load_op(o & 0xFE));
+    return load_op(o & 0xFE);
 }
 
 static void disassemble(CELL start, CELL end)
@@ -420,314 +430,318 @@ static void do_registers(void)
 static void do_command(int no)
 {
     switch (no) {
-        case c_TOD:
-            {
-                long value = single_arg(strtok(NULL, " "));
+    case c_TOD:
+        {
+            long value = single_arg(strtok(NULL, " "));
 
-                if (debug)
-                    printf("Push %ld on to the data stack\n", value);
-                if (range((CELL)((BYTE *)SP - M0), MEMORY + 1, "SP"))
-                    return;
-                if ((BYTE *)SP - MEMORY == 0) {
-                    printf("SP is 0h: no more stack items can be pushed\n");
-                    return;
-                }
-                *--SP = value;
-            }
-            break;
-        case c_TOR:
-            {
-                long value = single_arg(strtok(NULL, " "));
-
-                if (debug)
-                    printf("Push %ld on to the return stack\n", value);
-                if (range((CELL)((BYTE *)SP - M0), MEMORY + 1, "RP"))
-                    return;
-                if ((BYTE *)RP - MEMORY == 0) {
-                    printf("RP is 0h: no more stack items can be pushed\n");
-                    return;
-                }
-                *--RP = value;
-            }
-            break;
-        case c_COUNTS:
-            {
-                int i;
-
-                for (i = 0; i < 92; i++) {
-                    printf("%10s: %7ld", disass(i), count[i]);
-                    if ((i + 1) % 4)
-                        putchar(' ');
-                    else
-                        putchar('\n');
-                }
-                printf("%10s: %7ld\n", disass(255), count[255]);
-            }
-            break;
-        case c_DISASSEMBLE:
-            {
-                long start, end;
-
-                double_arg(strtok(NULL, ""), &start, &end);
-                if (range(start, MEMORY, "Address"))
-                    return;
-                if (range(end, MEMORY, "Address"))
-                    return;
-                if (start >= end) {
-                    printf("Start address must be less than end address\n");
-                    return;
-                }
-                if (start & 3 || end & 3) {
-                    printf("Address/offset must be cell-aligned\n");
-                    return;
-                }
-                if (debug)
-                    printf("Disassemble from %lX to %lX\n", start, end);
-                disassemble((CELL)start, (CELL)end);
-            }
-            break;
-        case c_DFROM:
             if (debug)
-                printf("Pop a number from the data stack and display it\n");
-            if (range((CELL)((BYTE *)SP - M0), MEMORY, "SP"))
+                printf("Push %ld on to the data stack\n", value);
+            if (range((CELL)((BYTE *)SP - M0), MEMORY + 1, "SP"))
                 return;
-            printf("%"PRId32" (%"PRIX32"h)\n", *SP, *SP);
-            SP++;
-            break;
-        case c_DATA:
-        case c_STACKS:
-            if (debug)
-                printf("Display the data stack\n");
-            if (!range((CELL)((BYTE *)RP - M0), MEMORY + 1, "SP") &&
-                !range((CELL)((BYTE *)S0 - M0), MEMORY + 1, "S0")) {
-                if (SP == S0)
-                    printf("Data stack empty\n");
-                else if (SP > S0)
-                    printf("Data stack underflow\n");
-                else
-                    show_data_stack();
+            if ((BYTE *)SP - MEMORY == 0) {
+                printf("SP is 0h: no more stack items can be pushed\n");
+                return;
             }
-            if (no == c_STACKS) goto c_ret;
-            break;
-        case c_DUMP:
-            {
-                long start, end;
-                int i;
-
-                double_arg(strtok(NULL, ""), &start, &end);
-                if (range(start, MEMORY, "Address")) return;
-                if (range(end, MEMORY, "Address")) return;
-                if (start >= end) {
-                    printf("Start address must be less than end address\n");
-                    return;
-                }
-                if (debug)
-                    printf("Dump memory from %lX to %lX\n", start, end);
-                while (start < end) {
-                    printf("%08lXh: ", start);
-                    for (i = 0; i < 8 && start < end; i++, start++)
-                        printf("%02X ", M0[start]);
-                    putchar('\n');
-                }
-            }
-            break;
-        case c_FROM:
-            {
-                char *arg = strtok(NULL, " ");
-                long adr;
-
-                if (arg != NULL) {
-                    adr = single_arg(arg);
-                    if (range(adr, MEMORY, "EP"))
-                        return;
-                    if (adr & 3) {
-                        printf("Address must be cell-aligned\n");
-                        break;
-                    }
-                    if (debug)
-                        printf("Set EP to %lXh\n", adr);
-                    EP = (CELL *)(M0 + adr);
-                }
-                if (debug)
-                    printf("Perform NEXT\n");
-                NEXT;
-            }
-            break;
-        case c_INITIALISE:
-        case c_LOAD:
-            {
-                long i;
-                if (debug)
-                    printf("Initialise Beetle\n");
-                for (i = 0; i < MEMSIZE; i++) ((CELL*)M0)[i] = 0;
-                for (i = 0; i < 256; i++) count[i] = 0;
-                init_beetle(M0, MEMSIZE, 16);
-                S0 = SP;
-                R0 = RP;
-                *THROW = 0;
-                A = 0;
-        if (no == c_LOAD) goto c_load;
+            *--SP = value;
+        }
         break;
-            }
-c_load:     {
-                const char *file = strtok(NULL, " ");
-                long adr = single_arg(strtok(NULL, " "));
-                FILE *handle;
-                int ret;
+    case c_TOR:
+        {
+            long value = single_arg(strtok(NULL, " "));
 
+            if (debug)
+                printf("Push %ld on to the return stack\n", value);
+            if (range((CELL)((BYTE *)SP - M0), MEMORY + 1, "RP"))
+                return;
+            if ((BYTE *)RP - MEMORY == 0) {
+                printf("RP is 0h: no more stack items can be pushed\n");
+                return;
+            }
+            *--RP = value;
+        }
+        break;
+    case c_COUNTS:
+        {
+            int i;
+
+            for (i = 0; i < 92; i++) {
+                printf("%10s: %7ld", disass(i), count[i]);
+                if ((i + 1) % 4)
+                    putchar(' ');
+                else
+                    putchar('\n');
+            }
+            printf("%10s: %7ld\n", disass(255), count[255]);
+        }
+        break;
+    case c_DISASSEMBLE:
+        {
+            long start, end;
+
+            double_arg(strtok(NULL, ""), &start, &end);
+            if (range(start, MEMORY, "Address"))
+                return;
+            if (range(end, MEMORY, "Address"))
+                return;
+            if (start >= end) {
+                printf("Start address must be less than end address\n");
+                return;
+            }
+            if (start & 3 || end & 3) {
+                printf("Address/offset must be cell-aligned\n");
+                return;
+            }
+            if (debug)
+                printf("Disassemble from %lX to %lX\n", start, end);
+            disassemble((CELL)start, (CELL)end);
+        }
+        break;
+    case c_DFROM:
+        if (debug)
+            printf("Pop a number from the data stack and display it\n");
+        if (range((CELL)((BYTE *)SP - M0), MEMORY, "SP"))
+            return;
+        printf("%"PRId32" (%"PRIX32"h)\n", *SP, *SP);
+        SP++;
+        break;
+    case c_DATA:
+    case c_STACKS:
+        if (debug)
+            printf("Display the data stack\n");
+        if (!range((CELL)((BYTE *)RP - M0), MEMORY + 1, "SP") &&
+            !range((CELL)((BYTE *)S0 - M0), MEMORY + 1, "S0")) {
+            if (SP == S0)
+                printf("Data stack empty\n");
+            else if (SP > S0)
+                printf("Data stack underflow\n");
+            else
+                show_data_stack();
+        }
+        if (no == c_STACKS)
+            goto c_ret;
+        break;
+    case c_DUMP:
+        {
+            long start, end;
+            int i;
+
+            double_arg(strtok(NULL, ""), &start, &end);
+            if (range(start, MEMORY, "Address")) return;
+            if (range(end, MEMORY, "Address")) return;
+            if (start >= end) {
+                printf("Start address must be less than end address\n");
+                return;
+            }
+            if (debug)
+                printf("Dump memory from %lX to %lX\n", start, end);
+            while (start < end) {
+                printf("%08lXh: ", start);
+                for (i = 0; i < 8 && start < end; i++, start++)
+                    printf("%02X ", M0[start]);
+                putchar('\n');
+            }
+        }
+        break;
+    case c_FROM:
+        {
+            char *arg = strtok(NULL, " ");
+            long adr;
+
+            if (arg != NULL) {
+                adr = single_arg(arg);
+                if (range(adr, MEMORY, "EP"))
+                    return;
                 if (adr & 3) {
                     printf("Address must be cell-aligned\n");
-                    return;
-                }
-                if ((handle = fopen(file, "rb")) == NULL) {
-                    printf("Cannot open file %s\n", file);
-                    return;
+                    break;
                 }
                 if (debug)
-                    printf("Load binary image %s to address %lX\n", file, adr);
-                ret = load_object(handle, (CELL *)(M0 + adr));
-                fclose(handle);
-
-                switch (ret) {
-                    case -1:
-                        printf("Address out of range, or module too large\n");
-                        break;
-                    case -2:
-                        printf("Module header invalid\n");
-                        break;
-                    case -3:
-                        printf("Error while loading module\n");
-                        break;
-                }
+                    printf("Set EP to %lXh\n", adr);
+                EP = (CELL *)(M0 + adr);
             }
-            break;
-        case c_QUIT:
-            restore_keyb();
-            exit(0);
-        case c_REGISTERS:
-            do_registers();
-            break;
-        case c_RFROM:
             if (debug)
-                printf("Pop a number from the return stack and display it\n");
-            if (range((CELL)((BYTE *)RP - M0), MEMORY, "RP")) return;
-            printf("%"PRIX32"h (%"PRId32")\n", *RP, *RP);
-            RP++;
-            break;
-c_ret:      case c_RETURN:
+                printf("Perform NEXT\n");
+            NEXT;
+        }
+        break;
+    case c_INITIALISE:
+    case c_LOAD:
+        {
+            long i;
             if (debug)
-                printf("Display the return stack\n");
-            if (range((CELL)((BYTE *)RP - M0), MEMORY + 1, "RP"))
-                return;
-            if (range((CELL)((BYTE *)R0 - M0), MEMORY + 1, "R0"))
-                return;
-            if (RP == R0) {
-                printf("Return stack empty\n");
-                return;
-            }
-            if (RP > R0) {
-                printf("Return stack underflow\n");
-                return;
-            }
-            show_return_stack();
+                printf("Initialise Beetle\n");
+            for (i = 0; i < MEMSIZE; i++) ((CELL*)M0)[i] = 0;
+            for (i = 0; i < 256; i++) count[i] = 0;
+            init_beetle(M0, MEMSIZE, 16);
+            S0 = SP;
+            R0 = RP;
+            *THROW = 0;
+            A = 0;
+            if (no == c_LOAD)
+                goto c_load;
             break;
-        case c_RUN:
-            {
-                CELL ret;
+        }
+ c_load:
+        {
+            const char *file = strtok(NULL, " ");
+            long adr = single_arg(strtok(NULL, " "));
+            FILE *handle;
+            int ret;
 
-                ret = run();
-                printf("HALT code %"PRId32" was returned\n", ret);
+            if (adr & 3) {
+                printf("Address must be cell-aligned\n");
+                return;
             }
-            break;
-        case c_STEP:
-        case c_TRACE:
-            {
-                char *arg = strtok(NULL, " ");
-                unsigned long i, limit;
-                CELL ret = 0;
+            if ((handle = fopen(file, "rb")) == NULL) {
+                printf("Cannot open file %s\n", file);
+                return;
+            }
+            if (debug)
+                printf("Load binary image %s to address %lX\n", file, adr);
+            ret = load_object(handle, (CELL *)(M0 + adr));
+            fclose(handle);
 
-                if (arg == NULL) {
-                    if (debug)
-                        printf("Step once\n");
-                    if ((ret = single_step()))
-                        printf("HALT code %"PRId32" was returned\n", ret);
-                    if (no == c_TRACE) do_registers();
-                    count[I]++;
-                } else {
-                    upper(arg);
-                    if (strcmp(arg, "TO") == 0) {
-                limit = single_arg(strtok(NULL, ""));
-                if (limit & 3) {
-                    printf("Address must be cell-aligned\n");
-                    return;
-                }
-                if (range(limit, MEMORY, "Address"))
-                    return;
+            switch (ret) {
+            case -1:
+                printf("Address out of range, or module too large\n");
+                break;
+            case -2:
+                printf("Module header invalid\n");
+                break;
+            case -3:
+                printf("Error while loading module\n");
+                break;
+            }
+        }
+        break;
+    case c_QUIT:
+        restore_keyb();
+        exit(0);
+    case c_REGISTERS:
+        do_registers();
+        break;
+    case c_RFROM:
+        if (debug)
+            printf("Pop a number from the return stack and display it\n");
+        if (range((CELL)((BYTE *)RP - M0), MEMORY, "RP")) return;
+        printf("%"PRIX32"h (%"PRId32")\n", *RP, *RP);
+        RP++;
+        break;
+    c_ret:
+    case c_RETURN:
+        if (debug)
+            printf("Display the return stack\n");
+        if (range((CELL)((BYTE *)RP - M0), MEMORY + 1, "RP"))
+            return;
+        if (range((CELL)((BYTE *)R0 - M0), MEMORY + 1, "R0"))
+            return;
+        if (RP == R0) {
+            printf("Return stack empty\n");
+            return;
+        }
+        if (RP > R0) {
+            printf("Return stack underflow\n");
+            return;
+        }
+        show_return_stack();
+        break;
+    case c_RUN:
+        {
+            CELL ret;
+
+            ret = run();
+            printf("HALT code %"PRId32" was returned\n", ret);
+        }
+        break;
+    case c_STEP:
+    case c_TRACE:
+        {
+            char *arg = strtok(NULL, " ");
+            unsigned long i, limit;
+            CELL ret = 0;
+
+            if (arg == NULL) {
                 if (debug)
-                    printf("STEP TO %lX\n", limit);
-                while ((unsigned long)((BYTE *)EP - M0) != limit && ret == 0) {
-                    ret = single_step();
-                    if (no == c_TRACE) do_registers();
-                    count[I]++;
-                }
-                if (ret != 0)
-                    printf("HALT code %"PRId32" was returned at EP = %Xh ",
-                           ret, (BYTE *)EP - M0);
-                    } else {
-                        limit = single_arg(arg);
-                        if (debug)
-                            printf("STEP for %lu instructions\n", limit);
-                        for (i = 0; i < limit && ret == 0; i++) {
-                            ret = single_step();
-                            if (no == c_TRACE) do_registers();
-                            count[I]++;
-                        }
-                        if (ret != 0)
-                            printf("HALT code %"PRId32" was returned after %lu "
-                                "steps\n", ret, i);
+                    printf("Step once\n");
+                if ((ret = single_step()))
+                    printf("HALT code %"PRId32" was returned\n", ret);
+                if (no == c_TRACE) do_registers();
+                count[I]++;
+            } else {
+                upper(arg);
+                if (strcmp(arg, "TO") == 0) {
+                    limit = single_arg(strtok(NULL, ""));
+                    if (limit & 3) {
+                        printf("Address must be cell-aligned\n");
+                        return;
                     }
+                    if (range(limit, MEMORY, "Address"))
+                        return;
+                    if (debug)
+                        printf("STEP TO %lX\n", limit);
+                    while ((unsigned long)((BYTE *)EP - M0) != limit && ret == 0) {
+                        ret = single_step();
+                        if (no == c_TRACE) do_registers();
+                        count[I]++;
+                    }
+                    if (ret != 0)
+                        printf("HALT code %"PRId32" was returned at EP = %Xh ",
+                               ret, (BYTE *)EP - M0);
+                } else {
+                    limit = single_arg(arg);
+                    if (debug)
+                        printf("STEP for %lu instructions\n", limit);
+                    for (i = 0; i < limit && ret == 0; i++) {
+                        ret = single_step();
+                        if (no == c_TRACE) do_registers();
+                        count[I]++;
+                    }
+                    if (ret != 0)
+                        printf("HALT code %"PRId32" was returned after %lu "
+                               "steps\n", ret, i);
                 }
             }
-            break;
-        case c_SAVE:
-            {
-                const char *file = strtok(NULL, " ");
-                long start, end;
-                FILE *handle;
-                int ret;
+        }
+        break;
+    case c_SAVE:
+        {
+            const char *file = strtok(NULL, " ");
+            long start, end;
+            FILE *handle;
+            int ret;
 
-                double_arg(strtok(NULL, ""), &start, &end);
+            double_arg(strtok(NULL, ""), &start, &end);
 
-                if (start & 3 || end & 3) {
-                    printf("Address/offset must be cell-aligned\n");
-                    return;
-                }
-                if (start >= end) {
-                    printf("Start address must be less than end address\n");
-                    return;
-                }
-                if ((handle = fopen(file, "wb")) == NULL) {
-                    printf("Cannot open file %s\n", file);
-                    return;
-                }
-                if (debug)
-                    printf("Save memory to file %s from %lX to %lX\n", file, start,
-                           end);
-                ret = save_object(handle, (CELL *)(M0 + start),
-                    (UCELL)((end - start) / CELL_W));
-                fclose(handle);
-
-                switch (ret) {
-                    case -1:
-                        printf("Address out of range or save area extends "
-                            "beyond MEMORY\n");
-                        break;
-                    case -3:
-                        printf("Error while saving module\n");
-                        break;
-                }
+            if (start & 3 || end & 3) {
+                printf("Address/offset must be cell-aligned\n");
+                return;
             }
-            break;
+            if (start >= end) {
+                printf("Start address must be less than end address\n");
+                return;
+            }
+            if ((handle = fopen(file, "wb")) == NULL) {
+                printf("Cannot open file %s\n", file);
+                return;
+            }
+            if (debug)
+                printf("Save memory to file %s from %lX to %lX\n", file, start,
+                       end);
+            ret = save_object(handle, (CELL *)(M0 + start),
+                              (UCELL)((end - start) / CELL_W));
+            fclose(handle);
+
+            switch (ret) {
+            case -1:
+                printf("Address out of range or save area extends "
+                       "beyond MEMORY\n");
+                break;
+            case -3:
+                printf("Error while saving module\n");
+                break;
+            }
+        }
+        break;
     }
 }
 
@@ -759,28 +773,26 @@ static void parse(char *input)
     if (no != SIZE_MAX)
         do_command(no);
     else {
-        if (ass) do_ass(token);
-        else do_display(token, "%s\n");
+        if (ass)
+            do_ass(token);
+        else
+            do_display(token, "%s\n");
     }
 }
 
+
+static CELL mem[MEMSIZE];
 
 int main(int argc, char *argv[])
 {
     char input[MAXLEN], *nl;
     long i;
-    CELL *mem;
 
     if (argc > 2) {
         printf("Usage: beetle [OBJECT]\n");
         exit(1);
     }
 
-    if (!(mem = (CELL *)calloc(CELL_W, MEMSIZE))) {
-        printf("beetle: couldn't claim memory for Beetle\n");
-        exit(1);
-    }
-    for (i = 0; i < 256; i++) count[i] = 0;
     init_beetle((BYTE *)mem, MEMSIZE, 16);
     S0 = SP;
     R0 = RP;
@@ -813,7 +825,7 @@ int main(int argc, char *argv[])
             init_keyb();
             parse(input);
             restore_keyb();
-        }
-        else restore_keyb();
+        } else
+            restore_keyb();
     }
 }
