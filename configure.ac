@@ -6,6 +6,10 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 dnl Check for programs
 AC_PROG_CC
 AX_CFLAGS_WARN_ALL
+if test "$GCC" = yes; then
+  CFLAGS="$CFLAGS -W -Wmissing-prototypes -Wstrict-prototypes -D_FORTIFY_SOURCE=2 -pedantic"
+fi
+gl_EARLY
 AC_PROG_RANLIB
 AX_WITH_PROG(LATEXMK, latexmk, true)
 
@@ -15,18 +19,14 @@ if test -n "$VALGRIND"; then
   VALGRIND="$VALGRIND --error-exitcode=1 --leak-check=full"
 fi
 
-dnl Extra CFLAGS if we have gcc
-if test "$GCC" = yes; then
-  CFLAGS="$CFLAGS -W -Wmissing-prototypes -Wstrict-prototypes -D_FORTIFY_SOURCE=2 -pedantic"
-fi
+dnl Check for header files
+AC_HEADER_STDC
+gl_INIT
 
 dnl Check features
 AC_C_BIGENDIAN
 
-dnl Check for header files
-AC_HEADER_STDC
-
 dnl Generate output files
 AC_CONFIG_HEADER(src/config.h)
-AC_CONFIG_FILES(Makefile doc/Makefile src/Makefile src/tests/Makefile)
+AC_CONFIG_FILES(Makefile lib/Makefile doc/Makefile src/Makefile src/tests/Makefile)
 AC_OUTPUT

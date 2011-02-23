@@ -214,41 +214,41 @@ CELL single_step(void)
         CHECKA(SP);
         CHECKA(SP + 1);
         SP++;
-        *SP += *(SP - 1);
+        *(UCELL *)SP += (UCELL)*(SP - 1);
         break;
     case O_MINUS:
         CHECKA(SP);
         CHECKA(SP + 1);
         SP++;
-        *SP -= *(SP - 1);
+        *(UCELL *)SP -= (UCELL)*(SP - 1);
         break;
     case O_SWAPMINUS:
         CHECKA(SP);
         CHECKA(SP + 1);
         SP++;
-        *SP = *(SP - 1) - *SP;
+        *(UCELL *)SP = (UCELL)*(SP - 1) - (UCELL)*SP;
         break;
     case O_PLUS1:
         CHECKA(SP);
-        *SP += 1;
+        *(UCELL *)SP += 1;
         break;
     case O_MINUS1:
         CHECKA(SP);
-        *SP -= 1;
+        *(UCELL *)SP -= 1;
         break;
     case O_PLUSCELL:
         CHECKA(SP);
-        *SP += CELL_W;
+        *(UCELL *)SP += CELL_W;
         break;
     case O_MINUSCELL:
         CHECKA(SP);
-        *SP -= CELL_W;
+        *(UCELL *)SP -= CELL_W;
         break;
     case O_STAR:
         CHECKA(SP);
         CHECKA(SP + 1);
         SP++;
-        *SP *= *(SP - 1);
+        *(UCELL *)SP *= (UCELL)*(SP - 1);
         break;
     case O_SLASH:
         CHECKA(SP);
@@ -294,16 +294,16 @@ CELL single_step(void)
         break;
     case O_CELLS:
         CHECKA(SP);
-        *SP *= CELL_W;
+        *(UCELL *)SP *= CELL_W;
         break;
     case O_ABS:
         CHECKA(SP);
         if (*SP < 0)
-            *SP = -*SP;
+            *(UCELL *)SP = -(UCELL)*SP;
         break;
     case O_NEGATE:
         CHECKA(SP);
-        *SP = -*SP;
+        *(UCELL *)SP = -(UCELL)*SP;
         break;
     case O_MAX:
         CHECKA(SP);
