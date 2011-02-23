@@ -23,6 +23,7 @@
 
 
 /* User interface debug control */
+/* FIXME: Have command-line and command control over this. */
 bool debug = false;
 
 #define MEMSIZE 16384	/* size of Beetle's memory in cells */
