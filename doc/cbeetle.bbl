@@ -10,4 +10,14 @@ Reuben Thomas.
 \newblock {BA} dissertation, University of Cambridge, 1995.
 \newblock \url{http://sc3d.org/rrt/}.
 
+\bibitem{beetle}
+Reuben Thomas.
+\newblock The beetle forth virtual machine, 2011.
+\newblock \url{http://sc3d.org/rrt/}.
+
+\bibitem{beetleuiface}
+Reuben Thomas.
+\newblock A simple user-interface for the beetle forth virtual machine, 2011.
+\newblock \url{http://sc3d.org/rrt/}.
+
 \end{thebibliography}

@@ -40,8 +40,8 @@ enum commands { c_TOD, c_TOR, c_COUNTS, c_DISASSEMBLE, c_DFROM, c_DATA, c_DUMP,
     c_STEP, c_SAVE, c_STACKS, c_TRACE };
 static int commands = 19;
 
-static char *regist[] = { "A", "ADDRESS", "BAD", "CHECKED", "ENDISM", "EP", "I",
-    "M0", "MEMORY", "RP", "R0", "SP", "S0", "THROW" };
+static char *regist[] = { "A", "-ADDRESS", "'BAD", "CHECKED", "ENDISM", "EP", "I",
+    "M0", "MEMORY", "RP", "R0", "SP", "S0", "'THROW" };
 enum registers { r_A, r_ADDRESS, r_BAD, r_CHECKED, r_ENDISM, r_EP, r_I,
     r_M0, r_MEMORY, r_RP, r_R0, r_SP, r_S0, r_THROW };
 static int registers = 14;

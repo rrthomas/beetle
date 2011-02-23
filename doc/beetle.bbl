@@ -26,4 +26,9 @@ Reuben Thomas.
 \newblock {BA} dissertation, University of Cambridge, 1995.
 \newblock \url{http://sc3d.org/rrt/}.
 
+\bibitem{cbeetle}
+Reuben Thomas.
+\newblock An implementation of the beetle virtual machine for posix, 2011.
+\newblock \url{http://sc3d.org/rrt/}.
+
 \end{thebibliography}

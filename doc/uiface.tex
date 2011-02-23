@@ -40,9 +40,9 @@
 
 \section{Introduction}
 
-The Beetle virtual machine \cite{beetledis} provides a portable
+The Beetle virtual machine \cite{beetle} provides a portable
 environment for the pForth Forth compiler \cite{beetledis}, a compiler
-for ANSI Standard Forth \cite{ANSIforth}. C Beetle \cite{beetledis} is
+for ANSI Standard Forth \cite{ANSIforth}. C Beetle \cite{cbeetle} is
 a version of Beetle written in ISO C with POSIX APIs so that it is
 itself easily portable. This paper describes a simple user-interface
 for Beetle which uses C Beetle, as it is itself written in C, though
@@ -67,7 +67,7 @@ an object file. If supplied, the given object file is loaded and run.
 
 When the user-interface is started, an embedded Beetle with 16384 cells of
 memory is created. The registers which are set to system-dependent values are
-initialised as shown in table \ref{uinittable}.
+initialised as shown in table~\ref{uinittable}.
 
 \begin{table}[htbp]
 \begin{center}
@@ -84,7 +84,7 @@ initialised as shown in table \ref{uinittable}.
 {\tt I} is uninitialised. {\tt A} is set to zero: this has the effect that
 when a {\tt STEP} or {\tt RUN} command is given, a {\tt NEXT} instruction
 will be performed. Thus, when initialisation is performed by a {\tt LOAD}
-command (see section \ref{uifaceload}), the Beetle may be started with {\tt
+command (see section~\ref{uifaceload}), the Beetle may be started with {\tt
 RUN} or {\tt STEP} immediately after the {\tt LOAD} command, without the need
 for {\tt FROM}. The memory from byte 16 upwards is zeroed.
 
@@ -95,8 +95,8 @@ for {\tt FROM}. The memory from byte 16 upwards is zeroed.
 The user-interface is command-driven. All commands and register names may be
 abbreviated to their first few letters; where commands start with the same
 letters, there is a set order of precedence, aimed at giving the most
-commonly used commands the shortest minimum abbreviations (see section
-\ref{abbrev}). All commands are case-insensitive.
+commonly used commands the shortest minimum abbreviations (see
+section~\ref{abbrev}). All commands are case-insensitive.
 
 If an unrecognised command is given, or the command has too few arguments, or
 they are badly formed, an error message is displayed. Command lines
@@ -125,34 +125,16 @@ opcode.
 
 \subsection{Registers}
 
-Beetle's registers may be displayed by typing their name. The names used are
-slightly different from the names given in \cite{beetledis}, and in fact follow
-the names used for the corresponding variables in C Beetle. This is to avoid
-the necessity of typing awkward characters in the names of registers such as
-{\tt 'THROW} and {\tt -ADDRESS}. The registers which have different names
-from those in \cite{beetledis} are given in table \ref{uregtable}.
-
-\begin{table}[htbp]
-\begin{center}
-\begin{tabular}{|c|c|} \hline
-\rule[-2mm]{0mm}{6mm}\bf Register & \bf Name \\ \hline
-{\tt 'THROW} & {\tt THROW} \\
-{\tt 'BAD} & {\tt BAD} \\
-{\tt -ADDRESS} & {\tt ADDRESS} \\ \hline
-\end{tabular}
-\caption{\label{uregtable}Registers and their user-interface names}
-\end{center}
-\end{table}
-
-The registers may also (where appropriate) be assigned to using the syntax
+Beetle's registers may be displayed by typing their name. The
+registers may also (where appropriate) be assigned to using the syntax
 
 \begin{center}\angb{register} $=$ \angb{value}\end{center}
 
-where \angb{value} is in the form given in section \ref{commands}. An error
+where \angb{value} is in the form given in section~\ref{commands}. An error
 message is displayed if an attempt is made to assign to a register such as
 {\tt CHECKED}, which cannot be assigned to, or to assign an unaligned or out
 of range address to a register which must hold an aligned address, such as
-{\tt SP}. The {\tt FROM} command (see section \ref{from}) should be used in
+{\tt SP}. The {\tt FROM} command (see section~\ref{from}) should be used in
 preference to assigning to {\tt EP}.
 
 Two additional pseudo-registers are provided by the user-interface: they are
@@ -289,7 +271,7 @@ The command
 \label{uifaceload}
 \begin{center}{\tt LOAD} \angb{file} \angb{address}\end{center}
 
-initialises Beetle as in section \ref{uifaceinit}, then loads the object
+initialises Beetle as in section~\ref{uifaceinit}, then loads the object
 module in file \angb{file} into memory at address \angb{address}. The address
 must be cell-aligned; if it is not, or if the module would not fit in memory
 at the address given, or there is some filing error, an error message is
