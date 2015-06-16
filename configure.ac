@@ -11,12 +11,12 @@ if test "$GCC" = yes; then
 fi
 gl_EARLY
 AC_PROG_RANLIB
-AX_WITH_PROG(LATEXMK, latexmk, true)
+AX_WITH_PROG(RUBBER, rubber, true)
 
 dnl Valgrind
 AX_WITH_PROG(VALGRIND, valgrind)
 if test -n "$VALGRIND"; then
-  VALGRIND="$VALGRIND --error-exitcode=1 --leak-check=full"
+  VALGRIND="$VALGRIND -q --error-exitcode=1 --leak-check=full"
 fi
 
 dnl Check for header files

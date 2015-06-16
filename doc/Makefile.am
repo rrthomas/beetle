@@ -1,6 +1,6 @@
 # Docs Makefile.am
 
-PAPER_SRCS = \
+LATEX_SRCS = \
 	$(srcdir)/beetle.tex \
 	$(srcdir)/cbeetle.tex \
 	$(srcdir)/uiface.tex \
@@ -8,7 +8,7 @@ PAPER_SRCS = \
 	$(srcdir)/litencode.tex \
 	$(srcdir)/tradeoffs.tex
 
-PAPER_PDFS = \
+LATEX_PDFS = \
 	$(builddir)/beetle.pdf \
 	$(builddir)/cbeetle.pdf \
 	$(builddir)/uiface.pdf \
@@ -18,16 +18,14 @@ PAPER_PDFS = \
 
 all: pdf
 
-pdf-local: $(PAPER_PDFS)
+pdf-local: $(LATEX_PDFS)
 
-mostlyclean-local:
-	$(LATEXMK) -c $(PAPER_SRCS)
+MAINTAINERCLEANFILES = $(LATEX_PDFS)
 
-# This would be clean-local, but we distribute the PDFs
-maintainer-clean-local:
-	$(LATEXMK) -C $(PAPER_SRCS)
+clean-local:
+	$(RUBBER) --clean $(LATEX_SRCS)
 
-EXTRA_DIST = $(PAPER_SRCS) $(PAPER_PDFS)
+EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS)
 
 .tex.pdf:
-	$(LATEXMK) -pdf $<
+	$(RUBBER) --pdf $<
