@@ -7,7 +7,7 @@
 
 This package comprises the definition of the Beetle virtual machine, a
 virtual machine specialised for the execution of Forth, an
-implementation in ISO C 99 using POSIX APIs, and a simple Forth
+implementation in ISO C99 using POSIX APIs, and a simple Forth
 compiler, mForth for Beetle v0.02. Detailed documentation is in the
 doc directory; installation instructions follow.
 
