@@ -1,5 +1,6 @@
 *.o
 *~
+*.synctex.gz
 /beetle*.tar.gz
 Makefile
 Makefile.in
