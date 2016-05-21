@@ -1,8 +1,8 @@
 /* LINKT.C
 
-    (c) Reuben Thomas 1995-2011
+    (c) Reuben Thomas 1995-2016
 
-    Test the LINK instruction. FIXME: Assumes 32-bit addresses.
+    Test the LINK instruction.
 
 */
 
@@ -30,7 +30,7 @@ int main(void)
 
     here = EP;	/* start assembling at 16 */
     start_ass();
-    ass(O_LITERAL); lit((CELL)(test)); ass(O_LINK); ass(O_ZERO); ass(O_HALT);
+    plit(test); ass(O_LINK); ass(O_ZERO); ass(O_HALT);
     end_ass();
 
     NEXT;   /* load first instruction word */

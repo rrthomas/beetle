@@ -229,8 +229,10 @@ flag.
 \item[{\tt B\_FALSE}:] a cell with all bits clear, which Beetle uses as a
 false flag.
 \item[{\tt CELL\_W}:] the width of a cell in bytes (4).
+\item[{\tt POINTER\_W}:] the width of a machine pointer in cells.
 \item[{\tt NEXT}:] a macro which performs the action of the {\tt NEXT}
 instruction.
+\item[{\tt CELL\_pointer}:] a union with members {\tt CELL cells[POINTER\_W]} and {\tt void (*pointer)(void)}, which allow a function pointer suitable for the {\tt LINK} instruction to be easily stored and retrieved. It is assumed that the pointer is pushed on to the stack starting with {\tt cells[0]} and ending with {\tt cells[POINTER\_W~$-$~1]}.
 \end{description}
 
 

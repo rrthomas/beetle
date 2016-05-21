@@ -1,6 +1,6 @@
 /* BEETLE.H
 
-    (c) Reuben Thomas 1994-2011
+    (c) Reuben Thomas 1994-2016
 
     Header for C Beetle containing all the data structures and interface
     calls specified in the definition of Beetle. This is the header file to
@@ -54,12 +54,19 @@ CELL single_step(void);
 int load_object(FILE *file, CELL *address);
 int save_object(FILE *file, CELL *address, UCELL length);
 
-/* Additional routines, macros and quantities provided by C Beetle */
+/* Additional routines, macros, types and quantities provided by C Beetle */
 int init_beetle(BYTE *b_array, size_t size, UCELL e0);
 
 #define B_TRUE ((CELL)0xFFFFFFFF)   /* Beetle's TRUE flag */
 #define B_FALSE ((CELL)0)           /* Beetle's FALSE flag */
 #define CELL_W 4    /* the width of a cell in bytes */
+#define POINTER_W (sizeof(void *) / CELL_W)   /* the width of a machine pointer in cells */
+
+/* A union to allow storage of machine pointers in Beetle's memory */
+typedef union {
+    CELL cells[POINTER_W];
+    void (*pointer)(void);
+} CELL_pointer;
 
 #define NEXT A = *EP++
 
@@ -81,11 +88,6 @@ int init_beetle(BYTE *b_array, size_t size, UCELL e0);
 #define FDIV(a, b) ((a) / (b) - ((((a) ^ (b)) < 0) && ((a) % (b)) != 0))
 #define FMOD(a, b, t) (t = (a) % (b), (((a) ^ (b)) >= 0 || t == 0)) ? t : \
   SGN(b) * (ABS(b)-ABS(t))
-
-/* A macro to call the function pointed to by the top item(s) on Beetle's
-   data stack and increment the stack pointer to drop the pointer */
-/* FIXME: This will only work on 32-bit machines. */
-#define LINK SP++; (*(void (*)(void))*(SP - 1))()
 
 
 #endif

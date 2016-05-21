@@ -1,6 +1,6 @@
 /* DEBUG.H
 
-    (c) Reuben Thomas 1994-1995
+    (c) Reuben Thomas 1994-2016
 
     Header for debug.c.
 
@@ -25,6 +25,8 @@ extern CELL *R0;    /* pointer to base of return stack */
 void ass(BYTE instr);	/* assemble an instruction */
 void lit(CELL literal);	/* assemble a cell literal */
 void ilit(CELL literal);    /* assemble an immediate literal */
+void plit(void (*literal)(void));  /* assemble a machine-dependent function pointer literal,
+                                      including the relevant LITERAL instructions. */
 void start_ass(void);	/* start assembly, initialising variables */
 void end_ass(void);  /* end assembly, storing any pending instructions */
 const char *disass(BYTE opcode);  /* disassemble an instruction */

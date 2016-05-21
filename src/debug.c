@@ -47,6 +47,17 @@ void ilit(CELL literal)
     icell = 0;  ibytes = 0;
 }
 
+void plit(void (*literal)(void))
+{
+    CELL_pointer address;
+    unsigned i;
+    address.pointer = literal;
+    for (i = 0; i < POINTER_W; i++) {
+        ass(O_LITERAL);
+        lit(address.cells[i]);
+    }
+}
+
 void start_ass(void)
 {
     ibytes = 0;  icell = 0;  current = here++;

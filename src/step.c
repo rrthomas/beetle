@@ -1,6 +1,6 @@
 /* STEP.C
 
-    (c) Reuben Thomas 1994-2011
+    (c) Reuben Thomas 1994-2016
 
     The interface call single_step() : integer.
 
@@ -568,8 +568,15 @@ CELL single_step(void)
     case O_OS:
         break;
     case O_LINK:
-        CHECKA(SP);
-        LINK;
+        {
+            CELL_pointer address;
+            int i;
+            for (i = POINTER_W - 1; i >= 0; i--) {
+                CHECKA(SP);
+                address.cells[i] = *SP++;
+            }
+            address.pointer();
+        }
         break;
     case O_RUN:
         break;
