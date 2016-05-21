@@ -179,7 +179,7 @@ static void disassemble(CELL start, CELL end)
             } else {
                 if (imm_op(i)) {
                     if (i != O_LITERALI)
-                        printf(" %"PRIX32"h", a * 4 + ((BYTE *)p - M0));
+                        printf(" %"PRIX32"h", a * 4 + (CELL)((BYTE *)p - M0));
                     else
                         printf(" %"PRId32" (%"PRIX32"h)", a, a);
                     a = 0;
@@ -687,7 +687,7 @@ static void do_command(int no)
                     }
                     if (ret != 0)
                         printf("HALT code %"PRId32" was returned at EP = %Xh ",
-                               ret, (BYTE *)EP - M0);
+                               ret, (CELL)((BYTE *)EP - M0));
                 } else {
                     limit = single_arg(arg);
                     if (debug)
@@ -787,7 +787,6 @@ static CELL mem[MEMSIZE];
 int main(int argc, char *argv[])
 {
     char input[MAXLEN], *nl;
-    long i;
 
     if (argc > 2) {
         printf("Usage: beetle [OBJECT]\n");
