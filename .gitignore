@@ -9,7 +9,9 @@ TAGS
 /INSTALL
 /README.dg
 /aclocal.m4
+/ar-lib
 /autom4te.cache
+/compile
 /config.log
 /config.status
 /configure
@@ -17,3 +19,4 @@ TAGS
 /missing
 /depcomp
 /lib
+/test-driver

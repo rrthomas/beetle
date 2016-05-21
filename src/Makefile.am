@@ -13,6 +13,8 @@ bin_PROGRAMS = beetle
 beetle_LDADD = libbeetle.a
 beetle_SOURCES = beetle.c
 
+check-local: libbeetle.a
+
 CLOC = cloc --force-lang="C",h
 
 loc:
