@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <inttypes.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -784,14 +785,23 @@ static void parse(char *input)
 
 static CELL mem[MEMSIZE];
 
+static void die(char *format, ...)
+{
+    va_list args;
+
+    va_start(args, format);
+    fprintf(stderr, "beetle: ");
+    vfprintf(stderr, format, args);
+    fprintf(stderr, "\n");
+    exit(1);
+}
+
 int main(int argc, char *argv[])
 {
     char input[MAXLEN], *nl;
 
-    if (argc > 2) {
-        printf("Usage: beetle [OBJECT]\n");
-        exit(1);
-    }
+    if (argc > 2)
+        die("Usage: beetle [OBJECT]");
 
     init_beetle((BYTE *)mem, MEMSIZE, 16);
     S0 = SP;
@@ -800,15 +810,14 @@ int main(int argc, char *argv[])
     A = 0;
 
     if (argc == 2) {
-        FILE *handle;
-        int ret;
-
-        handle = fopen(argv[1], "r");
+        FILE *handle = fopen(argv[1], "r");
+        if (handle == NULL)
+            die("cannot not open file %s", argv[1]);
         load_object(handle, (CELL *)(M0 + 16));
         fclose(handle);
 
         init_keyb();
-        ret = run();
+        int ret = run();
         restore_keyb();
 
         return ret;
