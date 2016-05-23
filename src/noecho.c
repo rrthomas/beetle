@@ -1,7 +1,7 @@
 /* NOECHO.C
 
     (c) Martin Richards 2004 (and certainly earlier)
-    (c) Reuben Thomas 1995-2011
+    (c) Reuben Thomas 1995-2016
 
     void init_keyb(void)  initialises the keyboard interface.
     void restore_keyb(void) restores the keyboard to its original state.
@@ -33,7 +33,7 @@ int init_keyb(void)
     tattr.c_lflag &= ~(ICANON | ECHO);   /* Clear ICANON and ECHO */
     tattr.c_cc[VMIN] = 1;
     tattr.c_cc[VTIME] = 0;
-    tcsetattr (STDIN_FILENO, TCSAFLUSH, &tattr);
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &tattr);
 
     setbuf(stdout, NULL);
 
