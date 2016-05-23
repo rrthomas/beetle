@@ -1,6 +1,6 @@
 /* BEETLE.C
 
-    (c) Reuben Thomas 1995-2011
+    (c) Reuben Thomas 1995-2016
 
     A user interface for Beetle.
 
