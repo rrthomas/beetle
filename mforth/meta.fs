@@ -8,9 +8,7 @@
    R@ WRITE-FILE DROP
    DUP CELL/ SCRATCH TUCK !  CELL R@ WRITE-FILE DROP
    R@ WRITE-FILE DROP            \ write data
-   R> CLOSE-FILE DROP            \ close file
-   C0END R1!  18 R0!  [ HEX ] FFD [ DECIMAL ] R2!  [ 8 ] OS ;
-                                 \ set filetype to Data
+   R> CLOSE-FILE DROP ;          \ close file
 
 \ Create bForth assembler primitives
 : PRIMITIVES   ( +n -- )

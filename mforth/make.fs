@@ -1,8 +1,7 @@
 \ Compile mForth under aForth
-\ Reuben Thomas   15/4/96-9/4/99
+\ Reuben Thomas   15/4/96-24/5/16
 
 
-CHARS TUCK  PAD 19 +  SWAP CMOVE
 CR .( Metacompiling mForth for Beetle: )
 
 INCLUDE assembler/fs
