@@ -687,7 +687,7 @@ static void do_command(int no)
                         count[I]++;
                     }
                     if (ret != 0)
-                        printf("HALT code %"PRId32" was returned at EP = %Xh ",
+                        printf("HALT code %"PRId32" was returned at EP = %Xh\n",
                                ret, (CELL)((BYTE *)EP - M0));
                 } else {
                     limit = single_arg(arg);
