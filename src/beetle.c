@@ -660,7 +660,7 @@ static void do_command(int no)
         {
             char *arg = strtok(NULL, " ");
             unsigned long i, limit;
-            CELL ret = 0;
+            CELL ret = -260;
 
             if (arg == NULL) {
                 if (debug)
@@ -681,7 +681,7 @@ static void do_command(int no)
                         return;
                     if (debug)
                         printf("STEP TO %lX\n", limit);
-                    while ((unsigned long)((BYTE *)EP - M0) != limit && ret == 0) {
+                    while ((unsigned long)((BYTE *)EP - M0) != limit && ret == -260) {
                         ret = single_step();
                         if (no == c_TRACE) do_registers();
                         count[I]++;
@@ -693,7 +693,7 @@ static void do_command(int no)
                     limit = single_arg(arg);
                     if (debug)
                         printf("STEP for %lu instructions\n", limit);
-                    for (i = 0; i < limit && ret == 0; i++) {
+                    for (i = 0; i < limit && ret == -260; i++) {
                         ret = single_step();
                         if (no == c_TRACE) do_registers();
                         count[I]++;
