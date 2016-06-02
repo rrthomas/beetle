@@ -26,15 +26,9 @@ twos complement arithmetic.
 
 Beetle has been tested on GNU/Linux with GNU C.
 
-Previous releases were known to work on Acorn RISC OS, Digital UNIX
-V3.2, UNIX System V Release 4.0, ULTRIX 4.3, NetBSD 1.2, MSDOS, and
-Atari TOS.
-
-Beetle has also been tested on Atari TOS with Prospero C, and works
-after a workaround has been applied to the program to cope with a bug
-in the compiler's unsigned division routines. I believe that it would
-work fine with GNU C, but I would particularly appreciate a report
-from anyone who finds that it does.
+Previous releases were known to work on Acorn RISC OS 3, Digital UNIX
+V3.2, UNIX System V Release 4.0, ULTRIX 4.3, NetBSD 1.2, MSDOS 6, and
+Atari TOS 1.4.
 
 Reports on compatibility, whether positive or negative, are welcomed.
 
