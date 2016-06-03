@@ -1,6 +1,6 @@
 # Tests Makefile.am
 
-AM_CPPFLAGS = -I$(srcdir)/..
+AM_CPPFLAGS = -I$(srcdir)/.. -I$(top_builddir)/lib -I$(top_srcdir)/lib
 
 LDADD = $(top_builddir)/src/libbeetle.a
 

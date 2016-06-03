@@ -77,6 +77,6 @@ dnl Check features
 AC_C_BIGENDIAN
 
 dnl Generate output files
-AC_CONFIG_HEADER(src/config.h)
-AC_CONFIG_FILES(Makefile lib/Makefile doc/Makefile src/Makefile src/tests/Makefile)
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_FILES([Makefile lib/Makefile doc/Makefile src/Makefile src/tests/Makefile])
 AC_OUTPUT

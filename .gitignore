@@ -13,6 +13,8 @@ TAGS
 /autom4te.cache
 /build-aux
 /compile
+/config.h
+/config.h.in
 /config.log
 /config.status
 /configure
@@ -21,4 +23,5 @@ TAGS
 /depcomp
 /gnulib
 /lib
+/stamp-h1
 /test-driver
