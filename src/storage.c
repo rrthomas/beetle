@@ -29,7 +29,7 @@ UCELL ADDRESS;	/* -ADDRESS is not a valid C identifier */
 int init_beetle(BYTE *b_array, size_t size, UCELL e0)
 {
     if (e0 & 3 || e0 >= size * CELL_W)
-      return 1;
+        return 1;
 
     M0 = (BYTE *)b_array;
     EP = (CELL *)(M0 + e0);
