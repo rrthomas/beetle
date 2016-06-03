@@ -12,7 +12,7 @@
 
 % Alter some default parameters for general typesetting
 
-%\emergencystretch=7pt
+%\emergencystretch=7pt FIXME
 
 \frenchspacing
 
@@ -24,9 +24,9 @@
 \newcommand{\angb}[1]{$\langle #1\rangle$}
 
 
-\title{A simple user-interface for the Beetle virtual machine}
+\title{A simple user-interface for the\\Beetle virtual machine}
 \author{Reuben Thomas}
-\date{23rd May 2016}
+\date{3rd June 2016}
 
 \begin{document}
 \maketitle
@@ -51,24 +51,20 @@ and single-stepping.
 As supplied, the program consists of one C file, {\tt beetle.c}, which
 is part of the C Beetle distribution, and is compiled when the entire
 distribution is made, resulting in the executable file {\tt beetle}.
-It can be made separately as the Make target {\tt beetle}. {\tt
-  beetle} is a command which takes one optional parameter: the name of
-an object file. If supplied, the given object file is loaded and run.
+It can be made separately as the Make target {\tt beetle}. Run {\tt beetle --help} to see its syntax; most importantly, if given a single parameter, the name of an object file, the file is loaded and run.
 
 
 \section{Initialisation}
 \label{uifaceinit}
 
-When the user-interface is started, an embedded Beetle with 16384 cells of
-memory is created. The registers which are set to system-dependent values are
-initialised as shown in table~\ref{uinittable}.
+When the user-interface is started, an embedded Beetle is created, by default with $1,048,576$ cells of memory (4Mb); a different amount may be specified with the \verb|--memory| option. The registers which are set to system-dependent values are initialised as shown in table~\ref{uinittable}.
 
 \begin{table}[htbp]
 \begin{center}
 \begin{tabular}{|c|c|} \hline
 \rule[-2mm]{0mm}{6mm}\bf Register & \bf Initial value \\ \hline
 {\tt EP} & 10h \\
-{\tt MEMORY} & 10000h \\
+{\tt MEMORY} & \emph{see above} \\
 {\tt 'THROW} & 0h \\ \hline
 \end{tabular}
 \caption{\label{uinittable}Registers with system-dependent initial values}

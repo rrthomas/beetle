@@ -32,6 +32,14 @@ Atari TOS 1.4.
 
 Reports on compatibility, whether positive or negative, are welcomed.
 
+To build Beetle from a release tarball, run
+
+./configure && make && make check
+
+If building from a Git repository, first run
+
+./bootstrap
+
 
 mForth
 ------
