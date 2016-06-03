@@ -549,7 +549,7 @@ static void do_command(int no)
                 printf("Dump memory from %lX to %lX\n", start, end);
             while (start < end) {
                 printf("%08lXh: ", start);
-                for (i = 0; i < 8 && start < end; i++, start++)
+                for (int i = 0; i < 8 && start < end; i++, start++)
                     printf("%02X ", M0[start]);
                 putchar('\n');
             }
@@ -558,10 +558,8 @@ static void do_command(int no)
     case c_FROM:
         {
             char *arg = strtok(NULL, " ");
-            long adr;
-
             if (arg != NULL) {
-                adr = single_arg(arg);
+                long adr = single_arg(arg);
                 if (range(adr, MEMORY, "EP"))
                     return;
                 if (adr & 3) {
@@ -580,11 +578,10 @@ static void do_command(int no)
     case c_INITIALISE:
     case c_LOAD:
         {
-            long i;
             if (debug)
                 printf("Initialise Beetle\n");
-            for (i = 0; i < memory_size; i++) ((CELL*)M0)[i] = 0;
-            for (i = 0; i < 256; i++) count[i] = 0;
+            for (long i = 0; i < memory_size; i++) ((CELL*)M0)[i] = 0;
+            for (long i = 0; i < 256; i++) count[i] = 0;
             init_beetle(M0, memory_size, 16);
             S0 = SP;
             R0 = RP;
