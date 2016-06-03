@@ -3,14 +3,13 @@
 SUBDIRS = tests
 
 AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib
-LDADD = $(top_builddir)/lib/libgnu.a
 
 noinst_LIBRARIES = libbeetle.a
-libbeetle_a_SOURCES = storage.c tests.c step.c run.c lib.c debug.c loadobj.c saveobj.c noecho.c \
-	beetle.h debug.h lib.h noecho.h opcodes.h tests.h
+libbeetle_a_SOURCES = storage.c step.c run.c lib.c debug.c loadobj.c saveobj.c noecho.c \
+	beetle.h debug.h lib.h noecho.h opcodes.h
 
 bin_PROGRAMS = beetle
-beetle_LDADD = libbeetle.a
+beetle_LDADD = libbeetle.a $(top_builddir)/lib/libgnu.a
 beetle_SOURCES = beetle.c
 
 check-local: libbeetle.a

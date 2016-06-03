@@ -1,16 +1,15 @@
 /* RUN.C
 
-    (c) Reuben Thomas 1994-1997
+    (c) Reuben Thomas 1994-2016
 
     The interface call run() : integer.
 
 */
 
 
-#include <stdio.h>
+#include "config.h"
+
 #include "beetle.h"     /* main header */
-#include "opcodes.h"	/* opcode enumeration */
-#include "lib.h"        /* lib function */
 
 
 CELL run(void)

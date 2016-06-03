@@ -1,11 +1,13 @@
 /* LOADOBJ.C
 
-    (c) Reuben Thomas 1995-1996
+    (c) Reuben Thomas 1995-2016
 
     The interface call load_object(file, address) : integer.
 
 */
 
+
+#include "config.h"
 
 #include <stdio.h>
 #include <string.h>

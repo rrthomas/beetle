@@ -1,11 +1,13 @@
 /* LIB.C
 
-    (c) Reuben Thomas 1995-2011
+    (c) Reuben Thomas 1995-2016
 
     Beetle's standard library.
 
 */
 
+
+#include "config.h"
 
 #include <stdio.h>
 #include "beetle.h"     /* main header */

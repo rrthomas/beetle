@@ -1,6 +1,6 @@
 /* STORAGE.C
 
-    (c) Reuben Thomas 1994-2011
+    (c) Reuben Thomas 1994-2016
 
     Allocate storage for the registers and memory.
 
@@ -9,7 +9,6 @@
 
 #include <stdlib.h>
 #include "beetle.h"	/* main header */
-#include "tests.h"	/* compiler tests */
 
 
 /* Beetle's registers */
@@ -29,8 +28,6 @@ UCELL ADDRESS;	/* -ADDRESS is not a valid C identifier */
 
 int init_beetle(BYTE *b_array, size_t size, UCELL e0)
 {
-    if (tests()) /* ensure Beetle was compiled properly */
-      exit(1);
     if (e0 & 3 || e0 >= size * CELL_W)
       return 1;
 

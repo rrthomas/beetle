@@ -1,11 +1,13 @@
 /* DEBUG.C
 
-    (c) Reuben Thomas 1994-2011
+    (c) Reuben Thomas 1994-2016
 
     Functions useful for debugging Beetle.
 
 */
 
+
+#include "config.h"
 
 #include <stdio.h>
 #include <string.h>

@@ -1,5 +1,6 @@
 *.o
 *~
+/.gitmodules
 /beetle*.tar.gz
 Makefile
 Makefile.in
@@ -10,6 +11,7 @@ TAGS
 /aclocal.m4
 /ar-lib
 /autom4te.cache
+/build-aux
 /compile
 /config.log
 /config.status
@@ -17,5 +19,6 @@ TAGS
 /install-sh
 /missing
 /depcomp
+/gnulib
 /lib
 /test-driver

@@ -18,6 +18,9 @@
 #include <stdio.h>      /* for the FILE type */
 #include <stdint.h>
 
+#include "intprops.h"
+#include "verify.h"
+
 
 /* Types required by CBeetle: BYTE should be an unsigned eight-bit quantity,
    CELL a signed four-byte quantity, and UCELL an unsigned CELL. */
@@ -25,6 +28,9 @@ typedef uint8_t BYTE;
 typedef int32_t CELL;
 typedef uint32_t UCELL;
 
+/* Check that int32_t seems to be two's complement. */
+verify (TYPE_MINIMUM(CELL) == INT32_MIN);
+verify (TYPE_MAXIMUM(CELL) == INT32_MAX);
 
 /* Beetle's registers */
 
