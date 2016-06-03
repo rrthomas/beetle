@@ -15,9 +15,14 @@
 #include <inttypes.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <errno.h>
 #include <ctype.h>
 #include <string.h>
 #include <setjmp.h>
+#include <getopt.h>
+
+#include "progname.h"
+#include "xvasprintf.h"
 
 #include "beetle.h"
 #include "opcodes.h"
@@ -29,7 +34,9 @@
 /* FIXME: Have command-line and command control over this. */
 bool debug = false;
 
-#define MEMSIZE 16384	/* size of Beetle's memory in cells */
+#define DEFAULT_MEMORY 1048576 // Default size of Beetle's memory in cells (4Mb)
+#define MAX_MEMORY 1073741824 // maximum size of memory (4Gb)
+static UCELL memory_size = DEFAULT_MEMORY; // Size of Beetle's memory in cells
 
 #define MAXLEN 80   /* maximum input line length */
 
@@ -574,9 +581,9 @@ static void do_command(int no)
             long i;
             if (debug)
                 printf("Initialise Beetle\n");
-            for (i = 0; i < MEMSIZE; i++) ((CELL*)M0)[i] = 0;
+            for (i = 0; i < memory_size; i++) ((CELL*)M0)[i] = 0;
             for (i = 0; i < 256; i++) count[i] = 0;
-            init_beetle(M0, MEMSIZE, 16);
+            init_beetle(M0, memory_size, 16);
             S0 = SP;
             R0 = RP;
             *THROW = 0;
@@ -785,8 +792,6 @@ static void parse(char *input)
 }
 
 
-static CELL mem[MEMSIZE];
-
 static void die(char *format, ...)
 {
     va_list args;
@@ -798,21 +803,107 @@ static void die(char *format, ...)
     exit(1);
 }
 
+/* Options table */
+struct option longopts[] = {
+#define D(text)
+#define O(longname, shortname, arg, argstring, docstring) \
+  {longname, arg, NULL, shortname},
+#define A(argstring, docstring)
+#include "tbl_opts.h"
+#undef D
+#undef O
+#undef A
+  {0, 0, 0, 0}
+};
+
+#define BEETLE_VERSION_STRING "Beetle shell (C Beetle release "PACKAGE_VERSION")"
+#define BEETLE_COPYRIGHT_STRING "(c) Reuben Thomas 1995-2016"
+
+void usage(void)
+{
+    char *shortopt, *buf;
+    printf ("Usage: %s [OPTION...] [FILENAME]\n"
+            "\n"
+            "Run " PACKAGE_NAME ".\n"
+            "\n",
+            program_name);
+#define D(text)                                 \
+    printf(text "\n");
+#define O(longname, shortname, arg, argstring, docstring)               \
+    shortopt = xasprintf(", -%c", shortname);                           \
+    buf = xasprintf("--%s%s %s", longname, shortname ? shortopt : "", argstring); \
+    printf("%-24s%s\n", buf, docstring);
+#define A(argstring, docstring)                 \
+    printf("%-24s%s\n", argstring, docstring);
+#include "tbl_opts.h"
+#undef D
+#undef O
+#undef A
+    printf("\n"
+           "Report bugs to " PACKAGE_BUGREPORT ".\n");
+}
+
 int main(int argc, char *argv[])
 {
     char input[MAXLEN], *nl;
 
-    if (argc > 2)
-        die("Usage: beetle [OBJECT]");
+    set_program_name(argv[0]);
 
-    init_beetle((BYTE *)mem, MEMSIZE, 16);
+    // Leading ':' so as to return ':' for a missing arg, not '?'
+    for (;;) {
+        int this_optind = optind ? optind : 1, longindex;
+        int c = getopt_long(argc, argv, ":m:", longopts, &longindex);
+
+        if (c == -1)
+            break;
+        else if (c == ':')
+            die("option '%s' requires an argument", argv[this_optind]);
+        else if (c == '?')
+            die("unrecognised option '%s'\nTry '%s --help' for more information.", argv[this_optind], program_name);
+        else switch (longindex) {
+            case 0:
+                {
+                    char *endptr;
+                    errno = 0;
+                    MEMORY = strtol(optarg, &endptr, 10);
+                    if (*optarg == '\0' || *endptr != '\0' || MEMORY <= 0 || MEMORY > MAX_MEMORY)
+                        die("memory size must be a positive number up to %"PRIu32, MAX_MEMORY);
+                    break;
+                }
+            case 1:
+                usage();
+                exit(EXIT_SUCCESS);
+            case 2:
+                printf(PACKAGE_NAME " " VERSION "\n"
+                       BEETLE_COPYRIGHT_STRING "\n"
+                       PACKAGE_NAME " comes with ABSOLUTELY NO WARRANTY.\n"
+                       "You may redistribute copies of " PACKAGE_NAME "\n"
+                       "under the terms of the GNU General Public License.\n"
+                       "For more information about these matters, see the file named COPYING.\n");
+                exit(EXIT_SUCCESS);
+            default:
+                break;
+            }
+    }
+
+    BYTE *mem;
+    if ((mem = (BYTE *)(CELL *)calloc(memory_size, sizeof(CELL))) == NULL)
+        die("Could not allocate %ld cells of memory");
+
+    argc -= optind;
+    if (argc > 1) {
+        usage();
+        exit(EXIT_FAILURE);
+    }
+
+    init_beetle(mem, memory_size, 16);
     S0 = SP;
     R0 = RP;
     *THROW = 0;
     A = 0;
 
-    if (argc == 2) {
-        FILE *handle = fopen(argv[1], "r");
+    if (argc == 1) {
+        FILE *handle = fopen(argv[optind], "r");
         if (handle == NULL)
             die("cannot not open file %s", argv[1]);
         load_object(handle, (CELL *)(M0 + 16));
@@ -825,7 +916,7 @@ int main(int argc, char *argv[])
         return ret;
     }
 
-    printf("Beetle shell (C Beetle release "PACKAGE_VERSION")\n(c) Reuben Thomas 1995-2016\n\n");
+    printf("%s\n%s\n\n", BEETLE_VERSION_STRING, BEETLE_COPYRIGHT_STRING);
 
     while (1) {
         if (setjmp(env) == 0) {
