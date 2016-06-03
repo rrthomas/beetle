@@ -18,6 +18,7 @@
 #define MEMORY_MESSAGE "set MEMORY to the given NUMBER of cells\n" \
   "                        0 < NUMBER <= " str(MAX_MEMORY) " [default " str(DEFAULT_MEMORY) "]"
 O("memory", 'm', required_argument, "NUMBER", MEMORY_MESSAGE)
+O("debug", '\0', no_argument, "", "enable debugging output")
 O("help", '\0', no_argument, "", "display this help message and exit")
 O("version", '\0', no_argument, "", "display version information and exit")
 A("FILE", "load and run object FILE")

@@ -30,9 +30,7 @@
 #include "noecho.h"
 
 
-/* User interface debug control */
-/* FIXME: Have command-line and command control over this. */
-bool debug = false;
+bool debug = false; // User interface debug control
 
 #define DEFAULT_MEMORY 1048576 // Default size of Beetle's memory in cells (4Mb)
 #define MAX_MEMORY 1073741824 // maximum size of memory (4Gb)
@@ -43,18 +41,18 @@ static UCELL memory_size = DEFAULT_MEMORY; // Size of Beetle's memory in cells
 static jmp_buf env;
 
 static char *command[] = { ">D", ">R", "COUNTS", "DISASSEMBLE", "D>", "DATA",
-    "DUMP", "FROM", "INITIALISE", "LOAD", "QUIT", "REGISTERS", "R>", "RETURN",
-    "RUN", "STEP", "SAVE", "STACKS", "TRACE" };
-enum commands { c_TOD, c_TOR, c_COUNTS, c_DISASSEMBLE, c_DFROM, c_DATA, c_DUMP,
-    c_FROM, c_INITIALISE, c_LOAD, c_QUIT, c_REGISTERS, c_RFROM, c_RETURN, c_RUN,
-    c_STEP, c_SAVE, c_STACKS, c_TRACE };
-static int commands = 19;
+    "DEBUG", "DUMP", "FROM", "INITIALISE", "LOAD", "QUIT", "REGISTERS", "R>",
+    "RETURN", "RUN", "STEP", "SAVE", "STACKS", "TRACE" };
+enum commands { c_TOD, c_TOR, c_COUNTS, c_DISASSEMBLE, c_DFROM, c_DATA,
+    c_DEBUG, c_DUMP, c_FROM, c_INITIALISE, c_LOAD, c_QUIT, c_REGISTERS, c_RFROM,
+    c_RETURN, c_RUN, c_STEP, c_SAVE, c_STACKS, c_TRACE };
+static int commands = sizeof(command) / sizeof(*command);
 
 static char *regist[] = { "A", "-ADDRESS", "'BAD", "CHECKED", "ENDISM", "EP", "I",
     "M0", "MEMORY", "RP", "R0", "SP", "S0", "'THROW" };
 enum registers { r_A, r_ADDRESS, r_BAD, r_CHECKED, r_ENDISM, r_EP, r_I,
     r_M0, r_MEMORY, r_RP, r_R0, r_SP, r_S0, r_THROW };
-static int registers = 14;
+static int registers = sizeof(regist) / sizeof(*regist);
 
 static long count[256] = { 0 };
 
@@ -531,11 +529,15 @@ static void do_command(int no)
         if (no == c_STACKS)
             goto c_ret;
         break;
+    case c_DEBUG:
+        {
+            char *arg = strtok(NULL, " ");
+            debug = arg ? (bool)single_arg(arg) : !debug;
+        }
+        break;
     case c_DUMP:
         {
             long start, end;
-            int i;
-
             double_arg(strtok(NULL, ""), &start, &end);
             if (range(start, MEMORY, "Address")) return;
             if (range(end, MEMORY, "Address")) return;
