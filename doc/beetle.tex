@@ -116,10 +116,10 @@ stated. Addresses are written in hexadecimal; all hex numbers are followed by
 \section{Introduction}
 
 Beetle is a simple virtual machine designed to enable the easy implementation
-of ANS Forth compilers, such as pForth \cite{beetledis}, on different systems.
+of ANS Forth compilers, such as pForth~\cite{beetledis}, on different systems.
 It has twelve registers, two stacks, and an instruction set, called bForth, of
 ninety-two instructions. The instruction set is based on the Core Word Set of
-ANS Forth \cite{ANSIforth}. This paper gives a full description of Beetle, but
+ANS Forth~\cite{ANSIforth}. This paper gives a full description of Beetle, but
 certain implementation-dependent features, such as the size of the stacks, are
 purposely left unspecified, and the exact method of implementation is left to
 the implementor in many particulars.
@@ -136,8 +136,8 @@ A small interface is provided for other programs wishing to control Beetle.
 Since Beetle is heavily oriented towards supporting Forth compilers, it is
 useful to understand how Forth compilers operate in order to understand Beetle
 and to use it properly. An excellent introduction to Forth and Forth compilers
-is \cite{starting4th}. An overview of the language and its compilers is also
-provided in \cite{ANSIforth}. For an implementation of Beetle, see \cite{cbeetle}.
+is~\cite{starting4th}. An overview of the language and its compilers is also
+provided in~\cite{ANSIforth}. For an implementation of Beetle, see~\cite{cbeetle}.
 
 
 \section{Architecture}
@@ -329,7 +329,7 @@ exception codes, and $-256$ to $-511$ for Beetle's own exception codes; the mean
 of those that may be raised by Beetle are shown in table~\ref{excepttable}. ANS
 Forth compilers may raise other exceptions in the range $-1$ to $-255$ and
 additionally reserve exceptions $-512$ to $-4095$ for their own exceptions
-(see \cite[section 9.3.1]{ANSIforth}).
+(see~\cite[section 9.3.1]{ANSIforth}).
 
 \begin{table}[htbp]
 \begin{center}
@@ -730,6 +730,7 @@ These instructions give access to Beetle's exception mechanisms.
 \subsection{Miscellaneous}
 \label{miscinst}
 
+% FIXME: rename to EP@? Do we need EP!?
 {\tt (CREATE)} implements part of the Forth {\tt CREATE}\dots{\tt DOES>}
 construct. {\tt NEXT} performs an instruction fetch when Beetle runs out of
 instructions in the {\tt A} register.
@@ -1000,20 +1001,20 @@ is passed to {\tt LIB} to call the routine.
 \begin{description}
 \instp{BL}{b-l}{0}{-- char}{\spic{char} is the character value for a space.}
 \instp{CR}{c-r}{1}{--}{Cause subsequent output to appear at the beginning of the next line.}
-\inst{EMIT}{2}{x --}{If \spic{x} is a graphic character in the implementation-defined character set, display \spic{x}. The effect of {\tt EMIT} for all other values of \spic{x} is implementation-defined. When passed a character whose character-defining bits have a value between 20h and 7Eh inclusive, the corresponding character from the ASCII code \cite{ASCII} is displayed.}
-\inst{KEY}{3}{-- char}{Receive one character \spic{char}, a member of the implementation-defined character set. Keyboard events that do not correspond to such characters are discarded until a valid character is received, and those events are subsequently unavailable. Any standard character returned by {\tt KEY} has the numeric value specified by the ASCII code \cite{ASCII}.}
+\inst{EMIT}{2}{x --}{If \spic{x} is a graphic character in the implementation-defined character set, display \spic{x}. The effect of {\tt EMIT} for all other values of \spic{x} is implementation-defined. When passed a character whose character-defining bits have a value between 20h and 7Eh inclusive, the corresponding character from the ASCII code~\cite{ASCII} is displayed.}
+\inst{KEY}{3}{-- char}{Receive one character \spic{char}, a member of the implementation-defined character set. Keyboard events that do not correspond to such characters are discarded until a valid character is received, and those events are subsequently unavailable. Any standard character returned by {\tt KEY} has the numeric value specified by the ASCII code~\cite{ASCII}.}
 \end{description}
 
 For more precise information on the behaviour of the library calls, see the
-descriptions of the corresponding words in \cite[chapter 6]{ANSIforth}.
+descriptions of the corresponding words in~\cite[chapter 6]{ANSIforth}.
 
 
 \section*{Acknowledgements}
 
-Leo Brodie's marvellous books \cite{starting4th,thinking4th} turned my abstract
+Leo Brodie's marvellous books~\cite{starting4th,thinking4th} turned my abstract
 enthusiasm for a mysterious language into actual knowledge and appreciation.
 
-I have taken or extrapolated the pronunciations of Forth words from \cite{ANSIforth}.
+I have taken or extrapolated the pronunciations of Forth words from~\cite{ANSIforth}.
 
 Martin Richards's demonstration of his BCPL-oriented Cintcode virtual machine
 convinced me that this project was worth attempting. He also gave valuable
