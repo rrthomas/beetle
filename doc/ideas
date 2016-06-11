@@ -9,4 +9,15 @@ pForth for some operations.
 Have stacks in separate address spaces with (potentially) the ability to grow
 and shrink on demand.
 
-Compile at load time using ideas in DDJ article.
+Compile at load time using ideas in DDJ article
+(~/notmine/Computer/Language/forth/LoadCompilation).
+
+Obviate the need for the compilation method field (>COMPILE) by using
+cmForth-like compilation word list. But this does prevent it being possible
+to have separate execution and interpretation semantics at compile time. Or,
+have a stateless always-compiling compiler, where running out of code to
+compile before ; causes the code compiled so far to be executed and thrown
+away.
+
+Add startup scripts, or some other convenient way of setting S0/R0 for a
+particular system, to give more useful stack traces in pForth.
