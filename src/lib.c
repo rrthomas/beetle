@@ -14,8 +14,10 @@
 #include "lib.h"        /* the header we're implementing */
 
 
-#define CHECKA(x)
-#define PTRS 16
+#define CHECKA(x) // FIXME: import this from step.c (move to beetle.h), and use it in routines >= 4
+
+#define PTRS 64
+#define PTR_OK(p) ((p) >= 0 && (p) <= lastptr)
 
 static void getstr(unsigned char *s, UCELL adr)
 {
@@ -65,17 +67,20 @@ void lib(UCELL routine)
                 getstr(perm, *(UCELL *)SP);
                 ptr[p] = fopen((char *)file, (char *)perm);
                 *SP = 0;
-                *(SP + 1) = p;
+                *(SP + 1) = p + 1;
             }
         }
         break;
 
     case 5: /* CLOSE-FILE */
         {
-            int p = *SP, i;
-
+            int p = *SP - 1;
+            if (!PTR_OK(p)) {
+                *SP = -1;
+                break;
+            }
             *SP = fclose(ptr[p]);
-            for (i = p; i < lastptr; i++)
+            for (int i = p; i < lastptr; i++)
                 ptr[i] = ptr[i + 1];
             lastptr--;
         }
@@ -84,10 +89,15 @@ void lib(UCELL routine)
     case 6: /* READ-FILE */
         {
             unsigned long i;
-            int c = 0;
+            int c = 0, p = *SP - 1;
 
+            if (!PTR_OK(p)) {
+                *++SP = -1;
+                *(SP + 1) = 0;
+                break;
+            }
             for (i = 0; i < *((UCELL *)SP + 1) && c != EOF; i++) {
-                c = fgetc(ptr[*SP]);
+                c = fgetc(ptr[p]);
                 if (c != EOF)
                     *(M0 + FLIP(*((UCELL *)SP + 2) + i)) = (BYTE)c;
             }
@@ -103,11 +113,14 @@ void lib(UCELL routine)
     case 7: /* WRITE-FILE */
         {
             unsigned long i;
-            int c = 0;
+            int c = 0, p = *SP - 1;
 
-            for (i = 0; i < *((UCELL *)SP + 1) && c != EOF; i++)
-                c = fputc(*(M0 + FLIP(*((UCELL *)SP + 2) + i)),
-                          ptr[*SP]);
+            if (PTR_OK(p))
+                for (i = 0; i < *((UCELL *)SP + 1) && c != EOF; i++)
+                    c = fputc(*(M0 + FLIP(*((UCELL *)SP + 2) + i)),
+                              ptr[p]);
+            else
+                c = EOF;
             SP += 2;
             if (c != EOF)
                 *SP = 0;
@@ -118,9 +131,16 @@ void lib(UCELL routine)
 
     case 8: /* FILE-POSITION */
         {
-            long res = ftell(ptr[*SP]);
+            int p = *SP - 1;
+            if (!PTR_OK(p)) {
+                *(SP -= 2) = -1;
+                break;
+            }
 
+            // FIXME: split long into two CELLs properly
+            long res = ftell(ptr[p]);
             *((UCELL *)SP--) = (UCELL)res;
+            *SP-- = 0; // Extend number to double
             if (res != -1)
                 *SP = 0;
             else
@@ -130,16 +150,27 @@ void lib(UCELL routine)
 
     case 9: /* REPOSITION-FILE */
         {
-            int res = fseek(ptr[*SP], *((UCELL *)SP + 1), SEEK_SET);
+            int p = *SP - 1;
+            if (!PTR_OK(p)) {
+                *(SP + 2) = -1;
+                break;
+            }
+            // FIXME: Read from two CELLs properly
+            int res = fseek(ptr[p], *((UCELL *)SP + 2), SEEK_SET);
 
-            *++SP = (UCELL)res;
+            *(SP += 2) = (UCELL)res;
         }
         break;
 
     case 10: /* FLUSH-FILE */
         {
-            int res = fflush(ptr[*SP]);
+            int p = *SP - 1;
+            if (!PTR_OK(p)) {
+                *SP = -1;
+                break;
+            }
 
+            int res = fflush(ptr[p]);
             if (res != EOF)
                 *SP = 0;
             else
