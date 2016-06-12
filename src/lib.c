@@ -11,7 +11,6 @@
 
 #include <stdio.h>
 #include "beetle.h"     /* main header */
-#include "opcodes.h"	/* opcode enumeration */
 #include "lib.h"        /* the header we're implementing */
 
 
