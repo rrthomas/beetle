@@ -101,11 +101,7 @@ void lib(UCELL routine)
                 if (c != EOF)
                     *(M0 + FLIP(*((UCELL *)SP + 2) + i)) = (BYTE)c;
             }
-            SP++;
-            if (c != EOF)
-                *SP = 0;
-            else
-                *SP = -1;
+            *++SP = ferror(ptr[p]) ? -1 : 0;
             *((UCELL *)SP + 1) = (UCELL)i;
         }
         break;
