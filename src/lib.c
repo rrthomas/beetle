@@ -31,7 +31,7 @@ static void getstr(unsigned char *s, UCELL adr)
 void lib(UCELL routine)
 {
     static FILE *ptr[PTRS];
-    static int lastptr = 0;
+    static int lastptr = -1;
 
     switch (routine) {
 
@@ -57,7 +57,7 @@ void lib(UCELL routine)
 
     case 4: /* OPEN-FILE */
         {
-            int p = (lastptr == PTRS ? -1 : lastptr++);
+            int p = (lastptr == PTRS - 1 ? -1 : ++lastptr);
             unsigned char file[256], perm[4];
 
             if (p == -1)
@@ -80,7 +80,7 @@ void lib(UCELL routine)
                 break;
             }
             *SP = fclose(ptr[p]);
-            for (int i = p; i < lastptr; i++)
+            for (int i = p; i <= lastptr; i++)
                 ptr[i] = ptr[i + 1];
             lastptr--;
         }
