@@ -305,8 +305,6 @@ initialisation specified above; that must be performed before calling them.
 When Beetle encounters a {\tt HALT} instruction (see section~\ref{exceptinst}),
 it returns the top data stack item as the reason code, unless {\tt SP} does not
 point to a valid cell, in which case reason code $-258$ is returned (see section~\ref{exceptions}).
-After a call to {\bf single\_step()} which terminates without
-an exception being raised, reason code 0 is returned.
 
 Reason codes which are also valid exception codes (either reserved (see section~\ref{exceptions})
 or user exception codes) should not normally be used. This
