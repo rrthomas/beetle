@@ -58,17 +58,19 @@ void lib(UCELL routine)
     case 4: /* OPEN-FILE */
         {
             int p = (lastptr == PTRS - 1 ? -1 : ++lastptr);
-            unsigned char file[256], perm[4];
 
-            if (p == -1)
-                *SP = -1;
-            else {
+            if (p != -1) {
+                unsigned char file[256], perm[4];
                 getstr(file, *((UCELL *)SP + 1));
                 getstr(perm, *(UCELL *)SP);
                 ptr[p] = fopen((char *)file, (char *)perm);
-                *SP = 0;
-                *(SP + 1) = p + 1;
+                if (ptr[p] != NULL) {
+                    *SP = 0;
+                    *(SP + 1) = p + 1;
+                    break;
+                }
             }
+            *SP = -1;
         }
         break;
 
