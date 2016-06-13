@@ -31,3 +31,5 @@ Don’t handle all exceptions in (QUIT): in particular, abort on memory
 exceptions.
 
 Add TIMES combinator and use in assembler and for REDEFINER.
+
+Make aForth case-insensitive for word lookup, or downcase it all.
