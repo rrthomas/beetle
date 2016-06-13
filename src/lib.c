@@ -96,10 +96,10 @@ void lib(UCELL routine)
                 *(SP + 1) = 0;
                 break;
             }
-            for (i = 0; i < *((UCELL *)SP + 1) && c != EOF; i++) {
+            for (i = 0; i < *((UCELL *)SP + 1) && c != EOF; ) {
                 c = getc(ptr[p]);
                 if (c != EOF)
-                    *(M0 + FLIP(*((UCELL *)SP + 2) + i)) = (BYTE)c;
+                    *(M0 + FLIP(*((UCELL *)SP + 2) + i++)) = (BYTE)c;
             }
             *++SP = ferror(ptr[p]) ? -1 : 0;
             *((UCELL *)SP + 1) = (UCELL)i;
@@ -112,9 +112,10 @@ void lib(UCELL routine)
             int c = 0, p = *SP - 1;
 
             if (PTR_OK(p))
-                for (i = 0; i < *((UCELL *)SP + 1) && c != EOF; i++)
-                    c = fputc(*(M0 + FLIP(*((UCELL *)SP + 2) + i)),
-                              ptr[p]);
+                for (i = 0; i < *((UCELL *)SP + 1); i++)
+                    if ((c = fputc(*(M0 + FLIP(*((UCELL *)SP + 2) + i)),
+                                   ptr[p])) == EOF)
+                        break;
             else
                 c = EOF;
             SP += 2;
