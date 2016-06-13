@@ -97,7 +97,7 @@ void lib(UCELL routine)
                 break;
             }
             for (i = 0; i < *((UCELL *)SP + 1) && c != EOF; i++) {
-                c = fgetc(ptr[p]);
+                c = getc(ptr[p]);
                 if (c != EOF)
                     *(M0 + FLIP(*((UCELL *)SP + 2) + i)) = (BYTE)c;
             }
