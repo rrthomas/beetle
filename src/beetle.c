@@ -905,11 +905,13 @@ int main(int argc, char *argv[])
         FILE *handle = fopen(argv[optind], "r");
         if (handle == NULL)
             die("cannot not open file %s", argv[1]);
-        load_object(handle, (CELL *)(M0 + 16));
+        int ret = load_object(handle, (CELL *)(M0 + 16));
         fclose(handle);
+        if (ret != 0)
+            die("could not read file %s", argv[1]);
 
         init_keyb();
-        int ret = run();
+        ret = run();
         restore_keyb();
 
         return ret;
