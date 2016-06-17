@@ -151,7 +151,7 @@ void lib(UCELL routine)
         {
             int p = *SP - 1;
             if (!PTR_OK(p)) {
-                *(SP + 2) = -1;
+                *(SP += 2) = -1;
                 break;
             }
             // FIXME: Read from two CELLs properly
