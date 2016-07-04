@@ -27,15 +27,7 @@ Rewrite debugger in Forth.
 Add flag to CBeetle to cause unhandled exception to enter debugger even if
 object was given on command line. In conjunction with next item.
 
-Add TIMES combinator and use in assembler and for REDEFINER.
-
-Make aForth case-insensitive for word lookup, or downcase it all.
-
-Add assembler to base image.
-
 Add ASCII output to DUMP command.
-
-Make pForth work with forth-mode.
 
 Add readline support to UI.
 
