@@ -3,6 +3,7 @@
 
                    by Reuben Thomas <rrt@sc3d.org>
                  http://rrt.sc3d.org/Software/Beetle
+                 https://github.com/rrthomas/beetle
 
 
 This package comprises the definition of the Beetle virtual machine, a
@@ -62,8 +63,8 @@ can be linked in their place.
 Bugs and comments
 -----------------
 
-Please send me bug reports and comments. I'm especially interested to
-know of portability bugs.
+Please send bug reports (preferably on GitHub; see above) and
+comments. I'm especially interested to know of portability bugs.
 
 The BA dissertation to which the documentation frequently refers is
 available from the URL above, but all the relevant bits of it are
