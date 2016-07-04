@@ -7,9 +7,9 @@
 
 This package comprises the definition of the Beetle virtual machine, a
 virtual machine specialised for the execution of Forth, an
-implementation in ISO C99 using POSIX APIs, and a simple Forth
-compiler, mForth for Beetle v0.02. Detailed documentation is in the
-doc directory; installation instructions follow.
+implementation in ISO C99 using POSIX APIs, and a full ANSI Forth
+compiler, pForth. Detailed documentation is in the doc directory;
+installation instructions follow.
 
 The package is distributed under the GNU Public License version 3, or,
 at your option, any later version.
@@ -41,21 +41,22 @@ If building from a Git repository, first run
 ./bootstrap
 
 
-mForth
+pForth
 ------
 
-mForth is a minimal Forth compiler. It is ANS compliant, but omits
-many features required by the ANSI standard. However, file reading and
-writing are implemented, so it can be straightforwardly extended.
+pForth is an ANSI Forth compiler. An executable is provided with
+Beetle (the file pForthImage); the sources are available separately:
+
+https://github.com/rrthomas/pforth
 
 
-Hand-written assembler version
-------------------------------
+Hand-written ARM assembler version
+----------------------------------
 
-ARMbeetle.bas contains a hand-written assembler version of Beetle for
-the ARM processor, written in the BBC BASIC assembler (for RISC OS).
-It produces AOF format objects equivalent to those produced by run.c
-and step.c, which can be linked in their place.
+ARMbeetle.bas contains a hand-written ARM assembler version of Beetle,
+written in the BBC BASIC assembler (for RISC OS). It produces AOF
+format objects equivalent to those produced by run.c and step.c, which
+can be linked in their place.
 
 
 Bugs and comments
