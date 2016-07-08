@@ -1,6 +1,6 @@
-Support objects in pForth.
+Native address size support.
 
-Support locals in pForth.
+argv/argc (needs native addresses)
 
 Have instructions which perform multiple stack operations directly such as
 SWAP OVER. This could make the ARM version of Beetle faster than native
