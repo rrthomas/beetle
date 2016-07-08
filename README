@@ -46,9 +46,20 @@ pForth
 ------
 
 pForth is an ANSI Forth compiler. An executable is provided with
-Beetle (the file pForthImage); the sources are available separately:
+Beetle (the file pforth); the sources are available separately:
 
 https://github.com/rrthomas/pforth
+
+
+Running Beetle images
+---------------------
+
+On Linux systems with binfmt_misc, it is possible to make Beetle object
+modules directly runnable.
+
+For example, on Debian or Ubuntu, run the command:
+
+sudo update-binfmts --install beetle `which beetle` --magic "\x42\x45\x45\x54\x4c\x45\x00"
 
 
 Hand-written ARM assembler version
