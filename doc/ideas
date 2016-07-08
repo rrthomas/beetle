@@ -2,22 +2,11 @@ Native address size support.
 
 argv/argc (needs native addresses)
 
-Have instructions which perform multiple stack operations directly such as
-SWAP OVER. This could make the ARM version of Beetle faster than native
-pForth for some operations.
-
 Have stacks in separate address spaces with (potentially) the ability to grow
 and shrink on demand.
 
 Compile at load time using ideas in DDJ article
 (~/notmine/Computer/Language/forth/LoadCompilation).
-
-Obviate the need for the compilation method field (>COMPILE) by using
-cmForth-like compilation word list. But this does prevent it being possible
-to have separate execution and interpretation semantics at compile time. Or,
-have a stateless always-compiling compiler, where running out of code to
-compile before ; causes the code compiled so far to be executed and thrown
-away.
 
 Add startup scripts, or some other convenient way of setting S0/R0 for a
 particular system, to give more useful stack traces in pForth.
@@ -25,7 +14,7 @@ particular system, to give more useful stack traces in pForth.
 Rewrite debugger in Forth.
 
 Add flag to CBeetle to cause unhandled exception to enter debugger even if
-object was given on command line. In conjunction with next item.
+object was given on command line.
 
 Add ASCII output to DUMP command.
 
