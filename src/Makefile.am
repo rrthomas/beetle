@@ -10,7 +10,7 @@ libbeetle_a_SOURCES = storage.c step.c run.c lib.c debug.c loadobj.c saveobj.c n
 
 bin_PROGRAMS = beetle
 beetle_LDADD = libbeetle.a $(top_builddir)/lib/libgnu.a
-beetle_SOURCES = beetle.c
+beetle_SOURCES = beetle.c tbl_opts.h
 
 check-local: libbeetle.a
 
