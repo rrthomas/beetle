@@ -61,6 +61,9 @@ For example, on Debian or Ubuntu, run the command:
 
 sudo update-binfmts --install beetle `which beetle` --magic "\x42\x45\x45\x54\x4c\x45\x00"
 
+A magic file for the file(1) command is also provided: beetle.magic.
+This file should be part of file >= 5.33.
+
 
 Hand-written ARM assembler version
 ----------------------------------
