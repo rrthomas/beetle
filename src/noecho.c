@@ -21,14 +21,19 @@
 /* Use this variable to remember original terminal attributes */
 static struct termios saved_stdin;
 
+void save_keyb(void)
+{
+    /* Save the terminal attributes so we can restore them later */
+    tcgetattr(STDIN_FILENO, &saved_stdin);
+}
+
 int init_keyb(void)
 {
     struct termios tattr;
 
     if (!isatty(STDIN_FILENO)) return -1;
 
-    /* Save the terminal attributes so we can restore them later */
-    tcgetattr(STDIN_FILENO, &saved_stdin);
+    save_keyb();
 
     /* Set the funny terminal modes */
     tcgetattr(STDIN_FILENO, &tattr);

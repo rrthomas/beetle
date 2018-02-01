@@ -847,6 +847,7 @@ int main(int argc, char *argv[])
     char input[MAXLEN], *nl;
 
     set_program_name(argv[0]);
+    save_keyb(); // Save keyboard setup so we can restore from it without calling init_keyb
 
     // Leading ':' so as to return ':' for a missing arg, not '?'
     for (;;) {
@@ -922,13 +923,18 @@ int main(int argc, char *argv[])
     while (1) {
         if (setjmp(env) == 0) {
             printf(">");
-            fgets(input, MAXLEN, stdin);
+            if (fgets(input, MAXLEN, stdin) == NULL) {
+                if (feof(stdin)) {
+                    putchar('\n'); // Empty line after prompt
+                    exit(EXIT_SUCCESS);
+                }
+                die("input error");
+            }
             if ((nl = strrchr(input, '\n')))
                 *nl = '\0';
             init_keyb();
             parse(input);
-            restore_keyb();
-        } else
-            restore_keyb();
+        }
+        restore_keyb();
     }
 }
