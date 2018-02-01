@@ -765,7 +765,11 @@ static void parse(char *input)
     if (input[0] == '!') {
         if (debug)
             printf("Send %s to the environment\n", input + 1);
-        system(input + 1);
+        int result = system(input + 1);
+        if (result == -1)
+            printf("Could not run command\n");
+        else if (result != 0)
+            printf("Command exited with value %d\n", WEXITSTATUS(result));
         return;
     }
 
