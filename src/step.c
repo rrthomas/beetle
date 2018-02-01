@@ -1,6 +1,6 @@
 /* STEP.C
 
-    (c) Reuben Thomas 1994-2016
+    (c) Reuben Thomas 1994-2018
 
     The interface call single_step() : integer.
 
@@ -592,13 +592,13 @@ CELL single_step(void)
     /* Deal with address exceptions during execution cycle. */
  invadr:
     SP--;
-    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * CELL_W || (unsigned int)SP & 3)
+    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * CELL_W || (size_t)SP & 3)
       return -258;
     *SP = -9;
     goto throw;
  aliadr:
     SP--;
-    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * CELL_W || (unsigned int)SP & 3)
+    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * CELL_W || (size_t)SP & 3)
       return -258;
     *SP = -23;
     goto throw;
