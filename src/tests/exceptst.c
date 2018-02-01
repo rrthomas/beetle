@@ -23,9 +23,6 @@ UCELL address[] = { -4, 16384, 0, 0, 1, 1, 0, 16384, -4, 1, 0, 0 };
 
 int main(void)
 {
-    int i;
-    CELL res;
-
     init_beetle((BYTE *)malloc(16384), 4096, 16);
     S0 = SP;	/* save base of stack */
 
@@ -60,29 +57,31 @@ int main(void)
 
     *THROW = 100;   /* set address of exception handler */
 
-    for (i = 0; i < 12; i++) {
+    CELL error = 0;
+    for (int i = 0; i < 12; i++) {
         SP = S0;    /* reset stack pointer */
 
         EP = (CELL *)(M0 + test[i]);
         NEXT;   /* load first instruction word */
-        res = run();
+        CELL res = run();
 
         printf("Test %d\n", i + 1);
-        printf("Return code is %d; should be %d\n", res, result[i]);
-        if (result[i] != 0)
-            printf("'BAD = %d; should be %d\n", BAD, bad[i]);
-        if (result[i] <= -258 || result[i] == 9 || result[i] == -23)
-            printf("-ADDRESS = %d; should be %d\n", ADDRESS, address[i]);
-        putchar('\n');
         if (result[i] != res || (result[i] != 0 && bad[i] != BAD) ||
             ((result[i] <= -258 || result[i] == 9 || result[i] == -23) &&
              address[i] != ADDRESS)) {
              printf("Error in ExceptsT: test %d failed; EP = %td\n", i + 1,
                     (BYTE *) EP - M0);
-             exit(1);
+             printf("Return code is %d; should be %d\n", res, result[i]);
+             if (result[i] != 0)
+                 printf("'BAD = %d; should be %d\n", BAD, bad[i]);
+             if (result[i] <= -258 || result[i] == 9 || result[i] == -23)
+                 printf("-ADDRESS = %d; should be %d\n", ADDRESS, address[i]);
+             error++;
         }
+        putchar('\n');
     }
 
-    printf("ExceptsT ran OK\n");
-    return 0;
+    if (error == 0)
+        printf("ExceptsT ran OK\n");
+    return error;
 }
