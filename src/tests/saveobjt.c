@@ -21,7 +21,7 @@ static int try(char *file, CELL *address, UCELL length)
     FILE *fp = fopen(file, "w");
     int ret = save_object(fp, address, length);
 
-    printf("save_object(\"%s\", M0 + %#"PRIX32", %#"PRIX32") returns %d", file,
+    printf("save_object(\"%s\", M0 + %td, %#"PRIX32") returns %d", file,
         (BYTE *)address - M0, length, ret);
     fclose(fp);
 

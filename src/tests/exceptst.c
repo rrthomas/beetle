@@ -77,7 +77,7 @@ int main(void)
         if (result[i] != res || (result[i] != 0 && bad[i] != BAD) ||
             ((result[i] <= -258 || result[i] == 9 || result[i] == -23) &&
              address[i] != ADDRESS)) {
-             printf("Error in ExceptsT: test %d failed; EP = %d\n", i + 1,
+             printf("Error in ExceptsT: test %d failed; EP = %td\n", i + 1,
                     (BYTE *) EP - M0);
              exit(1);
         }
