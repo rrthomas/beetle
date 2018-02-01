@@ -1,6 +1,6 @@
 /* BEETLE.C
 
-    (c) Reuben Thomas 1995-2016
+    (c) Reuben Thomas 1995-2018
 
     A user interface for Beetle.
 
@@ -820,7 +820,7 @@ struct option longopts[] = {
 };
 
 #define BEETLE_VERSION_STRING "Beetle shell (C Beetle release "PACKAGE_VERSION")"
-#define BEETLE_COPYRIGHT_STRING "(c) Reuben Thomas 1995-2016"
+#define BEETLE_COPYRIGHT_STRING "(c) Reuben Thomas 1995-2018"
 
 void usage(void)
 {

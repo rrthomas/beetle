@@ -1,7 +1,7 @@
 /* NOECHO.C
 
     (c) Martin Richards 2004 (and certainly earlier)
-    (c) Reuben Thomas 1995-2016
+    (c) Reuben Thomas 1995-2018
 
     void init_keyb(void)  initialises the keyboard interface.
     void restore_keyb(void) restores the keyboard to its original state.

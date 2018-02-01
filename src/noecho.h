@@ -1,6 +1,6 @@
 /* NOECHO.H
 
-    (c) Reuben Thomas 2011
+    (c) Reuben Thomas 2011-2018
 
     Prototypes for noecho.c functions.
 
