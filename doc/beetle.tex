@@ -344,13 +344,13 @@ $-257$ & Library routine not implemented (see section~\ref{accessinst}). \\ \hli
 \caption{\label{excepttable}Exceptions raised by Beetle}
 \end{table}
 
-Exception -9 is raised whenever an attempt is made to access an invalid address
-(not between zero and {\tt MEMORY $-$ 1} inclusive), either by an instruction,
-or during an instruction fetch (because {\tt EP} contains an invalid address).
-Exception -23 is raised when a bForth instruction expecting an address of type
-\spic{a-addr} (cell-aligned) is given a non-aligned address. When Beetle raises
-an address exception (-9 or -23), the offending address is placed in {\tt
--ADDRESS}.
+Exception $-9$ is raised whenever an attempt is made to access an invalid
+address (not between zero and {\tt MEMORY $-$ 1} inclusive), either by an
+instruction, or during an instruction fetch (because {\tt EP} contains an
+invalid address). Exception $-23$ is raised when a bForth instruction expecting
+an address of type \spic{a-addr} (cell-aligned) is given a non-aligned address.
+When Beetle raises an address exception ($-9$ or $-23$), the offending address
+is placed in {\tt -ADDRESS}.
 
 The initial values of {\tt 'BAD} and {\tt -ADDRESS} are unlikely to be generated
 by an exception, so it may be assumed that if the initial values still hold no
@@ -362,9 +362,10 @@ especially useful for stand-alone Beetles.
 
 If {\tt SP} is unaligned when an exception is raised, or putting the code on the
 stack would cause {\tt SP} to be out of range, the effect of a {\tt HALT} with
-code $-258$ is performed (although the actual mechanics are not, as that too would
-involve putting a number on the stack). Similarly, if {\tt 'THROW} contains an
-invalid address, the effect of {\tt HALT} with code $-259$ is performed.
+code $-258$ is performed (although the actual mechanics are not, as that too
+would involve putting a number on the stack). Similarly, if {\tt 'THROW}
+contains an invalid address, the effect of {\tt HALT} with code $-259$ is
+performed.
 
 
 \section{Instruction set}
@@ -720,7 +721,7 @@ These instructions encode literal values which are placed on the stack.
 These instructions give access to Beetle's exception mechanisms.
 
 \begin{description}
-\instp{THROW}{throw}{54h}{--}{Put the contents of {\tt EP} into {\tt 'BAD}, then load {\tt EP} from {\tt 'THROW}. Perform the action of {\tt NEXT}. If {\tt 'THROW} contains an out of range or unaligned address stop Beetle, returning reason code -259 to the calling program (see section~\ref{calls}).}
+\instp{THROW}{throw}{54h}{--}{Put the contents of {\tt EP} into {\tt 'BAD}, then load {\tt EP} from {\tt 'THROW}. Perform the action of {\tt NEXT}. If {\tt 'THROW} contains an out of range or unaligned address stop Beetle, returning reason code $-259$ to the calling program (see section~\ref{calls}).}
 \inst{HALT}{55h}{x --}{Stop Beetle, returning reason code \spic{x} to the calling program (see section~\ref{calls}). If {\tt SP} is out of range or unaligned, $-258$ is returned as the reason code.}
 \end{description}
 
@@ -746,7 +747,7 @@ These instructions allow access to Beetle's libraries, the operating system and
 native machine code.
 
 \begin{description}
-\inst{LIB}{57h}{i*x n -- j*x}{Call library routine \spic{n}. The parameters passed and returned depend on \spic{n}. If the library routine is not currently available, raise exception -257.}
+\inst{LIB}{57h}{i*x n -- j*x}{Call library routine \spic{n}. The parameters passed and returned depend on \spic{n}. If the library routine is not currently available, raise exception $-257$.}
 \instp{OS}{o-s}{58h}{i*x -- j*x}{Make an operating system call. {\tt OS} typically takes an operating system call number then makes that call and returns any result, with other parameters and result data being communicated via the stack or a shared data area.}
 \inst{LINK}{59h}{i*x --}{Make a subroutine call to the routine at the address given (in the host machine's format, padded out to a number of cells) on the data stack. The size and format of this address are machine-dependent.}
 \end{description}
@@ -770,7 +771,7 @@ interface calls {\bf run()} and {\bf single\_step()}.
 \label{opcodes}
 
 In table~\ref{opcodetable} are listed the opcodes in numerical order. All
-undefined opcodes (5Ch--FEh) raise exception -256.
+undefined opcodes (5Ch--FEh) raise exception $-256$.
 
 \begin{table}[htb]
 \begin{center}
@@ -931,8 +932,8 @@ Beetle must provide:
     specifier, to the Beetle address \textit{address}. First the module's
     header is checked; if the first seven bytes are not as specified above
     in section~\ref{object}, or the endianness value is not 0 or 1, then
-    return -2. If the code will not fit into memory at the address given, or the
-    address is out of range, return $-1$. Otherwise load the bForth code into
+    return $-2$. If the code will not fit into memory at the address given, or
+    the address is out of range, return $-1$. Otherwise load the bForth code into
     memory, resexing it if the endianness value is different from the current
     value of {\tt ENDISM}. The result is 0 if successful, and some other
     implementation-defined value if there is a filing system or other error.}
