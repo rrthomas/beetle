@@ -1,10 +1,13 @@
 /* STORAGE.C
 
-    (c) Reuben Thomas 1994-2016
+    (c) Reuben Thomas 1994-2018
 
     Allocate storage for the registers and memory.
 
 */
+
+
+#include "config.h"
 
 
 #include <stdlib.h>

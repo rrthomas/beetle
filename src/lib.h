@@ -10,6 +10,7 @@
 #ifndef BEETLE_LIB
 #define BEETLE_LIB
 
+#include "config.h"
 
 #include "beetle.h"
 

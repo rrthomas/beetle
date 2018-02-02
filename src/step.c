@@ -7,6 +7,8 @@
 */
 
 
+#include "config.h"
+
 #include <stdio.h>
 #include "beetle.h"     /* main header */
 #include "opcodes.h"	/* opcode enumeration */
