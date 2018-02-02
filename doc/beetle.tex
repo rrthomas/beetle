@@ -85,7 +85,7 @@
 
 \title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
-\date{29th October 1993; revised 13th June 2016}
+\date{29th October 1993; revised 1st February 2018}
 
 \begin{document}
 \maketitle
@@ -170,9 +170,9 @@ The registers, each with its function and pronunciation, are set out in table~\r
     to be executed. \\ \hline
 {\tt A} & ``a'' & The instruction {\tt A}ccumulator. Holds the opcodes of
     instructions to be executed, and immediate operands. \\ \hline
-{\tt M0} & ``m-zero'' & The address of Beetle's address space on the host
+{\tt M0} & ``m-zero'' & The address of Beetle's main memory on the host
     system, which must be aligned on a four-byte boundary. \\ \hline
-{\tt MEMORY} & ``memory'' & The size in bytes of Beetle's address space,
+{\tt MEMORY} & ``memory'' & The size in bytes of Beetle's main memory,
     which must be a multiple of four. \\ \hline
 {\tt SP} & ``s-p'' & The data {\tt S}tack {\tt P}ointer. \\ \hline
 {\tt RP} & ``r-p'' & The {\tt R}eturn stack {\tt P}ointer. \\ \hline
@@ -345,7 +345,9 @@ $-257$ & Library routine not implemented (see section~\ref{accessinst}). \\ \hli
 \end{table}
 
 Exception $-9$ is raised whenever an attempt is made to access an invalid
-address (not between zero and {\tt MEMORY $-$ 1} inclusive), either by an
+address (for most operations, only addresses between zero and {\tt MEMORY $-$ 1}
+inclusive are valid; for memory fetch and store instructions other addresses may
+also be valid at the discretion of the implementation), either by an
 instruction, or during an instruction fetch (because {\tt EP} contains an
 invalid address). Exception $-23$ is raised when a bForth instruction expecting
 an address of type \spic{a-addr} (cell-aligned) is given a non-aligned address.
