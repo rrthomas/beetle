@@ -13,10 +13,10 @@
 #include "lib.h"        /* lib function */
 
 
-#define CHECKC(a)                                                       \
-    if ((UCELL)((BYTE *)(a) - M0) >= MEMORY) {                          \
-        *(CELL *)(M0 + 12) = ADDRESS = (BYTE *)(a) - M0;                \
-        goto invadr;                                                    \
+#define CHECKC(a)                                                      \
+    if ((UCELL)((BYTE *)(a) - M0) >= MEMORY) {                         \
+        *(CELL *)(M0 + 12) = ADDRESS = (BYTE *)(a) - M0;               \
+        goto invadr;                                                   \
     }
 #define CHECKA(a)                                                      \
     CHECKC(a);                                                         \
