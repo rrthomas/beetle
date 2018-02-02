@@ -13,26 +13,28 @@
 #include "lib.h"        /* lib function */
 
 
-#define CHECKC(a)                                                      \
-    if ((UCELL)((BYTE *)(a) - M0) >= MEMORY) {                         \
-        *(CELL *)(M0 + 12) = ADDRESS = (BYTE *)(a) - M0;               \
-        goto invadr;                                                   \
+#define CHECKC(a)                               \
+    if ((UCELL)(a) >= MEMORY) {                 \
+        *(CELL *)(M0 + 12) = ADDRESS = (a);     \
+        goto invadr;                            \
     }
-#define CHECKA(a)                                                      \
-    CHECKC(a);                                                         \
-    if (((BYTE *)(a) - M0) & 3) {                                      \
-        *(CELL *)(M0 + 12) = ADDRESS = (BYTE *)(a) - M0;               \
-        goto aliadr;                                                   \
+#define CHECKA(a)                               \
+    CHECKC(a);                                  \
+    if ((a) & 3) {                              \
+        *(CELL *)(M0 + 12) = ADDRESS = (a);     \
+        goto aliadr;                            \
     }
+#define CHECKP(p)                               \
+    CHECKA((BYTE *)(p) - M0)
 #define NEXTC                                   \
-    CHECKA(EP);                                 \
+    CHECKP(EP);                                 \
     NEXT
 
-#define DIVZERO(x)                                      \
-    if (x == 0) {                                       \
-        CHECKA(SP - 1);                                 \
-        *--SP = -10;                                    \
-        goto throw;                                     \
+#define DIVZERO(x)                              \
+    if (x == 0) {                               \
+        CHECKP(SP - 1);                         \
+        *--SP = -10;                            \
+        goto throw;                             \
     }
 
 /* Perform one pass of the execution cycle. */
@@ -48,8 +50,8 @@ CELL single_step(void)
         NEXTC;
         break;
     case O_DUP:
-        CHECKA(SP - 1);
-        CHECKA(SP);
+        CHECKP(SP - 1);
+        CHECKP(SP);
         SP--;
         *SP = *(SP + 1);
         break;
@@ -57,358 +59,358 @@ CELL single_step(void)
         SP++;
         break;
     case O_SWAP:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         temp = *SP;
         *SP = *(SP + 1);
         *(SP + 1) = temp;
         break;
     case O_OVER:
-        CHECKA(SP - 1);
-        CHECKA(SP + 1);
+        CHECKP(SP - 1);
+        CHECKP(SP + 1);
         SP--;
         *SP = *(SP + 2);
         break;
     case O_ROT:
-        CHECKA(SP);
-        CHECKA(SP + 1);
-        CHECKA(SP + 2);
+        CHECKP(SP);
+        CHECKP(SP + 1);
+        CHECKP(SP + 2);
         temp = *(SP + 2);
         *(SP + 2) = *(SP + 1);
         *(SP + 1) = *SP;
         *SP = temp;
         break;
     case O_NROT:
-        CHECKA(SP);
-        CHECKA(SP + 1);
-        CHECKA(SP + 2);
+        CHECKP(SP);
+        CHECKP(SP + 1);
+        CHECKP(SP + 2);
         temp = *SP;
         *SP = *(SP + 1);
         *(SP + 1) = *(SP + 2);
         *(SP + 2) = temp;
         break;
     case O_TUCK:
-        CHECKA(SP - 1);
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP - 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP--;
         *SP = *(SP + 1);
         *(SP + 1) = *(SP + 2);
         *(SP + 2) = *SP;
         break;
     case O_NIP:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *SP = *(SP - 1);
         break;
     case O_PICK:
-        CHECKA(SP);
-        CHECKA(SP + *SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + *SP + 1);
         *SP = *(SP + *SP + 1);
         break;
     case O_ROLL:
-        CHECKA(SP);
-        CHECKA(SP + *SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + *SP + 1);
         temp = *(SP + *SP + 1);
         for (i = *SP; i > 0; i--)
             *(SP + i + 1) = *(SP + i);
         *++SP = temp;
         break;
     case O_QDUP:
-        CHECKA(SP - 1);
-        CHECKA(SP);
+        CHECKP(SP - 1);
+        CHECKP(SP);
         if (*SP != 0) {
             SP--;
             *SP = *(SP + 1);
         }
         break;
     case O_TOR:
-        CHECKA(RP - 1);
-        CHECKA(SP);
+        CHECKP(RP - 1);
+        CHECKP(SP);
         *--RP = *SP++;
         break;
     case O_RFROM:
-        CHECKA(SP - 1);
-        CHECKA(RP);
+        CHECKP(SP - 1);
+        CHECKP(RP);
         *--SP = *RP++;
         break;
     case O_RFETCH:
-        CHECKA(SP - 1);
-        CHECKA(RP);
+        CHECKP(SP - 1);
+        CHECKP(RP);
         *--SP = *RP;
         break;
     case O_LESS:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *SP = (*SP < *(SP - 1) ? B_TRUE : B_FALSE);
         break;
     case O_GREATER:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *SP = (*SP > *(SP - 1) ? B_TRUE : B_FALSE);
         break;
     case O_EQUAL:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *SP = (*SP == *(SP - 1) ? B_TRUE : B_FALSE);
         break;
     case O_NEQUAL:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *SP = (*SP != *(SP - 1) ? B_TRUE : B_FALSE);
         break;
     case O_LESS0:
-        CHECKA(SP);
+        CHECKP(SP);
         *SP = (*SP < 0 ? B_TRUE : B_FALSE);
         break;
     case O_GREATER0:
-        CHECKA(SP);
+        CHECKP(SP);
         *SP = (*SP > 0 ? B_TRUE : B_FALSE);
         break;
     case O_EQUAL0:
-        CHECKA(SP);
+        CHECKP(SP);
         *SP = (*SP == 0 ? B_TRUE : B_FALSE);
         break;
     case O_NEQUAL0:
-        CHECKA(SP);
+        CHECKP(SP);
         *SP = (*SP != 0 ? B_TRUE : B_FALSE);
         break;
     case O_ULESS:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *SP = ((UCELL)*SP < (UCELL)*(SP - 1) ? B_TRUE : B_FALSE);
         break;
     case O_UGREATER:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *SP = ((UCELL)*SP > (UCELL)*(SP - 1) ? B_TRUE : B_FALSE);
         break;
     case O_ZERO:
-        CHECKA(SP - 1);
+        CHECKP(SP - 1);
         *--SP = 0;
         break;
     case O_ONE:
-        CHECKA(SP - 1);
+        CHECKP(SP - 1);
         *--SP = 1;
         break;
     case O_MONE:
-        CHECKA(SP - 1);
+        CHECKP(SP - 1);
         *--SP = -1;
         break;
     case O_CELL:
-        CHECKA(SP - 1);
+        CHECKP(SP - 1);
         *--SP = CELL_W;
         break;
     case O_MCELL:
-        CHECKA(SP - 1);
+        CHECKP(SP - 1);
         *--SP = -CELL_W;
         break;
     case O_PLUS:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *(UCELL *)SP += (UCELL)*(SP - 1);
         break;
     case O_MINUS:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *(UCELL *)SP -= (UCELL)*(SP - 1);
         break;
     case O_SWAPMINUS:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *(UCELL *)SP = (UCELL)*(SP - 1) - (UCELL)*SP;
         break;
     case O_PLUS1:
-        CHECKA(SP);
+        CHECKP(SP);
         *(UCELL *)SP += 1;
         break;
     case O_MINUS1:
-        CHECKA(SP);
+        CHECKP(SP);
         *(UCELL *)SP -= 1;
         break;
     case O_PLUSCELL:
-        CHECKA(SP);
+        CHECKP(SP);
         *(UCELL *)SP += CELL_W;
         break;
     case O_MINUSCELL:
-        CHECKA(SP);
+        CHECKP(SP);
         *(UCELL *)SP -= CELL_W;
         break;
     case O_STAR:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *(UCELL *)SP *= (UCELL)*(SP - 1);
         break;
     case O_SLASH:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         DIVZERO(*SP);
         SP++;
         *SP = FDIV(*SP, *(SP - 1));
         break;
     case O_MOD:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         DIVZERO(*SP);
         SP++;
         *SP = FMOD(*SP, *(SP - 1), temp);
         break;
     case O_SLASHMOD:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         DIVZERO(*SP);
         temp = FMOD(*(SP + 1), *SP, i);
         *SP = FDIV(*(SP + 1), *SP);
         *(SP + 1) = temp;
         break;
     case O_USLASHMOD:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         DIVZERO(*SP);
         temp = (UCELL)*(SP + 1) % (UCELL)*SP;
         *SP = (UCELL)*(SP + 1) / (UCELL)*SP;
         *(SP + 1) = (UCELL)temp;
         break;
     case O_SSLASHREM:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         DIVZERO(*SP);
         temp = *(SP + 1) % *SP;
         *SP = *(SP + 1) / *SP;
         *(SP + 1) = temp;
         break;
     case O_SLASH2:
-        CHECKA(SP);
+        CHECKP(SP);
         ARSHIFT(*SP, 1);
         break;
     case O_CELLS:
-        CHECKA(SP);
+        CHECKP(SP);
         *(UCELL *)SP *= CELL_W;
         break;
     case O_ABS:
-        CHECKA(SP);
+        CHECKP(SP);
         if (*SP < 0)
             *(UCELL *)SP = -(UCELL)*SP;
         break;
     case O_NEGATE:
-        CHECKA(SP);
+        CHECKP(SP);
         *(UCELL *)SP = -(UCELL)*SP;
         break;
     case O_MAX:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *SP = (*(SP - 1) > *SP ? *(SP - 1) : *SP);
         break;
     case O_MIN:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *SP = (*(SP - 1) < *SP ? *(SP - 1) : *SP);
         break;
     case O_INVERT:
-        CHECKA(SP);
+        CHECKP(SP);
         *SP = ~*SP;
         break;
     case O_AND:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *SP &= *(SP - 1);
         break;
     case O_OR:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *SP |= *(SP - 1);
         break;
     case O_XOR:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *SP ^= *(SP - 1);
         break;
     case O_LSHIFT:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *(SP - 1) < 32 ? (*SP <<= *(SP - 1)) : (*SP = 0);
         break;
     case O_RSHIFT:
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         SP++;
         *(SP - 1) < 32 ? (*SP = (CELL)((UCELL)(*SP) >> *(SP - 1))) : (*SP = 0);
         break;
     case O_LSHIFT1:
-        CHECKA(SP);
+        CHECKP(SP);
         *SP <<= 1;
         break;
     case O_RSHIFT1:
-        CHECKA(SP);
+        CHECKP(SP);
         *SP = (CELL)((UCELL)(*SP) >> 1);
         break;
     case O_FETCH:
-        CHECKA(SP);
-        CHECKA(*SP + M0);
+        CHECKP(SP);
+        CHECKA(*SP);
         *SP = *(CELL *)(*SP + M0);
         break;
     case O_STORE:
-        CHECKA(SP);
-        CHECKA(SP + 1);
-        CHECKA(*SP + M0);
+        CHECKP(SP);
+        CHECKP(SP + 1);
+        CHECKA(*SP);
         *(CELL *)(*SP + M0) = *(SP + 1);
         SP += 2;
         break;
     case O_CFETCH:
-        CHECKA(SP);
-        CHECKC(FLIP(*SP) + M0);
+        CHECKP(SP);
+        CHECKC(FLIP(*SP));
         *SP = (CELL)*(FLIP(*SP) + M0);
         break;
     case O_CSTORE:
-        CHECKA(SP);
-        CHECKA(SP + 1);
-        CHECKC(FLIP(*SP) + M0);
+        CHECKP(SP);
+        CHECKP(SP + 1);
+        CHECKC(FLIP(*SP));
         *(FLIP(*SP) + M0) = (BYTE)*(SP + 1);
         SP += 2;
         break;
     case O_PSTORE:
-        CHECKA(SP);
-        CHECKA(SP + 1);
-        CHECKA(*SP + M0);
+        CHECKP(SP);
+        CHECKP(SP + 1);
+        CHECKA(*SP);
         *(CELL *)(*SP + M0) += *(SP + 1);
         SP += 2;
         break;
     case O_SPFETCH:
-        CHECKA(SP - 1);
+        CHECKP(SP - 1);
         SP--;
         *SP = (CELL)((BYTE *)SP - M0) + CELL_W;
         break;
     case O_SPSTORE:
-        CHECKA(SP);
+        CHECKP(SP);
         SP = (CELL *)(*SP + M0);
         break;
     case O_RPFETCH:
-        CHECKA(SP - 1);
+        CHECKP(SP - 1);
         *--SP = (CELL)((BYTE *)RP - M0);
         break;
     case O_RPSTORE:
-        CHECKA(SP);
+        CHECKP(SP);
         RP = (CELL *)(*SP++ + M0);
         break;
     case O_BRANCH:
-        CHECKA(EP);
+        CHECKP(EP);
         EP = (CELL *)(*EP + M0);
         NEXTC;
         break;
@@ -417,8 +419,8 @@ CELL single_step(void)
         NEXTC;
         break;
     case O_QBRANCH:
-        CHECKA(SP);
-        CHECKA(EP);
+        CHECKP(SP);
+        CHECKP(EP);
         if (*SP++ == B_FALSE) {
             EP = (CELL *)(*EP + M0);
             NEXTC;
@@ -426,57 +428,57 @@ CELL single_step(void)
             EP++;
         break;
     case O_QBRANCHI:
-        CHECKA(SP);
+        CHECKP(SP);
         if (*SP++ == B_FALSE)
             EP += A;
         NEXTC;
         break;
     case O_EXECUTE:
-        CHECKA(RP - 1);
-        CHECKA(SP);
+        CHECKP(RP - 1);
+        CHECKP(SP);
         *--RP = (CELL)((BYTE *)EP - M0);
         EP = (CELL *)(*SP++ + M0);
         NEXTC;
         break;
     case O_FEXECUTE:
-        CHECKA(RP - 1);
-        CHECKA(SP);
-        CHECKA(*SP + M0);
+        CHECKP(RP - 1);
+        CHECKP(SP);
+        CHECKP(*SP + M0);
         *--RP = (CELL)((BYTE *)EP - M0);
         EP = (CELL *)(*(CELL *)(*SP++ + M0) + M0);
         NEXTC;
         break;
     case O_CALL:
-        CHECKA(RP - 1);
-        CHECKA(EP);
+        CHECKP(RP - 1);
+        CHECKP(EP);
         *--RP = (CELL)((BYTE *)EP - M0) + CELL_W;
         EP = (CELL *)(*EP + M0);
         NEXTC;
         break;
     case O_CALLI:
-        CHECKA(RP - 1);
+        CHECKP(RP - 1);
         *--RP = (CELL)((BYTE *)EP - M0);
         EP += A;
         NEXTC;
         break;
     case O_EXIT:
-        CHECKA(RP);
+        CHECKP(RP);
         EP = (CELL *)(*RP++ + M0);
         NEXTC;
         break;
     case O_DO:
-        CHECKA(RP - 1);
-        CHECKA(RP - 2);
-        CHECKA(SP);
-        CHECKA(SP + 1);
+        CHECKP(RP - 1);
+        CHECKP(RP - 2);
+        CHECKP(SP);
+        CHECKP(SP + 1);
         *--RP = *(SP + 1);
         *--RP = *SP++;
         SP++;
         break;
     case O_LOOP:
-        CHECKA(RP);
-        CHECKA(RP + 1);
-        CHECKA(EP);
+        CHECKP(RP);
+        CHECKP(RP + 1);
+        CHECKP(EP);
         (*RP)++;
         if (*RP == *(RP + 1)) {
             RP += 2;
@@ -487,8 +489,8 @@ CELL single_step(void)
         }
         break;
     case O_LOOPI:
-        CHECKA(RP);
-        CHECKA(RP + 1);
+        CHECKP(RP);
+        CHECKP(RP + 1);
         (*RP)++;
         if (*RP == *(RP + 1))
             RP += 2;
@@ -497,10 +499,10 @@ CELL single_step(void)
         NEXTC;
         break;
     case O_PLOOP:
-        CHECKA(RP);
-        CHECKA(RP + 1);
-        CHECKA(SP);
-        CHECKA(EP);
+        CHECKP(RP);
+        CHECKP(RP + 1);
+        CHECKP(SP);
+        CHECKP(EP);
         temp = *RP - *(RP + 1);
         *RP += *SP++;
         if (((*RP - *(RP + 1)) ^ temp) < 0) {
@@ -511,9 +513,9 @@ CELL single_step(void)
             NEXTC;
         } break;
     case O_PLOOPI:
-        CHECKA(RP);
-        CHECKA(RP + 1);
-        CHECKA(SP);
+        CHECKP(RP);
+        CHECKP(RP + 1);
+        CHECKP(SP);
         temp = *RP - *(RP + 1);
         *RP += *SP++;
         if (((*RP - *(RP + 1)) ^ temp) < 0)
@@ -526,17 +528,17 @@ CELL single_step(void)
         RP += 2;
         break;
     case O_J:
-        CHECKA(SP - 1);
-        CHECKA(RP + 2);
+        CHECKP(SP - 1);
+        CHECKP(RP + 2);
         *--SP = *(RP + 2);
         break;
     case O_LITERAL:
-        CHECKA(SP - 1);
-        CHECKA(EP);
+        CHECKP(SP - 1);
+        CHECKP(EP);
         *--SP = *EP++;
         break;
     case O_LITERALI:
-        CHECKA(SP - 1);
+        CHECKP(SP - 1);
         *--SP = A;
         NEXTC;
         break;
@@ -550,15 +552,15 @@ CELL single_step(void)
         NEXTC;
         break;
     case O_HALT:
-        CHECKA(SP);
+        CHECKP(SP);
         return (*SP++);
     case O_CREATE:
-        CHECKA(SP - 1);
+        CHECKP(SP - 1);
         *--SP = (CELL)((BYTE *)EP - M0);
         break;
     case O_LIB:
-        CHECKA(SP);
-        CHECKA(SP - 1);
+        CHECKP(SP);
+        CHECKP(SP - 1);
         if ((UCELL)(*SP) > 12) {
             *--SP = -257;
             goto throw;
@@ -572,7 +574,7 @@ CELL single_step(void)
             CELL_pointer address;
             int i;
             for (i = POINTER_W - 1; i >= 0; i--) {
-                CHECKA(SP);
+                CHECKP(SP);
                 address.cells[i] = *SP++;
             }
             address.pointer();
@@ -583,7 +585,7 @@ CELL single_step(void)
     case O_STEP:
         break;
     default:
-        CHECKA(SP - 1);
+        CHECKP(SP - 1);
         *--SP = -256;
         goto throw;
     }
