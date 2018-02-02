@@ -892,7 +892,7 @@ int main(int argc, char *argv[])
 
     BYTE *mem;
     if ((mem = (BYTE *)(CELL *)calloc(memory_size, sizeof(CELL))) == NULL)
-        die("Could not allocate %ld cells of memory");
+        die("could not allocate %ld cells of memory");
 
     argc -= optind;
     if (argc > 1) {
