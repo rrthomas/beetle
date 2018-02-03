@@ -1,6 +1,6 @@
 /* BEETLE.H
 
-    (c) Reuben Thomas 1994-2016
+    (c) Reuben Thomas 1994-2018
 
     Header for C Beetle containing all the data structures and interface
     calls specified in the definition of Beetle. This is the header file to
@@ -55,6 +55,10 @@ extern UCELL BAD;       /* 'BAD is not a valid C identifier */
 extern UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
 #define CHECKED 1       /* C Beetle makes address checking mandatory */
 
+/* High memory */
+uint8_t *himem_addr(UCELL addr);
+UCELL himem_allot(void *p, size_t n);
+UCELL himem_align(void);
 
 /* Interface calls */
 CELL run(void);
@@ -84,6 +88,9 @@ typedef union {
 #else
 #define FLIP(addr) (addr)
 #endif
+
+/* Align a Beetle address */
+#define ALIGNED(a) ((a + CELL_W - 1) & (-CELL_W))
 
 /* Portable arithmetic right shift (the behaviour of >> on signed
    quantities is implementation-defined in C99). */

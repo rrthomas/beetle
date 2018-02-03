@@ -49,3 +49,47 @@ int init_beetle(BYTE *b_array, size_t size, UCELL e0)
 
     return 0;
 }
+
+
+/* High memory */ // FIXME: document name "high memory"
+static UCELL HIMEM_START = 0x80000000UL;
+static UCELL HIMEM_SIZE = 0x80000000UL;
+#define HIMEM_MAX_AREAS 256
+static uint8_t *himem_area[HIMEM_MAX_AREAS];
+static UCELL himem_size[HIMEM_MAX_AREAS];
+static UCELL himem_areas = 0;
+static UCELL himem_here = 0x80000000UL;
+
+uint8_t *himem_addr(UCELL addr)
+{
+    if (addr < HIMEM_START || addr > himem_here)
+        return NULL;
+    UCELL start = HIMEM_START;
+    for (UCELL i = 0; i < himem_areas; i++) {
+        if (addr < start + himem_size[i])
+            return himem_area[i] + (addr - start);
+        start += himem_size[i];
+    }
+    return NULL; // Should never reach here
+}
+
+UCELL himem_allot(void *p, size_t n)
+{
+    /* Return 0 if not enough room */
+    if (himem_areas == HIMEM_MAX_AREAS ||
+        n > UINT32_MAX / 2 ||
+        (himem_here - HIMEM_SIZE) + n > HIMEM_SIZE)
+        return 0;
+
+    size_t start = himem_here;
+    himem_area[himem_areas] = p;
+    himem_size[himem_areas] = n;
+    himem_here += n;
+    himem_areas++;
+    return start;
+}
+
+UCELL himem_align(void)
+{
+    himem_here = ALIGNED(himem_here);
+}

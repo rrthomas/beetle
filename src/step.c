@@ -17,6 +17,7 @@
 
 #define IS_ALIGNED(a)     (((a) & (CELL_W - 1)) == 0)
 #define IN_MAIN_MEMORY(a) ((UCELL)(a) < MEMORY)
+
 #define SET_NOT_ADDRESS(a)                      \
         *(CELL *)(M0 + 12) = NOT_ADDRESS = (a);
 
@@ -25,20 +26,25 @@
         SET_NOT_ADDRESS(a);                     \
         goto label;                             \
     }
-#define CHECK_ALIGNED(a)                        \
-    CHECK_ADDRESS(a, IS_ALIGNED(a), aliadr)
 #define CHECK_MAIN_MEMORY(a)                    \
     CHECK_ADDRESS(a, IN_MAIN_MEMORY(a), invadr)
+#define CHECK_ALIGNED(a)                        \
+    CHECK_ADDRESS(a, IS_ALIGNED(a), aliadr)
+#define CHECK_MAIN_MEMORY_ALIGNED(a)            \
+    CHECK_MAIN_MEMORY(a)                        \
+    CHECK_ALIGNED(a)
 
 #define CHECKP(p)                               \
-    CHECK_MAIN_MEMORY((BYTE *)(p) - M0);        \
-    CHECK_ALIGNED((BYTE *)(p) - M0);
+    CHECK_MAIN_MEMORY_ALIGNED((BYTE *)(p) - M0)
 
-#define CHECKC(a)                               \
-    CHECK_MAIN_MEMORY(a);
-#define CHECKA(a)                               \
-    CHECK_MAIN_MEMORY(a);                       \
-    CHECK_ALIGNED(a);
+#define NATIVE_ADDRESS(a, ptr)                  \
+    CHECK_ADDRESS(a, ptr = IN_MAIN_MEMORY(a) ?  \
+                  (a) + M0 :                    \
+                  himem_addr(a),                \
+                  invadr)
+#define NATIVE_ADDRESS_ALIGNED(a, ptr)          \
+    NATIVE_ADDRESS(a, ptr)                      \
+    CHECK_ALIGNED(a)
 
 #define NEXTC                                   \
     CHECKP(EP);                                 \
@@ -55,6 +61,7 @@
 CELL single_step(void)
 {
     CELL temp, i;
+    BYTE *ptr;
 
     I = (BYTE)A;
     ARSHIFT(A, 8);
@@ -377,33 +384,33 @@ CELL single_step(void)
         break;
     case O_FETCH:
         CHECKP(SP);
-        CHECKA(*SP);
-        *SP = *(CELL *)(*SP + M0);
+        NATIVE_ADDRESS_ALIGNED(*SP, ptr);
+        *SP = *(CELL *)ptr;
         break;
     case O_STORE:
         CHECKP(SP);
         CHECKP(SP + 1);
-        CHECKA(*SP);
-        *(CELL *)(*SP + M0) = *(SP + 1);
+        NATIVE_ADDRESS_ALIGNED(*SP, ptr);
+        *(CELL *)ptr = *(SP + 1);
         SP += 2;
         break;
     case O_CFETCH:
         CHECKP(SP);
-        CHECKC(FLIP(*SP));
-        *SP = (CELL)*(FLIP(*SP) + M0);
+        NATIVE_ADDRESS(FLIP(*SP), ptr);
+        *SP = (CELL)*ptr;
         break;
     case O_CSTORE:
         CHECKP(SP);
         CHECKP(SP + 1);
-        CHECKC(FLIP(*SP));
-        *(FLIP(*SP) + M0) = (BYTE)*(SP + 1);
+        NATIVE_ADDRESS(FLIP(*SP), ptr);
+        *ptr = (BYTE)*(SP + 1);
         SP += 2;
         break;
     case O_PSTORE:
         CHECKP(SP);
         CHECKP(SP + 1);
-        CHECKA(*SP);
-        *(CELL *)(*SP + M0) += *(SP + 1);
+        NATIVE_ADDRESS_ALIGNED(*SP, ptr);
+        *(CELL *)ptr += *(SP + 1);
         SP += 2;
         break;
     case O_SPFETCH:
