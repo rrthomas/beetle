@@ -580,7 +580,7 @@ CELL single_step(void)
         break;
     case O_LIB:
         CHECKP(SP);
-        if ((UCELL)(*SP) > 14) {
+        if ((UCELL)(*SP) > LIB_ROUTINES) {
             CHECKP(SP - 1);
             *--SP = -257;
             goto throw;

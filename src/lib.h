@@ -17,6 +17,7 @@
 #include "beetle.h"
 
 void lib(UCELL);
+#define LIB_ROUTINES 14
 
 extern int main_argc;
 extern UCELL *main_argv;
