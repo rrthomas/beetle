@@ -25,6 +25,7 @@
 #include "xvasprintf.h"
 
 #include "beetle.h"
+#include "lib.h"
 #include "opcodes.h"
 #include "debug.h"
 #include "noecho.h"
@@ -825,7 +826,7 @@ struct option longopts[] = {
 void usage(void)
 {
     char *shortopt, *buf;
-    printf ("Usage: %s [OPTION...] [FILENAME]\n"
+    printf ("Usage: %s [OPTION...] [FILENAME ARGUMENT...]\n"
             "\n"
             "Run " PACKAGE_NAME ".\n"
             "\n",
@@ -895,10 +896,6 @@ int main(int argc, char *argv[])
         die("could not allocate %ld cells of memory");
 
     argc -= optind;
-    if (argc > 1) {
-        usage();
-        exit(EXIT_FAILURE);
-    }
 
     init_beetle(mem, memory_size, 16);
     S0 = SP;
@@ -906,7 +903,9 @@ int main(int argc, char *argv[])
     *THROW = 0;
     A = 0;
 
-    if (argc == 1) {
+    if (argc >= 1) {
+        if (!register_args(argc - 1, argv + optind + 1))
+            die("could not allocate memory to map command-line arguments");
         FILE *handle = fopen(argv[optind], "r");
         if (handle == NULL)
             die("cannot not open file %s", argv[1]);

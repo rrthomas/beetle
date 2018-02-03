@@ -580,8 +580,8 @@ CELL single_step(void)
         break;
     case O_LIB:
         CHECKP(SP);
-        CHECKP(SP - 1);
-        if ((UCELL)(*SP) > 12) {
+        if ((UCELL)(*SP) > 14) {
+            CHECKP(SP - 1);
             *--SP = -257;
             goto throw;
         } else

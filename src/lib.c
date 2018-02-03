@@ -1,6 +1,6 @@
 /* LIB.C
 
-    (c) Reuben Thomas 1995-2016
+    (c) Reuben Thomas 1995-2018
 
     Beetle's standard library.
 
@@ -10,6 +10,10 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+
 #include "beetle.h"     /* main header */
 #include "lib.h"        /* the header we're implementing */
 
@@ -26,6 +30,27 @@ static void getstr(unsigned char *s, UCELL adr)
     for (i = 0; *(M0 + FLIP(adr)) != 0; adr++)
         s[i++] = *(M0 + FLIP(adr));
     s[i] = '\0';
+}
+
+/* Register command-line args in Beetle high memory */
+int main_argc = 0;
+UCELL *main_argv;
+UCELL *main_argv_len;
+bool register_args(int argc, char *argv[])
+{
+    main_argc = argc;
+    if ((main_argv = calloc(argc, sizeof(UCELL))) == NULL ||
+        (main_argv_len = calloc(argc, sizeof(UCELL))) == NULL)
+        return false;
+
+    for (int i = 0; i < argc; i++) {
+        size_t len = strlen(argv[i]);
+        main_argv[i] = himem_allot(argv[i], len);
+        if (main_argv[i] == 0)
+            return false;
+        main_argv_len[i] = len;
+    }
+    return true;
 }
 
 void lib(UCELL routine)
@@ -207,6 +232,26 @@ void lib(UCELL routine)
                 *SP = -1;
             else
                 *SP = 0;
+        }
+        break;
+
+    case 13: /* ARGC ( -- u ) */
+        CHECKA(SP - 1);
+        *--SP = main_argc;
+        break;
+
+    case 14: /* ARG ( u1 -- c-addr u2 )*/
+        {
+            UCELL u = *(UCELL *)SP;
+            CHECKA(SP - 1);
+            CHECKA(SP - 2);
+            if (u > main_argc) {
+                *--SP = 0;
+                *--SP = 0;
+            } else {
+                *--SP = main_argv[u];
+                *--SP = main_argv_len[u];
+            }
         }
         break;
 

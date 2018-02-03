@@ -1,8 +1,8 @@
 /* LIB.H
 
-    (c) Reuben Thomas 1997
+    (c) Reuben Thomas 1997-2018
 
-    Prototype for lib function.
+    Prototypes for lib functions.
 
 */
 
@@ -12,9 +12,15 @@
 
 #include "config.h"
 
+#include <stdbool.h>
+
 #include "beetle.h"
 
 void lib(UCELL);
 
+extern int main_argc;
+extern UCELL *main_argv;
+extern UCELL *main_argv_len;
+bool register_args(int argc, char *argv[]);
 
 #endif

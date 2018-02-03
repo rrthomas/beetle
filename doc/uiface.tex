@@ -24,7 +24,7 @@
 
 \title{A simple user-interface for the\\Beetle virtual machine}
 \author{Reuben Thomas}
-\date{3rd June 2016}
+\date{3rd February 2018}
 
 \begin{document}
 \maketitle
@@ -49,7 +49,7 @@ and single-stepping.
 As supplied, the program consists of one C file, {\tt beetle.c}, which
 is part of the C Beetle distribution, and is compiled when the entire
 distribution is made, resulting in the executable file {\tt beetle}.
-It can be made separately as the Make target {\tt beetle}. Run {\tt beetle --help} to see its syntax; most importantly, if given a single parameter, the name of an object file, the file is loaded and run.
+It can be made separately as the Make target {\tt beetle}. Run {\tt beetle --help} to see its syntax; most importantly, if given a single parameter, the name of an object file, the file is loaded and run. Any further arguments will be passed to Beetle, accessible via the {\tt ARGC} and {\tt ARG} library calls.
 
 
 \section{Initialisation}

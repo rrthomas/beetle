@@ -1,6 +1,4 @@
-Native address size support.
-
-argv/argc (needs native addresses)
+Native address size support (should be merged with CELL_pointer).
 
 Have stacks in separate address spaces with (potentially) the ability to grow
 and shrink on demand.
