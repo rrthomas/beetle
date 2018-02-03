@@ -1,3 +1,5 @@
+Add release target to build system, and put releases on GitHub.
+
 Native address size support (should be merged with CELL_pointer).
 
 Have stacks in separate address spaces with (potentially) the ability to grow
