@@ -1,6 +1,6 @@
 /* BTESTS.H
 
-    (c) Reuben Thomas 1995
+    (c) Reuben Thomas 1995-2018
 
     Header for Beetle tests.
 
@@ -11,7 +11,11 @@
 #define BEETLE_BTESTS
 
 
-#define QCELL_W "4" /* CELL_W (from beetle.h) as a string */
+#include "beetle.h"
+
+#define str(s) #s
+#define xstr(s) str(s)
+#define QCELL_W xstr(CELL_W)
 
 
 #endif
