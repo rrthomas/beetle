@@ -559,10 +559,9 @@ CELL single_step(void)
  throw:
     case O_THROW:
         *(CELL *)(M0 + 8) = BAD = (CELL)((BYTE *)EP - M0);
-        temp = (UCELL)*THROW;
-        if ((UCELL)temp >= MEMORY || (unsigned int)temp & 3)
+        if (!IN_MAIN_MEMORY((UCELL)*THROW) || !IS_ALIGNED((UCELL)*THROW))
             return -259;
-        EP = (CELL *)(temp + M0);
+        EP = (CELL *)((UCELL)*THROW + M0);
         NEXTC;
         break;
     case O_HALT:
