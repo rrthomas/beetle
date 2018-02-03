@@ -15,7 +15,7 @@
 #include "lib.h"        /* lib function */
 
 
-#define IS_ALIGNED(a)     (((a) & 3) == 0)
+#define IS_ALIGNED(a)     (((a) & (CELL_W - 1)) == 0)
 #define IN_MAIN_MEMORY(a) ((UCELL)(a) < MEMORY)
 #define SET_NOT_ADDRESS(a)                      \
         *(CELL *)(M0 + 12) = NOT_ADDRESS = (a);
@@ -608,13 +608,13 @@ CELL single_step(void)
     /* Deal with address exceptions during execution cycle. */
  invadr:
     SP--;
-    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * CELL_W || (size_t)SP & 3)
+    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * CELL_W || (size_t)SP & (CELL_W - 1))
       return -258;
     *SP = -9;
     goto throw;
  aliadr:
     SP--;
-    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * CELL_W || (size_t)SP & 3)
+    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * CELL_W || (size_t)SP & (CELL_W - 1))
       return -258;
     *SP = -23;
     goto throw;

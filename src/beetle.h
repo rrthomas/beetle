@@ -80,7 +80,7 @@ typedef union {
 
 /* Macro for byte addressing */
 #ifdef WORDS_BIGENDIAN
-#define FLIP(addr) ((addr) ^ 3)
+#define FLIP(addr) ((addr) ^ (CELL_W - 1))
 #else
 #define FLIP(addr) (addr)
 #endif
