@@ -359,13 +359,13 @@ CELL single_step(void)
         CHECKP(SP);
         CHECKP(SP + 1);
         SP++;
-        *(SP - 1) < 32 ? (*SP <<= *(SP - 1)) : (*SP = 0);
+        *(SP - 1) < CELL_BIT ? (*SP <<= *(SP - 1)) : (*SP = 0);
         break;
     case O_RSHIFT:
         CHECKP(SP);
         CHECKP(SP + 1);
         SP++;
-        *(SP - 1) < 32 ? (*SP = (CELL)((UCELL)(*SP) >> *(SP - 1))) : (*SP = 0);
+        *(SP - 1) < CELL_BIT ? (*SP = (CELL)((UCELL)(*SP) >> *(SP - 1))) : (*SP = 0);
         break;
     case O_LSHIFT1:
         CHECKP(SP);

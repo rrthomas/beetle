@@ -17,6 +17,7 @@
 
 #include <stdio.h>      /* for the FILE type */
 #include <stdint.h>
+#include <limits.h>
 
 #include "intprops.h"
 #include "verify.h"
@@ -27,6 +28,7 @@
 typedef uint8_t BYTE;
 typedef int32_t CELL;
 typedef uint32_t UCELL;
+#define CELL_BIT (sizeof(CELL_W) * CHAR_BIT)
 
 /* Check that int32_t seems to be two's complement. */
 verify (TYPE_MINIMUM(CELL) == INT32_MIN);
@@ -85,7 +87,7 @@ typedef union {
 
 /* Portable arithmetic right shift (the behaviour of >> on signed
    quantities is implementation-defined in C99). */
-#define ARSHIFT(n, p) ((n) = ((n) >> (p)) | (-((n) < 0) << (32 - p)))
+#define ARSHIFT(n, p) ((n) = ((n) >> (p)) | (-((n) < 0) << (CELL_BIT - p)))
 
 /* Division macros */
 #define ABS(x) ((x) >= 0 ? (x) : -(x))
