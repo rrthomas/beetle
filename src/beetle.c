@@ -50,7 +50,7 @@ static int commands = sizeof(command) / sizeof(*command);
 
 static char *regist[] = { "A", "-ADDRESS", "'BAD", "CHECKED", "ENDISM", "EP", "I",
     "M0", "MEMORY", "RP", "R0", "SP", "S0", "'THROW" };
-enum registers { r_A, r_ADDRESS, r_BAD, r_CHECKED, r_ENDISM, r_EP, r_I,
+enum registers { r_A, r_NOT_ADDRESS, r_BAD, r_CHECKED, r_ENDISM, r_EP, r_I,
     r_M0, r_MEMORY, r_RP, r_R0, r_SP, r_S0, r_THROW };
 static int registers = sizeof(regist) / sizeof(*regist);
 
@@ -237,10 +237,10 @@ static void do_ass(char *token)
                 printf("Assign A %lX\n", value);
             A = value;
             break;
-        case r_ADDRESS:
+        case r_NOT_ADDRESS:
             if (debug)
                 printf("Assign -ADDRESS %lX\n", value);
-            *((CELL *)M0 + 3) = ADDRESS = value;
+            *((CELL *)M0 + 3) = NOT_ADDRESS = value;
             break;
         case r_BAD:
             if (debug)
@@ -364,8 +364,8 @@ static void do_display(char *token, char *format)
         case r_A:
             sprintf(display, "A = %"PRIX32"h", A);
             break;
-        case r_ADDRESS:
-            sprintf(display, "-ADDRESS = %"PRIX32"h (%"PRId32")", ADDRESS, ADDRESS);
+        case r_NOT_ADDRESS:
+            sprintf(display, "-ADDRESS = %"PRIX32"h (%"PRId32")", NOT_ADDRESS, NOT_ADDRESS);
             break;
         case r_BAD:
             sprintf(display, "'BAD = %"PRIX32"h (%"PRId32")", BAD, BAD);

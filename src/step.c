@@ -15,19 +15,31 @@
 #include "lib.h"        /* lib function */
 
 
-#define CHECKC(a)                               \
-    if ((UCELL)(a) >= MEMORY) {                 \
-        *(CELL *)(M0 + 12) = ADDRESS = (a);     \
-        goto invadr;                            \
+#define IS_ALIGNED(a)     (((a) & 3) == 0)
+#define IN_MAIN_MEMORY(a) ((UCELL)(a) < MEMORY)
+#define SET_NOT_ADDRESS(a)                      \
+        *(CELL *)(M0 + 12) = NOT_ADDRESS = (a);
+
+#define CHECK_ADDRESS(a, cond, label)           \
+    if (!(cond)) {                              \
+        SET_NOT_ADDRESS(a);                     \
+        goto label;                             \
     }
-#define CHECKA(a)                               \
-    CHECKC(a);                                  \
-    if ((a) & 3) {                              \
-        *(CELL *)(M0 + 12) = ADDRESS = (a);     \
-        goto aliadr;                            \
-    }
+#define CHECK_ALIGNED(a)                        \
+    CHECK_ADDRESS(a, IS_ALIGNED(a), aliadr)
+#define CHECK_MAIN_MEMORY(a)                    \
+    CHECK_ADDRESS(a, IN_MAIN_MEMORY(a), invadr)
+
 #define CHECKP(p)                               \
-    CHECKA((BYTE *)(p) - M0)
+    CHECK_MAIN_MEMORY((BYTE *)(p) - M0);        \
+    CHECK_ALIGNED((BYTE *)(p) - M0);
+
+#define CHECKC(a)                               \
+    CHECK_MAIN_MEMORY(a);
+#define CHECKA(a)                               \
+    CHECK_MAIN_MEMORY(a);                       \
+    CHECK_ALIGNED(a);
+
 #define NEXTC                                   \
     CHECKP(EP);                                 \
     NEXT

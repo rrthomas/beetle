@@ -68,14 +68,14 @@ int main(void)
         printf("Test %d\n", i + 1);
         if (result[i] != res || (result[i] != 0 && bad[i] != BAD) ||
             ((result[i] <= -258 || result[i] == 9 || result[i] == -23) &&
-             address[i] != ADDRESS)) {
+             address[i] != NOT_ADDRESS)) {
              printf("Error in ExceptsT: test %d failed; EP = %td\n", i + 1,
                     (BYTE *) EP - M0);
              printf("Return code is %d; should be %d\n", res, result[i]);
              if (result[i] != 0)
                  printf("'BAD = %d; should be %d\n", BAD, bad[i]);
              if (result[i] <= -258 || result[i] == 9 || result[i] == -23)
-                 printf("-ADDRESS = %d; should be %d\n", ADDRESS, address[i]);
+                 printf("-ADDRESS = %d; should be %d\n", NOT_ADDRESS, address[i]);
              error++;
         }
         putchar('\n');

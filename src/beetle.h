@@ -50,7 +50,7 @@ extern UCELL MEMORY;
 extern CELL *SP, *RP;	/* note RP and SP are pointers, not Beetle addresses */
 extern CELL *THROW;     /* 'THROW is not a valid C identifier */
 extern UCELL BAD;       /* 'BAD is not a valid C identifier */
-extern UCELL ADDRESS;	/* -ADDRESS is not a valid C identifier */
+extern UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
 #define CHECKED 1       /* C Beetle makes address checking mandatory */
 
 

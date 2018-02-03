@@ -24,7 +24,7 @@ UCELL MEMORY;
 CELL *SP, *RP;
 CELL *THROW;	/* 'THROW is not a valid C identifier */
 UCELL BAD;	/* 'BAD is not a valid C identifier */
-UCELL ADDRESS;	/* -ADDRESS is not a valid C identifier */
+UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
 
 
 /* Initialise registers that are not fixed */
@@ -41,11 +41,11 @@ int init_beetle(BYTE *b_array, size_t size, UCELL e0)
     RP = (CELL *)(M0 + MEMORY);
     THROW = (CELL *)M0;
     BAD = 0xFFFFFFFF;
-    ADDRESS = 0xFFFFFFFF;
+    NOT_ADDRESS = 0xFFFFFFFF;
 
     *((CELL *)M0 + 1) = MEMORY;
     *((CELL *)M0 + 2) = BAD;
-    *((CELL *)M0 + 3) = ADDRESS;
+    *((CELL *)M0 + 3) = NOT_ADDRESS;
 
     return 0;
 }
