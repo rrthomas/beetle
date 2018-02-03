@@ -1,6 +1,6 @@
 # Source Makefile.am
 
-SUBDIRS = tests
+SUBDIRS = . tests
 
 AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib
 
