@@ -3,7 +3,7 @@
     (c) Reuben Thomas 1994-2011
 
     Test the memory operators. Also uses previously tested instructions.
-    Doesn't test address exception handling, as this is not yet supported.
+    FIXME: Doesn't test address exception handling.
 
 */
 

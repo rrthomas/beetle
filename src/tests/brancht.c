@@ -3,9 +3,10 @@
     (c) Reuben Thomas 1994-2011
 
     Test the branch instructions. Also uses other instructions with lower
-    opcodes than the instructions tested (i.e. those already tested). Doesn't
-    test address exception handling, as this is not yet supported. The test
-    program contains an infinite loop, but this is only executed once.
+    opcodes than the instructions tested (i.e. those already tested).
+    FIXME: Doesn't test address exception handling.
+    The test program contains an infinite loop, but this is only executed
+    once.
 
 */
 
