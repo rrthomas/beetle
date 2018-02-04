@@ -876,9 +876,12 @@ int main(int argc, char *argv[])
                     break;
                 }
             case 1:
+                debug = true;
+                break;
+            case 2:
                 usage();
                 exit(EXIT_SUCCESS);
-            case 2:
+            case 3:
                 printf(PACKAGE_NAME " " VERSION "\n"
                        BEETLE_COPYRIGHT_STRING "\n"
                        PACKAGE_NAME " comes with ABSOLUTELY NO WARRANTY.\n"
