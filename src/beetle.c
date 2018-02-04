@@ -854,10 +854,11 @@ int main(int argc, char *argv[])
     set_program_name(argv[0]);
     save_keyb(); // Save keyboard setup so we can restore from it without calling init_keyb
 
-    // Leading ':' so as to return ':' for a missing arg, not '?'
+    // Options string starts with '+' to stop option processing at first non-option, then
+    // leading ':' so as to return ':' for a missing arg, not '?'
     for (;;) {
         int this_optind = optind ? optind : 1, longindex;
-        int c = getopt_long(argc, argv, ":m:", longopts, &longindex);
+        int c = getopt_long(argc, argv, "+:m:", longopts, &longindex);
 
         if (c == -1)
             break;
