@@ -50,3 +50,4 @@
 /xalloc.m4
 /xsize.m4
 /xvasprintf.m4
+/gnu-make.m4

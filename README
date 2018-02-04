@@ -41,6 +41,9 @@ If building from a Git repository, first run
 
 ./bootstrap
 
+For the bibliographies in the documentation to be built correctly, GNU Make
+should be used.
+
 
 pForth
 ------

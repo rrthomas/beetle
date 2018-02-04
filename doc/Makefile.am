@@ -1,20 +1,27 @@
 # Docs Makefile.am
 
+if GNU_MAKE
+BIBINPUTS = $(srcdir)/bibtex/bib
+export BIBINPUTS
+endif
+
 LATEX_SRCS = \
 	$(srcdir)/beetle.tex \
 	$(srcdir)/cbeetle.tex \
 	$(srcdir)/uiface.tex \
 	$(srcdir)/intro.tex \
 	$(srcdir)/litencode.tex \
-	$(srcdir)/tradeoffs.tex
+	$(srcdir)/tradeoffs.tex \
+	$(srcdir)/bibtex/bib/rrt.bib \
+	$(srcdir)/bibtex/bib/vm.bib
 
 LATEX_PDFS = \
-	$(builddir)/beetle.pdf \
-	$(builddir)/cbeetle.pdf \
-	$(builddir)/uiface.pdf \
-	$(builddir)/intro.pdf \
-	$(builddir)/litencode.pdf \
-	$(builddir)/tradeoffs.pdf
+	beetle.pdf \
+	cbeetle.pdf \
+	uiface.pdf \
+	intro.pdf \
+	litencode.pdf \
+	tradeoffs.pdf
 
 all: pdf
 
