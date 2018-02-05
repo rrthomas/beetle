@@ -9,12 +9,9 @@
 
 #include "config.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <inttypes.h>
-#include <stdint.h>
-#include <stdbool.h>
 #include <errno.h>
 #include <ctype.h>
 #include <string.h>
@@ -25,7 +22,6 @@
 #include "xvasprintf.h"
 
 #include "beetle.h"
-#include "lib.h"
 #include "opcodes.h"
 #include "debug.h"
 #include "noecho.h"

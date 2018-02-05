@@ -15,7 +15,6 @@
 #include <inttypes.h>
 #include <assert.h>
 #include "beetle.h"	/* main header */
-#include "lib.h"
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
 #include "debug.h"	/* debugging functions */

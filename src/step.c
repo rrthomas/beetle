@@ -9,11 +9,15 @@
 
 #include "config.h"
 
-#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "beetle.h"     /* main header */
 #include "opcodes.h"	/* opcode enumeration */
-#include "lib.h"        /* lib function */
 
+
+/* Address checking */
+// FIXME: use CHECKP in LIB routines [4, 12]
 
 #define IS_ALIGNED(a)     (((a) & (CELL_W - 1)) == 0)
 #define IN_MAIN_MEMORY(a) ((UCELL)(a) < MEMORY)
@@ -56,6 +60,47 @@
         *--SP = -10;                            \
         goto throw;                             \
     }
+
+
+/* LIB support */
+
+#define LIB_ROUTINES 14
+
+/* FILE pointer cache */
+#define PTRS 64
+#define PTR_OK(p) ((p) >= 0 && (p) <= lastptr)
+
+/* Copy a string from Beetle to C */
+static void getstr(unsigned char *s, UCELL adr)
+{
+    int i;
+
+    for (i = 0; *(M0 + FLIP(adr)) != 0; adr++)
+        s[i++] = *(M0 + FLIP(adr));
+    s[i] = '\0';
+}
+
+/* Register command-line args in Beetle high memory */
+int main_argc = 0;
+UCELL *main_argv;
+UCELL *main_argv_len;
+bool register_args(int argc, char *argv[])
+{
+    main_argc = argc;
+    if ((main_argv = calloc(argc, sizeof(UCELL))) == NULL ||
+        (main_argv_len = calloc(argc, sizeof(UCELL))) == NULL)
+        return false;
+
+    for (int i = 0; i < argc; i++) {
+        size_t len = strlen(argv[i]);
+        main_argv[i] = himem_allot(argv[i], len);
+        if (main_argv[i] == 0)
+            return false;
+        main_argv_len[i] = len;
+    }
+    return true;
+}
+
 
 /* Perform one pass of the execution cycle. */
 CELL single_step(void)
@@ -584,8 +629,209 @@ CELL single_step(void)
             CHECKP(SP - 1);
             *--SP = -257;
             goto throw;
-        } else
-            lib((UCELL)*SP++);
+        } else {
+            static FILE *ptr[PTRS];
+            static int lastptr = -1;
+
+            switch ((UCELL)*SP++) {
+
+            case 0: /* BL */
+                CHECKP(SP - 1);
+                *--SP = 32;
+                break;
+
+            case 1: /* CR */
+                putchar('\n');
+                break;
+
+            case 2: /* EMIT */
+                CHECKP(SP);
+                putchar((BYTE)*SP);
+                SP++;
+                break;
+
+            case 3: /* KEY */
+                CHECKP(SP - 1);
+                *--SP = (CELL)(getchar());
+                break;
+
+                // FIXME: Document the following in the C Beetle manual. */
+
+            case 4: /* OPEN-FILE */
+                {
+                    int p = (lastptr == PTRS - 1 ? -1 : ++lastptr);
+
+                    if (p != -1) {
+                        unsigned char file[256], perm[4];
+                        getstr(file, *((UCELL *)SP + 1));
+                        getstr(perm, *(UCELL *)SP);
+                        ptr[p] = fopen((char *)file, (char *)perm);
+                        if (ptr[p] != NULL) {
+                            *SP = 0;
+                            *(SP + 1) = p + 1;
+                            break;
+                        }
+                    }
+                    *SP = -1;
+                }
+                break;
+
+            case 5: /* CLOSE-FILE */
+                {
+                    int p = *SP - 1;
+                    if (!PTR_OK(p)) {
+                        *SP = -1;
+                        break;
+                    }
+                    *SP = fclose(ptr[p]);
+                    for (int i = p; i <= lastptr; i++)
+                        ptr[i] = ptr[i + 1];
+                    lastptr--;
+                }
+                break;
+
+            case 6: /* READ-FILE */
+                {
+                    unsigned long i;
+                    int c = 0, p = *SP - 1;
+
+                    if (!PTR_OK(p)) {
+                        *++SP = -1;
+                        *(SP + 1) = 0;
+                        break;
+                    }
+                    for (i = 0; i < *((UCELL *)SP + 1) && c != EOF; ) {
+                        c = getc(ptr[p]);
+                        if (c != EOF)
+                            *(M0 + FLIP(*((UCELL *)SP + 2) + i++)) = (BYTE)c;
+                    }
+                    *++SP = ferror(ptr[p]) ? -1 : 0;
+                    *((UCELL *)SP + 1) = (UCELL)i;
+                }
+                break;
+
+            case 7: /* WRITE-FILE */
+                {
+                    unsigned long i;
+                    int c = 0, p = *SP - 1;
+
+                    if (PTR_OK(p))
+                        for (i = 0; i < *((UCELL *)SP + 1); i++)
+                            if ((c = fputc(*(M0 + FLIP(*((UCELL *)SP + 2) + i)),
+                                           ptr[p])) == EOF)
+                                break;
+                            else
+                                c = EOF;
+                    SP += 2;
+                    if (c != EOF)
+                        *SP = 0;
+                    else
+                        *SP = -1;
+                }
+                break;
+
+            case 8: /* FILE-POSITION */
+                {
+                    int p = *SP - 1;
+                    if (!PTR_OK(p)) {
+                        *(SP -= 2) = -1;
+                        break;
+                    }
+
+                    // FIXME: split long into two CELLs properly
+                    long res = ftell(ptr[p]);
+                    *((UCELL *)SP--) = (UCELL)res;
+                    *SP-- = 0; // Extend number to double
+                    if (res != -1)
+                        *SP = 0;
+                    else
+                        *SP = -1;
+                }
+                break;
+
+            case 9: /* REPOSITION-FILE */
+                {
+                    int p = *SP - 1;
+                    if (!PTR_OK(p)) {
+                        *(SP += 2) = -1;
+                        break;
+                    }
+                    // FIXME: Read from two CELLs properly
+                    int res = fseek(ptr[p], *((UCELL *)SP + 2), SEEK_SET);
+
+                    *(SP += 2) = (UCELL)res;
+                }
+                break;
+
+            case 10: /* FLUSH-FILE */
+                {
+                    int p = *SP - 1;
+                    if (!PTR_OK(p)) {
+                        *SP = -1;
+                        break;
+                    }
+
+                    int res = fflush(ptr[p]);
+                    if (res != EOF)
+                        *SP = 0;
+                    else
+                        *SP = -1;
+                }
+                break;
+
+            case 11: /* RENAME-FILE */
+                {
+                    int res;
+                    unsigned char from[256], to[256];
+
+                    getstr(from, *((UCELL *)SP + 1));
+                    getstr(to, *(UCELL *)SP++);
+                    res = rename((char *)from, (char *)to);
+
+                    if (res != 0)
+                        *SP = -1;
+                    else
+                        *SP = 0;
+                }
+                break;
+
+            case 12: /* DELETE-FILE */
+                {
+                    int res;
+                    unsigned char file[256];
+
+                    getstr(file, *(UCELL *)SP);
+                    res = remove((char *)file);
+
+                    if (res != 0)
+                        *SP = -1;
+                    else
+                        *SP = 0;
+                }
+                break;
+
+            case 13: /* ARGC ( -- u ) */
+                CHECKP(SP - 1);
+                *--SP = main_argc;
+                break;
+
+            case 14: /* ARG ( u1 -- c-addr u2 )*/
+                {
+                    CHECKP(SP);
+                    UCELL u = *(UCELL *)SP;
+                    CHECKP(SP - 1);
+                    if (u > main_argc) {
+                        *SP = 0;
+                        *--SP = 0;
+                    } else {
+                        *SP = main_argv[u];
+                        *--SP = main_argv_len[u];
+                    }
+                }
+                break;
+
+            }
+        }
         break;
     case O_OS:
         break;

@@ -16,6 +16,7 @@
 #include "config.h"
 
 #include <stdio.h>      /* for the FILE type */
+#include <stdbool.h>
 #include <stdint.h>
 #include <limits.h>
 
@@ -68,6 +69,7 @@ int save_object(FILE *file, CELL *address, UCELL length);
 
 /* Additional routines, macros, types and quantities provided by C Beetle */
 int init_beetle(BYTE *b_array, size_t size, UCELL e0);
+bool register_args(int argc, char *argv[]);
 
 #define B_TRUE ((CELL)0xFFFFFFFF)   /* Beetle's TRUE flag */
 #define B_FALSE ((CELL)0)           /* Beetle's FALSE flag */
