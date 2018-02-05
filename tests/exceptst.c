@@ -58,7 +58,7 @@ int main(void)
 
     *THROW = 100;   /* set address of exception handler */
 
-    CELL error = 0;
+    UCELL error = 0;
     for (int i = 0; i < 12; i++) {
         SP = S0;    /* reset stack pointer */
 

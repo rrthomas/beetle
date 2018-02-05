@@ -27,20 +27,6 @@ if test "$gl_gcc_warnings" = yes; then
   dnl Set up the list of undesired warnings.
   nw=
   nw="$nw -Wsystem-headers"   # Don’t let system headers trigger warnings
-  nw="$nw -Wundef"            # All compiler preprocessors support #if UNDEF
-  nw="$nw -Wtraditional"      # All compilers nowadays support ANSI C
-  nw="$nw -Wdeclaration-after-statement" # We require C99.
-  nw="$nw -Wstrict-overflow"  # Use a lower level (see below).
-  nw="$nw -Wconversion"       # These warnings usually don’t point to mistakes.
-  nw="$nw -Wsign-conversion"  # Likewise.
-  nw="$nw -Waggregate-return" # We do this on purpose.
-  nw="$nw -Wbad-function-cast" # FIXME: We do this on purpose (non-pointer list elements).
-  nw="$nw -Wtraditional-conversion" # Don't care.
-  nw="$nw -Wpadded"           # Don't care.
-  nw="$nw -Wc++-compat"       # Don't care.
-  nw="$nw -Woverlength-strings" # Don't care.
-  nw="$nw -Wmissing-format-attribute" # Don't care.
-  nw="$nw -Wunreachable-code" # Seems buggy.
 
   gl_MANYWARN_ALL_GCC([warnings])
 
@@ -50,8 +36,6 @@ if test "$gl_gcc_warnings" = yes; then
     gl_WARN_ADD([$w])
   done
 
-  dnl Add an extra warning
-  gl_WARN_ADD([-Wstrict-overflow=1])
   dnl Add some more safety measures
   gl_WARN_ADD([-D_FORTIFY_SOURCE=2])
 

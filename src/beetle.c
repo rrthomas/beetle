@@ -537,7 +537,7 @@ static void do_command(int no)
     case c_DEBUG:
         {
             char *arg = strtok(NULL, " ");
-            debug = arg ? (bool)single_arg(arg) : !debug;
+            debug = arg ? (single_arg(arg) != 0) : !debug;
         }
         break;
     case c_DUMP:
