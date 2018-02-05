@@ -1,7 +1,5 @@
 # Source Makefile.am
 
-SUBDIRS = . tests
-
 AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib
 
 # FIXME: Install the library, for use by other programs

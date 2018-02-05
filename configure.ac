@@ -78,5 +78,5 @@ AC_C_BIGENDIAN
 
 dnl Generate output files
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile lib/Makefile doc/Makefile src/Makefile src/tests/Makefile])
+AC_CONFIG_FILES([Makefile lib/Makefile src/Makefile tests/Makefile doc/Makefile])
 AC_OUTPUT
