@@ -414,7 +414,6 @@ different types of stack item are shown in table~\ref{typetable}.
 \spic{u} & unsigned number \\
 \spic{n{\tt |}u} & number (signed or unsigned) \\
 \spic{x} & unspecified cell \\
-\spic{xt} & execution token \\
 \spic{a-addr} & cell-aligned address \\
 \spic{c-addr} & character-aligned address \\ \hline
 \end{tabular}
@@ -438,7 +437,6 @@ shows the subtype relationships. The subtype relation is transitive.
 \spic{char} $\Rightarrow$ \spic{u} \\
 \spic{a-addr} $\Rightarrow$ \spic{c-addr} $\Rightarrow$ \spic{u} \\
 \spic{flag} $\Rightarrow$ \spic{x} \\
-\spic{xt} $\Rightarrow$ \spic{x} \\ \hline
 \end{tabular}
 \end{center}
 \vspace{-2mm}
@@ -676,7 +674,7 @@ Branches:
 \instp{BRANCHI}{branch-i}{43h}{--}{Add {\tt A} $\times$ 4 to {\tt EP}, then perform the action of {\tt NEXT}.}
 \instp{?BRANCH}{question-branch}{44h}{flag --}{If \spic{flag} is false then load {\tt EP} from the cell it points to and perform the action of {\tt NEXT}; otherwise add four to {\tt EP}.}
 \instp{?BRANCHI}{question-branch-i}{45h}{flag --}{If \spic{flag} is false then add {\tt A} $\times$ 4 to {\tt EP}. Perform the action of {\tt NEXT}.}
-\instr{EXECUTE}{46h}{xt --}{ -- a-addr}{Push {\tt EP} on to the return stack, put \spic{xt} into {\tt EP}, then perform the action of {\tt NEXT}.}
+\instr{EXECUTE}{46h}{\aaddr1 --}{ -- \aaddr2}{Push {\tt EP} on to the return stack, put \spic{\aaddr1} into {\tt EP}, then perform the action of {\tt NEXT}.}
 \instpr{@EXECUTE}{fetch-execute}{47h}{\aaddr1 --}{ -- \aaddr2}{Push {\tt EP} on to the return stack, put the contents of \spic{a-addr} into {\tt EP}, then perform the action of {\tt NEXT}.}
 \end{description}
 
