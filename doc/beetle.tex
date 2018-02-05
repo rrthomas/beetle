@@ -85,7 +85,7 @@
 
 \title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
-\date{29th October 1993; revised 1st February 2018}
+\date{29th October 1993; revised 5th February 2018}
 
 \begin{document}
 \maketitle
@@ -820,13 +820,11 @@ undefined opcodes (5Ch--FEh) raise exception $-256$.
 \section{External interface}
 
 Beetle's external interface comes in three parts. The calling interface allows
-Beetle to be controlled by other programs. The library format provides a simple
-mechanism for Beetle to access I/O and other system-dependent functions via the
-{\tt LIB} instruction. User-written libraries may also be used, allowing Beetle
-to benefit from previously written code, code written in other languages, and
-the speed of machine code in time-critical situations. The object module format
-allows compiled code to be saved, reloaded and shared between systems. pForth is
-loaded from an object module.
+Beetle to be controlled by other programs. The {\tt LIB} instruction allows
+implementations to provide access to system facilities, previously written code,
+code written in other languages, and the speed of machine code in time-critical
+situations. The object module format allows compiled code to be saved, reloaded
+and shared between systems. pForth is loaded from an object module.
 
 
 \subsection{Object module format}
@@ -866,47 +864,6 @@ development, with only a little source code being recompiled at a time, is
 typically used.
 
 
-\subsection{Library format}
-
-The first six bytes of a library file should be the ASCII codes of the letters
-``BEETLE''; next should come FFh followed by the one-byte contents of the {\tt
-ENDISM} register of the Beetle which saved the library. Next is a cell
-containing the number of library routines in this library. After this come the
-routines: first a cell containing the number of the routine (the same as that
-passed to {\tt LIB} to call that routine), then a cell with the length of the
-routine in bytes, then the machine code itself, padded if necessary with 00h to
-a whole number of cells. The number of routines, routine numbers and lengths
-should be stored with the same endianness as that indicated earlier. The format
-is summarised in table~\ref{libtable} (the bytes in each cell are shown in the
-order in which they are stored in the file, regardless of the endianness of the
-machine on which the file is written).
-
-\begin{table}[htbp]
-\begin{center}
-\begin{tabular}{|c|l|} \hline
-\rule[-2mm]{0mm}{6mm}\bf Cell & \bf Contents \\ \hline
-1 & 42h 45h 45h 54h \\ \hline
-2 & 4Ch 45h FFh {\tt ENDISM} \\ \hline
-3 & Number of calls \\ \hline
-4 & 1st call number \\ \hline
-5 & 1st call length $l$\/ \\ \hline
-6 & 1st cell of code\dots \\ \hline
-$\vdots$ & \multicolumn{1}{c|}{$\vdots$} \\ \hline
-$l+5$\/ & \dots$l$\/th cell of code \\ \hline
-$\vdots$ & \multicolumn{1}{c|}{$\vdots$} \\ \hline
-$\vdots$ & further calls \\ \hline
-$\vdots$ & \multicolumn{1}{c|}{$\vdots$} \\ \hline
-\end{tabular}
-\end{center}
-\vspace{-2mm}
-\caption{\label{libtable}Library format}
-\end{table}
-
-If relocation tables or other data are needed for the machine code to work, they
-should be included with the code; it is up to the implementation how to decode
-the machine code sections of the library file.
-
-
 \subsection{Calling interface}
 \label{calls}
 
@@ -944,12 +901,6 @@ Beetle must provide:
     successful, $-1$ if there is a Beetle error (the address is out of range or
     the area extends beyond {\tt MEMORY}), and some other
     implementation-defined value if there is a filing system or other error.}
-\iface{load\_library}{file}{integer}{Load the library specified by
-    \textit{file}, which may be a filename or some other specifier. Return 0 if
-    successful, or some other implementation-defined value if not. It is up
-    to the implementation whether particular library calls may be loaded
-    more than once; if this is allowed, the old version should be
-    overwritten by the new.}
 \end{description}
 
 Beetle must also provide access to its registers and address space through
