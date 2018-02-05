@@ -4,6 +4,7 @@ SUBDIRS = . tests
 
 AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib
 
+# FIXME: Install the library, for use by other programs
 noinst_LIBRARIES = libbeetle.a
 libbeetle_a_SOURCES = storage.c step.c run.c lib.c debug.c loadobj.c saveobj.c noecho.c \
 	beetle.h debug.h lib.h noecho.h opcodes.h
