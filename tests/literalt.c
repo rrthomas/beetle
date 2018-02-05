@@ -17,7 +17,7 @@
 #include "debug.h"      /* debugging functions */
 
 
-char *correct[] = { "", "-257", "-257 12345678", "-257 12345678 -2" };
+const char *correct[] = { "", "-257", "-257 12345678", "-257 12345678 -2" };
 
 
 int main(void)

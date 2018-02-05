@@ -20,7 +20,7 @@
 #include "debug.h"      /* debugging functions */
 
 
-char *correct[] = {
+const char *correct[] = {
     "", QCELL_W, "16384", "16380", "16380 513",
     "16380 513 16380", "16380", "16380 16380", "16380 513", "16380",
     "16380 16380", "16380 1", "16381", "2", "2 16383", "", "16380", "33554945",
@@ -33,7 +33,7 @@ int main(void)
 {
     /* Data for himem tests */
     char *onetwothreefour = strdup("\x01\x02\x03\x04");
-    char *item[] = {onetwothreefour, "\x01", "\x02\x03", "basilisk"};
+    char *item[] = {onetwothreefour, strdup("\x01"), strdup("\x02\x03"), strdup("basilisk")};
     unsigned nitems = sizeof(item) / sizeof(item[0]);
 
     init_beetle((BYTE *)malloc(16384), 4096, 16);
@@ -63,7 +63,7 @@ int main(void)
 
     NEXT;   /* load first instruction word */
 
-    for (unsigned i = 0; i <= instrs; i++) {
+    for (int i = 0; i <= instrs; i++) {
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {

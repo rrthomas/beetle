@@ -96,17 +96,15 @@ static const char *mnemonic[] = { "NEXT00", "DUP", "DROP", "SWAP", "OVER",
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "NEXTFF" };
 
-const char *disass(BYTE opcode)
+_GL_ATTRIBUTE_CONST const char *disass(BYTE opcode)
 {
     if (mnemonic[opcode] == NULL) return "";
     return mnemonic[opcode];
 }
 
-BYTE toass(char *token)
+_GL_ATTRIBUTE_PURE BYTE toass(char *token)
 {
-    int i;
-
-    for (i = 0; i < 0x5c; i++)
+    for (int i = 0; i < 0x5c; i++)
         if (strcmp(token, mnemonic[i]) == 0) return i;
 
     if (strcmp(token, mnemonic[0xff]) == 0) return 0xff;
@@ -114,7 +112,7 @@ BYTE toass(char *token)
     return 0xfe;
 }
 
-CELL val_EP(void)
+_GL_ATTRIBUTE_PURE CELL val_EP(void)
 {
     return ((BYTE *)EP - M0);
 }
@@ -122,7 +120,7 @@ CELL val_EP(void)
 char *val_data_stack(void)
 {
     CELL *i;
-    static char picture[1024];
+    static char picture[1024]; // FIXME: potential overflow
     char item[16];
 
     picture[0] = '\0';
@@ -141,7 +139,7 @@ void show_data_stack(void)
 
     printf("Data stack: ");
     for (i = S0 - 1; i >= SP; i--)
-      printf("%"PRId32" ", *i);
+        printf("%"PRId32" ", *i);
     putchar('\n');
 }
 
@@ -151,6 +149,6 @@ void show_return_stack(void)
 
     printf("Return stack: ");
     for (i = R0 - 1; i >= RP; i--)
-      printf("%"PRIX32"h ", *i);
+        printf("%"PRIX32"h ", (UCELL)*i);
     putchar('\n');
 }

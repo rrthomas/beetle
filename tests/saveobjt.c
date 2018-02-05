@@ -16,7 +16,7 @@
 int correct[] = { -1, -1, 0 };
 
 
-static int try(char *file, CELL *address, UCELL length)
+static int try(const char *file, CELL *address, UCELL length)
 {
     FILE *fp = fopen(file, "w");
     int ret = save_object(fp, address, length);
@@ -65,7 +65,7 @@ int main(void)
     }
     for (i = 0; i < 4; i++) {
         printf("Word %d of memory is %"PRIX32"; should be %"PRIX32"\n", i,
-            ((CELL *)M0)[i + 4], ((CELL *)M0)[i]);
+            ((UCELL *)M0)[i + 4], ((UCELL *)M0)[i]);
         if (((CELL *)M0)[i + 4] != ((CELL *)M0)[i]) {
             printf("Error in SaveObjT: loaded file does not match data "
                 "saved\n");

@@ -24,7 +24,7 @@ int main(void)
 {
     /* Data for ARGC/ARG tests */
     int argc = 3;
-    char *argv[] = {"foo", "bard", "basilisk"};
+    char *argv[] = {strdup("foo"), strdup("bard"), strdup("basilisk")};
 
     init_beetle((BYTE *)malloc(4096), 1024, 16);
     assert(register_args(argc, argv));
@@ -84,7 +84,7 @@ int main(void)
     while (val_EP() < 76)
         single_step();
     printf("arg 1's length is %"PRId32", and should be %zu\n", *SP, strlen(argv[1]));
-    if (*SP++ != strlen(argv[1])) {
+    if ((UCELL)*SP++ != strlen(argv[1])) {
         printf("Error in LibT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }

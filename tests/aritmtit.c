@@ -24,7 +24,8 @@
 #include "debug.h"      /* debugging functions */
 
 
-char *correct[] = { "", "0", "0 1", "0 1 -1", "0 1 -1 " QCELL_W,
+const char *correct[] = {
+    "", "0", "0 1", "0 1 -1", "0 1 -1 " QCELL_W,
     "0 1 -1 " QCELL_W " -" QCELL_W, "0 1 " QCELL_W " -" QCELL_W " -1",
     "0 1 " QCELL_W " -5", "0 1 -1", "0 2", "0 3", "0 2", "2 0", "2 " QCELL_W,
     "2 0", "2 0 -1", "2 0 -1 " QCELL_W, "2 0 -" QCELL_W, "2 -" QCELL_W, "-2 -1",

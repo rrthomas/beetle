@@ -29,24 +29,28 @@
 
 bool debug = false; // User interface debug control
 
-#define DEFAULT_MEMORY 1048576 // Default size of Beetle's memory in cells (4Mb)
-#define MAX_MEMORY 1073741824 // maximum size of memory (4Gb)
+#define DEFAULT_MEMORY 1048576U // Default size of Beetle's memory in cells (4Mb)
+#define MAX_MEMORY 1073741824U // maximum size of memory (4Gb)
 static UCELL memory_size = DEFAULT_MEMORY; // Size of Beetle's memory in cells
 
 #define MAXLEN 80   /* maximum input line length */
 
 static jmp_buf env;
 
-static char *command[] = { ">D", ">R", "COUNTS", "DISASSEMBLE", "D>", "DATA",
+static const char *command[] = {
+    ">D", ">R", "COUNTS", "DISASSEMBLE", "D>", "DATA",
     "DEBUG", "DUMP", "FROM", "INITIALISE", "LOAD", "QUIT", "REGISTERS", "R>",
-    "RETURN", "RUN", "STEP", "SAVE", "STACKS", "TRACE" };
+    "RETURN", "RUN", "STEP", "SAVE", "STACKS", "TRACE"
+};
 enum commands { c_TOD, c_TOR, c_COUNTS, c_DISASSEMBLE, c_DFROM, c_DATA,
     c_DEBUG, c_DUMP, c_FROM, c_INITIALISE, c_LOAD, c_QUIT, c_REGISTERS, c_RFROM,
     c_RETURN, c_RUN, c_STEP, c_SAVE, c_STACKS, c_TRACE };
 static int commands = sizeof(command) / sizeof(*command);
 
-static char *regist[] = { "A", "-ADDRESS", "'BAD", "CHECKED", "ENDISM", "EP", "I",
-    "M0", "MEMORY", "RP", "R0", "SP", "S0", "'THROW" };
+static const char *regist[] = {
+    "A", "-ADDRESS", "'BAD", "CHECKED", "ENDISM", "EP", "I",
+    "M0", "MEMORY", "RP", "R0", "SP", "S0", "'THROW"
+};
 enum registers { r_A, r_NOT_ADDRESS, r_BAD, r_CHECKED, r_ENDISM, r_EP, r_I,
     r_M0, r_MEMORY, r_RP, r_R0, r_SP, r_S0, r_THROW };
 static int registers = sizeof(regist) / sizeof(*regist);
@@ -54,11 +58,11 @@ static int registers = sizeof(regist) / sizeof(*regist);
 static long count[256] = { 0 };
 
 
-static int range(CELL adr, CELL limit, char *quantity)
+static int range(CELL adr, CELL limit, const char *quantity)
 {
     if (adr < limit) return 0;
-    printf("%s must be in the range {0..%"PRIX32"h} ({0..%"PRId32"})\n", quantity, limit,
-        limit);
+    printf("%s must be in the range {0..%"PRIX32"h} ({0..%"PRIu32"})\n",
+           quantity, (UCELL)limit, (UCELL)limit);
     return 1;
 }
 
@@ -71,7 +75,7 @@ static void upper(char *s)
         *s = toupper(*s);
 }
 
-static size_t search(char *token, char *list[], size_t entries)
+static size_t search(const char *token, const char *list[], size_t entries)
 {
     size_t i, len = strlen(token);
 
@@ -83,7 +87,7 @@ static size_t search(char *token, char *list[], size_t entries)
 }
 
 
-static long single_arg(char *s)
+static long single_arg(const char *s)
 {
     long n;
     char *endp;
@@ -163,7 +167,7 @@ static void disassemble(CELL start, CELL end)
     const char *token;
 
     while ((BYTE *)p < M0 + end) {
-        printf("%08"PRIX32"h: ", (CELL)((BYTE *)p - M0));
+        printf("%08"PRIX32"h: ", (UCELL)((BYTE *)p - M0));
         a = *p++;
 
         do {
@@ -177,16 +181,16 @@ static void disassemble(CELL start, CELL end)
 
             if (load_op(i)) {
                 if (i != O_LITERAL)
-                    printf(" %"PRIX32"h", *p);
+                    printf(" %"PRIX32"h", (UCELL)*p);
                 else
-                    printf(" %"PRId32" (%"PRIX32"h)", *p, *p);
+                    printf(" %"PRId32" (%"PRIX32"h)", *p, (UCELL)*p);
                 p++;
             } else {
                 if (imm_op(i)) {
                     if (i != O_LITERALI)
-                        printf(" %"PRIX32"h", a * 4 + (CELL)((BYTE *)p - M0));
+                        printf(" %"PRIX32"h", a * 4 + (UCELL)((BYTE *)p - M0));
                     else
-                        printf(" %"PRId32" (%"PRIX32"h)", a, a);
+                        printf(" %"PRId32" (%"PRIX32"h)", a, (UCELL)a);
                     a = 0;
                 }
             }
@@ -231,17 +235,17 @@ static void do_ass(char *token)
     switch (no) {
         case r_A:
             if (debug)
-                printf("Assign A %lX\n", value);
+                printf("Assign A %lX\n", (unsigned long)value);
             A = value;
             break;
         case r_NOT_ADDRESS:
             if (debug)
-                printf("Assign -ADDRESS %lX\n", value);
+                printf("Assign -ADDRESS %lX\n", (unsigned long)value);
             *((CELL *)M0 + 3) = NOT_ADDRESS = value;
             break;
         case r_BAD:
             if (debug)
-                printf("Assign 'BAD %lX\n", value);
+                printf("Assign 'BAD %lX\n", (unsigned long)value);
             *((CELL *)M0 + 2) = BAD = value;
             break;
         case r_CHECKED:
@@ -258,7 +262,7 @@ static void do_ass(char *token)
                 break;
             }
             if (debug)
-                printf("Assign EP %lX\n", value);
+                printf("Assign EP %lX\n", (unsigned long)value);
             EP = (CELL *)(M0 + value);
             break;
         case r_I:
@@ -267,7 +271,7 @@ static void do_ass(char *token)
                 break;
             }
             if (debug)
-                printf("Assign I %lX\n", value);
+                printf("Assign I %lX\n", (unsigned long)value);
             I = value;
             break;
         case r_M0:
@@ -284,7 +288,7 @@ static void do_ass(char *token)
                 break;
             }
             if (debug)
-                printf("Assign RP %lX\n", value);
+                printf("Assign RP %lX\n", (unsigned long)value);
             RP = (CELL *)(M0 + value);
             break;
         case r_R0:
@@ -295,7 +299,7 @@ static void do_ass(char *token)
                 break;
             }
             if (debug)
-                printf("Assign R0 %lX\n", value);
+                printf("Assign R0 %lX\n", (unsigned long)value);
             R0 = (CELL *)(M0 + value);
             break;
         case r_SP:
@@ -306,7 +310,7 @@ static void do_ass(char *token)
                 break;
             }
             if (debug)
-                printf("Assign SP %lX\n", value);
+                printf("Assign SP %lX\n", (unsigned long)value);
             SP = (CELL *)(M0 + value);
             break;
         case r_S0:
@@ -317,7 +321,7 @@ static void do_ass(char *token)
                 break;
             }
             if (debug)
-                printf("Assign S0 %lX\n", value);
+                printf("Assign S0 %lX\n", (unsigned long)value);
             S0 = (CELL *)(M0 + value);
             break;
         case r_THROW:
@@ -328,7 +332,7 @@ static void do_ass(char *token)
                 break;
             }
             if (debug)
-                printf("Assign 'THROW %lX\n", value);
+                printf("Assign 'THROW %lX\n", (unsigned long)value);
             *THROW = value;
         default:
             {
@@ -342,7 +346,8 @@ static void do_ass(char *token)
                     return;
                 }
                 if (debug)
-                    printf("Assign %lX to memory location %"PRIX32"%s\n", value, adr,
+                    printf("Assign %lX to memory location %"PRIX32"%s\n",
+                           (unsigned long)value, (UCELL)adr,
                            ((byte == 1 && (adr & 3) == 0) ? " (byte)" : ""));
                 if (byte == 1)
                     *(M0 + FLIP(adr)) = (BYTE)value;
@@ -352,20 +357,20 @@ static void do_ass(char *token)
     }
 }
 
-static void do_display(char *token, char *format)
+static void do_display(const char *token, const char *format)
 {
     char display[80];
     int no = search(token, regist, registers);
 
     switch (no) {
         case r_A:
-            sprintf(display, "A = %"PRIX32"h", A);
+            sprintf(display, "A = %"PRIX32"h", (UCELL)A);
             break;
         case r_NOT_ADDRESS:
-            sprintf(display, "-ADDRESS = %"PRIX32"h (%"PRId32")", NOT_ADDRESS, NOT_ADDRESS);
+            sprintf(display, "-ADDRESS = %"PRIX32"h (%"PRIu32")", NOT_ADDRESS, NOT_ADDRESS);
             break;
         case r_BAD:
-            sprintf(display, "'BAD = %"PRIX32"h (%"PRId32")", BAD, BAD);
+            sprintf(display, "'BAD = %"PRIX32"h (%"PRIu32")", BAD, BAD);
             break;
         case r_CHECKED:
             sprintf(display, "CHECKED = %d", CHECKED);
@@ -374,8 +379,8 @@ static void do_display(char *token, char *format)
             sprintf(display, "ENDISM = %d", ENDISM);
             break;
         case r_EP:
-            sprintf(display, "EP = %05"PRIX32"h (%"PRId32")", (CELL)((BYTE *)EP - M0),
-                    (CELL)((BYTE *)EP - M0));
+            sprintf(display, "EP = %05"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)EP - M0),
+                    (UCELL)((BYTE *)EP - M0));
             break;
         case r_I:
             sprintf(display, "I = %-10s (%02Xh)", disass(I), I);
@@ -384,44 +389,47 @@ static void do_display(char *token, char *format)
             sprintf(display, "M0 = %p", M0);
             break;
         case r_MEMORY:
-            sprintf(display, "MEMORY = %"PRIX32"h (%"PRId32")", MEMORY, MEMORY);
+            sprintf(display, "MEMORY = %"PRIX32"h (%"PRIu32")", MEMORY, MEMORY);
             break;
         case r_RP:
-            sprintf(display, "RP = %"PRIX32"h (%"PRId32")", (CELL)((BYTE *)RP - M0),
-                    (CELL)((BYTE *)RP - M0));
+            sprintf(display, "RP = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)RP - M0),
+                    (UCELL)((BYTE *)RP - M0));
             break;
         case r_R0:
-            sprintf(display, "R0 = %"PRIX32"h (%"PRId32")", (CELL)((BYTE *)R0 - M0),
-                    (CELL)((BYTE *)R0 - M0));
+            sprintf(display, "R0 = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)R0 - M0),
+                    (UCELL)((BYTE *)R0 - M0));
             break;
         case r_SP:
-            sprintf(display, "SP = %"PRIX32"h (%"PRId32")", (CELL)((BYTE *)SP - M0),
-                    (CELL)((BYTE *)SP - M0));
+            sprintf(display, "SP = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)SP - M0),
+                    (UCELL)((BYTE *)SP - M0));
             break;
         case r_S0:
-            sprintf(display, "S0 = %"PRIX32"h (%"PRId32")", (CELL)((BYTE *)S0 - M0),
-                    (CELL)((BYTE *)S0 - M0));
+            sprintf(display, "S0 = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)S0 - M0),
+                    (UCELL)((BYTE *)S0 - M0));
             break;
         case r_THROW:
-            sprintf(display, "'THROW = %"PRIX32"h (%"PRId32")", *THROW, *THROW);
+            sprintf(display, "'THROW = %"PRIX32"h (%"PRIu32")", (UCELL)*THROW, (UCELL)*THROW);
             break;
         default:
             {
                 CELL adr = (CELL)single_arg(token);
 
                 if (debug)
-                    printf("Display contents of memory location %"PRIX32"\n", adr);
+                    printf("Display contents of memory location %"PRIX32"\n", (UCELL)adr);
                 if (range(adr, MEMORY, "Address"))
                     return;
                 if (adr & 3)
-                    sprintf(display, "%"PRIX32"h: %Xh (%d) (byte)", adr,
+                    sprintf(display, "%"PRIX32"h: %Xh (%d) (byte)", (UCELL)adr,
                             *(M0 + FLIP(adr)), *(M0 + FLIP(adr)));
                 else
-                    sprintf(display, "%"PRIX32"h: %"PRIX32"h (%"PRId32") (cell)", adr,
-                            *(CELL *)(M0 + adr), *(CELL *)(M0 + adr));
+                    sprintf(display, "%"PRIX32"h: %"PRIX32"h (%"PRIu32") (cell)", (UCELL)adr,
+                            *(UCELL *)(M0 + adr), *(UCELL *)(M0 + adr));
             }
     }
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
     printf(format, display);
+#pragma GCC diagnostic pop
 }
 
 static void do_registers(void)
@@ -498,7 +506,7 @@ static void do_command(int no)
                 return;
             }
             if (debug)
-                printf("Disassemble from %lX to %lX\n", start, end);
+                printf("Disassemble from %lX to %lX\n", (unsigned long)start, (unsigned long)end);
             disassemble((CELL)start, (CELL)end);
         }
         break;
@@ -507,7 +515,7 @@ static void do_command(int no)
             printf("Pop a number from the data stack and display it\n");
         if (range((CELL)((BYTE *)SP - M0), MEMORY, "SP"))
             return;
-        printf("%"PRId32" (%"PRIX32"h)\n", *SP, *SP);
+        printf("%"PRIu32" (%"PRIX32"h)\n", (UCELL)*SP, (UCELL)*SP);
         SP++;
         break;
     case c_DATA:
@@ -543,9 +551,9 @@ static void do_command(int no)
                 return;
             }
             if (debug)
-                printf("Dump memory from %lX to %lX\n", start, end);
+                printf("Dump memory from %lX to %lX\n", (unsigned long)start, (unsigned long)end);
             while (start < end) {
-                printf("%08lXh: ", start);
+                printf("%08lXh: ", (unsigned long)start);
                 for (int i = 0; i < 8 && start < end; i++, start++)
                     printf("%02X ", M0[start]);
                 putchar('\n');
@@ -564,7 +572,7 @@ static void do_command(int no)
                     break;
                 }
                 if (debug)
-                    printf("Set EP to %lXh\n", adr);
+                    printf("Set EP to %lXh\n", (unsigned long)adr);
                 EP = (CELL *)(M0 + adr);
             }
             if (debug)
@@ -604,7 +612,7 @@ static void do_command(int no)
                 return;
             }
             if (debug)
-                printf("Load binary image %s to address %lX\n", file, adr);
+                printf("Load binary image %s to address %lX\n", file, (unsigned long)adr);
             ret = load_object(handle, (CELL *)(M0 + adr));
             fclose(handle);
 
@@ -618,6 +626,8 @@ static void do_command(int no)
             case -3:
                 printf("Error while loading module\n");
                 break;
+            default:
+                printf("Unknown error\n");
             }
         }
         break;
@@ -631,7 +641,7 @@ static void do_command(int no)
         if (debug)
             printf("Pop a number from the return stack and display it\n");
         if (range((CELL)((BYTE *)RP - M0), MEMORY, "RP")) return;
-        printf("%"PRIX32"h (%"PRId32")\n", *RP, *RP);
+        printf("%"PRIX32"h (%"PRIu32")\n", (UCELL)*RP, (UCELL)*RP);
         RP++;
         break;
     c_ret:
@@ -693,7 +703,7 @@ static void do_command(int no)
                     }
                     if (ret != 0)
                         printf("HALT code %"PRId32" was returned at EP = %Xh\n",
-                               ret, (CELL)((BYTE *)EP - M0));
+                               ret, (UCELL)((BYTE *)EP - M0));
                 } else {
                     limit = single_arg(arg);
                     if (debug)
@@ -732,8 +742,8 @@ static void do_command(int no)
                 return;
             }
             if (debug)
-                printf("Save memory to file %s from %lX to %lX\n", file, start,
-                       end);
+                printf("Save memory to file %s from %lX to %lX\n", file,
+                       (unsigned long)start, (unsigned long)end);
             ret = save_object(handle, (CELL *)(M0 + start),
                               (UCELL)((end - start) / CELL_W));
             fclose(handle);
@@ -746,8 +756,13 @@ static void do_command(int no)
             case -3:
                 printf("Error while saving module\n");
                 break;
+            default:
+                printf("Unknown error\n");
+                break;
             }
         }
+        break;
+    default: /* This cannot happen */
         break;
     }
 }
@@ -792,7 +807,7 @@ static void parse(char *input)
 }
 
 
-static void die(char *format, ...)
+static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void die(const char *format, ...)
 {
     va_list args;
 
@@ -805,12 +820,10 @@ static void die(char *format, ...)
 
 /* Options table */
 struct option longopts[] = {
-#define D(text)
 #define O(longname, shortname, arg, argstring, docstring) \
   {longname, arg, NULL, shortname},
 #define A(argstring, docstring)
 #include "tbl_opts.h"
-#undef D
 #undef O
 #undef A
   {0, 0, 0, 0}
@@ -819,7 +832,7 @@ struct option longopts[] = {
 #define BEETLE_VERSION_STRING "Beetle shell (C Beetle release "PACKAGE_VERSION")"
 #define BEETLE_COPYRIGHT_STRING "(c) Reuben Thomas 1995-2018"
 
-void usage(void)
+static void usage(void)
 {
     char *shortopt, *buf;
     printf ("Usage: %s [OPTION...] [FILENAME ARGUMENT...]\n"
@@ -827,8 +840,6 @@ void usage(void)
             "Run " PACKAGE_NAME ".\n"
             "\n",
             program_name);
-#define D(text)                                 \
-    printf(text "\n");
 #define O(longname, shortname, arg, argstring, docstring)               \
     shortopt = xasprintf(", -%c", shortname);                           \
     buf = xasprintf("--%s%s %s", longname, shortname ? shortopt : "", argstring); \
@@ -836,7 +847,6 @@ void usage(void)
 #define A(argstring, docstring)                 \
     printf("%-24s%s\n", argstring, docstring);
 #include "tbl_opts.h"
-#undef D
 #undef O
 #undef A
     printf("\n"
@@ -893,7 +903,7 @@ int main(int argc, char *argv[])
 
     BYTE *mem;
     if ((mem = (BYTE *)(CELL *)calloc(memory_size, sizeof(CELL))) == NULL)
-        die("could not allocate %ld cells of memory");
+        die("could not allocate %"PRIu32" cells of memory", memory_size);
 
     argc -= optind;
 

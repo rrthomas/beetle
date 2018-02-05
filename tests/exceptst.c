@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 #include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
 #include "opcodes.h"	/* opcode enumeration */
@@ -73,9 +74,9 @@ int main(void)
                     (BYTE *) EP - M0);
              printf("Return code is %d; should be %d\n", res, result[i]);
              if (result[i] != 0)
-                 printf("'BAD = %d; should be %d\n", BAD, bad[i]);
+                 printf("'BAD = %"PRIX32"; should be %"PRIX32"\n", BAD, bad[i]);
              if (result[i] <= -258 || result[i] == 9 || result[i] == -23)
-                 printf("-ADDRESS = %d; should be %d\n", NOT_ADDRESS, address[i]);
+                 printf("-ADDRESS = %"PRIX32"; should be %"PRIX32"\n", NOT_ADDRESS, address[i]);
              error++;
         }
         putchar('\n');

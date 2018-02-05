@@ -18,7 +18,7 @@
 #include "debug.h"      /* debugging functions */
 
 
-char *correct[] = { "0 1 2", "3 2 1 0", "1", "1 2 3 4", "1 1" };
+const char *correct[] = { "0 1 2", "3 2 1 0", "1", "1 2 3 4", "1 1" };
 
 
 int main(void)

@@ -29,7 +29,7 @@ static int try(char *file, CELL *address)
     return ret;
 }
 
-static char *obj_name(char *prefix, char *file)
+static char *obj_name(const char *prefix, const char *file)
 {
     char *s = malloc(strlen(prefix) + strlen(file) + 2);
     assert(s);
@@ -41,8 +41,8 @@ static char *obj_name(char *prefix, char *file)
 
 int main(int argc, char *argv[])
 {
-    char *files[] = { "badobj1", "badobj2", "badobj3", "badobj4", "testobj1",
-        "testobj2" };
+    const char *files[] = {
+        "badobj1", "badobj2", "badobj3", "badobj4", "testobj1", "testobj2" };
     char *prefix = argv[1];
     int i, res;
 
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
         res = try(s, (CELL *)M0);
         free(s);
         printf(" should be %d\n", correct[i]);
-        printf("Word 0 of memory is %"PRIX32"; should be 1020304\n", *(CELL*)M0);
+        printf("Word 0 of memory is %"PRIX32"; should be 1020304\n", *(UCELL*)M0);
         if (*(CELL*)M0 != 0x1020304) {
             printf("Error in LoadObjT: file %s\n", files[i]);
             exit(1);

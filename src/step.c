@@ -105,7 +105,7 @@ bool register_args(int argc, char *argv[])
 /* Perform one pass of the execution cycle. */
 CELL single_step(void)
 {
-    CELL temp, i;
+    CELL temp, temp2;
     BYTE *ptr;
 
     I = (BYTE)A;
@@ -179,7 +179,7 @@ CELL single_step(void)
         CHECKP(SP);
         CHECKP(SP + *SP + 1);
         temp = *(SP + *SP + 1);
-        for (i = *SP; i > 0; i--)
+        for (int i = *SP; i > 0; i--)
             *(SP + i + 1) = *(SP + i);
         *++SP = temp;
         break;
@@ -336,7 +336,7 @@ CELL single_step(void)
         CHECKP(SP);
         CHECKP(SP + 1);
         DIVZERO(*SP);
-        temp = FMOD(*(SP + 1), *SP, i);
+        temp = FMOD(*(SP + 1), *SP, temp2);
         *SP = FDIV(*(SP + 1), *SP);
         *(SP + 1) = temp;
         break;
@@ -411,13 +411,13 @@ CELL single_step(void)
         CHECKP(SP);
         CHECKP(SP + 1);
         SP++;
-        *(SP - 1) < CELL_BIT ? (*SP <<= *(SP - 1)) : (*SP = 0);
+        *(SP - 1) < (CELL)CELL_BIT ? (*SP <<= *(SP - 1)) : (*SP = 0);
         break;
     case O_RSHIFT:
         CHECKP(SP);
         CHECKP(SP + 1);
         SP++;
-        *(SP - 1) < CELL_BIT ? (*SP = (CELL)((UCELL)(*SP) >> *(SP - 1))) : (*SP = 0);
+        *(SP - 1) < (CELL)CELL_BIT ? (*SP = (CELL)((UCELL)(*SP) >> *(SP - 1))) : (*SP = 0);
         break;
     case O_LSHIFT1:
         CHECKP(SP);
@@ -630,11 +630,10 @@ CELL single_step(void)
             *--SP = -257;
             goto throw;
         } else {
-            static FILE *ptr[PTRS];
+            static FILE *fileptr[PTRS];
             static int lastptr = -1;
 
             switch ((UCELL)*SP++) {
-
             case 0: /* BL */
                 CHECKP(SP - 1);
                 *--SP = 32;
@@ -665,8 +664,8 @@ CELL single_step(void)
                         unsigned char file[256], perm[4];
                         getstr(file, *((UCELL *)SP + 1));
                         getstr(perm, *(UCELL *)SP);
-                        ptr[p] = fopen((char *)file, (char *)perm);
-                        if (ptr[p] != NULL) {
+                        fileptr[p] = fopen((char *)file, (char *)perm);
+                        if (fileptr[p] != NULL) {
                             *SP = 0;
                             *(SP + 1) = p + 1;
                             break;
@@ -683,9 +682,9 @@ CELL single_step(void)
                         *SP = -1;
                         break;
                     }
-                    *SP = fclose(ptr[p]);
+                    *SP = fclose(fileptr[p]);
                     for (int i = p; i <= lastptr; i++)
-                        ptr[i] = ptr[i + 1];
+                        fileptr[i] = fileptr[i + 1];
                     lastptr--;
                 }
                 break;
@@ -701,11 +700,11 @@ CELL single_step(void)
                         break;
                     }
                     for (i = 0; i < *((UCELL *)SP + 1) && c != EOF; ) {
-                        c = getc(ptr[p]);
+                        c = getc(fileptr[p]);
                         if (c != EOF)
                             *(M0 + FLIP(*((UCELL *)SP + 2) + i++)) = (BYTE)c;
                     }
-                    *++SP = ferror(ptr[p]) ? -1 : 0;
+                    *++SP = ferror(fileptr[p]) ? -1 : 0;
                     *((UCELL *)SP + 1) = (UCELL)i;
                 }
                 break;
@@ -718,7 +717,7 @@ CELL single_step(void)
                     if (PTR_OK(p))
                         for (i = 0; i < *((UCELL *)SP + 1); i++)
                             if ((c = fputc(*(M0 + FLIP(*((UCELL *)SP + 2) + i)),
-                                           ptr[p])) == EOF)
+                                           fileptr[p])) == EOF)
                                 break;
                             else
                                 c = EOF;
@@ -739,7 +738,7 @@ CELL single_step(void)
                     }
 
                     // FIXME: split long into two CELLs properly
-                    long res = ftell(ptr[p]);
+                    long res = ftell(fileptr[p]);
                     *((UCELL *)SP--) = (UCELL)res;
                     *SP-- = 0; // Extend number to double
                     if (res != -1)
@@ -757,7 +756,7 @@ CELL single_step(void)
                         break;
                     }
                     // FIXME: Read from two CELLs properly
-                    int res = fseek(ptr[p], *((UCELL *)SP + 2), SEEK_SET);
+                    int res = fseek(fileptr[p], *((UCELL *)SP + 2), SEEK_SET);
 
                     *(SP += 2) = (UCELL)res;
                 }
@@ -771,7 +770,7 @@ CELL single_step(void)
                         break;
                     }
 
-                    int res = fflush(ptr[p]);
+                    int res = fflush(fileptr[p]);
                     if (res != EOF)
                         *SP = 0;
                     else
@@ -820,7 +819,7 @@ CELL single_step(void)
                     CHECKP(SP);
                     UCELL u = *(UCELL *)SP;
                     CHECKP(SP - 1);
-                    if (u > main_argc) {
+                    if (u > (UCELL)main_argc) {
                         *SP = 0;
                         *--SP = 0;
                     } else {
@@ -830,6 +829,8 @@ CELL single_step(void)
                 }
                 break;
 
+            default: /* Can't happen */
+                break;
             }
         }
         break;

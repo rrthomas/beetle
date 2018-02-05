@@ -37,21 +37,21 @@ static int get(FILE *fp)
 
 int load_object(FILE *file, CELL *address)
 {
-    char magic[8];
-    int endism, reversed, err = 0;
-    UCELL i, length = 0;
-
+    int err = 0;
     if ((err = setjmp(env)) == 0) {
-        for (i = 0; i < 7; i++)
+        UCELL length = 0;
+
+        char magic[8];
+        for (UCELL i = 0; i < 7; i++)
             magic[i] = get(file);
         magic[7] = '\0';
         if (strcmp(magic, "BEETLE")) { err = -2; goto error; }
 
-        endism = get(file);
+        int endism = get(file);
         if (endism != 0 && endism != 1) { err = -2; goto error; }
-        reversed = endism ^ ENDISM;
+        int reversed = endism ^ ENDISM;
 
-        for (i = 0; i < CELL_W; i++) length |= get(file) << (8 * i);
+        for (UCELL i = 0; i < CELL_W; i++) length |= get(file) << (8 * i);
         if (endism) reverse((CELL *)&length, 1);
         if ((((address - (CELL *)M0) + length) * CELL_W > MEMORY) ||
             ((UCELL)(address - (CELL *)M0) * CELL_W) == MEMORY) {
@@ -59,7 +59,7 @@ int load_object(FILE *file, CELL *address)
             goto error;
         }
 
-        for (i = 0; i < length * CELL_W; i++) ((BYTE *)address)[i] = get(file);
+        for (UCELL i = 0; i < length * CELL_W; i++) ((BYTE *)address)[i] = get(file);
         if (reversed) reverse(address, length);
 
         return 0;

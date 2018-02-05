@@ -60,7 +60,7 @@ static UCELL himem_size[HIMEM_MAX_AREAS];
 static UCELL himem_areas = 0;
 static UCELL himem_here = 0x80000000UL;
 
-uint8_t *himem_addr(UCELL addr)
+_GL_ATTRIBUTE_PURE uint8_t *himem_addr(UCELL addr)
 {
     if (addr < HIMEM_START || addr > himem_here)
         return NULL;
@@ -91,5 +91,5 @@ UCELL himem_allot(void *p, size_t n)
 
 UCELL himem_align(void)
 {
-    himem_here = ALIGNED(himem_here);
+    return himem_here = ALIGNED(himem_here);
 }
