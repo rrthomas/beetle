@@ -18,7 +18,7 @@
 #include "lib.h"        /* the header we're implementing */
 
 
-#define CHECKA(x) // FIXME: import this from step.c (move to beetle.h), and use it in routines >= 4
+#define CHECKA(x) // FIXME: import this from step.c (move to beetle.h), and use it in routines [4, 12]
 
 #define PTRS 64
 #define PTR_OK(p) ((p) >= 0 && (p) <= lastptr)
@@ -242,14 +242,14 @@ void lib(UCELL routine)
 
     case 14: /* ARG ( u1 -- c-addr u2 )*/
         {
+            CHECKA(SP);
             UCELL u = *(UCELL *)SP;
             CHECKA(SP - 1);
-            CHECKA(SP - 2);
             if (u > main_argc) {
-                *--SP = 0;
+                *SP = 0;
                 *--SP = 0;
             } else {
-                *--SP = main_argv[u];
+                *SP = main_argv[u];
                 *--SP = main_argv_len[u];
             }
         }
