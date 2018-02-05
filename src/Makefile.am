@@ -1,6 +1,6 @@
 # Source Makefile.am
 
-AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib
+AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib $(WARN_CFLAGS)
 
 # FIXME: Install the library, for use by other programs
 noinst_LIBRARIES = libbeetle.a

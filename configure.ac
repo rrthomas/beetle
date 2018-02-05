@@ -14,14 +14,14 @@ AX_WITH_PROG(RUBBER, rubber, true)
 
 dnl Extra warnings with GCC
 AC_ARG_ENABLE([gcc-warnings],
-  [AS_HELP_STRING([--enable-gcc-warnings],
-                  [turn on lots of GCC warnings (for developers)])],
+  [AS_HELP_STRING([--disable-gcc-warnings],
+                  [turn off lots of GCC warnings])],
   [case $enableval in
      yes|no) ;;
      *)      AC_MSG_ERROR([bad value $enableval for gcc-warnings option]) ;;
    esac
    gl_gcc_warnings=$enableval],
-  [gl_gcc_warnings=no]
+  [gl_gcc_warnings=yes]
 )
 if test "$gl_gcc_warnings" = yes; then
   dnl Set up the list of undesired warnings.
