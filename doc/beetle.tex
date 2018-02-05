@@ -130,8 +130,8 @@ operating system and machine code routines on the host computer may be accessed
 using the {\tt OS} and {\tt LINK} instructions. Beetle supports the saving and
 loading of simple object modules.
 
-Beetle may exist either as a stand-alone system, or embedded in other programs.
-A small interface is provided for other programs wishing to control Beetle.
+Beetle is conceptually (and usually in fact) a library, embedded in other programs.
+A small interface is provided for other programs to control Beetle.
 
 Since Beetle is heavily oriented towards supporting Forth compilers, it is
 useful to understand how Forth compilers operate in order to understand Beetle
@@ -359,8 +359,7 @@ by an exception, so it may be assumed that if the initial values still hold no
 exception has yet occurred.
 
 Address and alignment exceptions are only raised if {\tt CHECKED} is 1. When
-{\tt CHECKED} is 0, a faster implementation of Beetle may be used---this is
-especially useful for stand-alone Beetles.
+{\tt CHECKED} is 0, a faster implementation of Beetle may be used.
 
 If {\tt SP} is unaligned when an exception is raised, or putting the code on the
 stack would cause {\tt SP} to be out of range, the effect of a {\tt HALT} with
@@ -951,43 +950,10 @@ Beetle must provide:
     to the implementation whether particular library calls may be loaded
     more than once; if this is allowed, the old version should be
     overwritten by the new.}
-\iface{save\_standalone}{file, size, start, copied, libs}{integer}{Write an
-    executable stand-alone Beetle to the file \textit{file}, which may be a
-    filename or some other specifier. The executable should have {\tt
-    MEMORY} equal to \textit{size}, and the first \textit{copied} cells should
-    have the contents of the \textit{copied} cells in the current Beetle
-    starting at \textit{start}. The library calls specified in the list of
-    cells \textit{libs} should be linked to the executable, and the current
-    values of the registers should be stored. The result is 0 if successful,
-    $-1$ if the area extends beyond {\tt MEMORY}, or some other
-    implementation-defined value if there is a filing system or other error. See
-    section~\ref{standalone} for the behaviour required of the stand-alone
-    Beetle.}
 \end{description}
 
 Beetle must also provide access to its registers and address space through
 appropriate data objects.
-
-
-\subsection{Stand-alone Beetles}
-\label{standalone}
-
-A stand-alone Beetle should perform the following steps when it is executed:
-
-\begin{enumerate}
-\item Initialise the registers with the values they held when the
-    stand-alone Beetle was saved.
-\item Perform the action of {\tt NEXT}.
-\item Perform the action of a call to {\bf run()}.
-\end{enumerate}
-
-If the Beetle stops with a reason code, this should be returned to the calling
-environment if this is supported; otherwise it may be ignored. The stand-alone
-program should then terminate.
-
-Any library calls which were linked to the stand-alone Beetle must execute
-correctly when called by the {\tt LIB} instruction. Any other parameter passed
-to {\tt LIB} should raise exception $-257$ (library call not implemented).
 
 
 \section{Libraries}

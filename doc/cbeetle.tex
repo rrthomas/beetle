@@ -54,8 +54,8 @@ run at an acceptable speed.
 C Beetle provides only the virtual machine, not a user interface. A simple
 user interface is described in~\cite{beetleuiface}.
 
-The interface to an embedded Beetle is described in~\cite{beetle}. This paper
-only describes the features specific to this implementation.
+The interface to Beetle is described in~\cite{beetle}. This paper only
+describes the features specific to this implementation.
 
 
 \section{Omissions}
@@ -63,17 +63,14 @@ only describes the features specific to this implementation.
 
 Certain features of Beetle cannot be rendered portably in C, and so have been
 left out of this implementation. Thus, this implementation does not fully
-meet the specification for an embedded Beetle.
+meet the specification.
 
 The {\tt OS} instruction is not implemented, as it depends on the operating
 system of the host machine, and this implementation of Beetle is meant to be
 portable. If executed, {\tt OS} does nothing.
 
-The interface call {\bf save\_standalone()} is not implemented, as it is
-difficult to implement portably without it merely using C Beetle to run an
-object file, which lacks the usual advantages of stand-alone programs, speed
-and compactness. For similar reasons, {\bf load\_library()} is not
-implemented either; the use of {\tt LINK} to access C functions is
+The interface call {\bf load\_library()} is not implemented, as it is
+difficult to implement portably; the use of {\tt LINK} to access C functions is
 recommended instead.
 
 The recursion instructions {\tt STEP} and {\tt RUN} are not implemented,
@@ -161,8 +158,7 @@ value of {\tt EOF} from {\bf putc()}.}
 \end{description}
 
 % FIXME
-{\bf load\_library()} and {\bf save\_standalone()} are not implemented (see
-section~\ref{omissions}).
+{\bf load\_library()} is not implemented (see section~\ref{omissions}).
 
 In addition to the required interface calls C Beetle provides {\bf
 init\_beetle()} which, given a byte array, its size and an initial value for
