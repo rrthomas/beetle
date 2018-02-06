@@ -11,7 +11,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "xvasprintf.h"
 
 #include "beetle.h"     /* main header */
 #include "opcodes.h"	/* opcode enumeration */
@@ -87,11 +86,31 @@ static char *getstr(UCELL adr, UCELL len)
     return NULL;
 }
 
-static char *getcstr(UCELL adr)
+/* Construct a stdio file mode string from perm bits */
+static char *getperm(UCELL perm)
 {
-    char *s = xasprintf("%s", "");
-    while (*(M0 + FLIP(adr)) != 0)
-        s = xasprintf("%s%c", s, *(M0 + FLIP(adr++)));
+    static char s[4];
+
+    switch (perm & 3) {
+    case 0:
+        sprintf(s, "w+");
+        break;
+    case 1:
+        sprintf(s, "r");
+        break;
+    case 2:
+        sprintf(s, "w");
+        break;
+    case 3:
+        sprintf(s, "r+");
+        break;
+    default: /* Can't happen. */
+        break;
+    }
+
+    if (perm & 4)
+        strcat(s, "b");
+
     return s;
 }
 
@@ -680,11 +699,10 @@ CELL single_step(void)
                         CHECKP(SP + 1);
                         CHECKP(SP + 2);
                         char *file = getstr(*((UCELL *)SP + 2), *((UCELL *)SP + 1));
-                        char *perm = getcstr(*(UCELL *)SP);
-                        fileptr[p] = fopen(file, perm);
+                        char *perm = getperm(*(UCELL *)SP);
+                        fileptr[p] = file ? fopen(file, perm) : NULL;
                         free(file);
-                        free(perm);
-                        if (file && perm && fileptr[p] != NULL) {
+                        if (fileptr[p] != NULL) {
                             *++SP = 0;
                             *(SP + 1) = p + 1;
                             break;
