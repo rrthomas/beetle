@@ -675,7 +675,7 @@ Branches:
 \instp{?BRANCH}{question-branch}{44h}{flag --}{If \spic{flag} is false then load {\tt EP} from the cell it points to and perform the action of {\tt NEXT}; otherwise add four to {\tt EP}.}
 \instp{?BRANCHI}{question-branch-i}{45h}{flag --}{If \spic{flag} is false then add {\tt A} $\times$ 4 to {\tt EP}. Perform the action of {\tt NEXT}.}
 \instr{EXECUTE}{46h}{\aaddr1 --}{ -- \aaddr2}{Push {\tt EP} on to the return stack, put \spic{\aaddr1} into {\tt EP}, then perform the action of {\tt NEXT}.}
-\instpr{@EXECUTE}{fetch-execute}{47h}{\aaddr1 --}{ -- \aaddr2}{Push {\tt EP} on to the return stack, put the contents of \spic{a-addr} into {\tt EP}, then perform the action of {\tt NEXT}.}
+\instpr{@EXECUTE}{fetch-execute}{47h}{\aaddr1 --}{ -- \aaddr2}{Push {\tt EP} on to the return stack, put the contents of \spic{\aaddr1} into {\tt EP}, then perform the action of {\tt NEXT}.}
 \end{description}
 
 Subroutine call and return:
@@ -728,13 +728,12 @@ These instructions give access to Beetle's exception mechanisms.
 \subsection{Miscellaneous}
 \label{miscinst}
 
-% FIXME: rename to EP@? Do we need EP!?
-{\tt (CREATE)} implements part of the Forth {\tt CREATE}\dots{\tt DOES>}
-construct. {\tt NEXT} performs an instruction fetch when Beetle runs out of
+{\tt EP@} pushes {\tt EP} on to the stack (this is not a part of normal flow
+control!). {\tt NEXT} performs an instruction fetch when Beetle runs out of
 instructions in the {\tt A} register.
 
 \begin{description}
-\instp{(CREATE)}{bracket-create}{56h}{-- a-addr}{Push {\tt EP} on to the stack.}
+\instp{EP@}{bracket-create}{56h}{-- a-addr}{Push {\tt EP} on to the stack.}
 \inst{NEXT}{00h/FFh}{--}{Load the cell pointed to by {\tt EP} into {\tt A} then add four to {\tt EP}.}
 \end{description}
 
@@ -801,7 +800,7 @@ undefined opcodes (5Ch--FEh) raise exception $-256$.
 \opcodetbl{15}{0=}	{34}{XOR}	{53}{(LITERAL)I}
 \opcodetbl{16}{0<>}	{35}{LSHIFT}	{54}{THROW}
 \opcodetbl{17}{U<}	{36}{RSHIFT}	{55}{HALT}
-\opcodetbl{18}{U>}	{37}{1LSHIFT}	{56}{(CREATE)}
+\opcodetbl{18}{U>}	{37}{1LSHIFT}	{56}{EP@}
 \opcodetbl{19}{0}	{38}{1RSHIFT}	{57}{LIB}
 \opcodetbl{1A}{1}	{39}{@}		{58}{OS}
 \opcodetbl{1B}{-1}	{3A}{!}		{59}{LINK}

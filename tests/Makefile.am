@@ -6,7 +6,7 @@ LDADD = $(top_builddir)/src/libbeetle.a
 
 check_PROGRAMS = $(TESTS) libt loadobjt
 
-TESTS = aritmtit brancht comparet createt doloopt initialt literalt \
+TESTS = aritmtit brancht comparet epfetcht doloopt initialt literalt \
 	logict memoryt stackt stept runt saveobjt exceptst linkt
 TESTS_ENVIRONMENT = $(VALGRIND)
 

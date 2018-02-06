@@ -1,6 +1,6 @@
-/* CREATET.C
+/* EPFETCHT.C
 
-    (c) Reuben Thomas 1994-2011
+    (c) Reuben Thomas 1994-2018
 
     Also uses NEXT.
 
@@ -28,7 +28,7 @@ int main(void)
     S0 = SP;	/* save base of stack */
 
     start_ass();
-    ass(O_CREATE);
+    ass(O_EPFETCH);
     end_ass();
 
     NEXT;   /* load first instruction word */
@@ -36,13 +36,13 @@ int main(void)
     for (i = 0; i <= instrs; i++) {
         printf("EP = %d; should be %d\n\n", val_EP(), correct[i]);
         if (correct[i] != val_EP()) {
-            printf("Error in CreateT: EP = %"PRId32"\n", val_EP());
+            printf("Error in EpfetchT: EP = %"PRId32"\n", val_EP());
             exit(1);
         }
         single_step();
         printf("I = %s\n", disass(I));
     }
 
-    printf("CreateT ran OK\n");
+    printf("EpfetchT ran OK\n");
     return 0;
 }

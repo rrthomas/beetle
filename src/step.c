@@ -619,7 +619,7 @@ CELL single_step(void)
     case O_HALT:
         CHECKP(SP);
         return (*SP++);
-    case O_CREATE:
+    case O_EPFETCH:
         CHECKP(SP - 1);
         *--SP = (CELL)((BYTE *)EP - M0);
         break;

@@ -1,6 +1,6 @@
 /* OPCODES.H
 
-    (c) Reuben Thomas 1994-2011
+    (c) Reuben Thomas 1994-2018
 
     enum type for the opcodes to make the interpreter more readable. Opcode
     names which are not valid C identifiers have been altered.
@@ -99,7 +99,7 @@ enum {
     O_LITERALI,
     O_THROW,
     O_HALT,
-    O_CREATE,
+    O_EPFETCH,
     O_LIB,
     O_OS,
     O_LINK,
