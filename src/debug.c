@@ -10,8 +10,10 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <inttypes.h>
+#include "xvasprintf.h"
 #include "beetle.h"	/* main header */
 #include "opcodes.h"	/* opcode enumeration */
 #include "debug.h"	/* the header we're implementing */
@@ -119,15 +121,20 @@ _GL_ATTRIBUTE_PURE CELL val_EP(void)
 
 char *val_data_stack(void)
 {
-    CELL *i;
-    static char picture[1024]; // FIXME: potential overflow
-    char item[16];
+    static char *picture = NULL;
 
-    picture[0] = '\0';
-    for (i = S0 - 1; i >= SP; i--) {
-        sprintf(item, "%"PRId32, *i);
-        strcat(picture, item);
-        if (i != SP) strcat(picture, " ");
+    free(picture);
+    picture = xasprintf("%s", "");
+
+    for (CELL *i = S0 - 1; i >= SP; i--) {
+        char *ptr = xasprintf("%s%"PRId32, picture, *i);
+        free(picture);
+        picture = ptr;
+        if (i != SP) {
+            ptr = xasprintf("%s ", picture);
+            free(picture);
+            picture = ptr;
+        }
     }
 
     return picture;
