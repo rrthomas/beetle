@@ -29,8 +29,8 @@
 
 bool debug = false; // User interface debug control
 
-#define DEFAULT_MEMORY 1048576U // Default size of Beetle's memory in cells (4Mb)
-#define MAX_MEMORY 1073741824U // maximum size of memory (4Gb)
+#define DEFAULT_MEMORY 1048576 // Default size of Beetle's memory in cells (4Mb)
+#define MAX_MEMORY 1073741824 // maximum size of memory (4Gb)
 static UCELL memory_size = DEFAULT_MEMORY; // Size of Beetle's memory in cells
 
 #define MAXLEN 80   /* maximum input line length */
@@ -880,7 +880,7 @@ int main(int argc, char *argv[])
                     errno = 0;
                     MEMORY = strtol(optarg, &endptr, 10);
                     if (*optarg == '\0' || *endptr != '\0' || MEMORY <= 0 || MEMORY > MAX_MEMORY)
-                        die("memory size must be a positive number up to %"PRIu32, MAX_MEMORY);
+                        die("memory size must be a positive number up to %"PRIu32, (UCELL)MAX_MEMORY);
                     break;
                 }
             case 1:
