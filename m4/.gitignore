@@ -56,3 +56,13 @@
 /ltsugar.m4
 /ltversion.m4
 /lt~obsolete.m4
+/fseeko.m4
+/fstat.m4
+/ftell.m4
+/ftello.m4
+/gettimeofday.m4
+/largefile.m4
+/lseek.m4
+/sys_stat_h.m4
+/sys_time_h.m4
+/time_h.m4

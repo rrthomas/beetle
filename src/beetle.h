@@ -29,7 +29,9 @@
 typedef uint8_t BYTE;
 typedef int32_t CELL;
 typedef uint32_t UCELL;
+typedef uint64_t DUCELL;
 #define CELL_BIT (sizeof(CELL_W) * CHAR_BIT)
+#define CELL_MASK ((1ULL << CELL_BIT) - 1)
 
 /* Check that int32_t seems to be two's complement. */
 verify (TYPE_MINIMUM(CELL) == INT32_MIN);

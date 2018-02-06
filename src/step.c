@@ -788,10 +788,10 @@ CELL single_step(void)
                         break;
                     }
 
-                    // FIXME: split long into two CELLs properly
-                    long res = ftell(fileptr[p]);
-                    *((UCELL *)SP--) = (UCELL)res;
-                    *SP-- = 0; // Extend number to double
+                    off_t res = ftello(fileptr[p]);
+                    DUCELL ud = res;
+                    *((UCELL *)SP--) = (UCELL)(ud & CELL_MASK);
+                    *((UCELL *)SP--) = (UCELL)((ud >> CELL_BIT) & CELL_MASK);
                     if (res != -1)
                         *SP = 0;
                     else
@@ -810,8 +810,8 @@ CELL single_step(void)
                         *(SP += 2) = -1;
                         break;
                     }
-                    // FIXME: Read from two CELLs properly
-                    int res = fseek(fileptr[p], *((UCELL *)SP + 2), SEEK_SET);
+                    DUCELL ud = *((UCELL *)SP + 2) | ((DUCELL)*((UCELL *)SP + 1) << CELL_BIT);
+                    int res = fseeko(fileptr[p], (off_t)ud, SEEK_SET);
 
                     *(SP += 2) = (UCELL)res;
                 }
