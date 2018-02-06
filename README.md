@@ -30,10 +30,9 @@ RISK.
 
 ## Installation and compatibility
 
-Beetle should work on any POSIX-1.2001-compatible system that uses
-two’s complement arithmetic.
+Beetle should work on any POSIX-1.2001-compatible system.
 
-Beetle has been tested on GNU/Linux with GNU C.
+Beetle has been tested on x86_64 GNU/Linux with GNU C.
 
 Previous releases were known to work on Acorn RISC OS 3, Digital UNIX
 V3.2, UNIX System V Release 4.0, ULTRIX 4.3, NetBSD 1.2, MSDOS 6, and

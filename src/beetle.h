@@ -33,10 +33,6 @@ typedef uint64_t DUCELL;
 #define CELL_BIT (sizeof(CELL_W) * CHAR_BIT)
 #define CELL_MASK ((1ULL << CELL_BIT) - 1)
 
-/* Check that int32_t seems to be two's complement. */
-verify (TYPE_MINIMUM(CELL) == INT32_MIN);
-verify (TYPE_MAXIMUM(CELL) == INT32_MAX);
-
 /* Beetle's registers */
 
 /* ENDISM is fixed at compile-time, which seems reasonable, as
