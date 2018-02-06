@@ -18,7 +18,6 @@
 
 
 /* Address checking */
-// FIXME: use CHECKP in LIB routines [4, 12]
 
 #define IS_ALIGNED(a)     (((a) & (CELL_W - 1)) == 0)
 #define IN_MAIN_MEMORY(a) ((UCELL)(a) < MEMORY)
@@ -660,7 +659,9 @@ CELL single_step(void)
                 {
                     int p = (lastptr == PTRS - 1 ? -1 : ++lastptr);
 
+                    CHECKP(SP);
                     if (p != -1) {
+                        CHECKP(SP + 1);
                         char *file = getstr(*((UCELL *)SP + 1));
                         char *perm = getstr(*(UCELL *)SP);
                         fileptr[p] = fopen(file, perm);
@@ -678,6 +679,8 @@ CELL single_step(void)
 
             case 5: /* CLOSE-FILE */
                 {
+                    CHECKP(SP - 1);
+                    CHECKP(SP);
                     int p = *SP - 1;
                     if (!PTR_OK(p)) {
                         *SP = -1;
@@ -692,6 +695,10 @@ CELL single_step(void)
 
             case 6: /* READ-FILE */
                 {
+                    CHECKP(SP);
+                    CHECKP(SP + 1);
+                    CHECKP(SP + 2);
+
                     unsigned long i;
                     int c = 0, p = *SP - 1;
 
@@ -712,6 +719,10 @@ CELL single_step(void)
 
             case 7: /* WRITE-FILE */
                 {
+                    CHECKP(SP);
+                    CHECKP(SP + 1);
+                    CHECKP(SP + 2);
+
                     unsigned long i;
                     int c = 0, p = *SP - 1;
 
@@ -732,6 +743,10 @@ CELL single_step(void)
 
             case 8: /* FILE-POSITION */
                 {
+                    CHECKP(SP);
+                    CHECKP(SP - 1);
+                    CHECKP(SP - 2);
+
                     int p = *SP - 1;
                     if (!PTR_OK(p)) {
                         *(SP -= 2) = -1;
@@ -751,6 +766,10 @@ CELL single_step(void)
 
             case 9: /* REPOSITION-FILE */
                 {
+                    CHECKP(SP);
+                    CHECKP(SP + 1);
+                    CHECKP(SP + 2);
+
                     int p = *SP - 1;
                     if (!PTR_OK(p)) {
                         *(SP += 2) = -1;
@@ -765,6 +784,7 @@ CELL single_step(void)
 
             case 10: /* FLUSH-FILE */
                 {
+                    CHECKP(SP);
                     int p = *SP - 1;
                     if (!PTR_OK(p)) {
                         *SP = -1;
@@ -781,6 +801,8 @@ CELL single_step(void)
 
             case 11: /* RENAME-FILE */
                 {
+                    CHECKP(SP);
+                    CHECKP(SP + 1)
                     char *from = getstr(*((UCELL *)SP + 1));
                     char *to = getstr(*(UCELL *)SP++);
                     int res = rename(from, to);
@@ -796,6 +818,7 @@ CELL single_step(void)
 
             case 12: /* DELETE-FILE */
                 {
+                    CHECKP(SP);
                     char *file = getstr(*(UCELL *)SP);
                     int res = remove(file);
                     free(file);
