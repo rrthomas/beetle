@@ -43,11 +43,11 @@ Reports on compatibility, whether positive or negative, are welcomed.
 
 To build Beetle from a release tarball, run
 
-``./configure && make && make check``
+`./configure && make && make check`
 
 If building from a Git repository, first run
 
-``./bootstrap``
+`./bootstrap`
 
 For the bibliographies in the documentation to be built correctly, GNU Make
 should be used.
