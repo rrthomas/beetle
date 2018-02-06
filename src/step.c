@@ -71,7 +71,23 @@
 #define PTR_OK(p) ((p) >= 0 && (p) <= lastptr)
 
 /* Copy a string from Beetle to C */
-static char *getstr(UCELL adr)
+static char *getstr(UCELL adr, UCELL len)
+{
+    char *s = calloc(1, len);
+    if (!s)
+        return NULL;
+    for (size_t i = 0; i < len; i++, adr++) {
+        unsigned char *ptr;
+        NATIVE_ADDRESS(adr, ptr);
+        s[i] = *(char *)ptr;
+    }
+    return s;
+
+ invadr:
+    return NULL;
+}
+
+static char *getcstr(UCELL adr)
 {
     char *s = xasprintf("%s", "");
     while (*(M0 + FLIP(adr)) != 0)
@@ -662,18 +678,19 @@ CELL single_step(void)
                     CHECKP(SP);
                     if (p != -1) {
                         CHECKP(SP + 1);
-                        char *file = getstr(*((UCELL *)SP + 1));
-                        char *perm = getstr(*(UCELL *)SP);
+                        CHECKP(SP + 2);
+                        char *file = getstr(*((UCELL *)SP + 2), *((UCELL *)SP + 1));
+                        char *perm = getcstr(*(UCELL *)SP);
                         fileptr[p] = fopen(file, perm);
                         free(file);
                         free(perm);
-                        if (fileptr[p] != NULL) {
-                            *SP = 0;
+                        if (file && perm && fileptr[p] != NULL) {
+                            *++SP = 0;
                             *(SP + 1) = p + 1;
                             break;
                         }
                     }
-                    *SP = -1;
+                    *++SP = -1;
                 }
                 break;
 
@@ -802,31 +819,30 @@ CELL single_step(void)
             case 11: /* RENAME-FILE */
                 {
                     CHECKP(SP);
-                    CHECKP(SP + 1)
-                    char *from = getstr(*((UCELL *)SP + 1));
-                    char *to = getstr(*(UCELL *)SP++);
+                    CHECKP(SP + 1);
+                    CHECKP(SP + 2);
+                    CHECKP(SP + 3);
+
+                    char *from = getstr(*((UCELL *)SP + 3), *((UCELL *)SP + 2));
+                    char *to = getstr(*((UCELL *)SP + 1), *(UCELL *)SP);
                     int res = rename(from, to);
                     free(from);
                     free(to);
 
-                    if (res != 0)
-                        *SP = -1;
-                    else
-                        *SP = 0;
+                    *(SP += 3) = res ? -1 : 0;
                 }
                 break;
 
             case 12: /* DELETE-FILE */
                 {
                     CHECKP(SP);
-                    char *file = getstr(*(UCELL *)SP);
+                    CHECKP(SP + 1);
+
+                    char *file = getstr(*((UCELL *)SP + 1), *(UCELL *)SP);
                     int res = remove(file);
                     free(file);
 
-                    if (res != 0)
-                        *SP = -1;
-                    else
-                        *SP = 0;
+                    *++SP = res ? -1 : 0;
                 }
                 break;
 
