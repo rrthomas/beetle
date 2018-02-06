@@ -11,6 +11,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "xvasprintf.h"
 
 #include "beetle.h"     /* main header */
 #include "opcodes.h"	/* opcode enumeration */
@@ -71,13 +72,12 @@
 #define PTR_OK(p) ((p) >= 0 && (p) <= lastptr)
 
 /* Copy a string from Beetle to C */
-static void getstr(unsigned char *s, UCELL adr)
+static char *getstr(UCELL adr)
 {
-    int i;
-
-    for (i = 0; *(M0 + FLIP(adr)) != 0; adr++)
-        s[i++] = *(M0 + FLIP(adr));
-    s[i] = '\0';
+    char *s = xasprintf("%s", "");
+    while (*(M0 + FLIP(adr)) != 0)
+        s = xasprintf("%s%c", s, *(M0 + FLIP(adr++)));
+    return s;
 }
 
 /* Register command-line args in Beetle high memory */
@@ -661,10 +661,11 @@ CELL single_step(void)
                     int p = (lastptr == PTRS - 1 ? -1 : ++lastptr);
 
                     if (p != -1) {
-                        unsigned char file[256], perm[4];
-                        getstr(file, *((UCELL *)SP + 1));
-                        getstr(perm, *(UCELL *)SP);
-                        fileptr[p] = fopen((char *)file, (char *)perm);
+                        char *file = getstr(*((UCELL *)SP + 1));
+                        char *perm = getstr(*(UCELL *)SP);
+                        fileptr[p] = fopen(file, perm);
+                        free(file);
+                        free(perm);
                         if (fileptr[p] != NULL) {
                             *SP = 0;
                             *(SP + 1) = p + 1;
@@ -780,12 +781,11 @@ CELL single_step(void)
 
             case 11: /* RENAME-FILE */
                 {
-                    int res;
-                    unsigned char from[256], to[256];
-
-                    getstr(from, *((UCELL *)SP + 1));
-                    getstr(to, *(UCELL *)SP++);
-                    res = rename((char *)from, (char *)to);
+                    char *from = getstr(*((UCELL *)SP + 1));
+                    char *to = getstr(*(UCELL *)SP++);
+                    int res = rename(from, to);
+                    free(from);
+                    free(to);
 
                     if (res != 0)
                         *SP = -1;
@@ -796,11 +796,9 @@ CELL single_step(void)
 
             case 12: /* DELETE-FILE */
                 {
-                    int res;
-                    unsigned char file[256];
-
-                    getstr(file, *(UCELL *)SP);
-                    res = remove((char *)file);
+                    char *file = getstr(*(UCELL *)SP);
+                    int res = remove(file);
+                    free(file);
 
                     if (res != 0)
                         *SP = -1;

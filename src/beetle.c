@@ -359,56 +359,56 @@ static void do_ass(char *token)
 
 static void do_display(const char *token, const char *format)
 {
-    char display[80];
+    char *display;
     int no = search(token, regist, registers);
 
     switch (no) {
         case r_A:
-            sprintf(display, "A = %"PRIX32"h", (UCELL)A);
+            display = xasprintf("A = %"PRIX32"h", (UCELL)A);
             break;
         case r_NOT_ADDRESS:
-            sprintf(display, "-ADDRESS = %"PRIX32"h (%"PRIu32")", NOT_ADDRESS, NOT_ADDRESS);
+            display = xasprintf("-ADDRESS = %"PRIX32"h (%"PRIu32")", NOT_ADDRESS, NOT_ADDRESS);
             break;
         case r_BAD:
-            sprintf(display, "'BAD = %"PRIX32"h (%"PRIu32")", BAD, BAD);
+            display = xasprintf("'BAD = %"PRIX32"h (%"PRIu32")", BAD, BAD);
             break;
         case r_CHECKED:
-            sprintf(display, "CHECKED = %d", CHECKED);
+            display = xasprintf("CHECKED = %d", CHECKED);
             break;
         case r_ENDISM:
-            sprintf(display, "ENDISM = %d", ENDISM);
+            display = xasprintf("ENDISM = %d", ENDISM);
             break;
         case r_EP:
-            sprintf(display, "EP = %05"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)EP - M0),
+            display = xasprintf("EP = %05"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)EP - M0),
                     (UCELL)((BYTE *)EP - M0));
             break;
         case r_I:
-            sprintf(display, "I = %-10s (%02Xh)", disass(I), I);
+            display = xasprintf("I = %-10s (%02Xh)", disass(I), I);
             break;
         case r_M0:
-            sprintf(display, "M0 = %p", M0);
+            display = xasprintf("M0 = %p", M0);
             break;
         case r_MEMORY:
-            sprintf(display, "MEMORY = %"PRIX32"h (%"PRIu32")", MEMORY, MEMORY);
+            display = xasprintf("MEMORY = %"PRIX32"h (%"PRIu32")", MEMORY, MEMORY);
             break;
         case r_RP:
-            sprintf(display, "RP = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)RP - M0),
+            display = xasprintf("RP = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)RP - M0),
                     (UCELL)((BYTE *)RP - M0));
             break;
         case r_R0:
-            sprintf(display, "R0 = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)R0 - M0),
+            display = xasprintf("R0 = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)R0 - M0),
                     (UCELL)((BYTE *)R0 - M0));
             break;
         case r_SP:
-            sprintf(display, "SP = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)SP - M0),
+            display = xasprintf("SP = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)SP - M0),
                     (UCELL)((BYTE *)SP - M0));
             break;
         case r_S0:
-            sprintf(display, "S0 = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)S0 - M0),
+            display = xasprintf("S0 = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)S0 - M0),
                     (UCELL)((BYTE *)S0 - M0));
             break;
         case r_THROW:
-            sprintf(display, "'THROW = %"PRIX32"h (%"PRIu32")", (UCELL)*THROW, (UCELL)*THROW);
+            display = xasprintf("'THROW = %"PRIX32"h (%"PRIu32")", (UCELL)*THROW, (UCELL)*THROW);
             break;
         default:
             {
@@ -419,10 +419,10 @@ static void do_display(const char *token, const char *format)
                 if (range(adr, MEMORY, "Address"))
                     return;
                 if (adr & 3)
-                    sprintf(display, "%"PRIX32"h: %Xh (%d) (byte)", (UCELL)adr,
+                    display = xasprintf("%"PRIX32"h: %Xh (%d) (byte)", (UCELL)adr,
                             *(M0 + FLIP(adr)), *(M0 + FLIP(adr)));
                 else
-                    sprintf(display, "%"PRIX32"h: %"PRIX32"h (%"PRIu32") (cell)", (UCELL)adr,
+                    display = xasprintf("%"PRIX32"h: %"PRIX32"h (%"PRIu32") (cell)", (UCELL)adr,
                             *(UCELL *)(M0 + adr), *(UCELL *)(M0 + adr));
             }
     }
@@ -430,6 +430,7 @@ static void do_display(const char *token, const char *format)
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
     printf(format, display);
 #pragma GCC diagnostic pop
+    free(display);
 }
 
 static void do_registers(void)
