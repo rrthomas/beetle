@@ -1,6 +1,7 @@
 *.log
 *.trs
 /.deps
+/.libs
 /libt
 /runt
 /literalt

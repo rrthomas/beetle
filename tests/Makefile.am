@@ -2,19 +2,23 @@
 
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/lib -I$(top_srcdir)/lib $(WARN_CFLAGS)
 
-LDADD = $(top_builddir)/src/libbeetle.a
+LOG_COMPILER = $(srcdir)/run-test
+
+LDADD = $(top_builddir)/src/libbeetle.la
 
 check_PROGRAMS = $(TESTS) libt loadobjt
 
 TESTS = aritmtit brancht comparet epfetcht doloopt initialt literalt \
 	logict memoryt stackt stept runt saveobjt exceptst linkt
-TESTS_ENVIRONMENT = $(VALGRIND)
+TESTS_ENVIRONMENT = \
+	if test -n "$(VALGRIND)"; then export VALGRIND='$(VALGRIND)'; fi; \
+	export LIBTOOL=$(top_builddir)/libtool;
 
 do_loadobjt: loadobjt
-	$(TESTS_ENVIRONMENT) $(builddir)/loadobjt $(srcdir)
+	$(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(builddir)/loadobjt $(srcdir)
 
 do_libt: libt
-	echo "Reverse this text" | $(TESTS_ENVIRONMENT) $(builddir)/libt
+	$(TESTS_ENVIRONMENT) echo "Reverse this text" | $(LOG_COMPILER) $(builddir)/libt
 
 check-local: do_loadobjt do_libt
 

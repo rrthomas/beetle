@@ -1,3 +1,5 @@
 /.deps
-/libbeetle.a
+/.libs
+*.lo
+/libbeetle.la
 /beetle

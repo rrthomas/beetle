@@ -19,6 +19,7 @@ TAGS
 /config.status
 /configure
 /install-sh
+/libtool
 /missing
 /depcomp
 /gnulib

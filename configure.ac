@@ -8,8 +8,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 dnl Check for programs
 AC_PROG_CC_C99
 gl_EARLY
-AM_PROG_AR
-AC_PROG_RANLIB
+LT_INIT
 AX_WITH_PROG(RUBBER, rubber, true)
 
 dnl Extra warnings with GCC
