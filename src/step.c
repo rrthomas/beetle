@@ -43,8 +43,8 @@
 
 #define NATIVE_ADDRESS(a, ptr)                  \
     CHECK_ADDRESS(a, ptr = IN_MAIN_MEMORY(a) ?  \
-                  (a) + M0 :                    \
-                  himem_addr(a),                \
+                  FLIP(a) + M0 :                \
+                  himem_addr(FLIP(a)),          \
                   invadr)
 #define NATIVE_ADDRESS_ALIGNED(a, ptr)          \
     NATIVE_ADDRESS(a, ptr)                      \
