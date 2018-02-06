@@ -31,7 +31,7 @@ RISK.
 ## Installation and compatibility
 
 Beetle should work on any POSIX-1.2001-compatible system that uses
-twos complement arithmetic.
+two’s complement arithmetic.
 
 Beetle has been tested on GNU/Linux with GNU C.
 
