@@ -51,7 +51,7 @@ int init_beetle(BYTE *b_array, size_t size, UCELL e0)
 }
 
 
-/* High memory */ // FIXME: document name "high memory"
+/* High memory */
 static UCELL HIMEM_START = 0x80000000UL;
 static UCELL HIMEM_SIZE = 0x80000000UL;
 #define HIMEM_MAX_AREAS 256
