@@ -66,4 +66,13 @@
 /sys_stat_h.m4
 /sys_time_h.m4
 /time_h.m4
+/dirname.m4
+/double-slash-root.m4
+/getprogname.m4
+/limits-h.m4
+/malloc.m4
+/manywarnings-c++.m4
+/pathmax.m4
+/stat-time.m4
+/stdbool.m4
 /termios_h.m4
