@@ -30,7 +30,7 @@
 bool debug = false; // User interface debug control
 
 #define DEFAULT_MEMORY 1048576 // Default size of Beetle's memory in cells (4Mb)
-#define MAX_MEMORY 1073741824 // maximum size of memory (4Gb)
+#define MAX_MEMORY 536870912 // maximum size of memory in cells (2Gb)
 static UCELL memory_size = DEFAULT_MEMORY; // Size of Beetle's memory in cells
 
 #define MAXLEN 80   /* maximum input line length */

@@ -78,11 +78,7 @@ the interface calls and Beetle's memory and registers should be accessed.
 
 Beetle is written in ISO C99 using POSIX-1.2001 APIs.
 
-The Beetle virtual machine is inherently 32-bit, but will run happily on systems with larger (or smaller) addresses; a single instance cannot however have a memory larger than 4Gb.
-
-The C compiler must use twos-complement arithmetic for {\tt int32\_t}.
-This is tested when Beetle is initialised (not at compile-time, as
-that does not allow for cross-compilation).
+The Beetle virtual machine is inherently 32-bit, but will run happily on systems with larger (or smaller) addresses.
 
 
 \subsection{Compilation}
@@ -122,6 +118,8 @@ The main memory is accessed via {\tt M0}, which points to the first byte of
 memory. Before Beetle is started by calling {\bf run()} or {\bf
 single\_step()}, {\tt M0} must be set to point to a byte array which will be
 Beetle's memory.
+
+The main memory may be at most \SI{2}{GB}, and is always mapped into Beetle’s address space starting from address $0$. C Beetle provides the ability to map native memory blocks into the upper \SI{2}{GB} of the address space; see below.
 
 
 \subsection{Using the interface calls}
