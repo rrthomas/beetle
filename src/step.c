@@ -754,12 +754,13 @@ CELL single_step(void)
                     int c = 0, p = *SP - 1;
 
                     if (PTR_OK(p))
-                        for (i = 0; i < *((UCELL *)SP + 1); i++)
+                        for (i = 0; i < *((UCELL *)SP + 1); i++) {
                             if ((c = fputc(*(M0 + FLIP(*((UCELL *)SP + 2) + i)),
                                            fileptr[p])) == EOF)
                                 break;
                             else
                                 c = EOF;
+                        }
                     SP += 2;
                     if (c != EOF)
                         *SP = 0;
