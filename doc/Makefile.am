@@ -9,9 +9,9 @@ LATEX_SRCS = \
 	$(srcdir)/beetle.tex \
 	$(srcdir)/cbeetle.tex \
 	$(srcdir)/uiface.tex \
-	$(srcdir)/intro.tex \
-	$(srcdir)/litencode.tex \
-	$(srcdir)/tradeoffs.tex \
+	$(srcdir)/papers/intro.tex \
+	$(srcdir)/papers/litencode.tex \
+	$(srcdir)/papers/tradeoffs.tex \
 	$(srcdir)/bibtex/bib/rrt.bib \
 	$(srcdir)/bibtex/bib/vm.bib
 
@@ -19,9 +19,9 @@ LATEX_PDFS = \
 	beetle.pdf \
 	cbeetle.pdf \
 	uiface.pdf \
-	intro.pdf \
-	litencode.pdf \
-	tradeoffs.pdf
+	papers/intro.pdf \
+	papers/litencode.pdf \
+	papers/tradeoffs.pdf
 
 all: pdf
 

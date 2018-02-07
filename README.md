@@ -65,13 +65,13 @@ A user guide for a simple debugger shell for Beetle.
 
 The following documents include extra material not covered in Beetle’s documentation:
 
-* _[An Introduction to the Beetle Forth Virtual Processor](doc/intro.pdf)_  
+* _[An Introduction to the Beetle Forth Virtual Processor](doc/papers/intro.pdf)_  
 An introduction to the system; this is the best paper to read first. It was published in ACM SIGPLAN Notices February 1997.
 * _[Beetle and pForth: a Forth virtual machine and compiler](https://rrt.sc3d.org/Software/Beetle/dissertation/report/badiss.pdf)_  
 I developed Beetle for my BA dissertation project. _(I used to refer to it as a “virtual processor”; I now use the now-standard term “virtual machine”.)_ My BA dissertation contains older versions of all the papers mentioned above, as well as a description of the project that produced them.
-* _[Tradeoffs in the implementation of the Beetle virtual machine](doc/tradeoffs.pdf)_  
+* _[Tradeoffs in the implementation of the Beetle virtual machine](doc/papers/tradeoffs.pdf)_  
 A hand-coded implementation of Beetle is described, and compared to the C version.
-* _[Encoding literals in a portable byte-stream interpreter](doc/litencode.pdf)_  
+* _[Encoding literals in a portable byte-stream interpreter](doc/papers/litencode.pdf)_  
 Various methods of encoding literal numbers in a byte stream are compared.
 
 
