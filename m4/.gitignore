@@ -76,3 +76,4 @@
 /stat-time.m4
 /stdbool.m4
 /termios_h.m4
+/sys_wait_h.m4

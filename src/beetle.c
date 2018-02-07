@@ -17,6 +17,7 @@
 #include <string.h>
 #include <setjmp.h>
 #include <getopt.h>
+#include <sys/wait.h>
 
 #include "progname.h"
 #include "xvasprintf.h"
@@ -781,7 +782,7 @@ static void parse(char *input)
         int result = system(input + 1);
         if (result == -1)
             printf("Could not run command\n");
-        else if (result != 0)
+        else if (result != 0 && WIFEXITED(result))
             printf("Command exited with value %d\n", WEXITSTATUS(result));
         return;
     }
