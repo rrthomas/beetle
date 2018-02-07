@@ -54,18 +54,21 @@ should be used.
 
 ## Documentation
 
-I developed Beetle for my BA dissertation project. _(I used to refer to it as a “virtual processor”; I now use the now-standard term “virtual machine”.)_ The following documents include extra material not covered in Beetle’s documentation:
+The canonical documentation consists of:
+
+* _[The Beetle Forth Virtual Machine](doc/beetle.pdf)_  
+The design of the Beetle Forth virtual machine is described. This is an implementor's guide, but it's probably also useful to programmers.
+* _[An implementation of the Beetle virtual machine for POSIX](doc/cbeetle.pdf)_  
+A portable implementation of Beetle is described, with instructions for porting, compiling and running it.
+* _[A simple user-interface for the Beetle virtual machine](doc/uiface.pdf)_  
+A user guide for a simple debugger shell for Beetle.
+
+The following documents include extra material not covered in Beetle’s documentation:
 
 * _[An Introduction to the Beetle Forth Virtual Processor](doc/intro.pdf)_  
 An introduction to the system; this is the best paper to read first. It was published in ACM SIGPLAN Notices February 1997.
-* _[The Beetle Forth Virtual Machine](doc/beetle.pdf)_  
-The design of the Beetle Forth virtual machine is described. This is an implementor's guide, but it's probably also useful to programmers.
-* _[An implementation of the Beetle virtual machine in ANSI C](doc/cbeetle.pdf)_  
-A portable ANSI C implementation of Beetle is described, with instructions for porting, compiling and running it.
-* _[A simple user-interface for the Beetle virtual machine](doc/uiface.pdf)_  
-A user guide for a simple debugger shell for Beetle.
 * _[Beetle and pForth: a Forth virtual machine and compiler](https://rrt.sc3d.org/Software/Beetle/dissertation/report/badiss.pdf)_  
-My BA dissertation containing all the papers mentioned above, as well as a description of the project that produced them.
+I developed Beetle for my BA dissertation project. _(I used to refer to it as a “virtual processor”; I now use the now-standard term “virtual machine”.)_ My BA dissertation contains older versions of all the papers mentioned above, as well as a description of the project that produced them.
 * _[Tradeoffs in the implementation of the Beetle virtual machine](doc/tradeoffs.pdf)_  
 A hand-coded implementation of Beetle is described, and compared to the C version.
 * _[Encoding literals in a portable byte-stream interpreter](doc/litencode.pdf)_  
