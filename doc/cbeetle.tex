@@ -204,12 +204,13 @@ initialised as per~\cite{beetle}, and those held in Beetle's memory as well
 are copied there.}
 \end{description}
 
-The following routines are provided to map system memory to Beetle’s address space:
+The following routines are provided to map system memory to Beetle’s address space and vice versa:
 
 \begin{description}
-\ifacec{uint8\_t *himem\_addr(UCELL addr)}{Returns the native address corresponding to the given Beetle address (must be 80000000h or higher), if any. If the address is not mapped, {\tt NULL} is returned.}
+\ifacec{uint8\_t *native\_addr(UCELL addr)}{Returns the native address corresponding to the given Beetle address, if any. If the address is not mapped, {\tt NULL} is returned.}
+\ifacec{UCELL himem\_here()}{Returns the Beetle address at which the next mapping will be made.}
 \ifacec{UCELL himem\_allot(void *p, size\_t n)}{Map {\tt n} bytes pointed to by {\tt p} into Beetle’s address space, and return the address mapped. Addresses are mapped sequentially.}
-\ifacec{UCELL himem\_align(void)}{Like Forth’s {\tt ALIGN}, rounds up the address at which the next high memory allocation will occur to the next cell.}
+\ifacec{UCELL himem\_align(void)}{Like Forth’s {\tt ALIGN}, rounds up the address at which the next high memory allocation will occur so that it is suitably aligned for any native C type.}
 \end{description}
 
 Programs which use C Beetle's interface must {\tt \#include} the header file

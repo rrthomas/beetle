@@ -55,6 +55,7 @@ extern UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
 #define CHECKED 1       /* C Beetle makes address checking mandatory */
 
 /* High memory */
+UCELL himem_here(void);
 uint8_t *himem_addr(UCELL addr);
 UCELL himem_allot(void *p, size_t n);
 UCELL himem_align(void);
@@ -91,6 +92,18 @@ typedef union {
 
 /* Align a Beetle address */
 #define ALIGNED(a) ((a + CELL_W - 1) & (-CELL_W))
+
+/* Check whether a Beetle address is aligned */
+#define IS_ALIGNED(a)     (((a) & (CELL_W - 1)) == 0)
+
+/* Check whether a Beetle address is in main memory */
+#define IN_MAIN_MEMORY(a) ((UCELL)(a) < MEMORY)
+
+/* Get the native address of a Beetle address */
+#define native_address(a)                       \
+    IN_MAIN_MEMORY(a) ?                         \
+    FLIP(a) + M0 :                              \
+    himem_addr(FLIP(a))
 
 /* Portable arithmetic right shift (the behaviour of >> on signed
    quantities is implementation-defined in C99). */

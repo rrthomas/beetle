@@ -58,11 +58,16 @@ static UCELL HIMEM_SIZE = 0x80000000UL;
 static uint8_t *himem_area[HIMEM_MAX_AREAS];
 static UCELL himem_size[HIMEM_MAX_AREAS];
 static UCELL himem_areas = 0;
-static UCELL himem_here = 0x80000000UL;
+static UCELL _himem_here = 0x80000000UL;
+
+_GL_ATTRIBUTE_PURE UCELL himem_here(void)
+{
+    return _himem_here;
+}
 
 _GL_ATTRIBUTE_PURE uint8_t *himem_addr(UCELL addr)
 {
-    if (addr < HIMEM_START || addr > himem_here)
+    if (addr < HIMEM_START || addr > _himem_here)
         return NULL;
     UCELL start = HIMEM_START;
     for (UCELL i = 0; i < himem_areas; i++) {
@@ -78,18 +83,24 @@ UCELL himem_allot(void *p, size_t n)
     /* Return 0 if not enough room */
     if (himem_areas == HIMEM_MAX_AREAS ||
         n > UINT32_MAX / 2 ||
-        (himem_here - HIMEM_SIZE) + n > HIMEM_SIZE)
+        (_himem_here - HIMEM_SIZE) + n > HIMEM_SIZE)
         return 0;
 
-    size_t start = himem_here;
+    size_t start = _himem_here;
     himem_area[himem_areas] = p;
     himem_size[himem_areas] = n;
-    himem_here += n;
+    _himem_here += n;
     himem_areas++;
     return start;
 }
 
 UCELL himem_align(void)
 {
-    return himem_here = ALIGNED(himem_here);
+    struct {
+        uint8_t byte1 __attribute__ ((__aligned__));
+        uint8_t byte2 __attribute__ ((__aligned__));
+    } test;
+    size_t max_alignment = &test.byte2 - &test.byte1;
+
+    return _himem_here = (_himem_here + max_alignment - 1) & (-max_alignment);
 }
