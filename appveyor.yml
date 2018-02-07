@@ -1,0 +1,16 @@
+version: "{build}"
+clone_folder: c:\projects\beetle
+
+environment:
+  global:
+    VERBOSE: 1 # Get test logs in output
+  matrix:
+    - MSYSTEM: MSYS
+    - MSYSTEM: MINGW64
+    - MSYSTEM: MINGW32
+
+init:
+  - git config --global core.autocrlf input
+
+build_script:
+  - C:\msys64\usr\bin\bash.exe -lc "cd c:/projects/beetle && ./bootstrap && ./configure --enable-silent-rules %CONFIGURE_FLAGS% && make && make distcheck"
