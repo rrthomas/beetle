@@ -1,0 +1,45 @@
+language: c
+
+dist: trusty
+sudo: required
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages: &default_deps
+      - texlive-latex-extra
+      - texlive-science
+      - texlive-fonts-recommended
+      - texlive-fonts-extra
+      - rubber
+      - hevea
+      - valgrind
+      - g++-5
+
+# env:
+#   global:
+#     - VERBOSE=1
+
+matrix:
+  include:
+    - os: linux
+      env:
+        - COMPILER=g++-5
+    - os: osx
+      osx_image: xcode9.2
+    - compiler: gcc
+      env:
+        - COMPILER=g++-6
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - *default_deps
+            - [g++-6]
+
+script:
+  - ./bootstrap
+  - ./configure --enable-silent-rules
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then make check ; else make distcheck ; fi
