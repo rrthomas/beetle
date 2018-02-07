@@ -4,7 +4,8 @@
 
     Also uses previously-tested instructions. The value of BL is printed, a
     number of CRs are printed, and some text is accepted by KEY and then
-    EMITted. This test program is interdependent with doloopt.c.
+    EMITted.
+    FIXME: test routines [4, 12] from Forth.
 
 */
 
