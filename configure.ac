@@ -7,6 +7,7 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 dnl Check for programs
 AC_PROG_CC_C99
 gl_EARLY
+AM_PROG_AR
 LT_INIT
 AX_WITH_PROG(RUBBER, rubber, true)
 
