@@ -859,7 +859,6 @@ int main(int argc, char *argv[])
     char input[MAXLEN], *nl;
 
     set_program_name(argv[0]);
-    save_keyb(); // Save keyboard setup so we can restore from it without calling init_keyb
 
     // Options string starts with '+' to stop option processing at first non-option, then
     // leading ':' so as to return ':' for a missing arg, not '?'

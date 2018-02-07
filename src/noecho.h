@@ -11,7 +11,6 @@
 #define BEETLE_NOECHO
 
 
-void save_keyb(void);
 int init_keyb(void);
 int restore_keyb(void);
 
