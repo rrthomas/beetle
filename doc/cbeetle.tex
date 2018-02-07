@@ -8,7 +8,7 @@
 
 \documentclass[english]{article}
 \usepackage[utf8x]{inputenc}
-\usepackage{a4wide,newpxtext,url,siunitx}
+\usepackage{a4wide,newpxtext,booktabs,url,siunitx}
 
 % Alter some default parameters for general typesetting
 
@@ -134,8 +134,8 @@ C Beetle provides the following extra {\tt LIB} calls.
 The file system calls correspond directly to ANS Forth words, as defined in~\cite{ANSIforth}.
 
 \begin{center}
-\begin{tabular}{|S[table-format=2.0]|l|} \hline
-\rule[-2mm]{0mm}{6mm}\bf Number & \bf Forth word \\ \hline
+\begin{tabular}{S[table-format=2.0]l} \toprule
+\rule[-2mm]{0mm}{6mm}\bf Number & \bf Forth word \\ \midrule
 4 & {\tt OPEN-FILE} \\
 5 & {\tt CLOSE-FILE} \\
 6 & {\tt READ-FILE} \\
@@ -144,18 +144,18 @@ The file system calls correspond directly to ANS Forth words, as defined in~\cit
 9 & {\tt REPOSITION-FILE} \\
 10 & {\tt FLUSH-FILE} \\
 11 & {\tt RENAME-FILE} \\
-12 & {\tt DELETE-FILE} \\ \hline
+12 & {\tt DELETE-FILE} \\ \bottomrule
 \end{tabular}
 \end{center}
 
 File access methods are bit-masks, composed as follows:
 
 \begin{center}
-\begin{tabular}{|c|c|} \hline
-\rule[-2mm]{0mm}{6mm}\bf Bit value & \bf Meaning \\ \hline
+\begin{tabular}{cc} \toprule
+\rule[-2mm]{0mm}{6mm}\bf Bit value & \bf Meaning \\ \midrule
 1 & read \\
 2 & write \\
-4 & binary mode \\ \hline
+4 & binary mode \\ \bottomrule
 \end{tabular}
 \end{center}
 
@@ -164,10 +164,10 @@ To create a file, set both read and write bits to zero when calling {\tt OPEN-FI
 Two calls are provided to access command-line arguments passed to C Beetle (excluding any that it interprets itself). They are copied from Gforth.
 
 \begin{center}
-\begin{tabular}{|S[table-format=2.0]|l|l|l|} \hline
-\rule[-2mm]{0mm}{6mm}\bf Number & \bf Forth word & \bf Stack effect & \bf Description \\ \hline
+\begin{tabular}{S[table-format=2.0]lll} \toprule
+\rule[-2mm]{0mm}{6mm}\bf Number & \bf Forth word & \bf Stack effect & \bf Description \\ \midrule
 13 & {\tt ARGC} & \spic{-- u} & the number of arguments \\
-14 & {\tt ARG} & \spic{u1 -- c-addr u2} & the \spic{u1}th argument \\ \hline
+14 & {\tt ARG} & \spic{u1 -- c-addr u2} & the \spic{u1}th argument \\ \bottomrule
 \end{tabular}
 \end{center}
 

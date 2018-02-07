@@ -8,7 +8,7 @@
 
 \documentclass[english]{article}
 \usepackage[utf8x]{inputenc}
-\usepackage{a4wide,newpxtext,url}
+\usepackage{a4wide,newpxtext,booktabs,url}
 
 % Alter some default parameters for general typesetting
 
@@ -159,35 +159,34 @@ The registers, each with its function and pronunciation, are set out in table~\r
 
 \begin{table}[htbp]
 \begin{center}
-\begin{tabular}{|c|c|p{3.75in}|} \hline
-\rule[-2mm]{0mm}{6mm}\bf Register & \bf Pronunciation & \bf Function \\
-    \hline
+\begin{tabular}{ccp{3.75in}} \toprule
+\bf Register & \bf Pronunciation & \bf Function \\
+    \midrule
 {\tt EP} & ``e-p'' & The {\tt E}xecution {\tt P}ointer. Points to the next
-    cell from which an instruction word may be loaded. \\ \hline
+    cell from which an instruction word may be loaded. \\
 {\tt I} & ``i'' & The {\tt I}nstruction. Holds the opcode of an instruction
-    to be executed. \\ \hline
+    to be executed. \\
 {\tt A} & ``a'' & The instruction {\tt A}ccumulator. Holds the opcodes of
-    instructions to be executed, and immediate operands. \\ \hline
+    instructions to be executed, and immediate operands. \\
 {\tt M0} & ``m-zero'' & The address of Beetle's main memory on the host
-    system, which must be aligned on a four-byte boundary. \\ \hline
+    system, which must be aligned on a four-byte boundary. \\
 {\tt MEMORY} & ``memory'' & The size in bytes of Beetle's main memory,
-    which must be a multiple of four. \\ \hline
-{\tt SP} & ``s-p'' & The data {\tt S}tack {\tt P}ointer. \\ \hline
-{\tt RP} & ``r-p'' & The {\tt R}eturn stack {\tt P}ointer. \\ \hline
+    which must be a multiple of four. \\
+{\tt SP} & ``s-p'' & The data {\tt S}tack {\tt P}ointer. \\
+{\tt RP} & ``r-p'' & The {\tt R}eturn stack {\tt P}ointer. \\
 {\tt 'THROW} & ``tick-throw'' & The address placed in {\tt EP} by a {\tt THROW}
-    instruction. \\ \hline
+    instruction. \\
 {\tt ENDISM} & ``endism'' & The endianness of Beetle: 0 = Little-endian,
-    1 = Big-endian. \\ \hline
+    1 = Big-endian. \\
 {\tt CHECKED} & ``checked'' & 0 = address checking off, 1 = address checking
-    on. \\ \hline
+    on. \\
 {\tt 'BAD} & ``tick-bad'' & The contents of {\tt EP} when the last exception
-    was raised. \\ \hline
+    was raised. \\
 {\tt -ADDRESS} & ``not-address'' & The last address which caused an address
-    exception. \\ \hline
+    exception. \\ \bottomrule
 \end{tabular}
-\end{center}
-\vspace{-2mm}
 \caption{\label{regtable}Beetle's registers}
+\end{center}
 \end{table}
 
 {\tt EP}, {\tt A}, {\tt MEMORY}, {\tt SP}, {\tt RP}, {\tt 'THROW}, {\tt 'BAD}
@@ -201,17 +200,15 @@ shown in table~\ref{mappedtable}.
 
 \begin{table}[htbp]
 \begin{center}
-\begin{tabular}{|c|c|} \hline
-\rule[-2mm]{0mm}{6mm}\bf Register & \bf Address \\ \hline
+\begin{tabular}{cc} \toprule
+\bf Register & \bf Address \\ \midrule
 {\tt 'THROW} & 0h \\
 {\tt MEMORY} & 4h \\
 {\tt 'BAD} & 8h \\
-{\tt -ADDRESS} & Ch \\ \hline
+{\tt -ADDRESS} & Ch \\ \bottomrule
 \end{tabular}
+\caption{\label{mappedtable}Registers which appear in Beetle's address space}
 \end{center}
-\vspace{-2mm}
-\caption{\label{mappedtable}Registers which appear in Beetle's address
-    space}
 \end{table}
 
 To ease efficient implementation, Beetle's stack pointers may only be accessed
@@ -258,16 +255,15 @@ which need not be initialised.
 
 \begin{table}[htbp]
 \begin{center}
-\begin{tabular}{|c|c|} \hline
-\rule[-2mm]{0mm}{6mm}\bf Register & \bf Initial value \\ \hline
+\begin{tabular}{cc} \toprule
+\bf Register & \bf Initial value \\ \midrule
 {\tt SP} & {\tt MEMORY} $-$ 100h \\
 {\tt RP} & {\tt MEMORY} \\
 {\tt 'BAD} & {FFFFFFFFh} \\
-{\tt -ADDRESS} & {FFFFFFFFh} \\ \hline
+{\tt -ADDRESS} & {FFFFFFFFh} \\ \bottomrule
 \end{tabular}
-\end{center}
-\vspace{-2mm}
 \caption{\label{inittable}Registers with prescribed initial values}
+\end{center}
 \end{table}
 
 {\tt MEMORY} should be copied to 4h; its value and those of {\tt ENDISM} and
@@ -329,17 +325,16 @@ additionally reserve exceptions $-512$ to $-4095$ for their own exceptions
 
 \begin{table}[htbp]
 \begin{center}
-\begin{tabular}{|c|l|} \hline
-\rule[-2mm]{0mm}{6mm}\bf Code & \bf Meaning \\ \hline
+\begin{tabular}{cl} \toprule
+\bf Code & \bf Meaning \\ \midrule
 $-9$ & Invalid address (see below). \\
 $-10$ & Division by zero attempted (see section~\ref{arithmetic}). \\
 $-23$ & Address alignment exception (see below). \\
 $-256$ & Illegal opcode (see section~\ref{opcodes}). \\
-$-257$ & Library routine not implemented (see section~\ref{accessinst}). \\ \hline
+$-257$ & Library routine not implemented (see section~\ref{accessinst}). \\ \bottomrule
 \end{tabular}
-\end{center}
-\vspace{-2mm}
 \caption{\label{excepttable}Exceptions raised by Beetle}
+\end{center}
 \end{table}
 
 Exception $-9$ is raised whenever an attempt is made to access an invalid
@@ -402,8 +397,8 @@ different types of stack item are shown in table~\ref{typetable}.
 
 \begin{table}[htbp]
 \begin{center}
-\begin{tabular}{|c|l|} \hline
-\rule[-2mm]{0mm}{6mm}\bf Symbol & \bf Data type \\ \hline
+\begin{tabular}{cl} \toprule
+\bf Symbol & \bf Data type \\ \midrule
 \spic{flag} & flag \\
 \spic{true} & true flag \\
 \spic{false} & false flag \\
@@ -413,11 +408,10 @@ different types of stack item are shown in table~\ref{typetable}.
 \spic{n{\tt |}u} & number (signed or unsigned) \\
 \spic{x} & unspecified cell \\
 \spic{a-addr} & cell-aligned address \\
-\spic{c-addr} & character-aligned address \\ \hline
+\spic{c-addr} & character-aligned address \\ \bottomrule
 \end{tabular}
-\end{center}
-\vspace{-2mm}
 \caption{\label{typetable}Types used in stack comments}
+\end{center}
 \end{table}
 
 Types are only used to indicate how instructions treat their arguments and
@@ -429,16 +423,15 @@ shows the subtype relationships. The subtype relation is transitive.
 
 \begin{table}[htbp]
 \begin{center}
-\begin{tabular}{|c|} \hline
+\begin{tabular}{c} \toprule
 \spic{u} $\Rightarrow$ \spic{x} \\
 \spic{n} $\Rightarrow$ \spic{x} \\
 \spic{char} $\Rightarrow$ \spic{u} \\
 \spic{a-addr} $\Rightarrow$ \spic{c-addr} $\Rightarrow$ \spic{u} \\
-\spic{flag} $\Rightarrow$ \spic{x} \\
+\spic{flag} $\Rightarrow$ \spic{x} \\ \bottomrule
 \end{tabular}
-\end{center}
-\vspace{-2mm}
 \caption{\label{reltable}The subtype relation}
+\end{center}
 \end{table}
 
 Numbers are represented in twos complement form. \spic{a-addr} consists of all
@@ -771,9 +764,9 @@ undefined opcodes (5Ch--FEh) raise exception $-256$.
 
 \begin{table}[htb]
 \begin{center}
-\begin{tabular}{*{3}{|cc}|} \hline
-\rule[-2mm]{0mm}{6mm}\bf Opcode & \bf Instruction & \bf Opcode & \bf
-    Instruction & \bf Opcode & \bf Instruction \\ \hline
+\begin{tabular}{*{3}{cc}} \toprule
+\bf Opcode & \bf Instruction & \bf Opcode & \bf
+    Instruction & \bf Opcode & \bf Instruction \\ \midrule
 \opcodetbl{00}{NEXT}	{1F}{-}		{3E}{SP@}
 \opcodetbl{01}{DUP}	{20}{>-<}	{3F}{SP!}
 \opcodetbl{02}{DROP}	{21}{1+}	{40}{RP@}
@@ -804,11 +797,10 @@ undefined opcodes (5Ch--FEh) raise exception $-256$.
 \opcodetbl{1B}{-1}	{3A}{!}		{59}{LINK}
 \opcodetbl{1C}{CELL}	{3B}{C@}	{5A}{RUN}
 \opcodetbl{1D}{-CELL}	{3C}{C!}	{5B}{STEP}
-\opcodetbl{1E}{+}	{3D}{+!}	{FF}{NEXT}	\hline
+\opcodetbl{1E}{+}	{3D}{+!}	{FF}{NEXT}	\bottomrule
 \end{tabular}
-\end{center}
-\vspace{-2mm}
 \caption{\label{opcodetable}Beetle's opcodes}
+\end{center}
 \end{table}
 
 
@@ -837,18 +829,17 @@ file is written).
 
 \begin{table}[htbp]
 \begin{center}
-\begin{tabular}{|c|l|} \hline
-\rule[-2mm]{0mm}{6mm}\bf Cell & \bf Contents \\ \hline
-1 & 42h 45h 45h 54h \\ \hline
-2 & 4Ch 45h 00h {\tt ENDISM} \\ \hline
-3 & Length $l$\/ \\ \hline
-4 & 1st cell of code\dots \\ \hline
-$\vdots$ & \multicolumn{1}{c|}{$\vdots$} \\ \hline
-$l+3$\/ & \dots$l$\/th cell of code \\ \hline
+\begin{tabular}{cl} \toprule
+\bf Cell & \bf Contents \\ \midrule
+1 & 42h 45h 45h 54h \\
+2 & 4Ch 45h 00h {\tt ENDISM} \\
+3 & Length $l$\/ \\
+4 & 1st cell of code\dots \\
+$\vdots$ & \multicolumn{1}{c}{$\vdots$} \\
+$l+3$\/ & \dots$l$\/th cell of code \\ \bottomrule
 \end{tabular}
-\end{center}
-\vspace{-2mm}
 \caption{\label{objecttable}Object module format}
+\end{center}
 \end{table}
 
 Object modules have a simple structure, as they are only intended for loading an
