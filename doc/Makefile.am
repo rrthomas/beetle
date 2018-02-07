@@ -1,7 +1,7 @@
 # Docs Makefile.am
 
 if GNU_MAKE
-BIBINPUTS = $(srcdir)/bibtex/bib
+BIBINPUTS = $(abs_srcdir)/bibtex/bib
 export BIBINPUTS
 endif
 
@@ -35,4 +35,4 @@ clean-local:
 EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS)
 
 .tex.pdf:
-	$(RUBBER) --pdf $<
+	$(RUBBER) --pdf --inplace $<
