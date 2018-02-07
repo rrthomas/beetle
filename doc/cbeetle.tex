@@ -25,6 +25,11 @@
 \newlength{\innerwidth}\innerwidth=\ifacewidth \advance\innerwidth by -0.5in
 \newcommand{\ifacec}[2]{\item[]\parbox{\ifacewidth}{\hspace*{2.5mm}{\tt #1}\\[0.5ex]\hspace*{0.4in}\parbox{\innerwidth}{#2}}}
 
+% Font for stack pictures; macro \spic includes italic correction
+
+\newfont{\spfont}{cmsltt10 scaled 1000}
+\newcommand{\spic}[1]{{\spfont\setlength{\baselineskip}{\normalbaselineskip}#1\/}}
+
 
 \title{An implementation of the Beetle virtual machine for POSIX}
 \author{Reuben Thomas}
@@ -120,6 +125,53 @@ single\_step()}, {\tt M0} must be set to point to a byte array which will be
 Beetle's memory.
 
 The main memory may be at most \SI{2}{GB}, and is always mapped into Beetle’s address space starting from address $0$. C Beetle provides the ability to map native memory blocks into the upper \SI{2}{GB} of the address space; see below.
+
+
+\subsection{Extra library calls}
+
+C Beetle provides the following extra {\tt LIB} calls.
+
+\subsubsection{File system calls}
+
+The file system calls correspond directly to ANS Forth words, as defined in~\cite{ANSIforth}.
+
+\begin{center}
+\begin{tabular}{|S[table-format=2.0]|l|} \hline
+\rule[-2mm]{0mm}{6mm}\bf Number & \bf Forth word \\ \hline
+4 & {\tt OPEN-FILE} \\
+5 & {\tt CLOSE-FILE} \\
+6 & {\tt READ-FILE} \\
+7 & {\tt WRITE-FILE} \\
+8 & {\tt FILE-POSITION} \\
+9 & {\tt REPOSITION-FILE} \\
+10 & {\tt FLUSH-FILE} \\
+11 & {\tt RENAME-FILE} \\
+12 & {\tt DELETE-FILE} \\ \hline
+\end{tabular}
+\end{center}
+
+File access methods are bit-masks, composed as follows:
+
+\begin{center}
+\begin{tabular}{|c|c|} \hline
+\rule[-2mm]{0mm}{6mm}\bf Bit value & \bf Meaning \\ \hline
+1 & read \\
+2 & write \\
+4 & binary mode \\ \hline
+\end{tabular}
+\end{center}
+
+To create a file, set both read and write bits to zero when calling {\tt OPEN-FILE}.
+
+Two calls are provided to access command-line arguments passed to C Beetle (excluding any that it interprets itself). They are copied from Gforth.
+
+\begin{center}
+\begin{tabular}{|S[table-format=2.0]|l|l|l|} \hline
+\rule[-2mm]{0mm}{6mm}\bf Number & \bf Forth word & \bf Stack effect & \bf Description \\ \hline
+13 & {\tt ARGC} & \spic{-- u} & the number of arguments \\
+14 & {\tt ARG} & \spic{u1 -- c-addr u2} & the \spic{u1}th argument \\ \hline
+\end{tabular}
+\end{center}
 
 
 \subsection{Using the interface calls}

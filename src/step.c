@@ -688,8 +688,6 @@ CELL single_step(void)
                 *--SP = (CELL)(getchar());
                 break;
 
-                // FIXME: Document the following in the C Beetle manual. */
-
             case 4: /* OPEN-FILE */
                 {
                     int p = (lastptr == PTRS - 1 ? -1 : ++lastptr);
