@@ -22,4 +22,4 @@ do_libt: libt
 
 check-local: do_loadobjt do_libt
 
-EXTRA_DIST = btests.h badobj1 badobj2 badobj3 badobj4 testobj1 testobj2
+EXTRA_DIST = run-test btests.h badobj1 badobj2 badobj3 badobj4 testobj1 testobj2
