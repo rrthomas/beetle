@@ -12,5 +12,8 @@ environment:
 init:
   - git config --global core.autocrlf input
 
+install:
+  - git submodule update --init --recursive
+
 build_script:
   - C:\msys64\usr\bin\bash.exe -lc "cd c:/projects/beetle && ./bootstrap && ./configure --enable-silent-rules %CONFIGURE_FLAGS% && make && make distcheck"
