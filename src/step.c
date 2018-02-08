@@ -66,7 +66,7 @@
 /* Copy a string from Beetle to C */
 static char *getstr(UCELL adr, UCELL len)
 {
-    char *s = calloc(1, len);
+    char *s = calloc(1, len + 1);
     if (!s)
         return NULL;
     for (size_t i = 0; i < len; i++, adr++) {
