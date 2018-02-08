@@ -9,7 +9,7 @@ AC_PROG_CC_C99
 gl_EARLY
 AM_PROG_AR
 LT_INIT
-AX_WITH_PROG(RUBBER, rubber, true)
+AC_PATH_PROG(RUBBER, rubber, true)
 
 dnl Extra warnings with GCC
 AC_ARG_ENABLE([gcc-warnings],
@@ -47,7 +47,7 @@ fi
 AC_SUBST([ISYSTEM])
 
 dnl Valgrind
-AX_WITH_PROG(VALGRIND, valgrind)
+AC_PATH_PROG(VALGRIND, valgrind)
 if test -n "$VALGRIND"; then
   VALGRIND="$VALGRIND -q --error-exitcode=1 --leak-check=full"
 fi
