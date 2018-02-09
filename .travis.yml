@@ -15,7 +15,7 @@ addons:
       - rubber
       - hevea
       - valgrind
-      - g++-5
+      - gcc-5
 
 # env:
 #   global:
@@ -25,19 +25,19 @@ matrix:
   include:
     - os: linux
       env:
-        - COMPILER=g++-5
+        - COMPILER=gcc-5
     - os: osx
       osx_image: xcode9.2
     - compiler: gcc
       env:
-        - COMPILER=g++-6
+        - COMPILER=gcc-6
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
             - *default_deps
-            - [g++-6]
+            - [gcc-6]
 
 script:
   - ./bootstrap
