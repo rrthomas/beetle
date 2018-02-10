@@ -629,7 +629,7 @@ static void do_command(int no)
                 printf("Error while loading module\n");
                 break;
             default:
-                printf("Unknown error\n");
+                break;
             }
         }
         break;
@@ -759,7 +759,6 @@ static void do_command(int no)
                 printf("Error while saving module\n");
                 break;
             default:
-                printf("Unknown error\n");
                 break;
             }
         }
