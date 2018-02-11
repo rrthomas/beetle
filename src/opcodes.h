@@ -101,7 +101,6 @@ enum {
     O_HALT,
     O_EPFETCH,
     O_LIB,
-    O_OS,
     O_LINK,
     O_RUN,
     O_STEP,

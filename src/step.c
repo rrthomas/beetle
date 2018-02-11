@@ -882,8 +882,6 @@ CELL single_step(void)
             }
         }
         break;
-    case O_OS:
-        break;
     case O_LINK:
         {
             CELL_pointer address;

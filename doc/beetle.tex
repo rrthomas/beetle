@@ -79,11 +79,12 @@
 
 \newcommand{\opcodetbl}[6]{#1h & {\tt #2} & #3h & {\tt #4} & #5h & {\tt #6}
 \\}
+\newcommand{\opcodetbltwo}[4]{#1h & {\tt #2} & #3h & {\tt #4} \\}
 
 
 \title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
-\date{29th October 1993; revised 5th February 2018}
+\date{29th October 1993; revised 10th February 2018}
 
 \begin{document}
 \maketitle
@@ -123,10 +124,9 @@ purposely left unspecified, and the exact method of implementation is left to
 the implementor in many particulars.
 
 Beetle is self-contained, and performs I/O via the {\tt LIB} instruction, which
-provides access to a standard library which mimics ANS Forth I/O words. The
-operating system and machine code routines on the host computer may be accessed
-using the {\tt OS} and {\tt LINK} instructions. Beetle supports the saving and
-loading of simple object modules.
+provides access to a standard library which mimics ANS Forth I/O words. Machine
+code routines on the host computer may be accessed using the {\tt LINK}
+instruction. Beetle supports the saving and loading of simple object modules.
 
 Beetle is conceptually (and usually in fact) a library, embedded in other programs.
 A small interface is provided for other programs to control Beetle.
@@ -737,8 +737,7 @@ native machine code.
 
 \begin{description}
 \inst{LIB}{57h}{i*x n -- j*x}{Call library routine \spic{n}. The parameters passed and returned depend on \spic{n}. If the library routine is not currently available, raise exception $-257$.}
-\instp{OS}{o-s}{58h}{i*x -- j*x}{Make an operating system call. {\tt OS} typically takes an operating system call number then makes that call and returns any result, with other parameters and result data being communicated via the stack or a shared data area.}
-\inst{LINK}{59h}{i*x --}{Make a subroutine call to the routine at the address given (in the host machine's format, padded out to a number of cells) on the data stack. The size and format of this address are machine-dependent.}
+\inst{LINK}{58h}{i*x --}{Make a subroutine call to the routine at the address given (in the host machine's format, padded out to a number of cells) on the data stack. The size and format of this address are machine-dependent.}
 \end{description}
 
 
@@ -751,8 +750,8 @@ written in pForth. The instructions perform roughly the same function as the
 interface calls {\bf run()} and {\bf single\_step()}.
 
 \begin{description}
-\inst{RUN}{5Ah}{\aaddr1 \aaddr2 \aaddr3 x -- n}{Save the current values of {\tt EP}, {\tt A}, {\tt SP}, {\tt RP}, {\tt 'THROW}, {\tt 'BAD} and {\tt -ADDRESS} and load \aaddr1 into {\tt SP}, \aaddr2 into {\tt RP}, \aaddr3 into {\tt EP}, and \spic{x} into {\tt A}. Enter the execution loop. If Beetle halts, restore the contents of the registers to those saved, and push the reason code on to the stack.}
-\inst{STEP}{5Bh}{\aaddr1 \aaddr2 \aaddr3 x -- n}{Save the current values of {\tt EP}, {\tt A}, {\tt SP}, {\tt RP}, {\tt 'THROW}, {\tt 'BAD} and {\tt -ADDRESS} and load \aaddr1 into {\tt SP}, \aaddr2 into {\tt RP}, \aaddr3 into {\tt EP} and \spic{x} into {\tt A}. Perform the contents of the execution loop once. Restore the contents of the registers to those saved, and push the reason code on to the stack.}
+\inst{RUN}{59h}{\aaddr1 \aaddr2 \aaddr3 x -- n}{Save the current values of {\tt EP}, {\tt A}, {\tt SP}, {\tt RP}, {\tt 'THROW}, {\tt 'BAD} and {\tt -ADDRESS} and load \aaddr1 into {\tt SP}, \aaddr2 into {\tt RP}, \aaddr3 into {\tt EP}, and \spic{x} into {\tt A}. Enter the execution loop. If Beetle halts, restore the contents of the registers to those saved, and push the reason code on to the stack.}
+\inst{STEP}{5Ah}{\aaddr1 \aaddr2 \aaddr3 x -- n}{Save the current values of {\tt EP}, {\tt A}, {\tt SP}, {\tt RP}, {\tt 'THROW}, {\tt 'BAD} and {\tt -ADDRESS} and load \aaddr1 into {\tt SP}, \aaddr2 into {\tt RP}, \aaddr3 into {\tt EP} and \spic{x} into {\tt A}. Perform the contents of the execution loop once. Restore the contents of the registers to those saved, and push the reason code on to the stack.}
 \end{description}
 
 
@@ -793,10 +792,10 @@ undefined opcodes (5Ch--FEh) raise exception $-256$.
 \opcodetbl{17}{U<}	{36}{RSHIFT}	{55}{HALT}
 \opcodetbl{18}{U>}	{37}{1LSHIFT}	{56}{EP@}
 \opcodetbl{19}{0}	{38}{1RSHIFT}	{57}{LIB}
-\opcodetbl{1A}{1}	{39}{@}		{58}{OS}
-\opcodetbl{1B}{-1}	{3A}{!}		{59}{LINK}
-\opcodetbl{1C}{CELL}	{3B}{C@}	{5A}{RUN}
-\opcodetbl{1D}{-CELL}	{3C}{C!}	{5B}{STEP}
+\opcodetbl{1A}{1}	{39}{@}		{58}{LINK}
+\opcodetbl{1B}{-1}	{3A}{!}		{59}{RUN}
+\opcodetbl{1C}{CELL}	{3B}{C@}	{5A}{STEP}
+\opcodetbltwo{1D}{-CELL}	{3C}{C!}
 \opcodetbl{1E}{+}	{3D}{+!}	{FF}{NEXT}	\bottomrule
 \end{tabular}
 \caption{\label{opcodetable}Beetle's opcodes}
