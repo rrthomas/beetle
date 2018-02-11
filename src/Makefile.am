@@ -18,4 +18,4 @@ CLOC = cloc --force-lang="C",h
 loc:
 	$(CLOC) $(libbeetle_la_SOURCES) $(beetle_SOURCES)
 
-EXTRA_DIST = ARMbeetle,ffb
+EXTRA_DIST = ARMbeetle.bas
