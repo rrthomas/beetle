@@ -905,16 +905,15 @@ int main(int argc, char *argv[])
     if ((mem = (BYTE *)(CELL *)calloc(memory_size, sizeof(CELL))) == NULL)
         die("could not allocate %"PRIu32" cells of memory", memory_size);
 
-    argc -= optind;
-
     init_beetle(mem, memory_size, 16);
     S0 = SP;
     R0 = RP;
     *THROW = 0;
     A = 0;
 
+    argc -= optind;
     if (argc >= 1) {
-        if (!register_args(argc - 1, argv + optind + 1))
+        if (!register_args(argc, argv + optind))
             die("could not allocate memory to map command-line arguments");
         FILE *handle = fopen(argv[optind], "r");
         if (handle == NULL)
