@@ -77,3 +77,11 @@
 /stdbool.m4
 /termios_h.m4
 /sys_wait_h.m4
+/close.m4
+/dup2.m4
+/fcntl-o.m4
+/fcntl.m4
+/fcntl_h.m4
+/getdtablesize.m4
+/fdatasync.m4
+/fsync.m4

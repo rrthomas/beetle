@@ -10,11 +10,19 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <string.h>
+#include "binary-io.h"
 
 #include "beetle.h"     /* main header */
 #include "opcodes.h"	/* opcode enumeration */
 
+
+/* Assumption for file functions */
+verify(sizeof(int) <= sizeof(CELL));
 
 /* Address checking */
 
@@ -59,10 +67,6 @@
 
 #define LIB_ROUTINES 14
 
-/* FILE pointer cache */
-#define PTRS 64
-#define PTR_OK(p) ((p) >= 0 && (p) <= lastptr)
-
 /* Copy a string from Beetle to C */
 static char *getstr(UCELL adr, UCELL len)
 {
@@ -80,32 +84,31 @@ static char *getstr(UCELL adr, UCELL len)
     return NULL;
 }
 
-/* Construct a stdio file mode string from perm bits */
-static char *getperm(UCELL perm)
+/* Convert portable open(2) flags bits to system flags */
+static int getflags(UCELL perm, bool *binary)
 {
-    static char s[4];
+    int flags = 0;
 
     switch (perm & 3) {
     case 0:
-        sprintf(s, "w+");
+        flags = O_RDONLY;
         break;
     case 1:
-        sprintf(s, "r");
+        flags = O_WRONLY;
         break;
     case 2:
-        sprintf(s, "w");
+        flags = O_RDWR;
         break;
-    case 3:
-        sprintf(s, "r+");
-        break;
-    default: /* Can't happen. */
+    default:
         break;
     }
-
     if (perm & 4)
-        strcat(s, "b");
+        flags |= O_CREAT;
 
-    return s;
+    if (perm & 8)
+        *binary = true;
+
+    return flags;
 }
 
 /* Register command-line args in Beetle high memory */
@@ -658,9 +661,6 @@ CELL single_step(void)
             *--SP = -257;
             goto throw;
         } else {
-            static FILE *fileptr[PTRS];
-            static int lastptr = -1;
-
             switch ((UCELL)*SP++) {
             case 0: /* BL */
                 CHECKP(SP - 1);
@@ -684,39 +684,24 @@ CELL single_step(void)
 
             case 4: /* OPEN-FILE */
                 {
-                    int p = (lastptr == PTRS - 1 ? -1 : ++lastptr);
-
                     CHECKP(SP);
-                    if (p != -1) {
-                        CHECKP(SP + 1);
-                        CHECKP(SP + 2);
-                        char *file = getstr(*((UCELL *)SP + 2), *((UCELL *)SP + 1));
-                        char *perm = getperm(*(UCELL *)SP);
-                        fileptr[p] = file ? fopen(file, perm) : NULL;
-                        free(file);
-                        if (fileptr[p] != NULL) {
-                            *++SP = 0;
-                            *(SP + 1) = p + 1;
-                            break;
-                        }
-                    }
-                    *++SP = -1;
+                    CHECKP(SP + 1);
+                    CHECKP(SP + 2);
+                    char *file = getstr(*((UCELL *)SP + 2), *((UCELL *)SP + 1));
+                    bool binary = false;
+                    int perm = getflags(*(UCELL *)SP, &binary);
+                    int fd = file ? open(file, perm, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) : -1;
+                    free(file);
+                    *++SP = fd < 0 || (binary && set_binary_mode(fd, O_BINARY) < 0) ? -1 : 0;
+                    *(SP + 1) = (CELL)fd;
                 }
                 break;
 
             case 5: /* CLOSE-FILE */
                 {
-                    CHECKP(SP - 1);
                     CHECKP(SP);
-                    int p = *SP - 1;
-                    if (!PTR_OK(p)) {
-                        *SP = -1;
-                        break;
-                    }
-                    *SP = fclose(fileptr[p]);
-                    for (int i = p; i <= lastptr; i++)
-                        fileptr[i] = fileptr[i + 1];
-                    lastptr--;
+                    int fd = *SP;
+                    *SP = close(fd);
                 }
                 break;
 
@@ -726,21 +711,14 @@ CELL single_step(void)
                     CHECKP(SP + 1);
                     CHECKP(SP + 2);
 
-                    unsigned long i;
-                    int c = 0, p = *SP - 1;
-
-                    if (!PTR_OK(p)) {
-                        *++SP = -1;
-                        *(SP + 1) = 0;
-                        break;
-                    }
-                    for (i = 0; i < *((UCELL *)SP + 1) && c != EOF; ) {
-                        c = getc(fileptr[p]);
-                        if (c != EOF)
-                            *(M0 + FLIP(*((UCELL *)SP + 2) + i++)) = (BYTE)c;
-                    }
-                    *++SP = ferror(fileptr[p]) ? -1 : 0;
-                    *((UCELL *)SP + 1) = (UCELL)i;
+                    int fd = *SP;
+                    ssize_t res = 1;
+                    UCELL i;
+                    for (i = 0; i < *((UCELL *)SP + 1); i++)
+                        if ((res = read(fd, M0 + FLIP(*((UCELL *)SP + 2) + i), 1)) != 1)
+                            break;
+                    *++SP = res >= 0 ? 0 : -1;
+                    *((UCELL *)SP + 1) = i;
                 }
                 break;
 
@@ -750,22 +728,12 @@ CELL single_step(void)
                     CHECKP(SP + 1);
                     CHECKP(SP + 2);
 
-                    unsigned long i;
-                    int c = 0, p = *SP - 1;
-
-                    if (PTR_OK(p))
-                        for (i = 0; i < *((UCELL *)SP + 1); i++) {
-                            if ((c = fputc(*(M0 + FLIP(*((UCELL *)SP + 2) + i)),
-                                           fileptr[p])) == EOF)
-                                break;
-                            else
-                                c = EOF;
-                        }
-                    SP += 2;
-                    if (c != EOF)
-                        *SP = 0;
-                    else
-                        *SP = -1;
+                    int fd = *SP;
+                    ssize_t res = 1;
+                    for (UCELL i = 0; i < *((UCELL *)SP + 1); i++)
+                        if ((res = write(fd, M0 + FLIP(*((UCELL *)SP + 2) + i), 1)) != 1)
+                            break;
+                    *(SP += 2) = res >= 0 ? 0 : -1;
                 }
                 break;
 
@@ -775,20 +743,12 @@ CELL single_step(void)
                     CHECKP(SP - 1);
                     CHECKP(SP - 2);
 
-                    int p = *SP - 1;
-                    if (!PTR_OK(p)) {
-                        *(SP -= 2) = -1;
-                        break;
-                    }
-
-                    off_t res = ftello(fileptr[p]);
+                    int fd = *SP;
+                    off_t res = lseek(fd, 0, SEEK_CUR);
                     DUCELL ud = res;
                     *((UCELL *)SP--) = (UCELL)(ud & CELL_MASK);
                     *((UCELL *)SP--) = (UCELL)((ud >> CELL_BIT) & CELL_MASK);
-                    if (res != -1)
-                        *SP = 0;
-                    else
-                        *SP = -1;
+                    *SP = res >= 0 ? 0 : -1;
                 }
                 break;
 
@@ -798,32 +758,19 @@ CELL single_step(void)
                     CHECKP(SP + 1);
                     CHECKP(SP + 2);
 
-                    int p = *SP - 1;
-                    if (!PTR_OK(p)) {
-                        *(SP += 2) = -1;
-                        break;
-                    }
+                    int fd = *SP;
                     DUCELL ud = *((UCELL *)SP + 2) | ((DUCELL)*((UCELL *)SP + 1) << CELL_BIT);
-                    int res = fseeko(fileptr[p], (off_t)ud, SEEK_SET);
-
-                    *(SP += 2) = (UCELL)res;
+                    off_t res = lseek(fd, (off_t)ud, SEEK_SET);
+                    *(SP += 2) = res >= 0 ? 0 : -1;
                 }
                 break;
 
             case 10: /* FLUSH-FILE */
                 {
                     CHECKP(SP);
-                    int p = *SP - 1;
-                    if (!PTR_OK(p)) {
-                        *SP = -1;
-                        break;
-                    }
-
-                    int res = fflush(fileptr[p]);
-                    if (res != EOF)
-                        *SP = 0;
-                    else
-                        *SP = -1;
+                    int fd = *SP;
+                    int res = fdatasync(fd);
+                    *SP = res == 0 ? 0 : -1;
                 }
                 break;
 
