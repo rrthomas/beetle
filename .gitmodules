@@ -4,3 +4,6 @@
 [submodule "doc/bibtex"]
 	path = doc/bibtex
 	url = https://github.com/rrthomas/bibtex.git
+[submodule "gl-mod/bootstrap"]
+	path = gl-mod/bootstrap
+	url = https://github.com/gnulib-modules/bootstrap.git
