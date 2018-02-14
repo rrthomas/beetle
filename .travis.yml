@@ -40,6 +40,5 @@ matrix:
             - [gcc-6]
 
 script:
-  - ./bootstrap
-  - ./configure --enable-silent-rules
+  - ./bootstrap && ./configure --enable-silent-rules
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then make check ; else make distcheck ; fi
