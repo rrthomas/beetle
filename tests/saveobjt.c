@@ -1,6 +1,6 @@
 /* SAVEOBJT.C
 
-    (c) Reuben Thomas 1995-2011
+    (c) Reuben Thomas 1995-2018
 
     Test save_object().
 
@@ -22,7 +22,7 @@ static int try(const char *file, CELL *address, UCELL length)
     int ret = save_object(fp, address, length);
 
     printf("save_object(\"%s\", M0 + %td, %#"PRIX32") returns %d", file,
-        (BYTE *)address - M0, length, ret);
+           (address - M0) * CELL_W, length, ret);
     fclose(fp);
 
     return ret;
@@ -35,13 +35,14 @@ int main(void)
     CELL adr[] = { 0, 0, 0 };
     UCELL len[] = { 16, 2000, 16 };
 
-    init_beetle((BYTE *)calloc(1024, 1), 256, 4);
+    size_t size = 256;
+    init_beetle((CELL *)calloc(size, sizeof(CELL)), size, 4);
     adr[0] = MEMORY + CELL_W;
     ((CELL *)M0)[0] = 0x01020304;
     ((CELL *)M0)[1] = 0x05060708;
 
     for (i = 0; i < 3; i++) {
-        res = try("saveobj", (CELL *)(M0 + adr[i]), len[i]);
+        res = try("saveobj", (CELL *)((BYTE *)M0 + adr[i]), len[i]);
         if (i != 2)
           remove("saveobj");
         printf(" should be %d\n", correct[i]);
@@ -53,7 +54,7 @@ int main(void)
 
     {
         FILE *fp = fopen("saveobj", "r");
-        int ret = load_object(fp, (CELL *)(M0 + 16));
+        int ret = load_object(fp, (CELL *)((BYTE *)M0 + 16));
 
         if (ret) {
             printf("Error in SaveObjT: %d returned by load_object\n", ret);
@@ -66,7 +67,7 @@ int main(void)
     for (i = 0; i < 4; i++) {
         printf("Word %d of memory is %"PRIX32"; should be %"PRIX32"\n", i,
             ((UCELL *)M0)[i + 4], ((UCELL *)M0)[i]);
-        if (((CELL *)M0)[i + 4] != ((CELL *)M0)[i]) {
+        if (M0[i + 4] != M0[i]) {
             printf("Error in SaveObjT: loaded file does not match data "
                 "saved\n");
             exit(1);

@@ -1,6 +1,6 @@
 /* LINKT.C
 
-    (c) Reuben Thomas 1995-2016
+    (c) Reuben Thomas 1995-2018
 
     Test the LINK instruction.
 
@@ -25,7 +25,7 @@ int main(void)
 {
     CELL res;
 
-    init_beetle((BYTE *)malloc(16384), 4096, 16);
+    init_beetle((CELL *)malloc(16384), 4096, 16);
     S0 = SP;	/* save base of stack */
 
     here = EP;	/* start assembling at 16 */

@@ -116,7 +116,7 @@ _GL_ATTRIBUTE_PURE BYTE toass(char *token)
 
 _GL_ATTRIBUTE_PURE CELL val_EP(void)
 {
-    return ((BYTE *)EP - M0);
+    return (EP - M0) * CELL_W;
 }
 
 char *val_data_stack(void)

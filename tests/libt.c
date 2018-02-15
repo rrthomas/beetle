@@ -27,7 +27,7 @@ int main(void)
     int argc = 3;
     char *argv[] = {strdup("foo"), strdup("bard"), strdup("basilisk")};
 
-    init_beetle((BYTE *)malloc(4096), 1024, 16);
+    init_beetle((CELL *)malloc(4096), 1024, 16);
     assert(register_args(argc, argv));
     here = EP;
     S0 = SP;	/* save base of stack */
@@ -39,7 +39,7 @@ int main(void)
     ass(O_LITERALI); ilit(3);
     ass(O_LIB); ass(O_DUP); ass(O_LITERALI); ilit(10);
     ass(O_EQUAL); ass(O_QBRANCHI); ilit(-3);
-    ass(O_DROP); ass(O_SPFETCH); ass(O_LITERAL); lit((CELL)((BYTE *)S0 - M0));
+    ass(O_DROP); ass(O_SPFETCH); ass(O_LITERAL); lit((CELL)(S0 - M0) * CELL_W);
         ass(O_SWAPMINUS);
     ass(O_CELL); ass(O_SLASH); ass(O_ZERO); ass(O_DO);
     ass(O_LITERALI); ilit(2);

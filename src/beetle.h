@@ -46,7 +46,7 @@ typedef uint64_t DUCELL;
 extern CELL *EP;        /* note EP is a pointer, not a Beetle address */
 extern BYTE I;
 extern CELL A;
-extern BYTE *M0;
+extern CELL *M0;
 extern UCELL MEMORY;
 extern CELL *SP, *RP;	/* note RP and SP are pointers, not Beetle addresses */
 extern CELL *THROW;     /* 'THROW is not a valid C identifier */
@@ -67,7 +67,7 @@ int load_object(FILE *file, CELL *address);
 int save_object(FILE *file, CELL *address, UCELL length);
 
 /* Additional routines, macros, types and quantities provided by C Beetle */
-int init_beetle(BYTE *b_array, size_t size, UCELL e0);
+int init_beetle(CELL *c_array, size_t size, UCELL e0);
 bool register_args(int argc, char *argv[]);
 
 #define B_TRUE ((CELL)0xFFFFFFFF)   /* Beetle's TRUE flag */
@@ -102,7 +102,7 @@ typedef union {
 /* Get the native address of a Beetle address */
 #define native_address(a)                       \
     IN_MAIN_MEMORY(a) ?                         \
-    FLIP(a) + M0 :                              \
+    FLIP(a) + (BYTE *)M0 :                      \
     himem_addr(FLIP(a))
 
 /* Portable arithmetic right shift (the behaviour of >> on signed

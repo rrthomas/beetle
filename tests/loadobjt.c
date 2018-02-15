@@ -51,11 +51,11 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    init_beetle((BYTE *)calloc(1024, 1), 256, 16);
+    init_beetle((CELL *)calloc(1024, 1), 256, 16);
 
     for (i = 0; i < 4; i++) {
         char *s = obj_name(prefix, files[i]);
-        res = try(s, (CELL *)M0);
+        res = try(s, M0);
         free(s);
         printf(" should be %d\n", correct[i]);
         if (res != correct[i]) {
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
     for (; i < 6; i++) {
         char *s = obj_name(prefix, files[i]);
-        res = try(s, (CELL *)M0);
+        res = try(s, M0);
         free(s);
         printf(" should be %d\n", correct[i]);
         printf("Word 0 of memory is %"PRIX32"; should be 1020304\n", *(UCELL*)M0);

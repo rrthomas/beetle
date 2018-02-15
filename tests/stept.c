@@ -1,6 +1,6 @@
 /* STEPT.C
 
-    (c) Reuben Thomas 1994-2011
+    (c) Reuben Thomas 1994-2018
 
     Test that single_step works, and that address alignment and bounds
     checking is properly performed on EP.
@@ -20,27 +20,26 @@ int main(void)
 {
     int i;
 
-    i = init_beetle((BYTE *)NULL, 1, 1);
-    printf("init_beetle((BYTE *)NULL, 1, 1) should return 1; returns: %d\n", i);
+    i = init_beetle((CELL *)NULL, 1, 1);
+    printf("init_beetle((CELL *)NULL, 1, 1) should return 1; returns: %d\n", i);
     if (i != 1) {
         printf("Error in StepT: init_beetle with invalid parameters "
             "succeeded\n");
         exit(1);
     }
-    i = init_beetle((BYTE *)NULL, 1, 4);
-    printf("init_beetle((BYTE *)NULL, 1, 4) should return 1; returns: %d\n", i);
+    i = init_beetle((CELL *)NULL, 1, 4);
+    printf("init_beetle((CELL *)NULL, 1, 4) should return 1; returns: %d\n", i);
     if (i != 1) {
         printf("Error in StepT: init_beetle with invalid parameters "
             "succeeded\n");
         exit(1);
     }
 
-    i = init_beetle((BYTE *)malloc(1024), 256, 16);
+    i = init_beetle((CELL *)calloc(1024, 1), 256, 16);
     if (i != 0) {
         printf("Error in StepT: init_beetle with valid parameters failed\n");
         exit(1);
     }
-    for (i = 0; i < 1024; i++) M0[i] = 0;
 
     NEXT;
 

@@ -1,6 +1,6 @@
 /* EXCEPTST.C
 
-    (c) Reuben Thomas 1995-2011
+    (c) Reuben Thomas 1995-2018
 
     Test the Beetle-generated exceptions and HALT codes.
 
@@ -24,7 +24,7 @@ UCELL address[] = { -4, 16384, 0, 0, 1, 1, 0, 16384, -4, 1, 0, 0 };
 
 int main(void)
 {
-    init_beetle((BYTE *)malloc(16384), 4096, 16);
+    init_beetle((CELL *)malloc(16384), 4096, 16);
     S0 = SP;	/* save base of stack */
 
     here = EP;	/* start assembling at 16 */
@@ -51,7 +51,7 @@ int main(void)
     ass(O_THROW);
     end_ass();
 
-    here = (CELL *)(M0 + 100);	/* start assembling at 100 */
+    here = (CELL *)((BYTE *)M0 + 100);	/* start assembling at 100 */
     start_ass();
     ass(O_HALT);
     end_ass();
@@ -62,7 +62,7 @@ int main(void)
     for (int i = 0; i < 12; i++) {
         SP = S0;    /* reset stack pointer */
 
-        EP = (CELL *)(M0 + test[i]);
+        EP = (CELL *)((BYTE *)M0 + test[i]);
         NEXT;   /* load first instruction word */
         CELL res = run();
 
@@ -71,7 +71,7 @@ int main(void)
             ((result[i] <= -258 || result[i] == 9 || result[i] == -23) &&
              address[i] != NOT_ADDRESS)) {
              printf("Error in ExceptsT: test %d failed; EP = %td\n", i + 1,
-                    (BYTE *) EP - M0);
+                    (EP - M0) * CELL_W);
              printf("Return code is %d; should be %d\n", res, result[i]);
              if (result[i] != 0)
                  printf("'BAD = %"PRIX32"; should be %"PRIX32"\n", BAD, bad[i]);

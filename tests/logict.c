@@ -1,6 +1,6 @@
 /* LOGICT.C
 
-    (c) Reuben Thomas 1994-2011
+    (c) Reuben Thomas 1994-2018
 
     Test the logic operators. Also uses the NEXT and -ROT instructions. We
     only test the stack handling and basic correctness of the operators here,
@@ -30,7 +30,7 @@ int main(void)
 {
     int i;
 
-    init_beetle((BYTE *)malloc(1024), 256, 16);
+    init_beetle((CELL *)malloc(1024), 256, 16);
     here = EP;
     S0 = SP;	/* save base of stack */
 

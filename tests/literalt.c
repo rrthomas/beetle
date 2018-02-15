@@ -1,6 +1,6 @@
 /* LITERALT.C
 
-    (c) Reuben Thomas 1994-2011
+    (c) Reuben Thomas 1994-2018
 
     Test the literal instructions. Also uses the NEXT instruction.
 
@@ -24,7 +24,7 @@ int main(void)
 {
     int i;
 
-    init_beetle((BYTE *)calloc(1024, 1), 256, 16);
+    init_beetle((CELL *)calloc(1024, 1), 256, 16);
     here = EP;
     S0 = SP;	/* save base of stack */
 

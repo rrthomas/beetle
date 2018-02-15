@@ -53,8 +53,8 @@ int load_object(FILE *file, CELL *address)
 
         for (UCELL i = 0; i < CELL_W; i++) length |= get(file) << (8 * i);
         if (endism) reverse((CELL *)&length, 1);
-        if ((((address - (CELL *)M0) + length) * CELL_W > MEMORY) ||
-            ((UCELL)(address - (CELL *)M0) * CELL_W) == MEMORY) {
+        if ((((address - M0) + length) * CELL_W > MEMORY) ||
+            ((UCELL)(address - M0) * CELL_W) == MEMORY) {
             err = -1;
             goto error;
         }

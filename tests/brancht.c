@@ -1,10 +1,10 @@
 /* BRANCHT.C
 
-    (c) Reuben Thomas 1994-2011
+    (c) Reuben Thomas 1994-2018
 
     Test the branch instructions. Also uses other instructions with lower
     opcodes than the instructions tested (i.e. those already tested).
-    FIXME: Doesn't test address exception handling.
+    See exceptst.c for address exception handling tests.
     The test program contains an infinite loop, but this is only executed
     once.
 
@@ -28,7 +28,8 @@ int main(void)
 {
     int i;
 
-    init_beetle((BYTE *)malloc(16384), 4096, 16);
+    size_t size = 4096;
+    init_beetle((CELL *)calloc(size, sizeof(CELL)), size, 16);
     S0 = SP;	/* save base of stack */
 
     here = EP;	/* start assembling at 16 */
@@ -37,36 +38,36 @@ int main(void)
     end_ass();
     instrs++;	/* correct instrs after final immediate literal */
 
-    here = (CELL *)(M0 + 96);	/* start assembling at 96 */
+    here = (CELL *)((BYTE *)M0 + 96);	/* start assembling at 96 */
     start_ass();
     ass(O_BRANCHI); ilit(-13);
     end_ass();
     instrs++;	/* correct instrs after final immediate literal */
 
-    here = (CELL *)(M0 + 48);	/* start assembling at 48 */
+    here = (CELL *)((BYTE *)M0 + 48);	/* start assembling at 48 */
     start_ass();
     ass(O_BRANCH); lit(10000);
     end_ass();
 
-    here = (CELL *)(M0 + 10000);    /* start assembling at 10000 */
+    here = (CELL *)((BYTE *)M0 + 10000);    /* start assembling at 10000 */
     start_ass();
     ass(O_ONE); ass(O_QBRANCHI); ilit(0);
     ass(O_ONE); ass(O_QBRANCH); lit(0); ass(O_ZERO); ass(O_QBRANCH); lit(11000);
     end_ass();
 
-    here = (CELL *)(M0 + 11000);    /* start assembling at 11000 */
+    here = (CELL *)((BYTE *)M0 + 11000);    /* start assembling at 11000 */
     start_ass();
     ass(O_ZERO); ass(O_QBRANCHI); ilit(3);
     end_ass();
     instrs++;	/* correct instrs after final immediate literal */
 
-    here = (CELL *)(M0 + 11016);    /* start assembling at 11016 */
+    here = (CELL *)((BYTE *)M0 + 11016);    /* start assembling at 11016 */
     start_ass();
     ass(O_LITERALI); ilit(64);
     ass(O_EXECUTE);
     end_ass();
 
-    here = (CELL *)(M0 + 64);	/* start assembling at 64 */
+    here = (CELL *)((BYTE *)M0 + 64);	/* start assembling at 64 */
     start_ass();
     ass(O_CALLI); ilit(33);
     ass(O_LITERALI); ilit(64);
@@ -74,13 +75,13 @@ int main(void)
     ass(O_TUCK); ass(O_STORE); ass(O_FEXECUTE);
     end_ass();
 
-    here = (CELL *)(M0 + 200);	/* start assembling at 200 */
+    here = (CELL *)((BYTE *)M0 + 200);	/* start assembling at 200 */
     start_ass();
     ass(O_CALL); lit(300); ilit(0); /* pad out word with NEXT (00h) */
     ass(O_EXIT);
     end_ass();
 
-    here = (CELL *)(M0 + 300);	/* start assembling at 300 */
+    here = (CELL *)((BYTE *)M0 + 300);	/* start assembling at 300 */
     start_ass();
     ass(O_EXIT);
     end_ass();

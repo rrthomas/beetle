@@ -1,6 +1,6 @@
 /* INITIALT.C
 
-    (c) Reuben Thomas 1994-1995
+    (c) Reuben Thomas 1994-2018
 
     Test that the Beetle headers beetle.h and bportab.h compile properly, and
     that the storage allocation and register initialisation in storage.c
@@ -17,7 +17,7 @@
 
 int main(void)
 {
-    init_beetle((BYTE *)malloc(1024), 256, 16);
+    init_beetle((CELL *)malloc(1024), 256, 16);
 
     printf("InitialT ran OK\n");
     return 0;

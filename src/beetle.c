@@ -56,7 +56,7 @@ enum registers { r_A, r_NOT_ADDRESS, r_BAD, r_CHECKED, r_ENDISM, r_EP, r_I,
     r_M0, r_MEMORY, r_RP, r_R0, r_SP, r_S0, r_THROW };
 static int registers = sizeof(regist) / sizeof(*regist);
 
-static long count[256] = { 0 };
+static long count[256];
 
 
 static int range(CELL adr, CELL limit, const char *quantity)
@@ -163,12 +163,12 @@ static int imm_op(BYTE o)
 
 static void disassemble(CELL start, CELL end)
 {
-    CELL a, *p = (CELL *)(M0 + start);
+    CELL a, *p = M0 + start;
     BYTE i;
     const char *token;
 
-    while ((BYTE *)p < M0 + end) {
-        printf("%08"PRIX32"h: ", (UCELL)((BYTE *)p - M0));
+    while (p < M0 + end) {
+        printf("%08"PRIX32"h: ", (UCELL)((p - M0) * CELL_W));
         a = *p++;
 
         do {
@@ -189,7 +189,7 @@ static void disassemble(CELL start, CELL end)
             } else {
                 if (imm_op(i)) {
                     if (i != O_LITERALI)
-                        printf(" %"PRIX32"h", a * 4 + (UCELL)((BYTE *)p - M0));
+                        printf(" %"PRIX32"h", (UCELL)((p - M0 + a) * CELL_W));
                     else
                         printf(" %"PRId32" (%"PRIX32"h)", a, (UCELL)a);
                     a = 0;
@@ -242,12 +242,12 @@ static void do_ass(char *token)
         case r_NOT_ADDRESS:
             if (debug)
                 printf("Assign -ADDRESS %lX\n", (unsigned long)value);
-            *((CELL *)M0 + 3) = NOT_ADDRESS = value;
+            M0[3] = NOT_ADDRESS = value;
             break;
         case r_BAD:
             if (debug)
                 printf("Assign 'BAD %lX\n", (unsigned long)value);
-            *((CELL *)M0 + 2) = BAD = value;
+            M0[2] = BAD = value;
             break;
         case r_CHECKED:
             printf("Can't assign to CHECKED\n");
@@ -264,7 +264,7 @@ static void do_ass(char *token)
             }
             if (debug)
                 printf("Assign EP %lX\n", (unsigned long)value);
-            EP = (CELL *)(M0 + value);
+            EP = (CELL *)((BYTE *)M0 + value);
             break;
         case r_I:
             if (value > 255) {
@@ -290,7 +290,7 @@ static void do_ass(char *token)
             }
             if (debug)
                 printf("Assign RP %lX\n", (unsigned long)value);
-            RP = (CELL *)(M0 + value);
+            RP = (CELL *)((BYTE *)M0 + value);
             break;
         case r_R0:
             if (range(value, MEMORY + 1, "R0"))
@@ -301,7 +301,7 @@ static void do_ass(char *token)
             }
             if (debug)
                 printf("Assign R0 %lX\n", (unsigned long)value);
-            R0 = (CELL *)(M0 + value);
+            R0 = (CELL *)((BYTE *)M0 + value);
             break;
         case r_SP:
             if (range(value, MEMORY + 1, "SP"))
@@ -312,7 +312,7 @@ static void do_ass(char *token)
             }
             if (debug)
                 printf("Assign SP %lX\n", (unsigned long)value);
-            SP = (CELL *)(M0 + value);
+            SP = (CELL *)((BYTE *)M0 + value);
             break;
         case r_S0:
             if (range(value, MEMORY + 1, "S0"))
@@ -323,7 +323,7 @@ static void do_ass(char *token)
             }
             if (debug)
                 printf("Assign S0 %lX\n", (unsigned long)value);
-            S0 = (CELL *)(M0 + value);
+            S0 = (CELL *)((BYTE *)M0 + value);
             break;
         case r_THROW:
             if (range(value, MEMORY, "'THROW"))
@@ -351,9 +351,9 @@ static void do_ass(char *token)
                            (unsigned long)value, (UCELL)adr,
                            ((byte == 1 && (adr & 3) == 0) ? " (byte)" : ""));
                 if (byte == 1)
-                    *(M0 + FLIP(adr)) = (BYTE)value;
+                    *((BYTE *)M0 + FLIP(adr)) = (BYTE)value;
                 else
-                    *(CELL *)(M0 + adr) = value;
+                    *(CELL *)((BYTE *)M0 + adr) = value;
             }
     }
 }
@@ -380,8 +380,8 @@ static void do_display(const char *token, const char *format)
             display = xasprintf("ENDISM = %d", ENDISM);
             break;
         case r_EP:
-            display = xasprintf("EP = %05"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)EP - M0),
-                    (UCELL)((BYTE *)EP - M0));
+            display = xasprintf("EP = %05"PRIX32"h (%"PRIu32")", (UCELL)(EP - M0) * CELL_W,
+                    (UCELL)(EP - M0) * CELL_W);
             break;
         case r_I:
             display = xasprintf("I = %-10s (%02Xh)", disass(I), I);
@@ -393,20 +393,20 @@ static void do_display(const char *token, const char *format)
             display = xasprintf("MEMORY = %"PRIX32"h (%"PRIu32")", MEMORY, MEMORY);
             break;
         case r_RP:
-            display = xasprintf("RP = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)RP - M0),
-                    (UCELL)((BYTE *)RP - M0));
+            display = xasprintf("RP = %"PRIX32"h (%"PRIu32")", (UCELL)(RP - M0) * CELL_W,
+                    (UCELL)(RP - M0) * CELL_W);
             break;
         case r_R0:
-            display = xasprintf("R0 = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)R0 - M0),
-                    (UCELL)((BYTE *)R0 - M0));
+            display = xasprintf("R0 = %"PRIX32"h (%"PRIu32")", (UCELL)(R0 - M0) * CELL_W,
+                    (UCELL)(R0 - M0) * CELL_W);
             break;
         case r_SP:
-            display = xasprintf("SP = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)SP - M0),
-                    (UCELL)((BYTE *)SP - M0));
+            display = xasprintf("SP = %"PRIX32"h (%"PRIu32")", (UCELL)(SP - M0) * CELL_W,
+                    (UCELL)(SP - M0) * CELL_W);
             break;
         case r_S0:
-            display = xasprintf("S0 = %"PRIX32"h (%"PRIu32")", (UCELL)((BYTE *)S0 - M0),
-                    (UCELL)((BYTE *)S0 - M0));
+            display = xasprintf("S0 = %"PRIX32"h (%"PRIu32")", (UCELL)(S0 - M0) * CELL_W,
+                    (UCELL)(S0 - M0) * CELL_W);
             break;
         case r_THROW:
             display = xasprintf("'THROW = %"PRIX32"h (%"PRIu32")", (UCELL)*THROW, (UCELL)*THROW);
@@ -419,12 +419,12 @@ static void do_display(const char *token, const char *format)
                     printf("Display contents of memory location %"PRIX32"\n", (UCELL)adr);
                 if (range(adr, MEMORY, "Address"))
                     return;
-                if (adr & 3)
+                if (!IS_ALIGNED(adr))
                     display = xasprintf("%"PRIX32"h: %Xh (%d) (byte)", (UCELL)adr,
-                            *(M0 + FLIP(adr)), *(M0 + FLIP(adr)));
+                                        *((BYTE *)M0 + FLIP(adr)), *((BYTE *)M0 + FLIP(adr)));
                 else
                     display = xasprintf("%"PRIX32"h: %"PRIX32"h (%"PRIu32") (cell)", (UCELL)adr,
-                            *(UCELL *)(M0 + adr), *(UCELL *)(M0 + adr));
+                                        *(UCELL *)(M0 + adr / CELL_W), *(UCELL *)(M0 + adr / CELL_W));
             }
     }
 #pragma GCC diagnostic push
@@ -452,7 +452,7 @@ static void do_command(int no)
 
             if (debug)
                 printf("Push %ld on to the data stack\n", value);
-            if (range((CELL)((BYTE *)SP - M0), MEMORY + 1, "SP"))
+            if (range((UCELL)(SP - M0) * CELL_W, MEMORY + 1, "SP"))
                 return;
             if ((BYTE *)SP - MEMORY == 0) {
                 printf("SP is 0h: no more stack items can be pushed\n");
@@ -467,7 +467,7 @@ static void do_command(int no)
 
             if (debug)
                 printf("Push %ld on to the return stack\n", value);
-            if (range((CELL)((BYTE *)SP - M0), MEMORY + 1, "RP"))
+            if (range((CELL)(SP - M0) * CELL_W, MEMORY + 1, "RP"))
                 return;
             if ((BYTE *)RP - MEMORY == 0) {
                 printf("RP is 0h: no more stack items can be pushed\n");
@@ -509,13 +509,13 @@ static void do_command(int no)
             }
             if (debug)
                 printf("Disassemble from %lX to %lX\n", (unsigned long)start, (unsigned long)end);
-            disassemble((CELL)start, (CELL)end);
+            disassemble((CELL)start / CELL_W, (CELL)end / CELL_W);
         }
         break;
     case c_DFROM:
         if (debug)
             printf("Pop a number from the data stack and display it\n");
-        if (range((CELL)((BYTE *)SP - M0), MEMORY, "SP"))
+        if (range((CELL)(SP - M0) * CELL_W, MEMORY, "SP"))
             return;
         printf("%"PRIu32" (%"PRIX32"h)\n", (UCELL)*SP, (UCELL)*SP);
         SP++;
@@ -524,8 +524,8 @@ static void do_command(int no)
     case c_STACKS:
         if (debug)
             printf("Display the data stack\n");
-        if (!range((CELL)((BYTE *)RP - M0), MEMORY + 1, "SP") &&
-            !range((CELL)((BYTE *)S0 - M0), MEMORY + 1, "S0")) {
+        if (!range((CELL)(RP - M0) * CELL_W, MEMORY + 1, "SP") &&
+            !range((CELL)(S0 - M0) * CELL_W, MEMORY + 1, "S0")) {
             if (SP == S0)
                 printf("Data stack empty\n");
             else if (SP > S0)
@@ -557,7 +557,7 @@ static void do_command(int no)
             while (start < end) {
                 printf("%08lXh: ", (unsigned long)start);
                 for (int i = 0; i < 8 && start < end; i++, start++)
-                    printf("%02X ", M0[start]);
+                    printf("%02X ", ((BYTE *)M0)[start]);
                 putchar('\n');
             }
         }
@@ -575,7 +575,7 @@ static void do_command(int no)
                 }
                 if (debug)
                     printf("Set EP to %lXh\n", (unsigned long)adr);
-                EP = (CELL *)(M0 + adr);
+                EP = (CELL *)((BYTE *)M0 + adr);
             }
             if (debug)
                 printf("Perform NEXT\n");
@@ -587,8 +587,8 @@ static void do_command(int no)
         {
             if (debug)
                 printf("Initialise Beetle\n");
-            for (long i = 0; i < memory_size; i++) ((CELL*)M0)[i] = 0;
-            for (long i = 0; i < 256; i++) count[i] = 0;
+            memset(M0, 0, memory_size);
+            memset(count, 0, 256 * sizeof(long));
             init_beetle(M0, memory_size, 16);
             S0 = SP;
             R0 = RP;
@@ -615,7 +615,7 @@ static void do_command(int no)
             }
             if (debug)
                 printf("Load binary image %s to address %lX\n", file, (unsigned long)adr);
-            ret = load_object(handle, (CELL *)(M0 + adr));
+            ret = load_object(handle, (CELL *)((BYTE *)M0 + adr));
             fclose(handle);
 
             switch (ret) {
@@ -642,7 +642,7 @@ static void do_command(int no)
     case c_RFROM:
         if (debug)
             printf("Pop a number from the return stack and display it\n");
-        if (range((CELL)((BYTE *)RP - M0), MEMORY, "RP")) return;
+        if (range((CELL)(RP - M0) * CELL_W, MEMORY, "RP")) return;
         printf("%"PRIX32"h (%"PRIu32")\n", (UCELL)*RP, (UCELL)*RP);
         RP++;
         break;
@@ -650,9 +650,9 @@ static void do_command(int no)
     case c_RETURN:
         if (debug)
             printf("Display the return stack\n");
-        if (range((CELL)((BYTE *)RP - M0), MEMORY + 1, "RP"))
+        if (range((CELL)(RP - M0) * CELL_W, MEMORY + 1, "RP"))
             return;
-        if (range((CELL)((BYTE *)R0 - M0), MEMORY + 1, "R0"))
+        if (range((CELL)(R0 - M0) * CELL_W, MEMORY + 1, "R0"))
             return;
         if (RP == R0) {
             printf("Return stack empty\n");
@@ -698,14 +698,14 @@ static void do_command(int no)
                         return;
                     if (debug)
                         printf("STEP TO %lX\n", limit);
-                    while ((unsigned long)((BYTE *)EP - M0) != limit && ret == -260) {
+                    while ((unsigned long)(EP - M0) * CELL_W != limit && ret == -260) {
                         ret = single_step();
                         if (no == c_TRACE) do_registers();
                         count[I]++;
                     }
                     if (ret != 0)
                         printf("HALT code %"PRId32" was returned at EP = %Xh\n",
-                               ret, (UCELL)((BYTE *)EP - M0));
+                               ret, (UCELL)(EP - M0) * CELL_W);
                 } else {
                     limit = single_arg(arg);
                     if (debug)
@@ -746,7 +746,7 @@ static void do_command(int no)
             if (debug)
                 printf("Save memory to file %s from %lX to %lX\n", file,
                        (unsigned long)start, (unsigned long)end);
-            ret = save_object(handle, (CELL *)(M0 + start),
+            ret = save_object(handle, (CELL *)((BYTE *)M0 + start),
                               (UCELL)((end - start) / CELL_W));
             fclose(handle);
 
@@ -901,8 +901,8 @@ int main(int argc, char *argv[])
             }
     }
 
-    BYTE *mem;
-    if ((mem = (BYTE *)(CELL *)calloc(memory_size, sizeof(CELL))) == NULL)
+    CELL *mem;
+    if ((mem = (CELL *)calloc(memory_size, sizeof(CELL))) == NULL)
         die("could not allocate %"PRIu32" cells of memory", memory_size);
 
     init_beetle(mem, memory_size, 16);
@@ -918,7 +918,7 @@ int main(int argc, char *argv[])
         FILE *handle = fopen(argv[optind], "r");
         if (handle == NULL)
             die("cannot not open file %s", argv[1]);
-        int ret = load_object(handle, (CELL *)(M0 + 16));
+        int ret = load_object(handle, M0 + 4);
         fclose(handle);
         if (ret != 0)
             die("could not read file %s", argv[1]);

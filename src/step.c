@@ -27,7 +27,7 @@ verify(sizeof(int) <= sizeof(CELL));
 /* Address checking */
 
 #define SET_NOT_ADDRESS(a)                      \
-        *(CELL *)(M0 + 12) = NOT_ADDRESS = (a);
+    M0[3] = NOT_ADDRESS = (a);
 
 #define CHECK_ADDRESS(a, cond, label)           \
     if (!(cond)) {                              \
@@ -43,7 +43,7 @@ verify(sizeof(int) <= sizeof(CELL));
     CHECK_ALIGNED(a)
 
 #define CHECKP(p)                               \
-    CHECK_MAIN_MEMORY_ALIGNED((BYTE *)(p) - M0)
+    CHECK_MAIN_MEMORY_ALIGNED((BYTE *)(p) - (BYTE *)M0)
 
 #define CHECK_NATIVE_ADDRESS(a, ptr)            \
     CHECK_ADDRESS(a, ptr = native_address(a), invadr)
@@ -492,23 +492,23 @@ CELL single_step(void)
     case O_SPFETCH:
         CHECKP(SP - 1);
         SP--;
-        *SP = (CELL)((BYTE *)SP - M0) + CELL_W;
+        *SP = (CELL)(SP - M0 + 1) * CELL_W;
         break;
     case O_SPSTORE:
         CHECKP(SP);
-        SP = (CELL *)(*SP + M0);
+        SP = (CELL *)(*SP + (BYTE *)M0);
         break;
     case O_RPFETCH:
         CHECKP(SP - 1);
-        *--SP = (CELL)((BYTE *)RP - M0);
+        *--SP = (CELL)(RP - M0) * CELL_W;
         break;
     case O_RPSTORE:
         CHECKP(SP);
-        RP = (CELL *)(*SP++ + M0);
+        RP = (CELL *)(*SP++ + (BYTE *)M0);
         break;
     case O_BRANCH:
         CHECKP(EP);
-        EP = (CELL *)(*EP + M0);
+        EP = (CELL *)(*EP + (BYTE *)M0);
         NEXTC;
         break;
     case O_BRANCHI:
@@ -519,7 +519,7 @@ CELL single_step(void)
         CHECKP(SP);
         CHECKP(EP);
         if (*SP++ == B_FALSE) {
-            EP = (CELL *)(*EP + M0);
+            EP = (CELL *)(*EP + (BYTE *)M0);
             NEXTC;
         } else
             EP++;
@@ -533,34 +533,34 @@ CELL single_step(void)
     case O_EXECUTE:
         CHECKP(RP - 1);
         CHECKP(SP);
-        *--RP = (CELL)((BYTE *)EP - M0);
-        EP = (CELL *)(*SP++ + M0);
+        *--RP = (CELL)(EP - M0) * CELL_W;
+        EP = (CELL *)(*SP++ + (BYTE *)M0);
         NEXTC;
         break;
     case O_FEXECUTE:
         CHECKP(RP - 1);
         CHECKP(SP);
-        CHECKP(*SP + M0);
-        *--RP = (CELL)((BYTE *)EP - M0);
-        EP = (CELL *)(*(CELL *)(*SP++ + M0) + M0);
+        CHECKP(*SP + (BYTE *)M0);
+        *--RP = (CELL)(EP - M0) * CELL_W;
+        EP = (CELL *)(*(CELL *)(*SP++ + (BYTE *)M0) + (BYTE *)M0);
         NEXTC;
         break;
     case O_CALL:
         CHECKP(RP - 1);
         CHECKP(EP);
-        *--RP = (CELL)((BYTE *)EP - M0) + CELL_W;
-        EP = (CELL *)(*EP + M0);
+        *--RP = (CELL)(EP - M0 + 1) * CELL_W;
+        EP = (CELL *)(*EP + (BYTE *)M0);
         NEXTC;
         break;
     case O_CALLI:
         CHECKP(RP - 1);
-        *--RP = (CELL)((BYTE *)EP - M0);
+        *--RP = (CELL)(EP - M0) * CELL_W;
         EP += A;
         NEXTC;
         break;
     case O_EXIT:
         CHECKP(RP);
-        EP = (CELL *)(*RP++ + M0);
+        EP = (CELL *)(*RP++ + (BYTE *)M0);
         NEXTC;
         break;
     case O_DO:
@@ -581,7 +581,7 @@ CELL single_step(void)
             RP += 2;
             EP++;
         } else {
-            EP = (CELL *)(*EP + M0);
+            EP = (CELL *)(*EP + (BYTE *)M0);
             NEXTC;
         }
         break;
@@ -606,7 +606,7 @@ CELL single_step(void)
             RP += 2;
             EP++;
         } else {
-            EP = (CELL *)(*EP + M0);
+            EP = (CELL *)(*EP + (BYTE *)M0);
             NEXTC;
         } break;
     case O_PLOOPI:
@@ -641,10 +641,11 @@ CELL single_step(void)
         break;
  throw:
     case O_THROW:
-        *(CELL *)(M0 + 8) = BAD = (CELL)((BYTE *)EP - M0);
+        /* EP can be unaligned in an error condition, so do BYTE * arithmetic */
+        M0[2] = BAD = (CELL)((BYTE *)EP - (BYTE *)M0);
         if (!IN_MAIN_MEMORY((UCELL)*THROW) || !IS_ALIGNED((UCELL)*THROW))
             return -259;
-        EP = (CELL *)((UCELL)*THROW + M0);
+        EP = (CELL *)((UCELL)*THROW + (BYTE *)M0);
         NEXTC;
         break;
     case O_HALT:
@@ -652,7 +653,7 @@ CELL single_step(void)
         return (*SP++);
     case O_EPFETCH:
         CHECKP(SP - 1);
-        *--SP = (CELL)((BYTE *)EP - M0);
+        *--SP = (CELL)(EP - M0) * CELL_W;
         break;
     case O_LIB:
         CHECKP(SP);
@@ -715,7 +716,7 @@ CELL single_step(void)
                     ssize_t res = 1;
                     UCELL i;
                     for (i = 0; i < *((UCELL *)SP + 1); i++)
-                        if ((res = read(fd, M0 + FLIP(*((UCELL *)SP + 2) + i), 1)) != 1)
+                        if ((res = read(fd, (BYTE *)M0 + FLIP(*((UCELL *)SP + 2) + i), 1)) != 1)
                             break;
                     *++SP = res >= 0 ? 0 : -1;
                     *((UCELL *)SP + 1) = i;
@@ -731,7 +732,7 @@ CELL single_step(void)
                     int fd = *SP;
                     ssize_t res = 1;
                     for (UCELL i = 0; i < *((UCELL *)SP + 1); i++)
-                        if ((res = write(fd, M0 + FLIP(*((UCELL *)SP + 2) + i), 1)) != 1)
+                        if ((res = write(fd, (BYTE *)M0 + FLIP(*((UCELL *)SP + 2) + i), 1)) != 1)
                             break;
                     *(SP += 2) = res >= 0 ? 0 : -1;
                 }
@@ -854,13 +855,13 @@ CELL single_step(void)
     /* Deal with address exceptions during execution cycle. */
  invadr:
     SP--;
-    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * CELL_W || (size_t)SP & (CELL_W - 1))
+    if ((UCELL)(SP - M0) * CELL_W >= MEMORY || (size_t)SP & (CELL_W - 1))
       return -258;
     *SP = -9;
     goto throw;
  aliadr:
     SP--;
-    if ((UCELL)((BYTE *)SP - M0) >= MEMORY * CELL_W || (size_t)SP & (CELL_W - 1))
+    if ((UCELL)(SP - M0) * CELL_W >= MEMORY || (size_t)SP & (CELL_W - 1))
       return -258;
     *SP = -23;
     goto throw;

@@ -33,8 +33,8 @@ int save_object(FILE *file, CELL *address, UCELL length)
     if (length > (UCELL)0x3fffffff) { err = -1; goto error; }
 
     if ((err = setjmp(env)) == 0) {
-        if ((UCELL)(address - (CELL *)M0) > MEMORY ||
-            ((address - (CELL *)M0) + length) * CELL_W > MEMORY) {
+        if ((UCELL)(address - M0) * CELL_W > MEMORY ||
+            ((address - M0) + length) * CELL_W > MEMORY) {
             err = -1;
             goto error;
         }

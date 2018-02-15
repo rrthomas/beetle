@@ -1,6 +1,6 @@
 /* RUNT.C
 
-    (c) Reuben Thomas 1995-2011
+    (c) Reuben Thomas 1995-2018
 
     Test that run works, and that the return value of the HALT instruction is
     correctly returned.
@@ -19,17 +19,15 @@
 
 int main(void)
 {
-    int i;
     CELL ret;
 
-    i = init_beetle((BYTE *)malloc(1024), 256, 16);
+    int i = init_beetle((CELL *)calloc(1024, 1), 256, 16);
     if (i != 0) {
         printf("Error in RunT: init_beetle with valid parameters failed\n");
         exit(1);
     }
-    for (i = 0; i < 1024; i++) M0[i] = 0;
 
-    here = (CELL *)(M0 + 52);
+    here = M0 + 52 / CELL_W;
     start_ass();
     ass(O_LITERALI); ilit(37);
     ass(O_HALT);

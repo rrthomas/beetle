@@ -1,6 +1,6 @@
 /* DOLOOPT.C
 
-    (c) Reuben Thomas 1994-2011
+    (c) Reuben Thomas 1994-2018
 
     Test the DO...LOOP support instructions. Also uses instructions with
     lower opcodes.
@@ -25,7 +25,7 @@ int main(void)
 {
     int i;
 
-    init_beetle((BYTE *)malloc(1024), 256, 16);
+    init_beetle((CELL *)malloc(1024), 256, 16);
     here = EP;
     S0 = SP;	/* save base of stack */
 
@@ -83,8 +83,8 @@ int main(void)
     }
     SP = S0;
 
-    EP = (CELL *)(64 + M0);  NEXT;	/* start execution at 64 */
-    while (((BYTE *)EP - M0) < 76) single_step();
+    EP = (CELL *)(64 + (BYTE *)M0);  NEXT;	/* start execution at 64 */
+    while ((EP - M0) * CELL_W < 76) single_step();
     printf("3rd item on return stack is %"PRId32" (should be %"PRId32").\n", *(RP + 2), *SP);
     if (*(RP + 2) != *SP) {
         printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());

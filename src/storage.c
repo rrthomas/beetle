@@ -19,7 +19,7 @@
 CELL *EP;
 BYTE I;
 CELL A;
-BYTE *M0;
+CELL *M0;
 UCELL MEMORY;
 CELL *SP, *RP;
 CELL *THROW;	/* 'THROW is not a valid C identifier */
@@ -29,23 +29,23 @@ UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
 
 /* Initialise registers that are not fixed */
 
-int init_beetle(BYTE *b_array, size_t size, UCELL e0)
+int init_beetle(CELL *c_array, size_t size, UCELL e0)
 {
-    if (e0 & 3 || e0 >= size * CELL_W)
+    if (!IS_ALIGNED(e0) || e0 >= size * CELL_W)
         return 1;
 
-    M0 = (BYTE *)b_array;
-    EP = (CELL *)(M0 + e0);
+    M0 = c_array;
+    EP = M0 + e0 / CELL_W;
     MEMORY = size * CELL_W;
-    SP = (CELL *)(M0 + (MEMORY - 0x100));
-    RP = (CELL *)(M0 + MEMORY);
-    THROW = (CELL *)M0;
+    SP = M0 + (size - 0x40);
+    RP = M0 + size;
+    THROW = M0;
     BAD = 0xFFFFFFFF;
     NOT_ADDRESS = 0xFFFFFFFF;
 
-    *((CELL *)M0 + 1) = MEMORY;
-    *((CELL *)M0 + 2) = BAD;
-    *((CELL *)M0 + 3) = NOT_ADDRESS;
+    M0[1] = MEMORY;
+    M0[2] = BAD;
+    M0[3] = NOT_ADDRESS;
 
     return 0;
 }

@@ -1,6 +1,6 @@
 /* COMPARET.C
 
-    (c) Reuben Thomas 1994-2011
+    (c) Reuben Thomas 1994-2018
 
     Test the comparison operators. Also uses the NEXT instruction. We
     only test simple cases here, assuming that the C compiler's comparison
@@ -67,7 +67,7 @@ static void step(int start, int end)
 
 int main(void)
 {
-    init_beetle((BYTE *)malloc(1024), 256, 16);
+    init_beetle((CELL *)malloc(1024), 256, 16);
     here = EP;
     S0 = SP;	/* save base of stack */
 
