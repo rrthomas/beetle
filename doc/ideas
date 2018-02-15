@@ -1,3 +1,6 @@
+Map Beetle registers into address space with himem (which should therefore
+be generalised; change spec to move the registers to high addresses).
+
 Native address size support (should be merged with CELL_pointer).
 
 Have stacks in separate address spaces with (potentially) the ability to grow
