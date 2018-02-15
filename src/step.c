@@ -814,7 +814,7 @@ CELL single_step(void)
                     CHECKP(SP);
                     UCELL u = *(UCELL *)SP;
                     CHECKP(SP - 1);
-                    if (u > (UCELL)main_argc) {
+                    if (u >= (UCELL)main_argc) {
                         *SP = 0;
                         *--SP = 0;
                     } else {
