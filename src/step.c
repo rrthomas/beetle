@@ -472,13 +472,13 @@ CELL single_step(void)
         break;
     case O_CFETCH:
         CHECKP(SP);
-        CHECK_NATIVE_ADDRESS(FLIP(*SP), ptr);
+        CHECK_NATIVE_ADDRESS(*SP, ptr);
         *SP = (CELL)*ptr;
         break;
     case O_CSTORE:
         CHECKP(SP);
         CHECKP(SP + 1);
-        CHECK_NATIVE_ADDRESS(FLIP(*SP), ptr);
+        CHECK_NATIVE_ADDRESS(*SP, ptr);
         *ptr = (BYTE)*(SP + 1);
         SP += 2;
         break;
