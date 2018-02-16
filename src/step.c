@@ -34,14 +34,12 @@ verify(sizeof(int) <= sizeof(CELL));
         SET_NOT_ADDRESS(a);                     \
         goto label;                             \
     }
-#define CHECK_MAIN_MEMORY(a)                    \
-    CHECK_ADDRESS(a, IN_MAIN_MEMORY(a), invadr)
 #define CHECK_ALIGNED(a)                        \
     CHECK_ADDRESS(a, IS_ALIGNED(a), aliadr)
-#define CHECK_MAIN_MEMORY_ALIGNED(a)            \
-    CHECK_MAIN_MEMORY(a)                        \
-    CHECK_ALIGNED(a)
 
+#define CHECK_MAIN_MEMORY_ALIGNED(a)            \
+    CHECK_ADDRESS(a, IN_MAIN_MEMORY(a), invadr) \
+    CHECK_ALIGNED(a)
 #define CHECKP(p)                               \
     CHECK_MAIN_MEMORY_ALIGNED((BYTE *)(p) - (BYTE *)M0)
 
