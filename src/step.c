@@ -496,7 +496,8 @@ CELL single_step(void)
         break;
     case O_SPSTORE:
         CHECKP(SP);
-        SP = (CELL *)(*SP + (BYTE *)M0);
+        CHECK_MAIN_MEMORY_ALIGNED(*SP);
+        SP = *SP / CELL_W + M0;
         break;
     case O_RPFETCH:
         CHECKP(SP - 1);
@@ -504,7 +505,8 @@ CELL single_step(void)
         break;
     case O_RPSTORE:
         CHECKP(SP);
-        RP = (CELL *)(*SP++ + (BYTE *)M0);
+        CHECK_MAIN_MEMORY_ALIGNED(*SP);
+        RP = *SP++ / CELL_W + M0;
         break;
     case O_BRANCH:
         CHECKP(EP);
