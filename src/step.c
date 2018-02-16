@@ -136,7 +136,7 @@ bool register_args(int argc, char *argv[])
 /* Perform one pass of the execution cycle. */
 CELL single_step(void)
 {
-    CELL temp, temp2;
+    CELL temp;
     BYTE *ptr;
 
     I = (BYTE)A;
@@ -367,7 +367,7 @@ CELL single_step(void)
         CHECKP(SP);
         CHECKP(SP + 1);
         DIVZERO(*SP);
-        temp = FMOD(*(SP + 1), *SP, temp2);
+        temp = FMOD(*(SP + 1), *SP, temp);
         *SP = FDIV(*(SP + 1), *SP);
         *(SP + 1) = temp;
         break;
