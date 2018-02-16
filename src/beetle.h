@@ -101,9 +101,9 @@ typedef union {
 
 /* Get the native address of a Beetle address */
 #define native_address(a)                       \
-    IN_MAIN_MEMORY(a) ?                         \
-    FLIP(a) + (BYTE *)M0 :                      \
-    himem_addr(FLIP(a))
+    (IN_MAIN_MEMORY(a) ?                        \
+     FLIP(a) + (BYTE *)M0 :                     \
+     himem_addr(FLIP(a)))
 
 /* Portable arithmetic right shift (the behaviour of >> on signed
    quantities is implementation-defined in C99). */
