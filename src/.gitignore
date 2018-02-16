@@ -3,3 +3,4 @@
 *.lo
 /libbeetle.la
 /beetle
+/beetlei

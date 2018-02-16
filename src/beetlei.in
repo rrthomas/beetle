@@ -1,0 +1,7 @@
+#!/bin/sh
+# Run Beetle with command-line completion and history
+# (c) Reuben Thomas 2018
+
+# FIXME: Add Beetle command completion
+
+@RLWRAP@ --complete-filenames --history-filename $HOME/.beetle_history beetle "$@"

@@ -52,6 +52,11 @@ For the bibliographies in the documentation to be built correctly, GNU Make
 should be used.
 
 
+## Use
+
+Run `beetle` (see `beetle --help` or `uiface.pdf` for documentation). If you have `rlwrap`, you can run `beetlei` instead to get readline support.
+
+
 ## Documentation
 
 The canonical documentation consists of:

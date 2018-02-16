@@ -11,6 +11,10 @@ AM_PROG_AR
 LT_INIT
 AC_PATH_PROG(RUBBER, rubber, true)
 
+dnl Readline wrapper
+AC_PATH_PROG(RLWRAP, rlwrap)
+AM_CONDITIONAL([HAVE_RLWRAP], [test -n "$ac_cv_path_RLWRAP"])
+
 dnl Extra warnings with GCC
 AC_ARG_ENABLE([gcc-warnings],
   [AS_HELP_STRING([--disable-gcc-warnings],
@@ -62,4 +66,5 @@ AC_C_BIGENDIAN
 dnl Generate output files
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile lib/Makefile src/Makefile tests/Makefile doc/Makefile])
+AC_CONFIG_FILES([src/beetlei], [chmod +x src/beetlei])
 AC_OUTPUT

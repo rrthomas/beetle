@@ -8,6 +8,9 @@ libbeetle_la_SOURCES = storage.c step.c run.c debug.c loadobj.c saveobj.c noecho
 libbeetle_la_LIBADD = $(top_builddir)/lib/libgnu.la
 
 bin_PROGRAMS = beetle
+if HAVE_RLWRAP
+bin_SCRIPTS = beetlei
+endif
 beetle_LDADD = libbeetle.la $(top_builddir)/lib/libgnu.la
 beetle_SOURCES = beetle.c tbl_opts.h
 

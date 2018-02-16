@@ -19,6 +19,4 @@ object was given on command line.
 
 Add ASCII output to DUMP command.
 
-Add readline support to UI.
-
 Move EOL to lib (or remove BL)?
