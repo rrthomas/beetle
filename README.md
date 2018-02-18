@@ -11,9 +11,9 @@ any POSIX system; the assembler version runs the supplied Forth compiler at
 up to half the speed of the corresponding native code compiler and generates
 more compact code. Beetle is designed to be embedded in other programs; a
 simple debugger has been written to demonstrate this ability. In the C
-implementation, all memory references are bounds checked. A standard I/O
-library is implemented; access to native code routines is also possible,
-allowing Forth and C programs to call each other.
+implementation, all memory references are bounds checked. An I/O library is
+implemented; access to native code routines is also possible, allowing Forth
+and C programs to call each other.
 
 This package comprises the definition of the Beetle virtual machine, a
 virtual machine specialised for the execution of Forth, an

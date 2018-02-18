@@ -63,7 +63,7 @@ verify(sizeof(int) <= sizeof(CELL));
 
 /* LIB support */
 
-#define LIB_ROUTINES 14
+#define MAX_LIB_ROUTINE 13
 
 /* Copy a string from Beetle to C */
 static char *getstr(UCELL adr, UCELL len)
@@ -657,33 +657,48 @@ CELL single_step(void)
         break;
     case O_LIB:
         CHECKP(SP);
-        if ((UCELL)(*SP) > LIB_ROUTINES) {
+        if ((UCELL)(*SP) > MAX_LIB_ROUTINE) {
             CHECKP(SP - 1);
             *--SP = -257;
             goto throw;
         } else {
             switch ((UCELL)*SP++) {
-            case 0: /* BL */
+            case 0: /* ARGC ( -- u ) */
                 CHECKP(SP - 1);
-                *--SP = 32;
+                *--SP = main_argc;
                 break;
 
-            case 1: /* CR */
-                putchar('\n');
+            case 1: /* ARG ( u1 -- c-addr u2 )*/
+                {
+                    CHECKP(SP);
+                    UCELL u = *(UCELL *)SP;
+                    CHECKP(SP - 1);
+                    if (u >= (UCELL)main_argc) {
+                        *SP = 0;
+                        *--SP = 0;
+                    } else {
+                        *SP = main_argv[u];
+                        *--SP = main_argv_len[u];
+                    }
+                }
                 break;
 
-            case 2: /* EMIT */
-                CHECKP(SP);
-                putchar((BYTE)*SP);
-                SP++;
-                break;
-
-            case 3: /* KEY */
+            case 2: /* STDIN */
                 CHECKP(SP - 1);
-                *--SP = (CELL)(getchar());
+                *--SP = (CELL)(STDIN_FILENO);
                 break;
 
-            case 4: /* OPEN-FILE */
+            case 3: /* STDOUT */
+                CHECKP(SP - 1);
+                *--SP = (CELL)(STDOUT_FILENO);
+                break;
+
+            case 4: /* STDERR */
+                CHECKP(SP - 1);
+                *--SP = (CELL)(STDERR_FILENO);
+                break;
+
+            case 5: /* OPEN-FILE */
                 {
                     CHECKP(SP);
                     CHECKP(SP + 1);
@@ -698,7 +713,7 @@ CELL single_step(void)
                 }
                 break;
 
-            case 5: /* CLOSE-FILE */
+            case 6: /* CLOSE-FILE */
                 {
                     CHECKP(SP);
                     int fd = *SP;
@@ -706,7 +721,7 @@ CELL single_step(void)
                 }
                 break;
 
-            case 6: /* READ-FILE */
+            case 7: /* READ-FILE */
                 {
                     CHECKP(SP);
                     CHECKP(SP + 1);
@@ -723,7 +738,7 @@ CELL single_step(void)
                 }
                 break;
 
-            case 7: /* WRITE-FILE */
+            case 8: /* WRITE-FILE */
                 {
                     CHECKP(SP);
                     CHECKP(SP + 1);
@@ -738,7 +753,7 @@ CELL single_step(void)
                 }
                 break;
 
-            case 8: /* FILE-POSITION */
+            case 9: /* FILE-POSITION */
                 {
                     CHECKP(SP);
                     CHECKP(SP - 1);
@@ -753,7 +768,7 @@ CELL single_step(void)
                 }
                 break;
 
-            case 9: /* REPOSITION-FILE */
+            case 10: /* REPOSITION-FILE */
                 {
                     CHECKP(SP);
                     CHECKP(SP + 1);
@@ -766,7 +781,7 @@ CELL single_step(void)
                 }
                 break;
 
-            case 10: /* FLUSH-FILE */
+            case 11: /* FLUSH-FILE */
                 {
                     CHECKP(SP);
                     int fd = *SP;
@@ -775,7 +790,7 @@ CELL single_step(void)
                 }
                 break;
 
-            case 11: /* RENAME-FILE */
+            case 12: /* RENAME-FILE */
                 {
                     CHECKP(SP);
                     CHECKP(SP + 1);
@@ -792,7 +807,7 @@ CELL single_step(void)
                 }
                 break;
 
-            case 12: /* DELETE-FILE */
+            case 13: /* DELETE-FILE */
                 {
                     CHECKP(SP);
                     CHECKP(SP + 1);
@@ -802,26 +817,6 @@ CELL single_step(void)
                     free(file);
 
                     *++SP = res ? -1 : 0;
-                }
-                break;
-
-            case 13: /* ARGC ( -- u ) */
-                CHECKP(SP - 1);
-                *--SP = main_argc;
-                break;
-
-            case 14: /* ARG ( u1 -- c-addr u2 )*/
-                {
-                    CHECKP(SP);
-                    UCELL u = *(UCELL *)SP;
-                    CHECKP(SP - 1);
-                    if (u >= (UCELL)main_argc) {
-                        *SP = 0;
-                        *--SP = 0;
-                    } else {
-                        *SP = main_argv[u];
-                        *--SP = main_argv_len[u];
-                    }
                 }
                 break;
 

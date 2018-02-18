@@ -18,5 +18,3 @@ Add flag to CBeetle to cause unhandled exception to enter debugger even if
 object was given on command line.
 
 Add ASCII output to DUMP command.
-
-Move EOL to lib (or remove BL)?

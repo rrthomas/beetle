@@ -124,7 +124,7 @@ purposely left unspecified, and the exact method of implementation is left to
 the implementor in many particulars.
 
 Beetle is self-contained, and performs I/O via the {\tt LIB} instruction, which
-provides access to a standard library which mimics ANS Forth I/O words. Machine
+provides access to an implementation-dependent library. Machine
 code routines on the host computer may be accessed using the {\tt LINK}
 instruction. Beetle supports the saving and loading of simple object modules.
 
@@ -890,26 +890,6 @@ Beetle must provide:
 
 Beetle must also provide access to its registers and address space through
 appropriate data objects.
-
-
-\section{Libraries}
-\label{libraries}
-
-Beetle has one standard library, the core I/O library. Its routines mimic the
-four system-dependent I/O words in the ANS Forth Core Word Set. The descriptions
-below are identical to those given for bForth instructions (see section~\ref{instset}),
-except that the opcode is replaced by the routine number, which
-is passed to {\tt LIB} to call the routine.
-
-\begin{description}
-\instp{BL}{b-l}{0}{-- char}{\spic{char} is the character value for a space.}
-\instp{CR}{c-r}{1}{--}{Cause subsequent output to appear at the beginning of the next line.}
-\inst{EMIT}{2}{x --}{If \spic{x} is a graphic character in the implementation-defined character set, display \spic{x}. The effect of {\tt EMIT} for all other values of \spic{x} is implementation-defined. When passed a character whose character-defining bits have a value between 20h and 7Eh inclusive, the corresponding character from the ASCII code~\cite{ASCII} is displayed.}
-\inst{KEY}{3}{-- char}{Receive one character \spic{char}, a member of the implementation-defined character set. Keyboard events that do not correspond to such characters are discarded until a valid character is received, and those events are subsequently unavailable. Any standard character returned by {\tt KEY} has the numeric value specified by the ASCII code~\cite{ASCII}.}
-\end{description}
-
-For more precise information on the behaviour of the library calls, see the
-descriptions of the corresponding words in~\cite[chapter 6]{ANSIforth}.
 
 
 \section*{Acknowledgements}

@@ -6,9 +6,9 @@ LOG_COMPILER = $(srcdir)/run-test
 
 LDADD = $(top_builddir)/src/libbeetle.la
 
-check_PROGRAMS = $(TESTS) libt loadobjt
+check_PROGRAMS = $(TESTS) loadobjt
 
-TESTS = aritmtit brancht comparet epfetcht doloopt initialt literalt \
+TESTS = aritmtit brancht comparet epfetcht doloopt initialt libt literalt \
 	logict memoryt stackt stept runt saveobjt exceptst linkt
 TESTS_ENVIRONMENT = \
 	if test -n "$(VALGRIND)"; then export VALGRIND='$(VALGRIND)'; fi; \
@@ -17,9 +17,6 @@ TESTS_ENVIRONMENT = \
 do_loadobjt: loadobjt
 	$(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(builddir)/loadobjt $(srcdir)
 
-do_libt: libt
-	$(TESTS_ENVIRONMENT) echo "Reverse this text" | $(LOG_COMPILER) $(builddir)/libt
-
-check-local: do_loadobjt do_libt
+check-local: do_loadobjt
 
 EXTRA_DIST = run-test btests.h badobj1 badobj2 badobj3 badobj4 testobj1 testobj2

@@ -123,7 +123,32 @@ The main memory may be at most \SI{2}{GB}, and is always mapped into Beetle’s 
 
 \subsection{Extra library calls}
 
-C Beetle provides the following extra {\tt LIB} calls.
+C Beetle provides the following {\tt LIB} calls.
+
+\subsubsection{Command-line arguments}
+
+Two calls are provided to access command-line arguments passed to C Beetle (excluding any that it interprets itself). They are copied from Gforth.
+
+\begin{center}
+\begin{tabular}{S[table-format=2.0]lll} \toprule
+\bf Number & \bf Forth word & \bf Stack effect & \bf Description \\ \midrule
+0 & {\tt ARGC} & \spic{-- u} & the number of arguments \\
+1 & {\tt ARG} & \spic{u1 -- c-addr u2} & the \spic{u1}th argument \\ \bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Standard I/O streams}
+
+These {\tt LIB} calls provide access to POSIX standard input, output and error. Each call returns a corresponding file identifier.
+
+\begin{center}
+\begin{tabular}{S[table-format=2.0]l} \toprule
+\bf Number & \bf POSIX file descriptor \\ \midrule
+2 & {\tt STDIN\_FILENO} \\
+3 & {\tt STDOUT\_FILENO} \\
+4 & {\tt STDERR\_FILENO} \\ \bottomrule
+\end{tabular}
+\end{center}
 
 \subsubsection{File system calls}
 
@@ -132,15 +157,15 @@ The file system calls correspond directly to ANS Forth words, as defined in~\cit
 \begin{center}
 \begin{tabular}{S[table-format=2.0]l} \toprule
 \bf Number & \bf Forth word \\ \midrule
-4 & {\tt OPEN-FILE} \\
-5 & {\tt CLOSE-FILE} \\
-6 & {\tt READ-FILE} \\
-7 & {\tt WRITE-FILE} \\
-8 & {\tt FILE-POSITION} \\
-9 & {\tt REPOSITION-FILE} \\
-10 & {\tt FLUSH-FILE} \\
-11 & {\tt RENAME-FILE} \\
-12 & {\tt DELETE-FILE} \\ \bottomrule
+5 & {\tt OPEN-FILE} \\
+6 & {\tt CLOSE-FILE} \\
+7 & {\tt READ-FILE} \\
+8 & {\tt WRITE-FILE} \\
+9 & {\tt FILE-POSITION} \\
+10 & {\tt REPOSITION-FILE} \\
+11 & {\tt FLUSH-FILE} \\
+12 & {\tt RENAME-FILE} \\
+13 & {\tt DELETE-FILE} \\ \bottomrule
 \end{tabular}
 \end{center}
 
@@ -156,16 +181,6 @@ File access methods are bit-masks, composed as follows:
 \end{center}
 
 To create a file, set both read and write bits to zero when calling {\tt OPEN-FILE}.
-
-Two calls are provided to access command-line arguments passed to C Beetle (excluding any that it interprets itself). They are copied from Gforth.
-
-\begin{center}
-\begin{tabular}{S[table-format=2.0]lll} \toprule
-\bf Number & \bf Forth word & \bf Stack effect & \bf Description \\ \midrule
-13 & {\tt ARGC} & \spic{-- u} & the number of arguments \\
-14 & {\tt ARG} & \spic{u1 -- c-addr u2} & the \spic{u1}th argument \\ \bottomrule
-\end{tabular}
-\end{center}
 
 
 \subsection{Using the interface calls}
