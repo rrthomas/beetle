@@ -25,7 +25,6 @@
 #include "beetle.h"
 #include "opcodes.h"
 #include "debug.h"
-#include "noecho.h"
 
 
 bool debug = false; // User interface debug control
@@ -634,7 +633,6 @@ static void do_command(int no)
         }
         break;
     case c_QUIT:
-        restore_keyb();
         exit(0);
     case c_REGISTERS:
         do_registers();
@@ -923,11 +921,7 @@ int main(int argc, char *argv[])
         if (ret != 0)
             die("could not read file %s", argv[1]);
 
-        init_keyb();
-        ret = run();
-        restore_keyb();
-
-        return ret;
+        return run();
     }
 
     printf("%s\n%s\n\n", BEETLE_VERSION_STRING, BEETLE_COPYRIGHT_STRING);
@@ -944,9 +938,7 @@ int main(int argc, char *argv[])
             }
             if ((nl = strrchr(input, '\n')))
                 *nl = '\0';
-            init_keyb();
             parse(input);
         }
-        restore_keyb();
     }
 }
