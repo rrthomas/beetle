@@ -29,22 +29,23 @@ verify(sizeof(int) <= sizeof(CELL));
 #define SET_NOT_ADDRESS(a)                      \
     M0[3] = NOT_ADDRESS = (a);
 
-#define CHECK_ADDRESS(a, cond, label)           \
+#define CHECK_ADDRESS(a, cond, code, label)     \
     if (!(cond)) {                              \
         SET_NOT_ADDRESS(a);                     \
+        exception = code;                       \
         goto label;                             \
     }
-#define CHECK_ALIGNED(a)                        \
-    CHECK_ADDRESS(a, IS_ALIGNED(a), aliadr)
+#define CHECK_ALIGNED(a)                                \
+    CHECK_ADDRESS(a, IS_ALIGNED(a), -23, badadr)
 
-#define CHECK_MAIN_MEMORY_ALIGNED(a)            \
-    CHECK_ADDRESS(a, IN_MAIN_MEMORY(a), invadr) \
+#define CHECK_MAIN_MEMORY_ALIGNED(a)                    \
+    CHECK_ADDRESS(a, IN_MAIN_MEMORY(a), -9, badadr)     \
     CHECK_ALIGNED(a)
-#define CHECKP(p)                               \
+#define CHECKP(p)                                       \
     CHECK_MAIN_MEMORY_ALIGNED((BYTE *)(p) - (BYTE *)M0)
 
-#define CHECK_NATIVE_ADDRESS(a, ptr)            \
-    CHECK_ADDRESS(a, ptr = native_address(a), invadr)
+#define CHECK_NATIVE_ADDRESS(a, ptr)                            \
+    CHECK_ADDRESS(a, ptr = native_address(a), -9, badadr)
 #define CHECK_NATIVE_ADDRESS_ALIGNED(a, ptr)    \
     CHECK_NATIVE_ADDRESS(a, ptr)                \
     CHECK_ALIGNED(a)
@@ -68,6 +69,8 @@ verify(sizeof(int) <= sizeof(CELL));
 /* Copy a string from Beetle to C */
 static char *getstr(UCELL adr, UCELL len)
 {
+    int exception = 0; // FIXME: use this!
+
     char *s = calloc(1, len + 1);
     if (!s)
         return NULL;
@@ -78,7 +81,7 @@ static char *getstr(UCELL adr, UCELL len)
     }
     return s;
 
- invadr:
+ badadr:
     return NULL;
 }
 
@@ -134,6 +137,7 @@ bool register_args(int argc, char *argv[])
 /* Perform one pass of the execution cycle. */
 CELL single_step(void)
 {
+    int exception = 0;
     CELL temp;
     BYTE *ptr;
 
@@ -647,6 +651,7 @@ CELL single_step(void)
             return -259;
         EP = (CELL *)((UCELL)*THROW + (BYTE *)M0);
         NEXTC;
+        exception = 0; // Any exception has now been dealt with
         break;
     case O_HALT:
         CHECKP(SP);
@@ -845,19 +850,14 @@ CELL single_step(void)
         *--SP = -256;
         goto throw;
     }
-    return -260; /* terminated OK */
+    if (exception == 0)
+        return -260; /* terminated OK */
 
     /* Deal with address exceptions during execution cycle. */
- invadr:
+ badadr:
     SP--;
     if ((UCELL)(SP - M0) * CELL_W >= MEMORY || (size_t)SP & (CELL_W - 1))
       return -258;
-    *SP = -9;
-    goto throw;
- aliadr:
-    SP--;
-    if ((UCELL)(SP - M0) * CELL_W >= MEMORY || (size_t)SP & (CELL_W - 1))
-      return -258;
-    *SP = -23;
+    *SP = exception;
     goto throw;
 }
