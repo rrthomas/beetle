@@ -75,7 +75,8 @@ _GL_ATTRIBUTE_PURE uint8_t *himem_addr(UCELL addr)
             return himem_area[i] + (addr - start);
         start += himem_size[i];
     }
-    return NULL; // Should never reach here
+    // We must have tried to address a gap skipped by himem_align
+    return NULL;
 }
 
 UCELL himem_allot(void *p, size_t n)
