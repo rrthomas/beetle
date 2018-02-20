@@ -67,22 +67,22 @@ verify(sizeof(int) <= sizeof(CELL));
 #define MAX_LIB_ROUTINE 13
 
 /* Copy a string from Beetle to C */
-static char *getstr(UCELL adr, UCELL len)
+static int getstr(UCELL adr, UCELL len, char **res)
 {
-    int exception = 0; // FIXME: use this!
+    int exception = 0;
 
-    char *s = calloc(1, len + 1);
-    if (!s)
-        return NULL;
-    for (size_t i = 0; i < len; i++, adr++) {
-        unsigned char *ptr;
-        CHECK_NATIVE_ADDRESS(adr, ptr);
-        s[i] = *(char *)ptr;
-    }
-    return s;
+    *res = calloc(1, len + 1);
+    if (*res == NULL)
+        exception = -261; // FIXME: Document this!
+    else
+        for (size_t i = 0; i < len; i++, adr++) {
+            unsigned char *ptr;
+            CHECK_NATIVE_ADDRESS(adr, ptr);
+            (*res)[i] = *(char *)ptr;
+        }
 
  badadr:
-    return NULL;
+    return exception;
 }
 
 /* Convert portable open(2) flags bits to system flags */
@@ -708,10 +708,11 @@ CELL single_step(void)
                     CHECKP(SP);
                     CHECKP(SP + 1);
                     CHECKP(SP + 2);
-                    char *file = getstr(*((UCELL *)SP + 2), *((UCELL *)SP + 1));
+                    char *file;
+                    int res = getstr(*((UCELL *)SP + 2), *((UCELL *)SP + 1), &file);
                     bool binary = false;
                     int perm = getflags(*(UCELL *)SP, &binary);
-                    int fd = file ? open(file, perm, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) : -1;
+                    int fd = res == 0 ? open(file, perm, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) : -1;
                     free(file);
                     *++SP = fd < 0 || (binary && set_binary_mode(fd, O_BINARY) < 0) ? -1 : 0;
                     *(SP + 1) = (CELL)fd;
@@ -802,13 +803,17 @@ CELL single_step(void)
                     CHECKP(SP + 2);
                     CHECKP(SP + 3);
 
-                    char *from = getstr(*((UCELL *)SP + 3), *((UCELL *)SP + 2));
-                    char *to = getstr(*((UCELL *)SP + 1), *(UCELL *)SP);
-                    int res = rename(from, to);
+                    char *from;
+                    int res = getstr(*((UCELL *)SP + 3), *((UCELL *)SP + 2), &from);
+                    char *to;
+                    if (res == 0)
+                        res = getstr(*((UCELL *)SP + 1), *(UCELL *)SP, &to);
+                    if (res == 0)
+                        res = rename(from, to);
                     free(from);
                     free(to);
 
-                    *(SP += 3) = res ? -1 : 0;
+                    *(SP += 3) = res == 0 ? -1 : 0;
                 }
                 break;
 
@@ -817,11 +822,13 @@ CELL single_step(void)
                     CHECKP(SP);
                     CHECKP(SP + 1);
 
-                    char *file = getstr(*((UCELL *)SP + 1), *(UCELL *)SP);
-                    int res = remove(file);
+                    char *file;
+                    int res = getstr(*((UCELL *)SP + 1), *(UCELL *)SP, &file);
+                    if (res == 0)
+                        res = remove(file);
                     free(file);
 
-                    *++SP = res ? -1 : 0;
+                    *++SP = res == 0 ? -1 : 0;
                 }
                 break;
 
