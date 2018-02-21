@@ -85,3 +85,4 @@
 /getdtablesize.m4
 /fdatasync.m4
 /fsync.m4
+/minmax.m4

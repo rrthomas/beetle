@@ -15,6 +15,7 @@
 #include "beetle.h"	/* main header */
 
 
+/* FIXME: Use this for file reading/writing */
 static void reverse(CELL *start, UCELL length)
 {
     UCELL i;

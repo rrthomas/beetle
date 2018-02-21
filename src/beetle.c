@@ -578,6 +578,7 @@ static void do_command(int no)
             }
             if (debug)
                 printf("Perform NEXT\n");
+            A = *EP++;
             NEXT;
         }
         break;

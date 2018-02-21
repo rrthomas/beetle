@@ -105,3 +105,87 @@ UCELL himem_align(void)
 
     return _himem_here = (_himem_here + max_alignment - 1) & (-max_alignment);
 }
+
+
+/* General memory access */
+
+#define SET_NOT_ADDRESS(a)                      \
+    M0[3] = NOT_ADDRESS = (a);
+
+int beetle_load_cell(UCELL addr, CELL *val)
+{
+    if (!IS_ALIGNED(addr)) {
+        SET_NOT_ADDRESS(addr);
+        return -23;
+    }
+
+    if (IN_MAIN_MEMORY(addr)) {
+        *val = M0[addr / CELL_W];
+        return 0;
+    }
+
+    *val = 0;
+    for (unsigned i = 0; i < sizeof(CELL); i++, addr++) {
+        uint8_t *ptr = himem_addr(addr);
+        if (ptr == NULL) {
+            SET_NOT_ADDRESS(addr);
+            return -9;
+        }
+        ((BYTE *)val)[ENDISM ? CELL_W - i : i] = *ptr;
+    }
+    return 0;
+}
+
+int beetle_load_byte(UCELL addr, BYTE *value)
+{
+    if (IN_MAIN_MEMORY(addr)) {
+        *value = ((BYTE *)M0)[FLIP(addr)];
+        return 0;
+    }
+
+    uint8_t *ptr = himem_addr(FLIP(addr));
+    if (ptr == NULL)
+        return -9;
+    *value = *ptr;
+    return 0;
+}
+
+int beetle_store_cell(UCELL addr, CELL value)
+{
+    if (!IS_ALIGNED(addr)) {
+        SET_NOT_ADDRESS(addr);
+        return -23;
+    }
+
+    if (IN_MAIN_MEMORY(addr)) {
+        M0[addr / CELL_W] = value;
+        return 0;
+    }
+
+    for (unsigned i = 0; i < sizeof(CELL); i++, addr++) {
+        uint8_t *ptr = himem_addr(addr);
+        if (ptr == NULL) {
+            SET_NOT_ADDRESS(addr);
+            return -9;
+        }
+        *ptr = value >> ((ENDISM ? i : CELL_W - i) * CHAR_BIT);
+    }
+    return 0;
+}
+
+int beetle_store_byte(UCELL addr, BYTE value)
+{
+    if (IN_MAIN_MEMORY(addr)) {
+        ((BYTE *)M0)[FLIP(addr)] = value;
+        return 0;
+    }
+
+    uint8_t *ptr = himem_addr(FLIP(addr));
+    if (ptr == NULL)
+        return -9;
+    *ptr = value;
+    return 0;
+}
+
+/* bool beetle_memcpy_to(UCELL addr, uint8_t *ptr) */
+/* bool beetle_memcpy_from(uint8_t *ptr, UCELL addr) */

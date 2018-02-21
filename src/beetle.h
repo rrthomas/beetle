@@ -54,6 +54,15 @@ extern UCELL BAD;       /* 'BAD is not a valid C identifier */
 extern UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
 #define CHECKED 1       /* C Beetle makes address checking mandatory */
 
+/* Memory access */
+
+/* Return value is 0 if OK, or exception code for invalid or unaligned
+   address. */
+int beetle_load_cell(UCELL addr, CELL *value);
+int beetle_load_byte(UCELL addr, BYTE *value);
+int beetle_store_cell(UCELL addr, CELL value);
+int beetle_store_byte(UCELL addr, BYTE value);
+
 /* High memory */
 UCELL himem_here(void);
 uint8_t *himem_addr(UCELL addr);

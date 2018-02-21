@@ -16,6 +16,7 @@
 #include <sys/stat.h>
 #include <string.h>
 #include "binary-io.h"
+#include "minmax.h"
 
 #include "beetle.h"     /* main header */
 #include "opcodes.h"	/* opcode enumeration */
@@ -24,47 +25,57 @@
 /* Assumption for file functions */
 verify(sizeof(int) <= sizeof(CELL));
 
-/* Address checking */
+/* Memory access */
+#define _LOAD_CELL(a, temp)                                             \
+    ((exception = exception ? exception : beetle_load_cell((a), &temp)), temp)
+#define LOAD_CELL(a) _LOAD_CELL(a, temp)
+#define STORE_CELL(a, v)                                                \
+    (exception = exception ? exception : beetle_store_cell((a), (v)))
+#define LOAD_BYTE(a)                                                    \
+    ((exception = exception ? exception : beetle_load_byte((a), &byte)), byte)
+#define STORE_BYTE(a, v)                                                \
+    (exception = exception ? exception : beetle_store_byte((a), (v)))
+#define PUSH(v)                                 \
+    (STORE_CELL((--SP - M0) * CELL_W, (v)))
+#define POP                                     \
+    (LOAD_CELL((SP++ - M0) * CELL_W))
+#define PUSH_DOUBLE(ud)                         \
+    PUSH((UCELL)(ud & CELL_MASK));              \
+    PUSH((UCELL)((ud >> CELL_BIT) & CELL_MASK))
+#define POP_DOUBLE                              \
+    (SP += 2, (UCELL)LOAD_CELL((SP - M0 - 1) * CELL_W) |        \
+     ((DUCELL)(UCELL)_LOAD_CELL((SP - M0 - 2) * CELL_W, temp2) << CELL_BIT))
+#define PUSH_RETURN(v)                          \
+    (STORE_CELL((--RP - M0) * CELL_W, (v)))
+#define POP_RETURN                              \
+    (LOAD_CELL((RP++ - M0) * CELL_W))
 
-#define SET_NOT_ADDRESS(a)                      \
-    M0[3] = NOT_ADDRESS = (a);
+/* Address checking */
 
 #define CHECK_ADDRESS(a, cond, code, label)     \
     if (!(cond)) {                              \
-        SET_NOT_ADDRESS(a);                     \
+        M0[3] = NOT_ADDRESS = (a);              \
         exception = code;                       \
         goto label;                             \
     }
-#define CHECK_ALIGNED(a)                                \
-    CHECK_ADDRESS(a, IS_ALIGNED(a), -23, badadr)
 
 #define CHECK_MAIN_MEMORY_ALIGNED(a)                    \
     CHECK_ADDRESS(a, IN_MAIN_MEMORY(a), -9, badadr)     \
-    CHECK_ALIGNED(a)
-#define CHECKP(p)                                       \
-    CHECK_MAIN_MEMORY_ALIGNED((BYTE *)(p) - (BYTE *)M0)
+    CHECK_ADDRESS(a, IS_ALIGNED(a), -23, badadr)
 
-#define CHECK_NATIVE_ADDRESS(a, ptr)                            \
-    CHECK_ADDRESS(a, ptr = native_address(a), -9, badadr)
-#define CHECK_NATIVE_ADDRESS_ALIGNED(a, ptr)    \
-    CHECK_NATIVE_ADDRESS(a, ptr)                \
-    CHECK_ALIGNED(a)
-
+// FIXME: Merge with beetle.h NEXT
 #define NEXTC                                   \
-    CHECKP(EP);                                 \
+    CHECK_MAIN_MEMORY_ALIGNED((EP - M0) * CELL_W)       \
     NEXT
 
 #define DIVZERO(x)                              \
     if (x == 0) {                               \
-        CHECKP(SP - 1);                         \
-        *--SP = -10;                            \
+        PUSH(-10);                              \
         goto throw;                             \
     }
 
 
 /* LIB support */
-
-#define MAX_LIB_ROUTINE 13
 
 /* Copy a string from Beetle to C */
 static int getstr(UCELL adr, UCELL len, char **res)
@@ -75,13 +86,10 @@ static int getstr(UCELL adr, UCELL len, char **res)
     if (*res == NULL)
         exception = -261; // FIXME: Document this!
     else
-        for (size_t i = 0; i < len; i++, adr++) {
-            unsigned char *ptr;
-            CHECK_NATIVE_ADDRESS(adr, ptr);
-            (*res)[i] = *(char *)ptr;
+        for (size_t i = 0; exception == 0 && i < len; i++, adr++) {
+            exception = beetle_load_byte(adr, (BYTE *)((*res) + i));
         }
 
- badadr:
     return exception;
 }
 
@@ -138,8 +146,8 @@ bool register_args(int argc, char *argv[])
 CELL single_step(void)
 {
     int exception = 0;
-    CELL temp;
-    BYTE *ptr;
+    CELL temp, temp2;
+    BYTE byte;
 
     I = (BYTE)A;
     ARSHIFT(A, 8);
@@ -149,498 +157,588 @@ CELL single_step(void)
         NEXTC;
         break;
     case O_DUP:
-        CHECKP(SP - 1);
-        CHECKP(SP);
-        SP--;
-        *SP = *(SP + 1);
+        {
+            CELL top = LOAD_CELL((SP - M0) * CELL_W);
+            PUSH(top);
+        }
         break;
     case O_DROP:
-        SP++;
+        (void)POP;
         break;
     case O_SWAP:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        temp = *SP;
-        *SP = *(SP + 1);
-        *(SP + 1) = temp;
+        {
+            CELL top = POP;
+            CELL next = POP;
+            PUSH(top);
+            PUSH(next);
+        }
         break;
     case O_OVER:
-        CHECKP(SP - 1);
-        CHECKP(SP + 1);
-        SP--;
-        *SP = *(SP + 2);
+        {
+            CELL next = LOAD_CELL((SP - M0 + 1) * CELL_W);
+            PUSH(next);
+        }
         break;
     case O_ROT:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        CHECKP(SP + 2);
-        temp = *(SP + 2);
-        *(SP + 2) = *(SP + 1);
-        *(SP + 1) = *SP;
-        *SP = temp;
+        {
+            CELL top = POP;
+            CELL next = POP;
+            CELL last = POP;
+            PUSH(next);
+            PUSH(top);
+            PUSH(last);
+        }
         break;
     case O_NROT:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        CHECKP(SP + 2);
-        temp = *SP;
-        *SP = *(SP + 1);
-        *(SP + 1) = *(SP + 2);
-        *(SP + 2) = temp;
+        {
+            CELL top = POP;
+            CELL next = POP;
+            CELL last = POP;
+            PUSH(top);
+            PUSH(last);
+            PUSH(next);
+        }
         break;
     case O_TUCK:
-        CHECKP(SP - 1);
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP--;
-        *SP = *(SP + 1);
-        *(SP + 1) = *(SP + 2);
-        *(SP + 2) = *SP;
+        {
+            CELL top = POP;
+            CELL next = POP;
+            PUSH(top);
+            PUSH(next);
+            PUSH(top);
+        }
         break;
     case O_NIP:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *SP = *(SP - 1);
+        {
+            CELL keep = POP;
+            (void)POP;
+            PUSH(keep);
+        }
         break;
     case O_PICK:
-        CHECKP(SP);
-        CHECKP(SP + *SP + 1);
-        *SP = *(SP + *SP + 1);
+        {
+            CELL depth = POP;
+            CELL pickee = LOAD_CELL((SP - M0 + depth) * CELL_W);
+            PUSH(pickee);
+        }
         break;
     case O_ROLL:
-        CHECKP(SP);
-        CHECKP(SP + *SP + 1);
-        temp = *(SP + *SP + 1);
-        for (int i = *SP; i > 0; i--)
-            *(SP + i + 1) = *(SP + i);
-        *++SP = temp;
+        {
+            CELL depth = POP;
+            CELL rollee = LOAD_CELL((SP - M0 + depth) * CELL_W);
+            for (int i = depth; i > 0; i--)
+                STORE_CELL((SP - M0 + i) * CELL_W,
+                           LOAD_CELL((SP - M0 + i - 1) * CELL_W));
+            STORE_CELL((SP - M0) * CELL_W, rollee);
+        }
         break;
     case O_QDUP:
-        CHECKP(SP - 1);
-        CHECKP(SP);
-        if (*SP != 0) {
-            SP--;
-            *SP = *(SP + 1);
+        {
+            CELL value = LOAD_CELL((SP - M0) * CELL_W);
+            if (value != 0)
+                PUSH(value);
         }
         break;
     case O_TOR:
-        CHECKP(RP - 1);
-        CHECKP(SP);
-        *--RP = *SP++;
+        {
+            CELL value = POP;
+            PUSH_RETURN(value);
+        }
         break;
     case O_RFROM:
-        CHECKP(SP - 1);
-        CHECKP(RP);
-        *--SP = *RP++;
+        {
+            CELL value = POP_RETURN;
+            PUSH(value);
+        }
         break;
     case O_RFETCH:
-        CHECKP(SP - 1);
-        CHECKP(RP);
-        *--SP = *RP;
+        {
+            CELL value = LOAD_CELL((RP - M0) * CELL_W);
+            PUSH(value);
+        }
         break;
     case O_LESS:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *SP = (*SP < *(SP - 1) ? B_TRUE : B_FALSE);
+        {
+            CELL a = POP;
+            CELL b = POP;
+            PUSH(b < a ? B_TRUE : B_FALSE);
+        }
         break;
     case O_GREATER:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *SP = (*SP > *(SP - 1) ? B_TRUE : B_FALSE);
+        {
+            CELL a = POP;
+            CELL b = POP;
+            PUSH(b > a ? B_TRUE : B_FALSE);
+        }
         break;
     case O_EQUAL:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *SP = (*SP == *(SP - 1) ? B_TRUE : B_FALSE);
+        {
+            CELL a = POP;
+            CELL b = POP;
+            PUSH(a == b ? B_TRUE : B_FALSE);
+        }
         break;
     case O_NEQUAL:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *SP = (*SP != *(SP - 1) ? B_TRUE : B_FALSE);
+        {
+            CELL a = POP;
+            CELL b = POP;
+            PUSH(a != b ? B_TRUE : B_FALSE);
+        }
         break;
     case O_LESS0:
-        CHECKP(SP);
-        *SP = (*SP < 0 ? B_TRUE : B_FALSE);
+        {
+            CELL a = POP;
+            PUSH(a < 0 ? B_TRUE : B_FALSE);
+        }
         break;
     case O_GREATER0:
-        CHECKP(SP);
-        *SP = (*SP > 0 ? B_TRUE : B_FALSE);
+        {
+            CELL a = POP;
+            PUSH(a > 0 ? B_TRUE : B_FALSE);
+        }
         break;
     case O_EQUAL0:
-        CHECKP(SP);
-        *SP = (*SP == 0 ? B_TRUE : B_FALSE);
+        {
+            CELL a = POP;
+            PUSH(a == 0 ? B_TRUE : B_FALSE);
+        }
         break;
     case O_NEQUAL0:
-        CHECKP(SP);
-        *SP = (*SP != 0 ? B_TRUE : B_FALSE);
+        {
+            CELL a = POP;
+            PUSH(a != 0 ? B_TRUE : B_FALSE);
+        }
         break;
     case O_ULESS:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *SP = ((UCELL)*SP < (UCELL)*(SP - 1) ? B_TRUE : B_FALSE);
+        {
+            UCELL a = POP;
+            UCELL b = POP;
+            PUSH(b < a ? B_TRUE : B_FALSE);
+        }
         break;
     case O_UGREATER:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *SP = ((UCELL)*SP > (UCELL)*(SP - 1) ? B_TRUE : B_FALSE);
+        {
+            UCELL a = POP;
+            UCELL b = POP;
+            PUSH(b > a ? B_TRUE : B_FALSE);
+        }
         break;
     case O_ZERO:
-        CHECKP(SP - 1);
-        *--SP = 0;
+        PUSH(0);
         break;
     case O_ONE:
-        CHECKP(SP - 1);
-        *--SP = 1;
+        PUSH(1);
         break;
     case O_MONE:
-        CHECKP(SP - 1);
-        *--SP = -1;
+        PUSH(-1);
         break;
     case O_CELL:
-        CHECKP(SP - 1);
-        *--SP = CELL_W;
+        PUSH(CELL_W);
         break;
     case O_MCELL:
-        CHECKP(SP - 1);
-        *--SP = -CELL_W;
+        PUSH(-CELL_W);
         break;
     case O_PLUS:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *(UCELL *)SP += (UCELL)*(SP - 1);
+        {
+            CELL a = POP;
+            CELL b = POP;
+            PUSH(b + a);
+        }
         break;
     case O_MINUS:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *(UCELL *)SP -= (UCELL)*(SP - 1);
+        {
+            CELL a = POP;
+            CELL b = POP;
+            PUSH(b - a);
+        }
         break;
     case O_SWAPMINUS:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *(UCELL *)SP = (UCELL)*(SP - 1) - (UCELL)*SP;
+        {
+            CELL a = POP;
+            CELL b = POP;
+            PUSH(a - b);
+        }
         break;
     case O_PLUS1:
-        CHECKP(SP);
-        *(UCELL *)SP += 1;
+        {
+            CELL a = POP;
+            PUSH(a + 1);
+        }
         break;
     case O_MINUS1:
-        CHECKP(SP);
-        *(UCELL *)SP -= 1;
+        {
+            CELL a = POP;
+            PUSH(a - 1);
+        }
         break;
     case O_PLUSCELL:
-        CHECKP(SP);
-        *(UCELL *)SP += CELL_W;
+        {
+            CELL a = POP;
+            PUSH(a + CELL_W);
+        }
         break;
     case O_MINUSCELL:
-        CHECKP(SP);
-        *(UCELL *)SP -= CELL_W;
+        {
+            CELL a = POP;
+            PUSH(a - CELL_W);
+        }
         break;
     case O_STAR:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *(UCELL *)SP *= (UCELL)*(SP - 1);
+        {
+            CELL multiplier = POP;
+            CELL multiplicand = POP;
+            PUSH(multiplier * multiplicand);
+        }
         break;
     case O_SLASH:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        DIVZERO(*SP);
-        SP++;
-        *SP = FDIV(*SP, *(SP - 1));
+        {
+            CELL divisor = POP;
+            CELL dividend = POP;
+            DIVZERO(divisor);
+            PUSH(FDIV(dividend, divisor));
+        }
         break;
     case O_MOD:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        DIVZERO(*SP);
-        SP++;
-        *SP = FMOD(*SP, *(SP - 1), temp);
+        {
+            CELL divisor = POP;
+            CELL dividend = POP;
+            DIVZERO(divisor);
+            PUSH(FMOD(dividend, divisor, temp));
+        }
         break;
     case O_SLASHMOD:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        DIVZERO(*SP);
-        temp = FMOD(*(SP + 1), *SP, temp);
-        *SP = FDIV(*(SP + 1), *SP);
-        *(SP + 1) = temp;
+        {
+            CELL divisor = POP;
+            CELL dividend = POP;
+            DIVZERO(divisor);
+            PUSH(FMOD(dividend, divisor, temp));
+            PUSH(FDIV(dividend, divisor));
+        }
         break;
     case O_USLASHMOD:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        DIVZERO(*SP);
-        temp = (UCELL)*(SP + 1) % (UCELL)*SP;
-        *SP = (UCELL)*(SP + 1) / (UCELL)*SP;
-        *(SP + 1) = (UCELL)temp;
+        {
+            UCELL divisor = POP;
+            UCELL dividend = POP;
+            DIVZERO(divisor);
+            PUSH(dividend % divisor);
+            PUSH(dividend / divisor);
+        }
         break;
     case O_SSLASHREM:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        DIVZERO(*SP);
-        temp = *(SP + 1) % *SP;
-        *SP = *(SP + 1) / *SP;
-        *(SP + 1) = temp;
+        {
+            CELL divisor = POP;
+            CELL dividend = POP;
+            DIVZERO(divisor);
+            PUSH(dividend % divisor);
+            PUSH(dividend / divisor);
+        }
         break;
     case O_SLASH2:
-        CHECKP(SP);
-        ARSHIFT(*SP, 1);
+        {
+            CELL a = POP;
+            PUSH(ARSHIFT(a, 1));
+        }
         break;
     case O_CELLS:
-        CHECKP(SP);
-        *(UCELL *)SP *= CELL_W;
+        {
+            CELL a = POP;
+            PUSH(a * CELL_W);
+        }
         break;
     case O_ABS:
-        CHECKP(SP);
-        if (*SP < 0)
-            *(UCELL *)SP = -(UCELL)*SP;
+        {
+            CELL a = POP;
+            PUSH(a < 0 ? -a : a);
+        }
         break;
     case O_NEGATE:
-        CHECKP(SP);
-        *(UCELL *)SP = -(UCELL)*SP;
+        {
+            CELL a = POP;
+            PUSH(-a);
+        }
         break;
     case O_MAX:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *SP = (*(SP - 1) > *SP ? *(SP - 1) : *SP);
+        {
+            CELL a = POP;
+            CELL b = POP;
+            PUSH(MAX(a, b));
+        }
         break;
     case O_MIN:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *SP = (*(SP - 1) < *SP ? *(SP - 1) : *SP);
+        {
+            CELL a = POP;
+            CELL b = POP;
+            PUSH(MIN(a, b));
+        }
         break;
     case O_INVERT:
-        CHECKP(SP);
-        *SP = ~*SP;
+        {
+            CELL a = POP;
+            PUSH(~a);
+        }
         break;
     case O_AND:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *SP &= *(SP - 1);
+        {
+            CELL a = POP;
+            CELL b = POP;
+            PUSH(a & b);
+        }
         break;
     case O_OR:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *SP |= *(SP - 1);
+        {
+            CELL a = POP;
+            CELL b = POP;
+            PUSH(a | b);
+        }
         break;
     case O_XOR:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *SP ^= *(SP - 1);
+        {
+            CELL a = POP;
+            CELL b = POP;
+            PUSH(a ^ b);
+        }
         break;
     case O_LSHIFT:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *(SP - 1) < (CELL)CELL_BIT ? (*SP <<= *(SP - 1)) : (*SP = 0);
+        {
+            CELL shift = POP;
+            CELL value = POP;
+            PUSH(shift < (CELL)CELL_BIT ? value << shift : 0);
+        }
         break;
     case O_RSHIFT:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        SP++;
-        *(SP - 1) < (CELL)CELL_BIT ? (*SP = (CELL)((UCELL)(*SP) >> *(SP - 1))) : (*SP = 0);
+        {
+            CELL shift = POP;
+            CELL value = POP;
+            PUSH(shift < (CELL)CELL_BIT ? (CELL)((UCELL)value >> shift) : 0);
+        }
         break;
     case O_LSHIFT1:
-        CHECKP(SP);
-        *SP <<= 1;
+        {
+            CELL value = POP;
+            PUSH(value << 1);
+        }
         break;
     case O_RSHIFT1:
-        CHECKP(SP);
-        *SP = (CELL)((UCELL)(*SP) >> 1);
+        {
+            CELL value = POP;
+            PUSH((CELL)((UCELL)(value) >> 1));
+        }
         break;
     case O_FETCH:
-        CHECKP(SP);
-        CHECK_NATIVE_ADDRESS_ALIGNED(*SP, ptr);
-        *SP = *(CELL *)ptr;
+        {
+            CELL addr = POP;
+            CELL value = LOAD_CELL(addr);
+            PUSH(value);
+        }
         break;
     case O_STORE:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        CHECK_NATIVE_ADDRESS_ALIGNED(*SP, ptr);
-        *(CELL *)ptr = *(SP + 1);
-        SP += 2;
+        {
+            CELL addr = POP;
+            CELL value = POP;
+            STORE_CELL(addr, value);
+        }
         break;
     case O_CFETCH:
-        CHECKP(SP);
-        CHECK_NATIVE_ADDRESS(*SP, ptr);
-        *SP = (CELL)*ptr;
+        {
+            CELL addr = POP;
+            BYTE value = LOAD_BYTE(addr);
+            PUSH((CELL)value);
+        }
         break;
     case O_CSTORE:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        CHECK_NATIVE_ADDRESS(*SP, ptr);
-        *ptr = (BYTE)*(SP + 1);
-        SP += 2;
+        {
+            CELL addr = POP;
+            BYTE value = (BYTE)POP;
+            STORE_BYTE(addr, value);
+        }
         break;
     case O_PSTORE:
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        CHECK_NATIVE_ADDRESS_ALIGNED(*SP, ptr);
-        *(CELL *)ptr += *(SP + 1);
-        SP += 2;
+        {
+            CELL addr = POP;
+            CELL increment = POP;
+            CELL value = LOAD_CELL(addr) + increment;
+            STORE_CELL(addr, value);
+        }
         break;
     case O_SPFETCH:
-        CHECKP(SP - 1);
-        SP--;
-        *SP = (CELL)(SP - M0 + 1) * CELL_W;
+        {
+            CELL value = (SP - M0) * CELL_W;
+            PUSH(value);
+        }
         break;
     case O_SPSTORE:
-        CHECKP(SP);
-        CHECK_MAIN_MEMORY_ALIGNED(*SP);
-        SP = *SP / CELL_W + M0;
+        {
+            CELL value = POP;
+            CHECK_MAIN_MEMORY_ALIGNED(value);
+            SP = value / CELL_W + M0;
+        }
         break;
     case O_RPFETCH:
-        CHECKP(SP - 1);
-        *--SP = (CELL)(RP - M0) * CELL_W;
+        {
+            CELL value = (RP - M0) * CELL_W;
+            PUSH(value);
+        }
         break;
     case O_RPSTORE:
-        CHECKP(SP);
-        CHECK_MAIN_MEMORY_ALIGNED(*SP);
-        RP = *SP++ / CELL_W + M0;
+        {
+            CELL value = POP;
+            CHECK_MAIN_MEMORY_ALIGNED(value);
+            RP = value / CELL_W + M0;
+        }
         break;
     case O_BRANCH:
-        CHECKP(EP);
-        EP = (CELL *)(*EP + (BYTE *)M0);
-        NEXTC;
+        {
+            CELL addr = LOAD_CELL((EP - M0) * CELL_W);
+            CHECK_MAIN_MEMORY_ALIGNED(addr);
+            EP = M0 + addr / CELL_W;
+            NEXTC;
+        }
         break;
     case O_BRANCHI:
         EP += A;
         NEXTC;
         break;
     case O_QBRANCH:
-        CHECKP(SP);
-        CHECKP(EP);
-        if (*SP++ == B_FALSE) {
-            EP = (CELL *)(*EP + (BYTE *)M0);
+        if (POP == B_FALSE) {
+            CELL addr = LOAD_CELL((EP - M0) * CELL_W);
+            CHECK_MAIN_MEMORY_ALIGNED(addr);
+            EP = M0 + addr / CELL_W;
             NEXTC;
         } else
             EP++;
         break;
     case O_QBRANCHI:
-        CHECKP(SP);
-        if (*SP++ == B_FALSE)
+        if (POP == B_FALSE)
             EP += A;
         NEXTC;
         break;
     case O_EXECUTE:
-        CHECKP(RP - 1);
-        CHECKP(SP);
-        *--RP = (CELL)(EP - M0) * CELL_W;
-        EP = (CELL *)(*SP++ + (BYTE *)M0);
-        NEXTC;
+        {
+            CELL addr = POP;
+            CHECK_MAIN_MEMORY_ALIGNED(addr);
+            PUSH_RETURN((EP - M0) * CELL_W);
+            EP = M0 + addr / CELL_W;
+            NEXTC;
+        }
         break;
     case O_FEXECUTE:
-        CHECKP(RP - 1);
-        CHECKP(SP);
-        CHECKP(*SP + (BYTE *)M0);
-        *--RP = (CELL)(EP - M0) * CELL_W;
-        EP = (CELL *)(*(CELL *)(*SP++ + (BYTE *)M0) + (BYTE *)M0);
-        NEXTC;
+        {
+            CELL addr = POP;
+            CHECK_MAIN_MEMORY_ALIGNED(addr);
+            PUSH_RETURN((EP - M0) * CELL_W);
+            addr = LOAD_CELL(addr);
+            CHECK_MAIN_MEMORY_ALIGNED(addr);
+            EP = M0 + addr / CELL_W;
+            NEXTC;
+        }
         break;
     case O_CALL:
-        CHECKP(RP - 1);
-        CHECKP(EP);
-        *--RP = (CELL)(EP - M0 + 1) * CELL_W;
-        EP = (CELL *)(*EP + (BYTE *)M0);
-        NEXTC;
+        {
+            PUSH_RETURN((EP - M0 + 1) * CELL_W);
+            CELL addr = LOAD_CELL((EP - M0) * CELL_W);
+            CHECK_MAIN_MEMORY_ALIGNED(addr);
+            EP = M0 + addr / CELL_W;
+            NEXTC;
+        }
         break;
     case O_CALLI:
-        CHECKP(RP - 1);
-        *--RP = (CELL)(EP - M0) * CELL_W;
+        PUSH_RETURN((EP - M0) * CELL_W);
         EP += A;
         NEXTC;
         break;
     case O_EXIT:
-        CHECKP(RP);
-        EP = (CELL *)(*RP++ + (BYTE *)M0);
-        NEXTC;
-        break;
-    case O_DO:
-        CHECKP(RP - 1);
-        CHECKP(RP - 2);
-        CHECKP(SP);
-        CHECKP(SP + 1);
-        *--RP = *(SP + 1);
-        *--RP = *SP++;
-        SP++;
-        break;
-    case O_LOOP:
-        CHECKP(RP);
-        CHECKP(RP + 1);
-        CHECKP(EP);
-        (*RP)++;
-        if (*RP == *(RP + 1)) {
-            RP += 2;
-            EP++;
-        } else {
-            EP = (CELL *)(*EP + (BYTE *)M0);
+        {
+            CELL addr = POP_RETURN;
+            CHECK_MAIN_MEMORY_ALIGNED(addr);
+            EP = M0 + addr / CELL_W;
             NEXTC;
         }
         break;
+    case O_DO:
+        {
+            CELL start = POP;
+            CELL limit = POP;
+            PUSH_RETURN(limit);
+            PUSH_RETURN(start);
+        }
+        break;
+    case O_LOOP:
+        {
+            CELL index = POP_RETURN;
+            CELL limit = LOAD_CELL((RP - M0) * CELL_W);
+            PUSH_RETURN(index + 1);
+            if (index + 1 == limit) {
+                (void)POP_RETURN;
+                (void)POP_RETURN;
+                EP++;
+            } else {
+                CELL addr = LOAD_CELL((EP - M0) * CELL_W);
+                CHECK_MAIN_MEMORY_ALIGNED(addr);
+                EP = M0 + addr / CELL_W;
+                NEXTC;
+            }
+        }
+        break;
     case O_LOOPI:
-        CHECKP(RP);
-        CHECKP(RP + 1);
-        (*RP)++;
-        if (*RP == *(RP + 1))
-            RP += 2;
-        else
-            EP += A;
-        NEXTC;
+        {
+            CELL index = POP_RETURN;
+            CELL limit = LOAD_CELL((RP - M0) * CELL_W);
+            PUSH_RETURN(index + 1);
+            if (index + 1 == limit) {
+                (void)POP_RETURN;
+                (void)POP_RETURN;
+            } else
+                EP += A;
+            NEXTC;
+        }
         break;
     case O_PLOOP:
-        CHECKP(RP);
-        CHECKP(RP + 1);
-        CHECKP(SP);
-        CHECKP(EP);
-        temp = *RP - *(RP + 1);
-        *RP += *SP++;
-        if (((*RP - *(RP + 1)) ^ temp) < 0) {
-            RP += 2;
-            EP++;
-        } else {
-            EP = (CELL *)(*EP + (BYTE *)M0);
-            NEXTC;
-        } break;
+        {
+            CELL index = POP_RETURN;
+            CELL limit = LOAD_CELL((RP - M0) * CELL_W);
+            CELL diff = index - limit;
+            CELL inc = POP;
+            PUSH_RETURN(index + inc);
+            if (((index + inc - limit) ^ diff) < 0) {
+                (void)POP_RETURN;
+                (void)POP_RETURN;
+                EP++;
+            } else {
+                CELL addr = LOAD_CELL((EP - M0) * CELL_W);
+                CHECK_MAIN_MEMORY_ALIGNED(addr);
+                EP = M0 + addr / CELL_W;
+                NEXTC;
+            }
+        }
+        break;
     case O_PLOOPI:
-        CHECKP(RP);
-        CHECKP(RP + 1);
-        CHECKP(SP);
-        temp = *RP - *(RP + 1);
-        *RP += *SP++;
-        if (((*RP - *(RP + 1)) ^ temp) < 0)
-            RP += 2;
-        else
-            EP += A;
-        NEXTC;
+        {
+            CELL index = POP_RETURN;
+            CELL limit = LOAD_CELL((RP - M0) * CELL_W);
+            CELL diff = index - limit;
+            CELL inc = POP;
+            PUSH_RETURN(index + inc);
+            if (((index + inc - limit) ^ diff) < 0) {
+                (void)POP_RETURN;
+                (void)POP_RETURN;
+            } else
+                EP += A;
+            NEXTC;
+        }
         break;
     case O_UNLOOP:
-        RP += 2;
+        (void)POP_RETURN;
+        (void)POP_RETURN;
         break;
     case O_J:
-        CHECKP(SP - 1);
-        CHECKP(RP + 2);
-        *--SP = *(RP + 2);
+        PUSH(LOAD_CELL((RP - M0 + 2) * CELL_W));
         break;
     case O_LITERAL:
-        CHECKP(SP - 1);
-        CHECKP(EP);
-        *--SP = *EP++;
+        PUSH(LOAD_CELL((EP - M0) * CELL_W));
+        EP++;
         break;
     case O_LITERALI:
-        CHECKP(SP - 1);
-        *--SP = A;
+        PUSH(A);
         NEXTC;
         break;
  throw:
@@ -654,197 +752,166 @@ CELL single_step(void)
         exception = 0; // Any exception has now been dealt with
         break;
     case O_HALT:
-        CHECKP(SP);
-        return (*SP++);
+        return POP;
     case O_EPFETCH:
-        CHECKP(SP - 1);
-        *--SP = (CELL)(EP - M0) * CELL_W;
+        PUSH((EP - M0) * CELL_W);
         break;
     case O_LIB:
-        CHECKP(SP);
-        if ((UCELL)(*SP) > MAX_LIB_ROUTINE) {
-            CHECKP(SP - 1);
-            *--SP = -257;
-            goto throw;
-        } else {
-            switch ((UCELL)*SP++) {
+        {
+            CELL routine = POP;
+            switch (routine) {
             case 0: /* ARGC ( -- u ) */
-                CHECKP(SP - 1);
-                *--SP = main_argc;
+                PUSH(main_argc);
                 break;
 
             case 1: /* ARG ( u1 -- c-addr u2 )*/
                 {
-                    CHECKP(SP);
-                    UCELL u = *(UCELL *)SP;
-                    CHECKP(SP - 1);
-                    if (u >= (UCELL)main_argc) {
-                        *SP = 0;
-                        *--SP = 0;
+                    UCELL narg = POP;
+                    if (narg >= (UCELL)main_argc) {
+                        PUSH(0);
+                        PUSH(0);
                     } else {
-                        *SP = main_argv[u];
-                        *--SP = main_argv_len[u];
+                        PUSH(main_argv[narg]);
+                        PUSH(main_argv_len[narg]);
                     }
                 }
                 break;
 
             case 2: /* STDIN */
-                CHECKP(SP - 1);
-                *--SP = (CELL)(STDIN_FILENO);
+                PUSH((CELL)(STDIN_FILENO));
                 break;
 
             case 3: /* STDOUT */
-                CHECKP(SP - 1);
-                *--SP = (CELL)(STDOUT_FILENO);
+                PUSH((CELL)(STDOUT_FILENO));
                 break;
 
             case 4: /* STDERR */
-                CHECKP(SP - 1);
-                *--SP = (CELL)(STDERR_FILENO);
+                PUSH((CELL)(STDERR_FILENO));
                 break;
 
             case 5: /* OPEN-FILE */
                 {
-                    CHECKP(SP);
-                    CHECKP(SP + 1);
-                    CHECKP(SP + 2);
-                    char *file;
-                    int res = getstr(*((UCELL *)SP + 2), *((UCELL *)SP + 1), &file);
                     bool binary = false;
-                    int perm = getflags(*(UCELL *)SP, &binary);
+                    int perm = getflags(POP, &binary);
+                    UCELL len = POP;
+                    UCELL str = POP;
+                    char *file;
+                    int res = getstr(str, len, &file);
                     int fd = res == 0 ? open(file, perm, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) : -1;
                     free(file);
-                    *++SP = fd < 0 || (binary && set_binary_mode(fd, O_BINARY) < 0) ? -1 : 0;
-                    *(SP + 1) = (CELL)fd;
+                    PUSH((CELL)fd);
+                    PUSH(fd < 0 || (binary && set_binary_mode(fd, O_BINARY) < 0) ? -1 : 0);
                 }
                 break;
 
             case 6: /* CLOSE-FILE */
                 {
-                    CHECKP(SP);
-                    int fd = *SP;
-                    *SP = close(fd);
+                    int fd = POP;
+                    PUSH((CELL)close(fd));
                 }
                 break;
 
             case 7: /* READ-FILE */
                 {
-                    CHECKP(SP);
-                    CHECKP(SP + 1);
-                    CHECKP(SP + 2);
-
-                    int fd = *SP;
+                    int fd = POP;
+                    UCELL nbytes = POP;
+                    UCELL buf = POP;
                     ssize_t res = 1;
                     UCELL i;
-                    for (i = 0; i < *((UCELL *)SP + 1); i++)
-                        if ((res = read(fd, (BYTE *)M0 + FLIP(*((UCELL *)SP + 2) + i), 1)) != 1)
+                    for (i = 0; i < nbytes; i++) {
+                        if ((res = read(fd, (BYTE *)M0 + FLIP(buf + i), 1)) != 1)
                             break;
-                    *++SP = res >= 0 ? 0 : -1;
-                    *((UCELL *)SP + 1) = i;
+
+                    }
+                    PUSH(i);
+                    PUSH(res >= 0 ? 0 : -1);
                 }
                 break;
 
             case 8: /* WRITE-FILE */
                 {
-                    CHECKP(SP);
-                    CHECKP(SP + 1);
-                    CHECKP(SP + 2);
-
-                    int fd = *SP;
+                    int fd = POP;
+                    UCELL nbytes = POP;
+                    UCELL buf = POP;
                     ssize_t res = 1;
-                    for (UCELL i = 0; i < *((UCELL *)SP + 1); i++)
-                        if ((res = write(fd, (BYTE *)M0 + FLIP(*((UCELL *)SP + 2) + i), 1)) != 1)
+                    for (UCELL i = 0; i < nbytes; i++)
+                        if ((res = write(fd, (BYTE *)M0 + FLIP(buf + i), 1)) != 1)
                             break;
-                    *(SP += 2) = res >= 0 ? 0 : -1;
+                    PUSH(res >= 0 ? 0 : -1);
                 }
                 break;
 
             case 9: /* FILE-POSITION */
                 {
-                    CHECKP(SP);
-                    CHECKP(SP - 1);
-                    CHECKP(SP - 2);
-
-                    int fd = *SP;
+                    int fd = POP;
                     off_t res = lseek(fd, 0, SEEK_CUR);
-                    DUCELL ud = res;
-                    *((UCELL *)SP--) = (UCELL)(ud & CELL_MASK);
-                    *((UCELL *)SP--) = (UCELL)((ud >> CELL_BIT) & CELL_MASK);
-                    *SP = res >= 0 ? 0 : -1;
+                    PUSH_DOUBLE((DUCELL)res);
+                    PUSH(res >= 0 ? 0 : -1);
                 }
                 break;
 
             case 10: /* REPOSITION-FILE */
                 {
-                    CHECKP(SP);
-                    CHECKP(SP + 1);
-                    CHECKP(SP + 2);
-
-                    int fd = *SP;
-                    DUCELL ud = *((UCELL *)SP + 2) | ((DUCELL)*((UCELL *)SP + 1) << CELL_BIT);
+                    int fd = POP;
+                    DUCELL ud = POP_DOUBLE;
                     off_t res = lseek(fd, (off_t)ud, SEEK_SET);
-                    *(SP += 2) = res >= 0 ? 0 : -1;
+                    PUSH(res >= 0 ? 0 : -1);
                 }
                 break;
 
             case 11: /* FLUSH-FILE */
                 {
-                    CHECKP(SP);
-                    int fd = *SP;
+                    int fd = POP;
                     int res = fdatasync(fd);
-                    *SP = res == 0 ? 0 : -1;
+                    PUSH(res);
                 }
                 break;
 
             case 12: /* RENAME-FILE */
                 {
-                    CHECKP(SP);
-                    CHECKP(SP + 1);
-                    CHECKP(SP + 2);
-                    CHECKP(SP + 3);
-
+                    UCELL len1 = POP;
+                    UCELL str1 = POP;
+                    UCELL len2 = POP;
+                    UCELL str2 = POP;
                     char *from;
-                    int res = getstr(*((UCELL *)SP + 3), *((UCELL *)SP + 2), &from);
+                    int res = getstr(str2, len2, &from);
                     char *to;
                     if (res == 0)
-                        res = getstr(*((UCELL *)SP + 1), *(UCELL *)SP, &to);
+                        res = getstr(str1, len1, &to);
                     if (res == 0)
                         res = rename(from, to);
                     free(from);
                     free(to);
 
-                    *(SP += 3) = res == 0 ? -1 : 0;
+                    PUSH(res);
                 }
                 break;
 
             case 13: /* DELETE-FILE */
                 {
-                    CHECKP(SP);
-                    CHECKP(SP + 1);
-
+                    UCELL len = POP;
+                    UCELL str = POP;
                     char *file;
-                    int res = getstr(*((UCELL *)SP + 1), *(UCELL *)SP, &file);
+                    int res = getstr(str, len, &file);
                     if (res == 0)
                         res = remove(file);
                     free(file);
 
-                    *++SP = res == 0 ? -1 : 0;
+                    PUSH(res);
                 }
                 break;
 
-            default: /* Can't happen */
-                break;
+            default: /* Unimplemented LIB call */
+                PUSH(-257);
+                goto throw;
             }
         }
         break;
     case O_LINK:
         {
             CELL_pointer address;
-            int i;
-            for (i = POINTER_W - 1; i >= 0; i--) {
-                CHECKP(SP);
-                address.cells[i] = *SP++;
-            }
+            for (int i = POINTER_W - 1; i >= 0; i--)
+                address.cells[i] = POP;
             address.pointer();
         }
         break;
@@ -853,8 +920,7 @@ CELL single_step(void)
     case O_STEP:
         break;
     default:
-        CHECKP(SP - 1);
-        *--SP = -256;
+        PUSH(-256);
         goto throw;
     }
     if (exception == 0)
