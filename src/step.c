@@ -50,24 +50,6 @@ verify(sizeof(int) <= sizeof(CELL));
 #define POP_RETURN                              \
     (LOAD_CELL((RP++ - M0) * CELL_W))
 
-/* Address checking */
-
-#define CHECK_ADDRESS(a, cond, code, label)     \
-    if (!(cond)) {                              \
-        M0[3] = NOT_ADDRESS = (a);              \
-        exception = code;                       \
-        goto label;                             \
-    }
-
-#define CHECK_MAIN_MEMORY_ALIGNED(a)                    \
-    CHECK_ADDRESS(a, IN_MAIN_MEMORY(a), -9, badadr)     \
-    CHECK_ADDRESS(a, IS_ALIGNED(a), -23, badadr)
-
-// FIXME: Merge with beetle.h NEXT
-#define NEXTC                                   \
-    CHECK_MAIN_MEMORY_ALIGNED((EP - M0) * CELL_W)       \
-    NEXT
-
 #define DIVZERO(x)                              \
     if (x == 0) {                               \
         PUSH(-10);                              \
@@ -816,15 +798,18 @@ CELL single_step(void)
                     int fd = POP;
                     UCELL nbytes = POP;
                     UCELL buf = POP;
-                    ssize_t res = 1;
-                    UCELL i;
-                    for (i = 0; i < nbytes; i++) {
-                        if ((res = read(fd, (BYTE *)M0 + FLIP(buf + i), 1)) != 1)
-                            break;
 
+                    ssize_t res = 0;
+                    if (exception == 0) {
+                        exception = beetle_pre_dma(buf, buf + nbytes);
+                        if (exception == 0) {
+                            res = read(fd, (BYTE *)M0 + buf, nbytes);
+                            exception = beetle_post_dma(buf, buf + nbytes);
+                        }
                     }
-                    PUSH(i);
-                    PUSH(res >= 0 ? 0 : -1);
+
+                    PUSH(res);
+                    PUSH((exception == 0 && res >= 0) ? 0 : -1);
                 }
                 break;
 
@@ -833,11 +818,17 @@ CELL single_step(void)
                     int fd = POP;
                     UCELL nbytes = POP;
                     UCELL buf = POP;
-                    ssize_t res = 1;
-                    for (UCELL i = 0; i < nbytes; i++)
-                        if ((res = write(fd, (BYTE *)M0 + FLIP(buf + i), 1)) != 1)
-                            break;
-                    PUSH(res >= 0 ? 0 : -1);
+
+                    ssize_t res = 0;
+                    if (exception == 0) {
+                        exception = beetle_pre_dma(buf, buf + nbytes);
+                        if (exception == 0) {
+                            res = write(fd, (BYTE *)M0 + buf, nbytes);
+                            exception = beetle_post_dma(buf, buf + nbytes);
+                        }
+                    }
+
+                    PUSH((exception == 0 && res >= 0) ? 0 : -1);
                 }
                 break;
 

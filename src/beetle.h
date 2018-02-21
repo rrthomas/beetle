@@ -63,6 +63,10 @@ int beetle_load_byte(UCELL addr, BYTE *value);
 int beetle_store_cell(UCELL addr, CELL value);
 int beetle_store_byte(UCELL addr, BYTE value);
 
+void beetle_reverse(CELL *start, UCELL length);
+int beetle_pre_dma(UCELL from, UCELL to);
+int beetle_post_dma(UCELL from, UCELL to);
+
 /* High memory */
 UCELL himem_here(void);
 uint8_t *himem_addr(UCELL addr);
@@ -90,8 +94,6 @@ typedef union {
     void (*pointer)(void);
 } CELL_pointer;
 
-#define NEXT A = *EP++
-
 /* Macro for byte addressing */
 #ifdef WORDS_BIGENDIAN
 #define FLIP(addr) ((addr) ^ (CELL_W - 1))
@@ -113,6 +115,25 @@ typedef union {
     (IN_MAIN_MEMORY(a) ?                        \
      FLIP(a) + (BYTE *)M0 :                     \
      himem_addr(FLIP(a)))
+
+/* Address checking */
+#define CHECK_ADDRESS(a, cond, code, label)     \
+    if (!(cond)) {                              \
+        M0[3] = NOT_ADDRESS = (a);              \
+        exception = code;                       \
+        goto label;                             \
+    }
+
+#define CHECK_MAIN_MEMORY_ALIGNED(a)                    \
+    CHECK_ADDRESS(a, IN_MAIN_MEMORY(a), -9, badadr)     \
+    CHECK_ADDRESS(a, IS_ALIGNED(a), -23, badadr)
+
+#define NEXT A = *EP++
+
+// FIXME: Merge with NEXT
+#define NEXTC                                   \
+    CHECK_MAIN_MEMORY_ALIGNED((EP - M0) * CELL_W)       \
+    NEXT
 
 /* Portable arithmetic right shift (the behaviour of >> on signed
    quantities is implementation-defined in C99). */

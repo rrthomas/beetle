@@ -187,5 +187,33 @@ int beetle_store_byte(UCELL addr, BYTE value)
     return 0;
 }
 
-/* bool beetle_memcpy_to(UCELL addr, uint8_t *ptr) */
-/* bool beetle_memcpy_from(uint8_t *ptr, UCELL addr) */
+
+void beetle_reverse(CELL *start, UCELL length)
+{
+    for (UCELL i = 0; i < length; i++)
+        start[i] = (CELL)(((UCELL) start[i] << 24) | ((UCELL)start[i] >> 24) |
+            (((UCELL)start[i] & 0xff00) << 8) |
+            (((UCELL)start[i] & 0xff0000) >> 8));
+}
+
+int beetle_pre_dma(UCELL from, UCELL to)
+{
+    int exception = 0;
+
+    from &= -CELL_W;
+    to = ALIGNED(to);
+    if (to < from)
+        exception = -262; // FIXME: Document this!
+    CHECK_MAIN_MEMORY_ALIGNED(from);
+    CHECK_MAIN_MEMORY_ALIGNED(to);
+    if (exception == 0 && ENDISM)
+        beetle_reverse(M0 + from / CELL_W, to - from);
+
+ badadr:
+    return exception;
+}
+
+int beetle_post_dma(UCELL from, UCELL to)
+{
+    return beetle_pre_dma(from, to);
+}
