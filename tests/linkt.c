@@ -18,15 +18,21 @@
 
 static void test(void)
 {
-    *--SP = 37;
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
+
+    PUSH(37);
 }
 
 int main(void)
 {
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
+
     CELL res;
 
     init_beetle((CELL *)malloc(16384), 4096, 16);
-    S0 = SP;	/* save base of stack */
+    S0 = M0 + SP / CELL_W;	/* save base of stack */
 
     here = EP;	/* start assembling at 16 */
     start_ass();
@@ -40,9 +46,9 @@ int main(void)
         exit(1);
     }
 
-    printf("Top of stack is %d; should be %d\n", *SP, 37);
+    printf("Top of stack is %d; should be %d\n", LOAD_CELL(SP), 37);
     show_data_stack();
-    if (*SP != 37) {
+    if (LOAD_CELL(SP) != 37) {
         printf("Error in LinkT: incorrect value on top of stack\n");
         exit(1);
     }

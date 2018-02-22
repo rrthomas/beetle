@@ -21,6 +21,9 @@
 
 int main(void)
 {
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
+
     /* Data for ARGC/ARG tests */
     int argc = 3;
     char *argv[] = {strdup("foo"), strdup("bard"), strdup("basilisk")};
@@ -40,16 +43,16 @@ int main(void)
 
     while (val_EP() < 28)
         single_step();
-    printf("argc is %"PRId32", and should be %d\n\n", *SP, argc);
-    if (*SP++ != argc) {
+    printf("argc is %"PRId32", and should be %d\n\n", LOAD_CELL(SP), argc);
+    if (POP != argc) {
        printf("Error in LibT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
 
     while (val_EP() < 36)
         single_step();
-    printf("arg 1's length is %"PRId32", and should be %zu\n", *SP, strlen(argv[1]));
-    if ((UCELL)*SP++ != strlen(argv[1])) {
+    printf("arg 1's length is %"PRId32", and should be %zu\n", LOAD_CELL(SP), strlen(argv[1]));
+    if ((UCELL)POP != strlen(argv[1])) {
         printf("Error in LibT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }

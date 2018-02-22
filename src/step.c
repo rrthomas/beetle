@@ -25,31 +25,6 @@
 /* Assumption for file functions */
 verify(sizeof(int) <= sizeof(CELL));
 
-/* Memory access */
-#define _LOAD_CELL(a, temp)                                             \
-    ((exception = exception ? exception : beetle_load_cell((a), &temp)), temp)
-#define LOAD_CELL(a) _LOAD_CELL(a, temp)
-#define STORE_CELL(a, v)                                                \
-    (exception = exception ? exception : beetle_store_cell((a), (v)))
-#define LOAD_BYTE(a)                                                    \
-    ((exception = exception ? exception : beetle_load_byte((a), &byte)), byte)
-#define STORE_BYTE(a, v)                                                \
-    (exception = exception ? exception : beetle_store_byte((a), (v)))
-#define PUSH(v)                                 \
-    (STORE_CELL((--SP - M0) * CELL_W, (v)))
-#define POP                                     \
-    (LOAD_CELL((SP++ - M0) * CELL_W))
-#define PUSH_DOUBLE(ud)                         \
-    PUSH((UCELL)(ud & CELL_MASK));              \
-    PUSH((UCELL)((ud >> CELL_BIT) & CELL_MASK))
-#define POP_DOUBLE                              \
-    (SP += 2, (UCELL)LOAD_CELL((SP - M0 - 1) * CELL_W) |        \
-     ((DUCELL)(UCELL)_LOAD_CELL((SP - M0 - 2) * CELL_W, temp2) << CELL_BIT))
-#define PUSH_RETURN(v)                          \
-    (STORE_CELL((--RP - M0) * CELL_W, (v)))
-#define POP_RETURN                              \
-    (LOAD_CELL((RP++ - M0) * CELL_W))
-
 #define DIVZERO(x)                              \
     if (x == 0) {                               \
         PUSH(-10);                              \
@@ -140,7 +115,7 @@ CELL single_step(void)
         break;
     case O_DUP:
         {
-            CELL top = LOAD_CELL((SP - M0) * CELL_W);
+            CELL top = LOAD_CELL(SP);
             PUSH(top);
         }
         break;
@@ -157,7 +132,7 @@ CELL single_step(void)
         break;
     case O_OVER:
         {
-            CELL next = LOAD_CELL((SP - M0 + 1) * CELL_W);
+            CELL next = LOAD_CELL(SP + CELL_W);
             PUSH(next);
         }
         break;
@@ -200,23 +175,23 @@ CELL single_step(void)
     case O_PICK:
         {
             CELL depth = POP;
-            CELL pickee = LOAD_CELL((SP - M0 + depth) * CELL_W);
+            CELL pickee = LOAD_CELL(SP + depth * CELL_W);
             PUSH(pickee);
         }
         break;
     case O_ROLL:
         {
             CELL depth = POP;
-            CELL rollee = LOAD_CELL((SP - M0 + depth) * CELL_W);
+            CELL rollee = LOAD_CELL(SP + depth * CELL_W);
             for (int i = depth; i > 0; i--)
-                STORE_CELL((SP - M0 + i) * CELL_W,
-                           LOAD_CELL((SP - M0 + i - 1) * CELL_W));
-            STORE_CELL((SP - M0) * CELL_W, rollee);
+                STORE_CELL(SP + i * CELL_W,
+                           LOAD_CELL(SP + (i - 1) * CELL_W));
+            STORE_CELL(SP, rollee);
         }
         break;
     case O_QDUP:
         {
-            CELL value = LOAD_CELL((SP - M0) * CELL_W);
+            CELL value = LOAD_CELL(SP);
             if (value != 0)
                 PUSH(value);
         }
@@ -544,7 +519,7 @@ CELL single_step(void)
         break;
     case O_SPFETCH:
         {
-            CELL value = (SP - M0) * CELL_W;
+            CELL value = SP;
             PUSH(value);
         }
         break;
@@ -552,7 +527,7 @@ CELL single_step(void)
         {
             CELL value = POP;
             CHECK_MAIN_MEMORY_ALIGNED(value);
-            SP = value / CELL_W + M0;
+            SP = value;
         }
         break;
     case O_RPFETCH:
@@ -919,9 +894,9 @@ CELL single_step(void)
 
     /* Deal with address exceptions during execution cycle. */
  badadr:
-    SP--;
-    if ((UCELL)(SP - M0) * CELL_W >= MEMORY || (size_t)SP & (CELL_W - 1))
+    SP -= CELL_W;
+    if (!IN_MAIN_MEMORY(SP) || !IS_ALIGNED(SP))
       return -258;
-    *SP = exception;
+    M0[SP / CELL_W] = exception; // FIXME
     goto throw;
 }

@@ -23,11 +23,13 @@ const char *correct[] = { "0 1 2", "3 2 1 0", "1", "1 2 3 4", "1 1" };
 
 int main(void)
 {
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
     int i;
 
     init_beetle((CELL *)malloc(1024), 256, 16);
     here = EP;
-    S0 = SP;	/* save base of stack */
+    S0 = M0 + SP / CELL_W;	/* save base of stack */
 
     start_ass();
     ass(O_LITERALI); ilit(3);
@@ -54,7 +56,7 @@ int main(void)
         printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
-    SP = S0;
+    SP = (S0 - M0) * CELL_W;
 
     while (val_EP() < 48) single_step();
     show_data_stack();
@@ -63,7 +65,7 @@ int main(void)
         printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
-    SP = S0;
+    SP = (S0 - M0) * CELL_W;
 
     while (val_EP() < 56) single_step();
     show_data_stack();
@@ -72,7 +74,7 @@ int main(void)
         printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
-    SP = S0;
+    SP = (S0 - M0) * CELL_W;
 
     for (i = 0; i < 12; i++) single_step();
     show_data_stack();
@@ -81,12 +83,12 @@ int main(void)
         printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
-    SP = S0;
+    SP = (S0 - M0) * CELL_W;
 
     EP = (CELL *)(64 + (BYTE *)M0);  NEXT;	/* start execution at 64 */
     while ((EP - M0) * CELL_W < 76) single_step();
-    printf("3rd item on return stack is %"PRId32" (should be %"PRId32").\n", *(RP + 2), *SP);
-    if (*(RP + 2) != *SP) {
+    printf("3rd item on return stack is %"PRId32" (should be %"PRId32").\n", *(RP + 2), LOAD_CELL(SP));
+    if (*(RP + 2) != LOAD_CELL(SP)) {
         printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }

@@ -26,13 +26,16 @@ const char *correct[] = {
 
 int main(void)
 {
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
+
     int i, first;
 
     init_beetle((CELL *)malloc(1024), 256, 16);
     here = EP;
-    S0 = SP;	/* save base of stack */
+    S0 = M0 + SP / CELL_W;	/* save base of stack */
 
-    *--SP = 1; *--SP = 2; *--SP = 3;	/* initialise the stack */
+    PUSH(1); PUSH(2); PUSH(3);	/* initialise the stack */
 
     start_ass();
     ass(O_DUP); ass(O_DROP); ass(O_SWAP); ass(O_OVER);
@@ -55,8 +58,8 @@ int main(void)
         printf("I = %s\n", disass(I));
     }
 
-    SP = S0;	/* reset stack */
-    *--SP = 2; *--SP = 1; *--SP = 0;	/* initialise the stack */
+    SP = (S0 - M0) * CELL_W;	/* reset stack */
+    PUSH(2); PUSH(1); PUSH(0);	/* initialise the stack */
     printf("Next stack is wrong!\n");
 
     first = i;

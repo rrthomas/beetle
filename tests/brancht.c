@@ -30,7 +30,7 @@ int main(void)
 
     size_t size = 4096;
     init_beetle((CELL *)calloc(size, sizeof(CELL)), size, 16);
-    S0 = SP;	/* save base of stack */
+    S0 = M0 + SP / CELL_W;	/* save base of stack */
 
     here = EP;	/* start assembling at 16 */
     start_ass();

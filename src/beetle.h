@@ -48,7 +48,8 @@ extern BYTE I;
 extern CELL A;
 extern CELL *M0;
 extern UCELL MEMORY;
-extern CELL *SP, *RP;	/* note RP and SP are pointers, not Beetle addresses */
+extern UCELL SP;
+extern CELL *RP;
 extern CELL *THROW;     /* 'THROW is not a valid C identifier */
 extern UCELL BAD;       /* 'BAD is not a valid C identifier */
 extern UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
@@ -66,6 +67,31 @@ int beetle_store_byte(UCELL addr, BYTE value);
 void beetle_reverse(CELL *start, UCELL length);
 int beetle_pre_dma(UCELL from, UCELL to);
 int beetle_post_dma(UCELL from, UCELL to);
+
+/* Memory access */
+#define _LOAD_CELL(a, temp)                                             \
+    ((exception = exception ? exception : beetle_load_cell((a), &temp)), temp)
+#define LOAD_CELL(a) _LOAD_CELL(a, temp)
+#define STORE_CELL(a, v)                                                \
+    (exception = exception ? exception : beetle_store_cell((a), (v)))
+#define LOAD_BYTE(a)                                                    \
+    ((exception = exception ? exception : beetle_load_byte((a), &byte)), byte)
+#define STORE_BYTE(a, v)                                                \
+    (exception = exception ? exception : beetle_store_byte((a), (v)))
+#define PUSH(v)                                 \
+    (SP -= CELL_W, STORE_CELL(SP, (v)))
+#define POP                                     \
+    (SP += CELL_W, LOAD_CELL(SP - CELL_W))
+#define PUSH_DOUBLE(ud)                         \
+    PUSH((UCELL)(ud & CELL_MASK));              \
+    PUSH((UCELL)((ud >> CELL_BIT) & CELL_MASK))
+#define POP_DOUBLE                              \
+    (SP += CELL_W * 2, (UCELL)LOAD_CELL(SP - CELL_W) |        \
+     ((DUCELL)(UCELL)_LOAD_CELL(SP - 2 * CELL_W, temp2) << CELL_BIT))
+#define PUSH_RETURN(v)                          \
+    (STORE_CELL((--RP - M0) * CELL_W, (v)))
+#define POP_RETURN                              \
+    (LOAD_CELL((RP++ - M0) * CELL_W))
 
 /* High memory */
 UCELL himem_here(void);

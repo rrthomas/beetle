@@ -25,7 +25,7 @@ UCELL address[] = { -4, 16384, 0, 0, 5, 1, 0, 16384, -4, 1, 0, 0, -4, -4 };
 int main(void)
 {
     init_beetle((CELL *)malloc(16384), 4096, 16);
-    S0 = SP;	/* save base of stack */
+    S0 = M0 + SP / CELL_W;	/* save base of stack */
 
     here = EP;	/* start assembling at 16 */
     start_ass();
@@ -61,7 +61,7 @@ int main(void)
 
     UCELL error = 0;
     for (size_t i = 0; i < sizeof(test) / sizeof(test[0]); i++) {
-        SP = S0;    /* reset stack pointer */
+        SP = (S0 - M0) * CELL_W;    /* reset stack pointer */
 
         EP = (CELL *)((BYTE *)M0 + test[i]);
         NEXT;   /* load first instruction word */

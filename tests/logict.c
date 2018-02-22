@@ -28,13 +28,15 @@ const char *correct[] = {
 
 int main(void)
 {
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
     int i;
 
     init_beetle((CELL *)malloc(1024), 256, 16);
     here = EP;
-    S0 = SP;	/* save base of stack */
+    S0 = M0 + SP / CELL_W;	/* save base of stack */
 
-    *--SP = 0xFF000000; *--SP = 8; *--SP = 0xFF; *--SP = 8;
+    PUSH(0xFF000000); PUSH(8); PUSH(0xFF); PUSH(8);
 
     start_ass();
     ass(O_LSHIFT); ass(O_NROT); ass(O_RSHIFT); ass(O_OR);

@@ -126,11 +126,11 @@ char *val_data_stack(void)
     free(picture);
     picture = xasprintf("%s", "");
 
-    for (CELL *i = S0 - 1; i >= SP; i--) {
+    for (CELL *i = S0 - 1; i >= M0 + SP / CELL_W; i--) {
         char *ptr = xasprintf("%s%"PRId32, picture, *i);
         free(picture);
         picture = ptr;
-        if (i != SP) {
+        if (i != M0 + SP / CELL_W) {
             ptr = xasprintf("%s ", picture);
             free(picture);
             picture = ptr;
@@ -145,7 +145,7 @@ void show_data_stack(void)
     CELL *i;
 
     printf("Data stack: ");
-    for (i = S0 - 1; i >= SP; i--)
+    for (i = S0 - 1; i >= M0 + SP / CELL_W; i--)
         printf("%"PRId32" ", *i);
     putchar('\n');
 }
