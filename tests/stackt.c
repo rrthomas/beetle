@@ -33,7 +33,7 @@ int main(void)
 
     init_beetle((CELL *)malloc(1024), 256, 16);
     here = EP;
-    S0 = M0 + SP / CELL_W;	/* save base of stack */
+    S0 = SP;	/* save base of stack */
 
     PUSH(1); PUSH(2); PUSH(3);	/* initialise the stack */
 
@@ -58,7 +58,7 @@ int main(void)
         printf("I = %s\n", disass(I));
     }
 
-    SP = (S0 - M0) * CELL_W;	/* reset stack */
+    SP = S0;	/* reset stack */
     PUSH(2); PUSH(1); PUSH(0);	/* initialise the stack */
     printf("Next stack is wrong!\n");
 

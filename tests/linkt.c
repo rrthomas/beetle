@@ -32,7 +32,7 @@ int main(void)
     CELL res;
 
     init_beetle((CELL *)malloc(16384), 4096, 16);
-    S0 = M0 + SP / CELL_W;	/* save base of stack */
+    S0 = SP;	/* save base of stack */
 
     here = EP;	/* start assembling at 16 */
     start_ass();

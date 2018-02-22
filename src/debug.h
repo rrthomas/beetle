@@ -1,6 +1,6 @@
 /* DEBUG.H
 
-    (c) Reuben Thomas 1994-2016
+    (c) Reuben Thomas 1994-2018
 
     Header for debug.c.
 
@@ -19,8 +19,8 @@ extern int ibytes;  /* number of opcodes assembled in current instruction word
                        so far */
 extern CELL *current;	/* where the current instruction word will be stored */
 extern CELL *here;  /* where we assemble the next instruction word or literal */
-extern CELL *S0;    /* pointer to base of data stack */
-extern CELL *R0;    /* pointer to base of return stack */
+extern UCELL S0;    /* address of base of data stack */
+extern UCELL R0;    /* address of base of return stack */
 
 void ass(BYTE instr);	/* assemble an instruction */
 void lit(CELL literal);	/* assemble a cell literal */

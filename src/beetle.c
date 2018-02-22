@@ -300,7 +300,7 @@ static void do_ass(char *token)
             }
             if (debug)
                 printf("Assign R0 %lX\n", (unsigned long)value);
-            R0 = (CELL *)((BYTE *)M0 + value);
+            R0 = value;
             break;
         case r_SP:
             if (range(value, MEMORY + 1, "SP"))
@@ -322,7 +322,7 @@ static void do_ass(char *token)
             }
             if (debug)
                 printf("Assign S0 %lX\n", (unsigned long)value);
-            S0 = (CELL *)((BYTE *)M0 + value);
+            S0 = value;
             break;
         case r_THROW:
             if (range(value, MEMORY, "'THROW"))
@@ -395,15 +395,13 @@ static void do_display(const char *token, const char *format)
             display = xasprintf("RP = %"PRIX32"h (%"PRIu32")", RP, RP);
             break;
         case r_R0:
-            display = xasprintf("R0 = %"PRIX32"h (%"PRIu32")", (UCELL)(R0 - M0) * CELL_W,
-                    (UCELL)(R0 - M0) * CELL_W);
+            display = xasprintf("R0 = %"PRIX32"h (%"PRIu32")", R0, R0);
             break;
         case r_SP:
             display = xasprintf("SP = %"PRIX32"h (%"PRIu32")", SP, SP);
             break;
         case r_S0:
-            display = xasprintf("S0 = %"PRIX32"h (%"PRIu32")", (UCELL)(S0 - M0) * CELL_W,
-                    (UCELL)(S0 - M0) * CELL_W);
+            display = xasprintf("S0 = %"PRIX32"h (%"PRIu32")", S0, S0);
             break;
         case r_THROW:
             display = xasprintf("'THROW = %"PRIX32"h (%"PRIu32")", (UCELL)*THROW, (UCELL)*THROW);
@@ -528,10 +526,10 @@ static void do_command(int no)
         if (debug)
             printf("Display the data stack\n");
         if (!range(RP, MEMORY + 1, "SP") &&
-            !range((CELL)(S0 - M0) * CELL_W, MEMORY + 1, "S0")) {
-            if (SP == (S0 - M0) * CELL_W)
+            !range(S0, MEMORY + 1, "S0")) {
+            if (SP == S0)
                 printf("Data stack empty\n");
-            else if (SP > (S0 - M0) * CELL_W)
+            else if (SP > S0)
                 printf("Data stack underflow\n");
             else
                 show_data_stack();
@@ -594,8 +592,8 @@ static void do_command(int no)
             memset(M0, 0, memory_size);
             memset(count, 0, 256 * sizeof(long));
             init_beetle(M0, memory_size, 16);
-            S0 = M0 + SP / CELL_W;
-            R0 = M0 + RP / CELL_W;
+            S0 = SP;
+            R0 = RP;
             *THROW = 0;
             A = 0;
             if (no == c_LOAD)
@@ -657,13 +655,13 @@ static void do_command(int no)
             printf("Display the return stack\n");
         if (range(RP, MEMORY + 1, "RP"))
             return;
-        if (range((CELL)(R0 - M0) * CELL_W, MEMORY + 1, "R0"))
+        if (range(R0, MEMORY + 1, "R0"))
             return;
-        if (RP == (R0 - M0) * CELL_W) {
+        if (RP == R0) {
             printf("Return stack empty\n");
             return;
         }
-        if (RP > (R0 - M0) * CELL_W) {
+        if (RP > R0) {
             printf("Return stack underflow\n");
             return;
         }
@@ -911,8 +909,8 @@ int main(int argc, char *argv[])
         die("could not allocate %"PRIu32" cells of memory", memory_size);
 
     init_beetle(mem, memory_size, 16);
-    S0 = M0 + SP / CELL_W;
-    R0 = M0 + RP / CELL_W;
+    S0 = SP;
+    R0 = RP;
     *THROW = 0;
     A = 0;
 

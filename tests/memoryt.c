@@ -44,7 +44,7 @@ int main(void)
             himem_align();
     }
     here = EP;
-    S0 = M0 + SP / CELL_W;	/* save base of stack */
+    S0 = SP;	/* save base of stack */
 
     start_ass();
     ass(O_CELL); ass(O_FETCH); ass(O_MINUSCELL); ass(O_LITERAL); lit(513);

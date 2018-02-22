@@ -24,8 +24,8 @@ int ibytes; /* number of opcodes assembled in current instruction word so far */
 static CELL icell;  /* accumulator for instructions being assembled */
 CELL *current;	/* where the current instruction word will be stored */
 CELL *here; /* where we assemble the next instruction word or literal */
-CELL *S0;   /* pointer to base of data stack */
-CELL *R0;   /* pointer to base of return stack */
+UCELL S0;
+UCELL R0;
 
 
 void ass(BYTE instr)
@@ -121,20 +121,25 @@ _GL_ATTRIBUTE_PURE CELL val_EP(void)
 
 char *val_data_stack(void)
 {
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
+
     static char *picture = NULL;
 
     free(picture);
     picture = xasprintf("%s", "");
 
-    for (CELL *i = S0 - 1; i >= M0 + SP / CELL_W; i--) {
-        char *ptr = xasprintf("%s%"PRId32, picture, *i);
+    for (UCELL i = S0 - CELL_W; i >= SP; i -= CELL_W) {
+        char *ptr = xasprintf("%s%"PRId32, picture, LOAD_CELL(i));
         free(picture);
         picture = ptr;
-        if (i != M0 + SP / CELL_W) {
+        if (i != SP) {
             ptr = xasprintf("%s ", picture);
             free(picture);
             picture = ptr;
         }
+        if (i == 0)
+            break;
     }
 
     return picture;
@@ -142,20 +147,19 @@ char *val_data_stack(void)
 
 void show_data_stack(void)
 {
-    CELL *i;
-
-    printf("Data stack: ");
-    for (i = S0 - 1; i >= M0 + SP / CELL_W; i--)
-        printf("%"PRId32" ", *i);
-    putchar('\n');
+    printf("Data stack: %s\n", val_data_stack());
 }
 
 void show_return_stack(void)
 {
-    CELL *i;
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
 
     printf("Return stack: ");
-    for (i = R0 - 1; i >= M0 + RP / CELL_W; i--)
-        printf("%"PRIX32"h ", (UCELL)*i);
+    for (UCELL i = R0 - CELL_W; i >= RP; i -= CELL_W) {
+        printf("%"PRIX32"h ", (UCELL)LOAD_CELL(i));
+        if (i == 0)
+            break;
+    }
     putchar('\n');
 }

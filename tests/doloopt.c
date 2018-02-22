@@ -29,7 +29,7 @@ int main(void)
 
     init_beetle((CELL *)malloc(1024), 256, 16);
     here = EP;
-    S0 = M0 + SP / CELL_W;	/* save base of stack */
+    S0 = SP;	/* save base of stack */
 
     start_ass();
     ass(O_LITERALI); ilit(3);
@@ -56,7 +56,7 @@ int main(void)
         printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
-    SP = (S0 - M0) * CELL_W;
+    SP = S0;
 
     while (val_EP() < 48) single_step();
     show_data_stack();
@@ -65,7 +65,7 @@ int main(void)
         printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
-    SP = (S0 - M0) * CELL_W;
+    SP = S0;
 
     while (val_EP() < 56) single_step();
     show_data_stack();
@@ -74,7 +74,7 @@ int main(void)
         printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
-    SP = (S0 - M0) * CELL_W;
+    SP = S0;
 
     for (i = 0; i < 12; i++) single_step();
     show_data_stack();
@@ -83,7 +83,7 @@ int main(void)
         printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }
-    SP = (S0 - M0) * CELL_W;
+    SP = S0;
 
     EP = (CELL *)(64 + (BYTE *)M0);  NEXT;	/* start execution at 64 */
     while ((EP - M0) * CELL_W < 76) single_step();

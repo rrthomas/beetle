@@ -27,7 +27,7 @@ static void stack1(void)
 {
     int exception = 0; // FIXME
 
-    SP = (S0 - M0) * CELL_W;	/* empty the stack */
+    SP = S0;	/* empty the stack */
 
     PUSH(-4); PUSH(3);
     PUSH(2); PUSH(2);
@@ -39,7 +39,7 @@ static void stack2(void)
 {
     int exception = 0; // FIXME
 
-    SP = (S0 - M0) * CELL_W;	/* empty the stack */
+    SP = S0;	/* empty the stack */
 
     PUSH(1); PUSH(-1);
     PUSH(237); PUSH(237);
@@ -49,7 +49,7 @@ static void stack3(void)
 {
     int exception = 0; // FIXME
 
-    SP = (S0 - M0) * CELL_W;	/* empty the stack */
+    SP = S0;	/* empty the stack */
 
     PUSH(-1); PUSH(0); PUSH(237);
 }
@@ -83,7 +83,7 @@ int main(void)
 
     init_beetle((CELL *)malloc(1024), 256, 16);
     here = EP;
-    S0 = M0 + SP / CELL_W;	/* save base of stack */
+    S0 = SP;	/* save base of stack */
 
     start_ass();
     ass(O_LESS); ass(O_LESS); ass(O_LESS); ass(O_LESS);
@@ -109,7 +109,7 @@ int main(void)
     step(15, 17);   /* do the 0< tests */
     stack3();
     step(18, 21);   /* do the 0> tests */
-    SP = (S0 - M0) * CELL_W;  PUSH(237); PUSH(0);	/* set up the stack with two values */
+    SP = S0;  PUSH(237); PUSH(0);	/* set up the stack with two values */
     step(22, 24);   /* do the 0= tests */
     stack1();       /* set up the stack with four standard pairs to compare */
     step(25, 29);   /* do the U< tests */
