@@ -26,7 +26,7 @@ int main(void)
     CELL temp; // FIXME
 
     init_beetle((CELL *)calloc(1024, 1), 256, 16);
-    here = M0 + EP / CELL_W;
+    here = EP;
     S0 = SP;	/* save base of stack */
 
     start_ass();

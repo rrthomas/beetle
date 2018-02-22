@@ -32,7 +32,7 @@ int main(void)
     int i, first;
 
     init_beetle((CELL *)malloc(1024), 256, 16);
-    here = M0 + EP / CELL_W;
+    here = EP;
     S0 = SP;	/* save base of stack */
 
     PUSH(1); PUSH(2); PUSH(3);	/* initialise the stack */

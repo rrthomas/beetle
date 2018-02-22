@@ -46,7 +46,7 @@ int main(void)
         if (i == 2)
             himem_align();
     }
-    here = M0 + EP / CELL_W;
+    here = EP;
     S0 = SP;	/* save base of stack */
 
     start_ass();

@@ -30,7 +30,7 @@ int main(void)
     init_beetle((CELL *)malloc(16384), 4096, 16);
     S0 = SP;	/* save base of stack */
 
-    here = M0 + EP / CELL_W;	/* start assembling at 16 */
+    here = EP;	/* start assembling at 16 */
     start_ass();
     ass(O_ZERO); ass(O_SPSTORE); ass(O_DUP); ass(O_NEXT00); /* test 1 */
     ass(O_LITERALI); ilit(MEMORY);  /* test 2 */
@@ -55,7 +55,7 @@ int main(void)
     ass(O_THROW);
     end_ass();
 
-    here = (CELL *)((BYTE *)M0 + 100);	/* start assembling at 100 */
+    here = 100;	/* start assembling at 100 */
     start_ass();
     ass(O_HALT);
     end_ass();

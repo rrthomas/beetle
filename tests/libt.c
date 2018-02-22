@@ -30,7 +30,7 @@ int main(void)
 
     init_beetle((CELL *)malloc(4096), 1024, 16);
     assert(register_args(argc, argv));
-    here = M0 + EP / CELL_W;
+    here = EP;
 
     start_ass();
     ass(O_LITERALI); ilit(0);

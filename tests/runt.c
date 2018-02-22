@@ -30,7 +30,7 @@ int main(void)
         exit(1);
     }
 
-    here = M0 + 52 / CELL_W;
+    here = 52;
     start_ass();
     ass(O_LITERALI); ilit(37);
     ass(O_HALT);

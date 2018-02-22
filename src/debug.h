@@ -17,8 +17,8 @@
 extern int instrs;  /* number of instructions assembled */
 extern int ibytes;  /* number of opcodes assembled in current instruction word
                        so far */
-extern CELL *current;	/* where the current instruction word will be stored */
-extern CELL *here;  /* where we assemble the next instruction word or literal */
+extern UCELL current;	/* where the current instruction word will be stored */
+extern UCELL here;  /* where we assemble the next instruction word or literal */
 extern UCELL S0;    /* address of base of data stack */
 extern UCELL R0;    /* address of base of return stack */
 

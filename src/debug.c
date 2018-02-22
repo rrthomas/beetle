@@ -1,6 +1,6 @@
 /* DEBUG.C
 
-    (c) Reuben Thomas 1994-2016
+    (c) Reuben Thomas 1994-2018
 
     Functions useful for debugging Beetle.
 
@@ -22,32 +22,38 @@
 int instrs = 0; /* number of instructions assembled */
 int ibytes; /* number of opcodes assembled in current instruction word so far */
 static CELL icell;  /* accumulator for instructions being assembled */
-CELL *current;	/* where the current instruction word will be stored */
-CELL *here; /* where we assemble the next instruction word or literal */
+UCELL current;	/* where the current instruction word will be stored */
+UCELL here; /* where we assemble the next instruction word or literal */
 UCELL S0;
 UCELL R0;
 
 
 void ass(BYTE instr)
 {
+    int exception = 0; // FIXME
+
     icell |= instr << ibytes * 8;
     instrs++;  ibytes++;
-    if (ibytes == 4) {
-        *current = icell;  current = here++;
+    if (ibytes == CELL_W) {
+        STORE_CELL(current, icell);  current = here;  here += CELL_W;
         icell = 0;  ibytes = 0;  instrs++;
     }
 }
 
 void lit(CELL literal)
 {
-    if (ibytes == 0) { *--here = literal; here += 2; current++; }
-    else *here++ = literal;
+    int exception = 0; // FIXME
+
+    if (ibytes == 0) { here -= CELL_W;  STORE_CELL(here, literal);  here += CELL_W * 2; current += CELL_W; }
+    else { STORE_CELL(here, literal);  here += CELL_W; }
 }
 
 void ilit(CELL literal)
 {
+    int exception = 0; // FIXME
+
     icell |= literal << ibytes * 8;
-    *current = icell;  current = here++;
+    STORE_CELL(current, icell);  current = here;  here += CELL_W;
     icell = 0;  ibytes = 0;
 }
 
@@ -64,12 +70,14 @@ void plit(void (*literal)(void))
 
 void start_ass(void)
 {
-    ibytes = 0;  icell = 0;  current = here++;
+    ibytes = 0;  icell = 0;  current = here;  here += CELL_W;
 }
 
 void end_ass(void)
 {
-    if (ibytes != 0) *current = icell;
+    int exception = 0; // FIXME
+
+    if (ibytes != 0) STORE_CELL(current, icell);
     else instrs--;
 }
 
