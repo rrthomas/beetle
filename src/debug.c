@@ -155,7 +155,7 @@ void show_return_stack(void)
     CELL *i;
 
     printf("Return stack: ");
-    for (i = R0 - 1; i >= RP; i--)
+    for (i = R0 - 1; i >= M0 + RP / CELL_W; i--)
         printf("%"PRIX32"h ", (UCELL)*i);
     putchar('\n');
 }

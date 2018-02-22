@@ -87,8 +87,8 @@ int main(void)
 
     EP = (CELL *)(64 + (BYTE *)M0);  NEXT;	/* start execution at 64 */
     while ((EP - M0) * CELL_W < 76) single_step();
-    printf("3rd item on return stack is %"PRId32" (should be %"PRId32").\n", *(RP + 2), LOAD_CELL(SP));
-    if (*(RP + 2) != LOAD_CELL(SP)) {
+    printf("3rd item on return stack is %"PRId32" (should be %"PRId32").\n", LOAD_CELL(RP + 2 * CELL_W), LOAD_CELL(SP));
+    if (LOAD_CELL(RP + 2 * CELL_W) != LOAD_CELL(SP)) {
         printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
         exit(1);
     }

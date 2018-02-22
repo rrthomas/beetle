@@ -48,8 +48,7 @@ extern BYTE I;
 extern CELL A;
 extern CELL *M0;
 extern UCELL MEMORY;
-extern UCELL SP;
-extern CELL *RP;
+extern UCELL SP, RP;
 extern CELL *THROW;     /* 'THROW is not a valid C identifier */
 extern UCELL BAD;       /* 'BAD is not a valid C identifier */
 extern UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
@@ -89,9 +88,9 @@ int beetle_post_dma(UCELL from, UCELL to);
     (SP += CELL_W * 2, (UCELL)LOAD_CELL(SP - CELL_W) |        \
      ((DUCELL)(UCELL)_LOAD_CELL(SP - 2 * CELL_W, temp2) << CELL_BIT))
 #define PUSH_RETURN(v)                          \
-    (STORE_CELL((--RP - M0) * CELL_W, (v)))
+    (RP -= CELL_W, STORE_CELL(RP, (v)))
 #define POP_RETURN                              \
-    (LOAD_CELL((RP++ - M0) * CELL_W))
+    (RP += CELL_W, LOAD_CELL(RP - CELL_W))
 
 /* High memory */
 UCELL himem_here(void);

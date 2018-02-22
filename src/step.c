@@ -210,7 +210,7 @@ CELL single_step(void)
         break;
     case O_RFETCH:
         {
-            CELL value = LOAD_CELL((RP - M0) * CELL_W);
+            CELL value = LOAD_CELL(RP);
             PUSH(value);
         }
         break;
@@ -531,16 +531,13 @@ CELL single_step(void)
         }
         break;
     case O_RPFETCH:
-        {
-            CELL value = (RP - M0) * CELL_W;
-            PUSH(value);
-        }
+        PUSH(RP);
         break;
     case O_RPSTORE:
         {
             CELL value = POP;
             CHECK_MAIN_MEMORY_ALIGNED(value);
-            RP = value / CELL_W + M0;
+            RP = value;
         }
         break;
     case O_BRANCH:
@@ -622,7 +619,7 @@ CELL single_step(void)
     case O_LOOP:
         {
             CELL index = POP_RETURN;
-            CELL limit = LOAD_CELL((RP - M0) * CELL_W);
+            CELL limit = LOAD_CELL(RP);
             PUSH_RETURN(index + 1);
             if (index + 1 == limit) {
                 (void)POP_RETURN;
@@ -639,7 +636,7 @@ CELL single_step(void)
     case O_LOOPI:
         {
             CELL index = POP_RETURN;
-            CELL limit = LOAD_CELL((RP - M0) * CELL_W);
+            CELL limit = LOAD_CELL(RP);
             PUSH_RETURN(index + 1);
             if (index + 1 == limit) {
                 (void)POP_RETURN;
@@ -652,7 +649,7 @@ CELL single_step(void)
     case O_PLOOP:
         {
             CELL index = POP_RETURN;
-            CELL limit = LOAD_CELL((RP - M0) * CELL_W);
+            CELL limit = LOAD_CELL(RP);
             CELL diff = index - limit;
             CELL inc = POP;
             PUSH_RETURN(index + inc);
@@ -671,7 +668,7 @@ CELL single_step(void)
     case O_PLOOPI:
         {
             CELL index = POP_RETURN;
-            CELL limit = LOAD_CELL((RP - M0) * CELL_W);
+            CELL limit = LOAD_CELL(RP);
             CELL diff = index - limit;
             CELL inc = POP;
             PUSH_RETURN(index + inc);
@@ -688,7 +685,7 @@ CELL single_step(void)
         (void)POP_RETURN;
         break;
     case O_J:
-        PUSH(LOAD_CELL((RP - M0 + 2) * CELL_W));
+        PUSH(LOAD_CELL(RP + 2 * CELL_W));
         break;
     case O_LITERAL:
         PUSH(LOAD_CELL((EP - M0) * CELL_W));

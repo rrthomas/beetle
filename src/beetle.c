@@ -289,7 +289,7 @@ static void do_ass(char *token)
             }
             if (debug)
                 printf("Assign RP %lX\n", (unsigned long)value);
-            RP = (CELL *)((BYTE *)M0 + value);
+            RP = value;
             break;
         case r_R0:
             if (range(value, MEMORY + 1, "R0"))
@@ -392,15 +392,14 @@ static void do_display(const char *token, const char *format)
             display = xasprintf("MEMORY = %"PRIX32"h (%"PRIu32")", MEMORY, MEMORY);
             break;
         case r_RP:
-            display = xasprintf("RP = %"PRIX32"h (%"PRIu32")", (UCELL)(RP - M0) * CELL_W,
-                    (UCELL)(RP - M0) * CELL_W);
+            display = xasprintf("RP = %"PRIX32"h (%"PRIu32")", RP, RP);
             break;
         case r_R0:
             display = xasprintf("R0 = %"PRIX32"h (%"PRIu32")", (UCELL)(R0 - M0) * CELL_W,
                     (UCELL)(R0 - M0) * CELL_W);
             break;
         case r_SP:
-            display = xasprintf("SP = %"PRIX32"h (%"PRIu32")", (UCELL)SP, (UCELL)SP);
+            display = xasprintf("SP = %"PRIX32"h (%"PRIu32")", SP, SP);
             break;
         case r_S0:
             display = xasprintf("S0 = %"PRIX32"h (%"PRIu32")", (UCELL)(S0 - M0) * CELL_W,
@@ -471,11 +470,11 @@ static void do_command(int no)
                 printf("Push %ld on to the return stack\n", value);
             if (range(SP, MEMORY + 1, "RP"))
                 return;
-            if ((BYTE *)RP - MEMORY == 0) {
+            if (RP == 0) {
                 printf("RP is 0h: no more stack items can be pushed\n");
                 return;
             }
-            *--RP = value;
+            PUSH_RETURN(value);
         }
         break;
     case c_COUNTS:
@@ -515,18 +514,20 @@ static void do_command(int no)
         }
         break;
     case c_DFROM:
-        if (debug)
-            printf("Pop a number from the data stack and display it\n");
-        if (range(SP, MEMORY, "SP"))
-            return;
-        printf("%"PRIu32" (%"PRIX32"h)\n", (UCELL)SP, (UCELL)SP);
-        (void)POP;
+        {
+            if (debug)
+                printf("Pop a number from the data stack and display it\n");
+            if (range(SP, MEMORY, "SP"))
+                return;
+            CELL value = POP;
+            printf("%"PRId32" (%"PRIX32"h)\n", value, (UCELL)value);
+        }
         break;
     case c_DATA:
     case c_STACKS:
         if (debug)
             printf("Display the data stack\n");
-        if (!range((CELL)(RP - M0) * CELL_W, MEMORY + 1, "SP") &&
+        if (!range(RP, MEMORY + 1, "SP") &&
             !range((CELL)(S0 - M0) * CELL_W, MEMORY + 1, "S0")) {
             if (SP == (S0 - M0) * CELL_W)
                 printf("Data stack empty\n");
@@ -594,7 +595,7 @@ static void do_command(int no)
             memset(count, 0, 256 * sizeof(long));
             init_beetle(M0, memory_size, 16);
             S0 = M0 + SP / CELL_W;
-            R0 = RP;
+            R0 = M0 + RP / CELL_W;
             *THROW = 0;
             A = 0;
             if (no == c_LOAD)
@@ -642,25 +643,27 @@ static void do_command(int no)
         do_registers();
         break;
     case c_RFROM:
-        if (debug)
-            printf("Pop a number from the return stack and display it\n");
-        if (range((CELL)(RP - M0) * CELL_W, MEMORY, "RP")) return;
-        printf("%"PRIX32"h (%"PRIu32")\n", (UCELL)*RP, (UCELL)*RP);
-        RP++;
+        {
+            if (debug)
+                printf("Pop a number from the return stack and display it\n");
+            if (range(RP, MEMORY, "RP")) return;
+            CELL value = POP_RETURN;
+            printf("%"PRIX32"h (%"PRId32")\n", (UCELL)value, value);
+        }
         break;
     c_ret:
     case c_RETURN:
         if (debug)
             printf("Display the return stack\n");
-        if (range((CELL)(RP - M0) * CELL_W, MEMORY + 1, "RP"))
+        if (range(RP, MEMORY + 1, "RP"))
             return;
         if (range((CELL)(R0 - M0) * CELL_W, MEMORY + 1, "R0"))
             return;
-        if (RP == R0) {
+        if (RP == (R0 - M0) * CELL_W) {
             printf("Return stack empty\n");
             return;
         }
-        if (RP > R0) {
+        if (RP > (R0 - M0) * CELL_W) {
             printf("Return stack underflow\n");
             return;
         }
@@ -909,7 +912,7 @@ int main(int argc, char *argv[])
 
     init_beetle(mem, memory_size, 16);
     S0 = M0 + SP / CELL_W;
-    R0 = RP;
+    R0 = M0 + RP / CELL_W;
     *THROW = 0;
     A = 0;
 

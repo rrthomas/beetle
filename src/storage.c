@@ -21,8 +21,7 @@ BYTE I;
 CELL A;
 CELL *M0;
 UCELL MEMORY;
-UCELL SP;
-CELL *RP;
+UCELL SP, RP;
 CELL *THROW;	/* 'THROW is not a valid C identifier */
 UCELL BAD;	/* 'BAD is not a valid C identifier */
 UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
@@ -38,8 +37,8 @@ int init_beetle(CELL *c_array, size_t size, UCELL e0)
     M0 = c_array;
     EP = M0 + e0 / CELL_W;
     MEMORY = size * CELL_W;
-    SP = MEMORY - 256;
-    RP = M0 + size;
+    SP = MEMORY - 0x100;
+    RP = size * CELL_W;
     THROW = M0;
     BAD = 0xFFFFFFFF;
     NOT_ADDRESS = 0xFFFFFFFF;
