@@ -96,7 +96,7 @@ memory for Beetle, nor does it initialise any of the registers. C Beetle
 provides the interface call {\bf init\_beetle()} to do this (see
 section~\ref{usingcalls}).
 
-The variables {\tt I}, {\tt A}, {\tt MEMORY}, {\tt BAD} and {\tt ADDRESS}
+The variables {\tt EP}, {\tt I}, {\tt A}, {\tt MEMORY}, {\tt SP}, {\tt RP}, {\tt BAD} and {\tt ADDRESS}
 correspond exactly with the Beetle registers they represent, and may be read
 and assigned to accordingly, bearing in mind the restrictions on their use
 given in~\cite{beetle} (e.g. copies of {\tt BAD} and {\tt ADDRESS} must be
@@ -105,17 +105,9 @@ kept in Beetle's memory). {\tt THROW} is a pointer to the Beetle register
 register. {\tt CHECKED} is the constant $1$; it may be read but not
 assigned to.
 
-{\tt EP}, {\tt M0}, {\tt SP} and {\tt RP} are machine pointers to the
-locations in Beetle's address space to which the corresponding Beetle
-registers point. Appropriate conversions (pointer addition or subtraction
-with {\tt M0}) must therefore be made before using the value of one of these
-variables as a Beetle address, and when assigning a Beetle address to one of
-the corresponding registers. Examples of such conversions may be found in
-{\tt step.c}, where the bForth instructions are implemented.
-
 The main memory is accessed via {\tt M0}, which points to the first byte of
 memory. Before Beetle is started by calling {\bf run()} or {\bf
-single\_step()}, {\tt M0} must be set to point to a byte array which will be
+single\_step()}, {\tt M0} must be set to point to a {\tt CELL} array which will be
 Beetle's memory.
 
 The main memory may be at most \SI{2}{GB}, and is always mapped into Beetle’s address space starting from address $0$. C Beetle provides the ability to map native memory blocks into the upper \SI{2}{GB} of the address space; see below.
