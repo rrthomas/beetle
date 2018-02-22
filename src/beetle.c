@@ -263,7 +263,7 @@ static void do_ass(char *token)
             }
             if (debug)
                 printf("Assign EP %lX\n", (unsigned long)value);
-            EP = (CELL *)((BYTE *)M0 + value);
+            EP = value;
             break;
         case r_I:
             if (value > 255) {
@@ -379,8 +379,7 @@ static void do_display(const char *token, const char *format)
             display = xasprintf("ENDISM = %d", ENDISM);
             break;
         case r_EP:
-            display = xasprintf("EP = %05"PRIX32"h (%"PRIu32")", (UCELL)(EP - M0) * CELL_W,
-                    (UCELL)(EP - M0) * CELL_W);
+            display = xasprintf("EP = %05"PRIX32"h (%"PRIu32")", EP, EP);
             break;
         case r_I:
             display = xasprintf("I = %-10s (%02Xh)", disass(I), I);
@@ -576,11 +575,10 @@ static void do_command(int no)
                 }
                 if (debug)
                     printf("Set EP to %lXh\n", (unsigned long)adr);
-                EP = (CELL *)((BYTE *)M0 + adr);
+                EP = adr;
             }
             if (debug)
                 printf("Perform NEXT\n");
-            A = *EP++;
             NEXT;
         }
         break;
@@ -701,14 +699,14 @@ static void do_command(int no)
                         return;
                     if (debug)
                         printf("STEP TO %lX\n", limit);
-                    while ((unsigned long)(EP - M0) * CELL_W != limit && ret == -260) {
+                    while ((unsigned long)EP != limit && ret == -260) {
                         ret = single_step();
                         if (no == c_TRACE) do_registers();
                         count[I]++;
                     }
                     if (ret != 0)
                         printf("HALT code %"PRId32" was returned at EP = %Xh\n",
-                               ret, (UCELL)(EP - M0) * CELL_W);
+                               ret, EP);
                 } else {
                     limit = single_arg(arg);
                     if (debug)

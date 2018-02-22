@@ -32,7 +32,6 @@ void end_ass(void);  /* end assembly, storing any pending instructions */
 const char *disass(BYTE opcode);  /* disassemble an instruction */
 BYTE toass(char *token);    /* convert a instruction to its opcode */
 
-CELL val_EP(void);  /* return the current contents of EP */
 char *val_data_stack(void); /* return the current data stack as a string */
 void show_data_stack(void); /* show the current contents of the data stack */
 void show_return_stack(void);	/* show the current contents of the return stack */

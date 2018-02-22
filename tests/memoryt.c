@@ -31,6 +31,9 @@ const char *correct[] = {
 
 int main(void)
 {
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
+
     /* Data for himem tests */
     char *onetwothreefour = strdup("\x01\x02\x03\x04");
     char *item[] = {onetwothreefour, strdup("\x01"), strdup("\x02\x03"), strdup("basilisk")};
@@ -43,7 +46,7 @@ int main(void)
         if (i == 2)
             himem_align();
     }
-    here = EP;
+    here = M0 + EP / CELL_W;
     S0 = SP;	/* save base of stack */
 
     start_ass();
@@ -67,7 +70,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in MemoryT: EP = %"PRId32"\n", val_EP());
+            printf("Error in MemoryT: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();

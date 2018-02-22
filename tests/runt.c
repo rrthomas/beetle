@@ -19,6 +19,9 @@
 
 int main(void)
 {
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
+
     CELL ret;
 
     int i = init_beetle((CELL *)calloc(1024, 1), 256, 16);
@@ -43,8 +46,8 @@ int main(void)
     }
 
     printf("EP should now be 56\n");
-    if (val_EP() != 60) {
-        printf("Error in RunT: EP = %"PRId32"\n", val_EP());
+    if (EP != 60) {
+        printf("Error in RunT: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 

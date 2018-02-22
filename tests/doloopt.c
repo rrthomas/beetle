@@ -25,10 +25,9 @@ int main(void)
 {
     int exception = 0; // FIXME
     CELL temp; // FIXME
-    int i;
 
     init_beetle((CELL *)malloc(1024), 256, 16);
-    here = EP;
+    here = M0 + EP / CELL_W;
     S0 = SP;	/* save base of stack */
 
     start_ass();
@@ -49,47 +48,47 @@ int main(void)
 
     NEXT;   /* load first instruction word */
 
-    while (val_EP() < 36) single_step();
+    while (EP < 36) single_step();
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[0]);
     if (strcmp(correct[0], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
+        printf("Error in DoLoopT: EP = %"PRIu32"\n", EP);
         exit(1);
     }
     SP = S0;
 
-    while (val_EP() < 48) single_step();
+    while (EP < 48) single_step();
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[1]);
     if (strcmp(correct[1], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
+        printf("Error in DoLoopT: EP = %"PRIu32"\n", EP);
         exit(1);
     }
     SP = S0;
 
-    while (val_EP() < 56) single_step();
+    while (EP < 56) single_step();
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[2]);
     if (strcmp(correct[2], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
+        printf("Error in DoLoopT: EP = %"PRIu32"\n", EP);
         exit(1);
     }
     SP = S0;
 
-    for (i = 0; i < 12; i++) single_step();
+    for (int i = 0; i < 12; i++) single_step();
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[3]);
     if (strcmp(correct[3], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
+        printf("Error in DoLoopT: EP = %"PRIu32"\n", EP);
         exit(1);
     }
     SP = S0;
 
-    EP = (CELL *)(64 + (BYTE *)M0);  NEXT;	/* start execution at 64 */
-    while ((EP - M0) * CELL_W < 76) single_step();
+    EP = 64;  NEXT;	/* start execution at 64 */
+    while (EP < 76) single_step();
     printf("3rd item on return stack is %"PRId32" (should be %"PRId32").\n", LOAD_CELL(RP + 2 * CELL_W), LOAD_CELL(SP));
     if (LOAD_CELL(RP + 2 * CELL_W) != LOAD_CELL(SP)) {
-        printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
+        printf("Error in DoLoopT: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 
@@ -97,7 +96,7 @@ int main(void)
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[4]);
     if (strcmp(correct[4], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %"PRId32"\n", val_EP());
+        printf("Error in DoLoopT: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 

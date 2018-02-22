@@ -542,36 +542,36 @@ CELL single_step(void)
         break;
     case O_BRANCH:
         {
-            CELL addr = LOAD_CELL((EP - M0) * CELL_W);
+            CELL addr = LOAD_CELL(EP);
             CHECK_MAIN_MEMORY_ALIGNED(addr);
-            EP = M0 + addr / CELL_W;
+            EP = addr;
             NEXTC;
         }
         break;
     case O_BRANCHI:
-        EP += A;
+        EP += A * CELL_W;
         NEXTC;
         break;
     case O_QBRANCH:
         if (POP == B_FALSE) {
-            CELL addr = LOAD_CELL((EP - M0) * CELL_W);
+            CELL addr = LOAD_CELL(EP);
             CHECK_MAIN_MEMORY_ALIGNED(addr);
-            EP = M0 + addr / CELL_W;
+            EP = addr;
             NEXTC;
         } else
-            EP++;
+            EP += CELL_W;
         break;
     case O_QBRANCHI:
         if (POP == B_FALSE)
-            EP += A;
+            EP += A * CELL_W;
         NEXTC;
         break;
     case O_EXECUTE:
         {
             CELL addr = POP;
             CHECK_MAIN_MEMORY_ALIGNED(addr);
-            PUSH_RETURN((EP - M0) * CELL_W);
-            EP = M0 + addr / CELL_W;
+            PUSH_RETURN(EP);
+            EP = addr;
             NEXTC;
         }
         break;
@@ -579,32 +579,32 @@ CELL single_step(void)
         {
             CELL addr = POP;
             CHECK_MAIN_MEMORY_ALIGNED(addr);
-            PUSH_RETURN((EP - M0) * CELL_W);
+            PUSH_RETURN(EP);
             addr = LOAD_CELL(addr);
             CHECK_MAIN_MEMORY_ALIGNED(addr);
-            EP = M0 + addr / CELL_W;
+            EP = addr;
             NEXTC;
         }
         break;
     case O_CALL:
         {
-            PUSH_RETURN((EP - M0 + 1) * CELL_W);
-            CELL addr = LOAD_CELL((EP - M0) * CELL_W);
+            PUSH_RETURN(EP + CELL_W);
+            CELL addr = LOAD_CELL(EP);
             CHECK_MAIN_MEMORY_ALIGNED(addr);
-            EP = M0 + addr / CELL_W;
+            EP = addr;
             NEXTC;
         }
         break;
     case O_CALLI:
-        PUSH_RETURN((EP - M0) * CELL_W);
-        EP += A;
+        PUSH_RETURN(EP);
+        EP += A * CELL_W;
         NEXTC;
         break;
     case O_EXIT:
         {
             CELL addr = POP_RETURN;
             CHECK_MAIN_MEMORY_ALIGNED(addr);
-            EP = M0 + addr / CELL_W;
+            EP = addr;
             NEXTC;
         }
         break;
@@ -624,11 +624,11 @@ CELL single_step(void)
             if (index + 1 == limit) {
                 (void)POP_RETURN;
                 (void)POP_RETURN;
-                EP++;
+                EP += CELL_W;
             } else {
-                CELL addr = LOAD_CELL((EP - M0) * CELL_W);
+                CELL addr = LOAD_CELL(EP);
                 CHECK_MAIN_MEMORY_ALIGNED(addr);
-                EP = M0 + addr / CELL_W;
+                EP = addr;
                 NEXTC;
             }
         }
@@ -642,7 +642,7 @@ CELL single_step(void)
                 (void)POP_RETURN;
                 (void)POP_RETURN;
             } else
-                EP += A;
+                EP += A * CELL_W;
             NEXTC;
         }
         break;
@@ -656,11 +656,11 @@ CELL single_step(void)
             if (((index + inc - limit) ^ diff) < 0) {
                 (void)POP_RETURN;
                 (void)POP_RETURN;
-                EP++;
+                EP += CELL_W;
             } else {
-                CELL addr = LOAD_CELL((EP - M0) * CELL_W);
+                CELL addr = LOAD_CELL(EP);
                 CHECK_MAIN_MEMORY_ALIGNED(addr);
-                EP = M0 + addr / CELL_W;
+                EP = addr;
                 NEXTC;
             }
         }
@@ -676,7 +676,7 @@ CELL single_step(void)
                 (void)POP_RETURN;
                 (void)POP_RETURN;
             } else
-                EP += A;
+                EP += A * CELL_W;
             NEXTC;
         }
         break;
@@ -688,8 +688,8 @@ CELL single_step(void)
         PUSH(LOAD_CELL(RP + 2 * CELL_W));
         break;
     case O_LITERAL:
-        PUSH(LOAD_CELL((EP - M0) * CELL_W));
-        EP++;
+        PUSH(LOAD_CELL(EP));
+        EP += CELL_W;
         break;
     case O_LITERALI:
         PUSH(A);
@@ -698,17 +698,17 @@ CELL single_step(void)
  throw:
     case O_THROW:
         /* EP can be unaligned in an error condition, so do BYTE * arithmetic */
-        M0[2] = BAD = (CELL)((BYTE *)EP - (BYTE *)M0);
+        M0[2] = BAD = EP;
         if (!IN_MAIN_MEMORY((UCELL)*THROW) || !IS_ALIGNED((UCELL)*THROW))
             return -259;
-        EP = (CELL *)((UCELL)*THROW + (BYTE *)M0);
+        EP = (UCELL)*THROW;
         NEXTC;
         exception = 0; // Any exception has now been dealt with
         break;
     case O_HALT:
         return POP;
     case O_EPFETCH:
-        PUSH((EP - M0) * CELL_W);
+        PUSH(EP);
         break;
     case O_LIB:
         {

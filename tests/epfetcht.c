@@ -16,15 +16,16 @@
 #include "debug.h"      /* debugging functions */
 
 
-int correct[] = { 20, 20, 20 };
+unsigned correct[] = { 20, 20, 20 };
 
 
 int main(void)
 {
-    int i;
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
 
     init_beetle((CELL *)malloc(1024), 256, 16);
-    here = EP;
+    here = M0 + EP / CELL_W;
     S0 = SP;	/* save base of stack */
 
     start_ass();
@@ -33,10 +34,10 @@ int main(void)
 
     NEXT;   /* load first instruction word */
 
-    for (i = 0; i <= instrs; i++) {
-        printf("EP = %d; should be %d\n\n", val_EP(), correct[i]);
-        if (correct[i] != val_EP()) {
-            printf("Error in EpfetchT: EP = %"PRId32"\n", val_EP());
+    for (int i = 0; i <= instrs; i++) {
+        printf("EP = %u; should be %u\n\n", EP, correct[i]);
+        if (correct[i] != EP) {
+            printf("Error in EpfetchT: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();

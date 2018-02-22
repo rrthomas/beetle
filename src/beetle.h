@@ -43,7 +43,7 @@ typedef uint64_t DUCELL;
 #define ENDISM ((BYTE)0)
 #endif
 
-extern CELL *EP;        /* note EP is a pointer, not a Beetle address */
+extern UCELL EP;
 extern BYTE I;
 extern CELL A;
 extern CELL *M0;
@@ -153,11 +153,11 @@ typedef union {
     CHECK_ADDRESS(a, IN_MAIN_MEMORY(a), -9, badadr)     \
     CHECK_ADDRESS(a, IS_ALIGNED(a), -23, badadr)
 
-#define NEXT A = *EP++
+#define NEXT (EP += CELL_W, A = M0[EP / CELL_W - 1])
 
 // FIXME: Merge with NEXT
 #define NEXTC                                   \
-    CHECK_MAIN_MEMORY_ALIGNED((EP - M0) * CELL_W)       \
+    CHECK_MAIN_MEMORY_ALIGNED(EP)               \
     NEXT
 
 /* Portable arithmetic right shift (the behaviour of >> on signed

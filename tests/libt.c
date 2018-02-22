@@ -30,7 +30,7 @@ int main(void)
 
     init_beetle((CELL *)malloc(4096), 1024, 16);
     assert(register_args(argc, argv));
-    here = EP;
+    here = M0 + EP / CELL_W;
 
     start_ass();
     ass(O_LITERALI); ilit(0);
@@ -41,19 +41,19 @@ int main(void)
 
     NEXT;   /* load first instruction word */
 
-    while (val_EP() < 28)
+    while (EP < 28)
         single_step();
     printf("argc is %"PRId32", and should be %d\n\n", LOAD_CELL(SP), argc);
     if (POP != argc) {
-       printf("Error in LibT: EP = %"PRId32"\n", val_EP());
+       printf("Error in LibT: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 
-    while (val_EP() < 36)
+    while (EP < 36)
         single_step();
     printf("arg 1's length is %"PRId32", and should be %zu\n", LOAD_CELL(SP), strlen(argv[1]));
     if ((UCELL)POP != strlen(argv[1])) {
-        printf("Error in LibT: EP = %"PRId32"\n", val_EP());
+        printf("Error in LibT: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 

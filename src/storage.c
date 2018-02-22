@@ -16,7 +16,7 @@
 
 /* Beetle's registers */
 
-CELL *EP;
+UCELL EP;
 BYTE I;
 CELL A;
 CELL *M0;
@@ -35,7 +35,7 @@ int init_beetle(CELL *c_array, size_t size, UCELL e0)
         return 1;
 
     M0 = c_array;
-    EP = M0 + e0 / CELL_W;
+    EP = e0;
     MEMORY = size * CELL_W;
     SP = MEMORY - 0x100;
     RP = size * CELL_W;

@@ -18,6 +18,9 @@
 
 int main(void)
 {
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
+
     int i;
 
     i = init_beetle((CELL *)NULL, 1, 1);
@@ -44,13 +47,13 @@ int main(void)
     NEXT;
 
     for (i = 0; i < 10; i++) {
-        printf("EP = %d\n", val_EP());
+        printf("EP = %u\n", EP);
         single_step();
     }
 
-    printf("EP should now be 56\n");
-    if (val_EP() != 60) {
-        printf("Error in StepT: EP = %"PRId32"\n", val_EP());
+    printf("EP should now be 60\n");
+    if (EP != 60) {
+        printf("Error in StepT: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 

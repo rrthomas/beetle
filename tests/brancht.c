@@ -20,19 +20,20 @@
 #include "debug.h"      /* debugging functions */
 
 
-int correct[] = { 20, 100, 52, 10004, 10004, 10008, 10008, 10012, 10012, 11004,
-    11004, 11020, 11024, 68, 204, 304, 212, 72, 76, 80, 80, 80, 68 };
+unsigned correct[] = { 20, 100, 52, 10004, 10004, 10008, 10008, 10012, 10012, 11004,
+                       11004, 11020, 11024, 68, 204, 304, 212, 72, 76, 80, 80, 80, 68 };
 
 
 int main(void)
 {
-    int i;
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
 
     size_t size = 4096;
     init_beetle((CELL *)calloc(size, sizeof(CELL)), size, 16);
     S0 = SP;	/* save base of stack */
 
-    here = EP;	/* start assembling at 16 */
+    here = M0 + EP / CELL_W;	/* start assembling at 16 */
     start_ass();
     ass(O_BRANCHI); ilit(19);
     end_ass();
@@ -88,10 +89,10 @@ int main(void)
 
     NEXT;   /* load first instruction word */
 
-    for (i = 0; i <= instrs; i++) {
-        printf("EP = %d; should be %d\n\n", val_EP(), correct[i]);
-        if (correct[i] != val_EP()) {
-            printf("Error in BranchT: EP = %"PRId32"d\n", val_EP());
+    for (int i = 0; i <= instrs; i++) {
+        printf("EP = %u; should be %u\n\n", EP, correct[i]);
+        if (correct[i] != EP) {
+            printf("Error in BranchT: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();

@@ -22,10 +22,11 @@ const char *correct[] = { "", "-257", "-257 12345678", "-257 12345678 -2" };
 
 int main(void)
 {
-    int i;
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
 
     init_beetle((CELL *)calloc(1024, 1), 256, 16);
-    here = EP;
+    here = M0 + EP / CELL_W;
     S0 = SP;	/* save base of stack */
 
     start_ass();
@@ -37,11 +38,11 @@ int main(void)
 
     NEXT;   /* load first instruction word */
 
-    for (i = 0; i <= instrs; i++) {
+    for (int i = 0; i <= instrs; i++) {
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in LiteralT: EP = %"PRId32"\n", val_EP());
+            printf("Error in LiteralT: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();

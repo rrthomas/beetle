@@ -114,11 +114,6 @@ _GL_ATTRIBUTE_PURE BYTE toass(char *token)
     return 0xfe;
 }
 
-_GL_ATTRIBUTE_PURE CELL val_EP(void)
-{
-    return (EP - M0) * CELL_W;
-}
-
 char *val_data_stack(void)
 {
     int exception = 0; // FIXME

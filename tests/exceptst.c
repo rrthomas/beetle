@@ -24,10 +24,13 @@ UCELL address[] = { -4, 16384, 0, 0, 5, 1, 0, 16384, -4, 1, 0, 0, -4, -4 };
 
 int main(void)
 {
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
+
     init_beetle((CELL *)malloc(16384), 4096, 16);
     S0 = SP;	/* save base of stack */
 
-    here = EP;	/* start assembling at 16 */
+    here = M0 + EP / CELL_W;	/* start assembling at 16 */
     start_ass();
     ass(O_ZERO); ass(O_SPSTORE); ass(O_DUP); ass(O_NEXT00); /* test 1 */
     ass(O_LITERALI); ilit(MEMORY);  /* test 2 */
@@ -63,7 +66,7 @@ int main(void)
     for (size_t i = 0; i < sizeof(test) / sizeof(test[0]); i++) {
         SP = S0;    /* reset stack pointer */
 
-        EP = (CELL *)((BYTE *)M0 + test[i]);
+        EP = test[i];
         NEXT;   /* load first instruction word */
         CELL res = run();
 
@@ -71,8 +74,7 @@ int main(void)
         if (result[i] != res || (result[i] != 0 && bad[i] != BAD) ||
             ((result[i] <= -258 || result[i] == 9 || result[i] == -23) &&
              address[i] != NOT_ADDRESS)) {
-             printf("Error in ExceptsT: test %zu failed; EP = %td\n", i + 1,
-                    (EP - M0) * CELL_W);
+             printf("Error in ExceptsT: test %zu failed; EP = %"PRIu32"\n", i + 1, EP);
              printf("Return code is %d; should be %d\n", res, result[i]);
              if (result[i] != 0)
                  printf("'BAD = %"PRIX32"; should be %"PRIX32"\n", BAD, bad[i]);

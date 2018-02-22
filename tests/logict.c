@@ -33,7 +33,7 @@ int main(void)
     int i;
 
     init_beetle((CELL *)malloc(1024), 256, 16);
-    here = EP;
+    here = M0 + EP / CELL_W;
     S0 = SP;	/* save base of stack */
 
     PUSH(0xFF000000); PUSH(8); PUSH(0xFF); PUSH(8);
@@ -50,7 +50,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in LogicT: EP = %"PRId32"\n", val_EP());
+            printf("Error in LogicT: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();

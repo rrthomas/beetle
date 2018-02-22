@@ -67,7 +67,7 @@ static void step(int start, int end)
             printf("Result: %d; correct result: %d\n\n", LOAD_CELL(SP),
                 correct[i - i / 5]);
             if (correct[i - i / 5] != LOAD_CELL(SP)) {
-                printf("Error in CompareT: EP = %"PRId32"\n", val_EP());
+                printf("Error in CompareT: EP = %"PRIu32"\n", EP);
                 exit(1);
             }
             (void)POP;	/* drop result of comparison */
@@ -80,9 +80,10 @@ static void step(int start, int end)
 int main(void)
 {
     int exception = 0; // FIXME
+    CELL temp; // FIXME
 
     init_beetle((CELL *)malloc(1024), 256, 16);
-    here = EP;
+    here = M0 + EP / CELL_W;
     S0 = SP;	/* save base of stack */
 
     start_ass();

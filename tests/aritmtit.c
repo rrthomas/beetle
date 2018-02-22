@@ -36,10 +36,13 @@ const char *correct[] = {
 
 int main(void)
 {
+    int exception = 0; // FIXME
+    CELL temp; // FIXME
+
     int i;
 
     init_beetle((CELL *)calloc(1024, 1), 256, 16);
-    here = EP;
+    here = M0 + EP / CELL_W;
     S0 = SP;	/* save base of stack */
 
     start_ass();
@@ -62,7 +65,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i]);
         if (strcmp(correct[i], val_data_stack())) {
-            printf("Error in AritmtiT: EP = %"PRId32"\n", val_EP());
+            printf("Error in AritmtiT: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();

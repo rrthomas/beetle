@@ -32,7 +32,7 @@ int main(void)
     int i, first;
 
     init_beetle((CELL *)malloc(1024), 256, 16);
-    here = EP;
+    here = M0 + EP / CELL_W;
     S0 = SP;	/* save base of stack */
 
     PUSH(1); PUSH(2); PUSH(3);	/* initialise the stack */
@@ -51,7 +51,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in StackT: EP = %"PRId32"\n", val_EP());
+            printf("Error in StackT: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();
@@ -67,7 +67,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack()) && i != first) {
-            printf("Error in StackT: EP = %"PRId32"\n", val_EP());
+            printf("Error in StackT: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();
