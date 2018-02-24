@@ -615,7 +615,7 @@ static void do_command(int no)
             }
             if (debug)
                 printf("Load binary image %s to address %lX\n", file, (unsigned long)adr);
-            ret = load_object(handle, (CELL *)((BYTE *)M0 + adr));
+            ret = load_object(handle, adr);
             fclose(handle);
 
             switch (ret) {
@@ -747,8 +747,7 @@ static void do_command(int no)
             if (debug)
                 printf("Save memory to file %s from %lX to %lX\n", file,
                        (unsigned long)start, (unsigned long)end);
-            ret = save_object(handle, (CELL *)((BYTE *)M0 + start),
-                              (UCELL)((end - start) / CELL_W));
+            ret = save_object(handle, start, (UCELL)((end - start) / CELL_W));
             fclose(handle);
 
             switch (ret) {
@@ -919,7 +918,7 @@ int main(int argc, char *argv[])
         FILE *handle = fopen(argv[optind], "r");
         if (handle == NULL)
             die("cannot not open file %s", argv[1]);
-        int ret = load_object(handle, M0 + 4);
+        int ret = load_object(handle, 16);
         fclose(handle);
         if (ret != 0)
             die("could not read file %s", argv[1]);

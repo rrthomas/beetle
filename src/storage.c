@@ -188,6 +188,7 @@ int beetle_store_byte(UCELL addr, BYTE value)
 }
 
 
+// FIXME: take a Beetle address, not a CELL *
 void beetle_reverse(CELL *start, UCELL length)
 {
     for (UCELL i = 0; i < length; i++)

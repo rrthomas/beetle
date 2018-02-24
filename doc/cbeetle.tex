@@ -188,12 +188,10 @@ calling program must itself open and close the files.
 cell.}
 \ifacec{CELL single\_step()}{The reason code returned by {\bf single\_step()}
 is a Beetle cell.}
-\ifacec{int load\_object(FILE *file, CELL *address)}{If a filing error
-occurs, the return code is -3, which corresponds to a return value of {\tt
-EOF} from {\bf getc()}.}
-\ifacec{int save\_object(FILE *file, CELL *address, UCELL length)}{If a
-filing error occurs, the return code is -3, which corresponds to a return
-value of {\tt EOF} from {\bf putc()}.}
+\ifacec{int load\_object(FILE *file, UCELL address)}{If a file system error
+occurs, the return code is -3.}
+\ifacec{int save\_object(FILE *file, UCELL address, UCELL length)}{If a
+file system error occurs, the return code is -3.}
 \end{description}
 
 In addition to the required interface calls C Beetle provides an initialisation routine {\bf init\_beetle()} which, given a byte array, its size and an initial value for {\tt EP}, initialises Beetle:

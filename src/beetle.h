@@ -101,8 +101,8 @@ UCELL himem_align(void);
 /* Interface calls */
 CELL run(void);
 CELL single_step(void);
-int load_object(FILE *file, CELL *address);
-int save_object(FILE *file, CELL *address, UCELL length);
+int load_object(FILE *file, UCELL address);
+int save_object(FILE *file, UCELL address, UCELL length);
 
 /* Additional routines, macros, types and quantities provided by C Beetle */
 int init_beetle(CELL *c_array, size_t size, UCELL e0);

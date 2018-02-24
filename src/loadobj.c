@@ -14,8 +14,11 @@
 #include "beetle.h"	/* main header */
 
 
-int load_object(FILE *file, CELL *address)
+int load_object(FILE *file, UCELL address)
 {
+    if (!IN_MAIN_MEMORY(address) || !IS_ALIGNED(address))
+        return -4; // FIXME: check spec
+
     char magic[8];
     if (fread(&magic[0], 1, 7, file) != 7)
         return -3;
@@ -35,14 +38,13 @@ int load_object(FILE *file, CELL *address)
         return -3;
     if (reversed)
         beetle_reverse((CELL *)&length, 1);
-    if ((((address - M0) + length) * CELL_W > MEMORY) ||
-        ((UCELL)(address - M0) * CELL_W) == MEMORY)
+    if (address + length * CELL_W > MEMORY)
         return -1;
 
-    if (fread(address, CELL_W, length, file) != length)
+    if (fread(M0 + address / CELL_W, CELL_W, length, file) != length)
         return -3;
     if (reversed)
-        beetle_reverse(address, length);
+        beetle_reverse(M0 + address / CELL_W, length);
 
     return 0;
 }

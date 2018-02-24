@@ -16,13 +16,13 @@
 int correct[] = { -1, -1, 0 };
 
 
-static int try(const char *file, CELL *address, UCELL length)
+static int try(const char *file, UCELL address, UCELL length)
 {
     FILE *fp = fopen(file, "w");
     int ret = save_object(fp, address, length);
 
-    printf("save_object(\"%s\", M0 + %td, %#"PRIX32") returns %d", file,
-           (address - M0) * CELL_W, length, ret);
+    printf("save_object(\"%s\", M0 + %"PRIu32", %#"PRIX32") returns %d", file,
+           address, length, ret);
     fclose(fp);
 
     return ret;
@@ -42,7 +42,7 @@ int main(void)
     ((CELL *)M0)[1] = 0x05060708;
 
     for (i = 0; i < 3; i++) {
-        res = try("saveobj", (CELL *)((BYTE *)M0 + adr[i]), len[i]);
+        res = try("saveobj", adr[i], len[i]);
         if (i != 2)
           remove("saveobj");
         printf(" should be %d\n", correct[i]);
@@ -54,7 +54,7 @@ int main(void)
 
     {
         FILE *fp = fopen("saveobj", "r");
-        int ret = load_object(fp, (CELL *)((BYTE *)M0 + 16));
+        int ret = load_object(fp, 16);
 
         if (ret) {
             printf("Error in SaveObjT: %d returned by load_object\n", ret);

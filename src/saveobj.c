@@ -24,7 +24,7 @@ static void put(int c, FILE *fp)
         longjmp(env, -3);
 }
 
-int save_object(FILE *file, CELL *address, UCELL length)
+int save_object(FILE *file, UCELL address, UCELL length)
 {
     char magic[] = "BEETLE\0";
     int err = 0;
@@ -33,8 +33,7 @@ int save_object(FILE *file, CELL *address, UCELL length)
     if (length > (UCELL)0x3fffffff) { err = -1; goto error; }
 
     if ((err = setjmp(env)) == 0) {
-        if ((UCELL)(address - M0) * CELL_W > MEMORY ||
-            ((address - M0) + length) * CELL_W > MEMORY) {
+        if (address > MEMORY || address + length * CELL_W > MEMORY) {
             err = -1;
             goto error;
         }
@@ -45,7 +44,7 @@ int save_object(FILE *file, CELL *address, UCELL length)
         for (i = 0; i < CELL_W; i++)
             put(((BYTE *)&length)[i], file);
         for (i = 0; i < length * CELL_W; i++)
-            put(((BYTE *)address)[i], file);
+            put(((BYTE *)M0)[address + i], file);
 
         return 0;
     } else {

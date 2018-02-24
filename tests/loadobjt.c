@@ -18,7 +18,7 @@
 static int correct[] = { -2, -2, -1, -3, 0, 0 };
 
 
-static int try(char *file, CELL *address)
+static int try(char *file, UCELL address)
 {
     FILE *fp = fopen(file, "r");
     int ret = load_object(fp, address);
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 
     for (i = 0; i < 4; i++) {
         char *s = obj_name(prefix, files[i]);
-        res = try(s, M0);
+        res = try(s, 0);
         free(s);
         printf(" should be %d\n", correct[i]);
         if (res != correct[i]) {
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
     for (; i < 6; i++) {
         char *s = obj_name(prefix, files[i]);
-        res = try(s, M0);
+        res = try(s, 0);
         free(s);
         printf(" should be %d\n", correct[i]);
         printf("Word 0 of memory is %"PRIX32"; should be 1020304\n", *(UCELL*)M0);
