@@ -1,6 +1,6 @@
 /* LOADOBJT.C
 
-    (c) Reuben Thomas 1995-2011
+    (c) Reuben Thomas 1995-2018
 
     Test load_object().
 
@@ -66,11 +66,12 @@ int main(int argc, char *argv[])
 
     for (; i < 6; i++) {
         char *s = obj_name(prefix, files[i]);
+        CELL c;
         res = try(s, 0);
         free(s);
         printf(" should be %d\n", correct[i]);
-        printf("Word 0 of memory is %"PRIX32"; should be 1020304\n", *(UCELL*)M0);
-        if (*(CELL*)M0 != 0x1020304) {
+        printf("Word 0 of memory is %"PRIX32"; should be 1020304\n", (UCELL)(beetle_load_cell(0, &c), c));
+        if ((beetle_load_cell(0, &c), c) != 0x1020304) {
             printf("Error in LoadObjT: file %s\n", files[i]);
             exit(1);
         }
