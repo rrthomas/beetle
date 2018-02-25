@@ -26,9 +26,6 @@ unsigned correct[] = { 20, 100, 52, 10004, 10004, 10008, 10008, 10012, 10012, 11
 
 int main(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
-
     size_t size = 4096;
     init_beetle((CELL *)calloc(size, sizeof(CELL)), size, 16);
     S0 = SP;	/* save base of stack */

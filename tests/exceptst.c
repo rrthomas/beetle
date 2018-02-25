@@ -24,9 +24,6 @@ UCELL address[] = { -4, 16384, 0, 0, 5, 1, 0, 16384, -4, 1, 0, 0, -4, -4 };
 
 int main(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
-
     init_beetle((CELL *)malloc(16384), 4096, 16);
     S0 = SP;	/* save base of stack */
 

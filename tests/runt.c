@@ -17,13 +17,12 @@
 #include "debug.h"      /* debugging functions */
 
 
+int exception = 0;
+CELL temp;
+
+
 int main(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
-
-    CELL ret;
-
     int i = init_beetle((CELL *)calloc(1024, 1), 256, 16);
     if (i != 0) {
         printf("Error in RunT: init_beetle with valid parameters failed\n");
@@ -37,7 +36,7 @@ int main(void)
     end_ass();
 
     NEXT;
-    ret = run();
+    CELL ret = run();
 
     printf("Return value should be 37 and is %"PRId32"\n", ret);
     if (ret != 37) {

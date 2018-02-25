@@ -16,21 +16,17 @@
 #include "debug.h"      /* debugging functions */
 
 
+int exception = 0;
+CELL temp;
+
+
 static void test(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
-
     PUSH(37);
 }
 
 int main(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
-
-    CELL res;
-
     init_beetle((CELL *)malloc(16384), 4096, 16);
     S0 = SP;	/* save base of stack */
 
@@ -40,7 +36,7 @@ int main(void)
     end_ass();
 
     NEXT;   /* load first instruction word */
-    res = run();
+    CELL res = run();
     if (res != 0) {
         printf("Error in LinkT: test aborted with return code %"PRId32"\n", res);
         exit(1);

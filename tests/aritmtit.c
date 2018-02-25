@@ -36,11 +36,6 @@ const char *correct[] = {
 
 int main(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
-
-    int i;
-
     init_beetle((CELL *)calloc(1024, 1), 256, 16);
     here = EP;
     S0 = SP;	/* save base of stack */
@@ -61,7 +56,7 @@ int main(void)
 
     NEXT;   /* load first instruction word */
 
-    for (i = 0; i <= instrs - instrs / 5; i++) {
+    for (int i = 0; i <= instrs - instrs / 5; i++) {
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i]);
         if (strcmp(correct[i], val_data_stack())) {

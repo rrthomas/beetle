@@ -21,9 +21,6 @@ unsigned correct[] = { 20, 20, 20 };
 
 int main(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
-
     init_beetle((CELL *)malloc(1024), 256, 16);
     here = EP;
     S0 = SP;	/* save base of stack */

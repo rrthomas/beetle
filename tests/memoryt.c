@@ -31,9 +31,6 @@ const char *correct[] = {
 
 int main(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
-
     /* Data for himem tests */
     char *onetwothreefour = strdup("\x01\x02\x03\x04");
     char *item[] = {onetwothreefour, strdup("\x01"), strdup("\x02\x03"), strdup("basilisk")};

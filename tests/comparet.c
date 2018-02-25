@@ -19,14 +19,15 @@
 #include "debug.h"      /* debugging functions */
 
 
+int exception = 0;
+CELL temp;
+
 CELL correct[] = { 0, -1, 0, -1, -1, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, 0,
     -1, 0, 0, -1, 0, 0, -1, 0, 0, -1};
 
 
 static void stack1(void)
 {
-    int exception = 0; // FIXME
-
     SP = S0;	/* empty the stack */
 
     PUSH(-4); PUSH(3);
@@ -37,8 +38,6 @@ static void stack1(void)
 
 static void stack2(void)
 {
-    int exception = 0; // FIXME
-
     SP = S0;	/* empty the stack */
 
     PUSH(1); PUSH(-1);
@@ -47,8 +46,6 @@ static void stack2(void)
 
 static void stack3(void)
 {
-    int exception = 0; // FIXME
-
     SP = S0;	/* empty the stack */
 
     PUSH(-1); PUSH(0); PUSH(237);
@@ -56,11 +53,7 @@ static void stack3(void)
 
 static void step(int start, int end)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
-    int i;
-
-    for (i = start; i <= end; i++) {
+    for (int i = start; i <= end; i++) {
         single_step();
         printf("I = %s\n", disass(I));
         if (I != O_NEXT00) {
@@ -79,9 +72,6 @@ static void step(int start, int end)
 
 int main(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
-
     init_beetle((CELL *)malloc(1024), 256, 16);
     here = EP;
     S0 = SP;	/* save base of stack */

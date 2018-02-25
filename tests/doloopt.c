@@ -23,8 +23,8 @@ const char *correct[] = { "0 1 2", "3 2 1 0", "1", "1 2 3 4", "1 1" };
 
 int main(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
+    int exception = 0;
+    CELL temp;
 
     init_beetle((CELL *)malloc(1024), 256, 16);
     here = EP;
@@ -86,7 +86,8 @@ int main(void)
 
     EP = 64;  NEXT;	/* start execution at 64 */
     while (EP < 76) single_step();
-    printf("3rd item on return stack is %"PRId32" (should be %"PRId32").\n", LOAD_CELL(RP + 2 * CELL_W), LOAD_CELL(SP));
+    CELL ret3 = LOAD_CELL(RP + 2 * CELL_W);
+    printf("3rd item on return stack is %"PRId32" (should be %"PRId32").\n", ret3, LOAD_CELL(SP));
     if (LOAD_CELL(RP + 2 * CELL_W) != LOAD_CELL(SP)) {
         printf("Error in DoLoopT: EP = %"PRIu32"\n", EP);
         exit(1);

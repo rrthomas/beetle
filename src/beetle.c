@@ -350,9 +350,9 @@ static void do_ass(char *token)
                            (unsigned long)value, (UCELL)adr,
                            ((byte == 1 && (adr & 3) == 0) ? " (byte)" : ""));
                 if (byte == 1)
-                    *((BYTE *)M0 + FLIP(adr)) = (BYTE)value;
+                    beetle_store_byte(adr, value);
                 else
-                    *(CELL *)((BYTE *)M0 + adr) = value;
+                    beetle_store_cell(adr, value);
             }
     }
 }
@@ -413,12 +413,17 @@ static void do_display(const char *token, const char *format)
                     printf("Display contents of memory location %"PRIX32"\n", (UCELL)adr);
                 if (range(adr, MEMORY, "Address"))
                     return;
-                if (!IS_ALIGNED(adr))
+                if (!IS_ALIGNED(adr)) {
+                    BYTE b;
+                    beetle_load_byte(adr, &b);
                     display = xasprintf("%"PRIX32"h: %Xh (%d) (byte)", (UCELL)adr,
-                                        *((BYTE *)M0 + FLIP(adr)), *((BYTE *)M0 + FLIP(adr)));
-                else
-                    display = xasprintf("%"PRIX32"h: %"PRIX32"h (%"PRIu32") (cell)", (UCELL)adr,
-                                        *(UCELL *)(M0 + adr / CELL_W), *(UCELL *)(M0 + adr / CELL_W));
+                                        b, b);
+                } else {
+                    CELL c;
+                    beetle_load_cell(adr, &c);
+                    display = xasprintf("%"PRIX32"h: %"PRIX32"h (%"PRId32") (cell)", (UCELL)adr,
+                                        (UCELL)c, c);
+                }
             }
     }
 #pragma GCC diagnostic push

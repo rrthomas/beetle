@@ -18,12 +18,7 @@
 
 int main(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
-
-    int i;
-
-    i = init_beetle((CELL *)NULL, 1, 1);
+    int i = init_beetle((CELL *)NULL, 1, 1);
     printf("init_beetle((CELL *)NULL, 1, 1) should return 1; returns: %d\n", i);
     if (i != 1) {
         printf("Error in StepT: init_beetle with invalid parameters "

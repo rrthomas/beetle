@@ -21,8 +21,8 @@
 
 int main(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
+    int exception = 0;
+    CELL temp;
 
     /* Data for ARGC/ARG tests */
     int argc = 3;

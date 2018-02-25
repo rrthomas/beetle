@@ -22,9 +22,6 @@ const char *correct[] = { "", "-257", "-257 12345678", "-257 12345678 -2" };
 
 int main(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
-
     init_beetle((CELL *)calloc(1024, 1), 256, 16);
     here = EP;
     S0 = SP;	/* save base of stack */

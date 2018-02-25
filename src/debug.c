@@ -30,30 +30,24 @@ UCELL R0;
 
 void ass(BYTE instr)
 {
-    int exception = 0; // FIXME
-
     icell |= instr << ibytes * 8;
     instrs++;  ibytes++;
     if (ibytes == CELL_W) {
-        STORE_CELL(current, icell);  current = here;  here += CELL_W;
+        beetle_store_cell(current, icell);  current = here;  here += CELL_W;
         icell = 0;  ibytes = 0;  instrs++;
     }
 }
 
 void lit(CELL literal)
 {
-    int exception = 0; // FIXME
-
-    if (ibytes == 0) { here -= CELL_W;  STORE_CELL(here, literal);  here += CELL_W * 2; current += CELL_W; }
-    else { STORE_CELL(here, literal);  here += CELL_W; }
+    if (ibytes == 0) { here -= CELL_W;  beetle_store_cell(here, literal);  here += CELL_W * 2; current += CELL_W; }
+    else { beetle_store_cell(here, literal);  here += CELL_W; }
 }
 
 void ilit(CELL literal)
 {
-    int exception = 0; // FIXME
-
     icell |= literal << ibytes * 8;
-    STORE_CELL(current, icell);  current = here;  here += CELL_W;
+    beetle_store_cell(current, icell);  current = here;  here += CELL_W;
     icell = 0;  ibytes = 0;
 }
 
@@ -75,9 +69,7 @@ void start_ass(void)
 
 void end_ass(void)
 {
-    int exception = 0; // FIXME
-
-    if (ibytes != 0) STORE_CELL(current, icell);
+    if (ibytes != 0) beetle_store_cell(current, icell);
     else instrs--;
 }
 
@@ -124,16 +116,15 @@ _GL_ATTRIBUTE_PURE BYTE toass(char *token)
 
 char *val_data_stack(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
-
     static char *picture = NULL;
 
     free(picture);
     picture = xasprintf("%s", "");
 
     for (UCELL i = S0 - CELL_W; i >= SP; i -= CELL_W) {
-        char *ptr = xasprintf("%s%"PRId32, picture, LOAD_CELL(i));
+        CELL c;
+        beetle_load_cell(i, &c);
+        char *ptr = xasprintf("%s%"PRId32, picture, c);
         free(picture);
         picture = ptr;
         if (i != SP) {
@@ -155,12 +146,11 @@ void show_data_stack(void)
 
 void show_return_stack(void)
 {
-    int exception = 0; // FIXME
-    CELL temp; // FIXME
-
     printf("Return stack: ");
     for (UCELL i = R0 - CELL_W; i >= RP; i -= CELL_W) {
-        printf("%"PRIX32"h ", (UCELL)LOAD_CELL(i));
+        CELL c;
+        beetle_load_cell(i, &c);
+        printf("%"PRIX32"h ", (UCELL)c);
         if (i == 0)
             break;
     }
