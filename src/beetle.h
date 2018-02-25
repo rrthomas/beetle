@@ -121,13 +121,6 @@ typedef union {
     void (*pointer)(void);
 } CELL_pointer;
 
-/* Macro for byte addressing */
-#ifdef WORDS_BIGENDIAN
-#define FLIP(addr) ((addr) ^ (CELL_W - 1))
-#else
-#define FLIP(addr) (addr)
-#endif
-
 /* Align a Beetle address */
 #define ALIGNED(a) ((a + CELL_W - 1) & (-CELL_W))
 
@@ -137,6 +130,13 @@ typedef union {
 /* Check whether a Beetle address is in main memory */
 #define IN_MAIN_MEMORY(a) ((UCELL)(a) < MEMORY)
 
+/* Macro for byte addressing */
+#ifdef WORDS_BIGENDIAN
+#define FLIP(addr) ((addr) ^ (CELL_W - 1))
+#else
+#define FLIP(addr) (addr)
+#endif
+
 /* Get the native address of a Beetle address */
 #define native_address(a)                       \
     (IN_MAIN_MEMORY(a) ?                        \
@@ -145,7 +145,7 @@ typedef union {
 
 /* Address checking */
 #define SET_NOT_ADDRESS(a)                      \
-    M0[3] = NOT_ADDRESS = (a);
+    beetle_store_cell(3 * CELL_W, NOT_ADDRESS = (a))
 
 #define CHECK_ADDRESS(a, cond, code, label)     \
     if (!(cond)) {                              \

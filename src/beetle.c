@@ -476,9 +476,9 @@ static void do_command(int no)
     case c_INITIALISE:
     case c_LOAD:
         {
-            memset(M0, 0, memory_size);
+            memset(native_address(0), 0, memory_size);
             memset(count, 0, 256 * sizeof(long));
-            init_beetle(M0, memory_size, 16);
+            init_beetle((CELL *)native_address(0), memory_size, 16);
             S0 = SP;
             R0 = RP;
             *THROW = 0;

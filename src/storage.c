@@ -37,7 +37,7 @@ int beetle_load_cell(UCELL addr, CELL *val)
     }
 
     if (IN_MAIN_MEMORY(addr)) {
-        *val = M0[addr / CELL_W];
+        *val = *(CELL *)native_address(addr);
         return 0;
     }
 
@@ -56,7 +56,7 @@ int beetle_load_cell(UCELL addr, CELL *val)
 int beetle_load_byte(UCELL addr, BYTE *value)
 {
     if (IN_MAIN_MEMORY(addr)) {
-        *value = ((BYTE *)M0)[FLIP(addr)];
+        *value = *native_address(addr);
         return 0;
     }
 
@@ -75,7 +75,7 @@ int beetle_store_cell(UCELL addr, CELL value)
     }
 
     if (IN_MAIN_MEMORY(addr)) {
-        M0[addr / CELL_W] = value;
+        *(CELL *)native_address(addr) = value;
         return 0;
     }
 
@@ -93,7 +93,7 @@ int beetle_store_cell(UCELL addr, CELL value)
 int beetle_store_byte(UCELL addr, BYTE value)
 {
     if (IN_MAIN_MEMORY(addr)) {
-        ((BYTE *)M0)[FLIP(addr)] = value;
+        *native_address(addr) = value;
         return 0;
     }
 
@@ -165,7 +165,7 @@ int init_beetle(CELL *c_array, size_t size, UCELL e0)
     beetle_store_cell(1 * CELL_W, MEMORY);
     SP = MEMORY - 0x100;
     RP = size * CELL_W;
-    THROW = M0;
+    THROW = (CELL *)native_address(0);
     beetle_store_cell(2 * CELL_W, BAD = 0xFFFFFFFF);
     SET_NOT_ADDRESS(0xFFFFFFFF);
 
