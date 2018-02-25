@@ -85,7 +85,7 @@ int beetle_post_dma(UCELL from, UCELL to);
     PUSH((UCELL)(ud & CELL_MASK));              \
     PUSH((UCELL)((ud >> CELL_BIT) & CELL_MASK))
 #define POP_DOUBLE                              \
-    (SP += CELL_W * 2, (UCELL)LOAD_CELL(SP - CELL_W) |        \
+    (SP += CELL_W * 2, (UCELL)LOAD_CELL(SP - CELL_W), temp |                 \
      ((DUCELL)(UCELL)_LOAD_CELL(SP - 2 * CELL_W, temp2) << CELL_BIT))
 #define PUSH_RETURN(v)                          \
     (RP -= CELL_W, STORE_CELL(RP, (v)))

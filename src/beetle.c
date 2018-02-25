@@ -446,7 +446,7 @@ static void do_command(int no)
 {
     // FIXME: Use these next two!
     int exception = 0;
-    CELL temp;
+    CELL temp = 0;
 
     switch (no) {
     case c_TOD:

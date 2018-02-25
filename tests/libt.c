@@ -22,7 +22,7 @@
 int main(void)
 {
     int exception = 0;
-    CELL temp;
+    CELL temp = 0;
 
     /* Data for ARGC/ARG tests */
     int argc = 3;

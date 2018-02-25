@@ -103,8 +103,8 @@ bool register_args(int argc, char *argv[])
 CELL single_step(void)
 {
     int exception = 0;
-    CELL temp, temp2;
-    BYTE byte;
+    CELL temp = 0, temp2 = 0;
+    BYTE byte = 0;
 
     I = (BYTE)A;
     ARSHIFT(A, 8);
@@ -838,7 +838,7 @@ CELL single_step(void)
                     UCELL str2 = POP;
                     char *from;
                     int res = getstr(str2, len2, &from);
-                    char *to;
+                    char *to = NULL;
                     if (res == 0)
                         res = getstr(str1, len1, &to);
                     if (res == 0)
