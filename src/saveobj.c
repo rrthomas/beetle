@@ -1,6 +1,6 @@
 /* SAVEOBJ.C
 
-    (c) Reuben Thomas 1995-2011
+    (c) Reuben Thomas 1995-2018
 
     The interface call save_object(file, address, length) : integer.
 
@@ -11,43 +11,21 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <setjmp.h>
 #include "beetle.h"     /* main header */
 
 
-jmp_buf env;
-
-static void put(int c, FILE *fp)
-{
-    int t = putc(c, fp);
-    if (t == EOF)
-        longjmp(env, -3);
-}
-
 int save_object(FILE *file, UCELL address, UCELL length)
 {
-    char magic[] = "BEETLE\0";
-    int err = 0;
-    UCELL i;
+    if (!IN_MAIN_MEMORY(address) || !IS_ALIGNED(address) ||
+        address + length * CELL_W > MEMORY)
+        return -1;
 
-    if (length > (UCELL)0x3fffffff) { err = -1; goto error; }
+    if (fputs("BEETLE", file) == EOF ||
+        putc('\0', file) == EOF ||
+        putc((char)ENDISM, file) == EOF ||
+        fwrite(&length, CELL_W, 1, file) != 1 ||
+        fwrite((BYTE *)M0 + address, CELL_W, length, file) != length)
+        return -3;
 
-    if ((err = setjmp(env)) == 0) {
-        if (address > MEMORY || address + length * CELL_W > MEMORY) {
-            err = -1;
-            goto error;
-        }
-
-        for (i = 0; i < 7; i++)
-            put(magic[i], file);
-        put(ENDISM, file);
-        for (i = 0; i < CELL_W; i++)
-            put(((BYTE *)&length)[i], file);
-        for (i = 0; i < length * CELL_W; i++)
-            put(((BYTE *)M0)[address + i], file);
-
-        return 0;
-    } else {
-error:  return err;
-    }
+    return 0;
 }
