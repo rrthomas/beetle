@@ -155,7 +155,7 @@ typedef union {
     CHECK_ADDRESS(a, IN_MAIN_MEMORY(a), -9, badadr)     \
     CHECK_ADDRESS(a, IS_ALIGNED(a), -23, badadr)
 
-#define NEXT (EP += CELL_W, A = M0[EP / CELL_W - 1])
+#define NEXT (EP += CELL_W, beetle_load_cell(EP - CELL_W, &A))
 
 // FIXME: Merge with NEXT
 #define NEXTC                                   \
