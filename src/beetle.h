@@ -30,6 +30,7 @@ typedef uint8_t BYTE;
 typedef int32_t CELL;
 typedef uint32_t UCELL;
 typedef uint64_t DUCELL;
+#define CHAR_MASK ((1 << CHAR_BIT) - 1)
 #define CELL_BIT (sizeof(CELL_W) * CHAR_BIT)
 #define CELL_MASK ((1ULL << CELL_BIT) - 1)
 
@@ -63,7 +64,8 @@ int beetle_load_byte(UCELL addr, BYTE *value);
 int beetle_store_cell(UCELL addr, CELL value);
 int beetle_store_byte(UCELL addr, BYTE value);
 
-void beetle_reverse(CELL *start, UCELL length);
+CELL beetle_reverse_cell(CELL value);
+int beetle_reverse(UCELL start, UCELL length);
 int beetle_pre_dma(UCELL from, UCELL to);
 int beetle_post_dma(UCELL from, UCELL to);
 

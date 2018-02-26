@@ -37,14 +37,14 @@ int load_object(FILE *file, UCELL address)
     if (fread(&length, 1, CELL_W, file) != CELL_W)
         return -3;
     if (reversed)
-        beetle_reverse((CELL *)&length, 1);
+        length = (UCELL)beetle_reverse_cell((CELL)length);
     if (address + length * CELL_W > MEMORY)
         return -1;
 
     if (fread(M0 + address / CELL_W, CELL_W, length, file) != length)
         return -3;
     if (reversed)
-        beetle_reverse(M0 + address / CELL_W, length);
+        beetle_reverse(address, length);
 
     return 0;
 }

@@ -188,13 +188,28 @@ int beetle_store_byte(UCELL addr, BYTE value)
 }
 
 
-// FIXME: take a Beetle address, not a CELL *
-void beetle_reverse(CELL *start, UCELL length)
+_GL_ATTRIBUTE_CONST CELL beetle_reverse_cell(CELL value)
 {
-    for (UCELL i = 0; i < length; i++)
-        start[i] = (CELL)(((UCELL) start[i] << 24) | ((UCELL)start[i] >> 24) |
-            (((UCELL)start[i] & 0xff00) << 8) |
-            (((UCELL)start[i] & 0xff0000) >> 8));
+    CELL res = 0;
+    for (unsigned i = 0; i < CELL_W / 2; i++) {
+        unsigned lopos = CHAR_BIT * i;
+        unsigned hipos = CHAR_BIT * (CELL_W - 1 - i);
+        unsigned move = hipos - lopos;
+        res |= ((((UCELL)value) & (CHAR_MASK << hipos)) >> move)
+            | ((((UCELL)value) & (CHAR_MASK << lopos)) << move);
+    }
+    return res;
+}
+
+int beetle_reverse(UCELL start, UCELL length)
+{
+    int ret = 0;
+    for (UCELL i = start; ret == 0 && i < start + length * CELL_W; i += CELL_W) {
+        CELL c;
+        ret = beetle_load_cell(i, &c)
+            || beetle_store_cell(i, beetle_reverse_cell(c));
+    }
+    return ret;
 }
 
 int beetle_pre_dma(UCELL from, UCELL to)
@@ -208,7 +223,7 @@ int beetle_pre_dma(UCELL from, UCELL to)
     CHECK_MAIN_MEMORY_ALIGNED(from);
     CHECK_MAIN_MEMORY_ALIGNED(to);
     if (exception == 0 && ENDISM)
-        beetle_reverse(M0 + from / CELL_W, to - from);
+        beetle_reverse(from, to - from);
 
  badadr:
     return exception;
