@@ -257,7 +257,7 @@ static void do_ass(char *token)
         case r_EP:
             if (range(value, MEMORY, "EP"))
                 return;
-            if (value & 3) {
+            if (!IS_ALIGNED(value)) {
                 printf("EP must be cell-aligned\n");
                 break;
             }
@@ -283,7 +283,7 @@ static void do_ass(char *token)
         case r_RP:
             if (range(value, MEMORY + 1, "RP"))
                 return;
-            if (value & 3) {
+            if (!IS_ALIGNED(value)) {
                 printf("RP must be cell-aligned\n");
                 break;
             }
@@ -294,7 +294,7 @@ static void do_ass(char *token)
         case r_R0:
             if (range(value, MEMORY + 1, "R0"))
                 return;
-            if (value & 3) {
+            if (!IS_ALIGNED(value)) {
                 printf("R0 must be cell-aligned\n");
                 break;
             }
@@ -305,7 +305,7 @@ static void do_ass(char *token)
         case r_SP:
             if (range(value, MEMORY + 1, "SP"))
                 return;
-            if (value & 3) {
+            if (!IS_ALIGNED(value)) {
                 printf("SP must be cell-aligned\n");
                 break;
             }
@@ -316,7 +316,7 @@ static void do_ass(char *token)
         case r_S0:
             if (range(value, MEMORY + 1, "S0"))
                 return;
-            if (value & 3) {
+            if (!IS_ALIGNED(value)) {
                 printf("S0 must be cell-aligned\n");
                 break;
             }
@@ -327,7 +327,7 @@ static void do_ass(char *token)
         case r_THROW:
             if (range(value, MEMORY, "'THROW"))
                 return;
-            if (value & 3) {
+            if (!IS_ALIGNED(value)) {
                 printf("'THROW must be cell-aligned\n");
                 break;
             }
@@ -340,7 +340,7 @@ static void do_ass(char *token)
 
                 if (range(adr, MEMORY, "Address"))
                     return;
-                if ((adr & 3) && byte == 0) {
+                if (!IS_ALIGNED(adr) && byte == 0) {
                     printf("Only a byte can be assigned to an unaligned "
                         "address\n");
                     return;
@@ -348,7 +348,7 @@ static void do_ass(char *token)
                 if (debug)
                     printf("Assign %lX to memory location %"PRIX32"%s\n",
                            (unsigned long)value, (UCELL)adr,
-                           ((byte == 1 && (adr & 3) == 0) ? " (byte)" : ""));
+                           ((byte == 1 && IS_ALIGNED(adr)) ? " (byte)" : ""));
                 if (byte == 1)
                     beetle_store_byte(adr, value);
                 else
@@ -506,7 +506,7 @@ static void do_command(int no)
                 printf("Start address must be less than end address\n");
                 return;
             }
-            if (start & 3 || end & 3) {
+            if (!IS_ALIGNED(start) || !IS_ALIGNED(end)) {
                 printf("Address/offset must be cell-aligned\n");
                 return;
             }
@@ -574,7 +574,7 @@ static void do_command(int no)
                 long adr = single_arg(arg);
                 if (range(adr, MEMORY, "EP"))
                     return;
-                if (adr & 3) {
+                if (!IS_ALIGNED(adr)) {
                     printf("Address must be cell-aligned\n");
                     break;
                 }
@@ -610,7 +610,7 @@ static void do_command(int no)
             FILE *handle;
             int ret;
 
-            if (adr & 3) {
+            if (!IS_ALIGNED(adr)) {
                 printf("Address must be cell-aligned\n");
                 return;
             }
@@ -696,7 +696,7 @@ static void do_command(int no)
                 upper(arg);
                 if (strcmp(arg, "TO") == 0) {
                     limit = single_arg(strtok(NULL, ""));
-                    if (limit & 3) {
+                    if (!IS_ALIGNED(limit)) {
                         printf("Address must be cell-aligned\n");
                         return;
                     }
@@ -737,7 +737,7 @@ static void do_command(int no)
 
             double_arg(strtok(NULL, ""), &start, &end);
 
-            if (start & 3 || end & 3) {
+            if (!IS_ALIGNED(start) || !IS_ALIGNED(end)) {
                 printf("Address/offset must be cell-aligned\n");
                 return;
             }
