@@ -876,8 +876,8 @@ Beetle must provide:
     header is checked; if the first seven bytes are not as specified above
     in section~\ref{object}, or the endianness value is not 0 or 1, then
     return $-2$. If the code will not fit into memory at the address given, or
-    the address is out of range, return $-1$. Otherwise load the bForth code into
-    memory, resexing it if the endianness value is different from the current
+    the address is out of range or unaligned, return $-1$. Otherwise load the bForth code into
+    memory, converting it if the endianness value is different from the current
     value of {\tt ENDISM}. The result is 0 if successful, and some other
     implementation-defined value if there is a filing system or other error.}
 \iface{save\_object}{file, address, length}{integer}{Save the \textit{length}

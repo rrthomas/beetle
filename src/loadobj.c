@@ -17,7 +17,7 @@
 int load_object(FILE *file, UCELL address)
 {
     if (!IN_MAIN_MEMORY(address) || !IS_ALIGNED(address))
-        return -4; // FIXME: check spec
+        return -1;
 
     char magic[8];
     if (fread(&magic[0], 1, 7, file) != 7)
