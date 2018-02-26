@@ -732,9 +732,6 @@ static void do_command(int no)
         {
             const char *file = strtok(NULL, " ");
             long start, end;
-            FILE *handle;
-            int ret;
-
             double_arg(strtok(NULL, ""), &start, &end);
 
             if (!IS_ALIGNED(start) || !IS_ALIGNED(end)) {
@@ -745,6 +742,7 @@ static void do_command(int no)
                 printf("Start address must be less than end address\n");
                 return;
             }
+            FILE *handle;
             if ((handle = fopen(file, "wb")) == NULL) {
                 printf("Cannot open file %s\n", file);
                 return;
@@ -752,13 +750,12 @@ static void do_command(int no)
             if (debug)
                 printf("Save memory to file %s from %lX to %lX\n", file,
                        (unsigned long)start, (unsigned long)end);
-            ret = save_object(handle, start, (UCELL)((end - start) / CELL_W));
+            int ret = save_object(handle, start, (UCELL)((end - start) / CELL_W));
             fclose(handle);
 
             switch (ret) {
             case -1:
-                printf("Address out of range or save area extends "
-                       "beyond MEMORY\n");
+                printf("Invalid address or save area extends beyond MEMORY\n");
                 break;
             case -3:
                 printf("Error while saving module\n");
