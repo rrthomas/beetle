@@ -889,11 +889,14 @@ CELL single_step(void)
     if (exception == 0)
         return -260; /* terminated OK */
 
-    /* Deal with address exceptions during execution cycle. */
+    // Deal with address exceptions during execution cycle.
+    // Since we have already had an exception, and must return a different
+    // code from usual if SP is now invalid, push the exception code
+    // "manually".
  badadr:
     SP -= CELL_W;
     if (!IN_MAIN_MEMORY(SP) || !IS_ALIGNED(SP))
       return -258;
-    M0[SP / CELL_W] = exception; // FIXME
+    beetle_store_cell(SP, exception);
     goto throw;
 }
