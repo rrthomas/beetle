@@ -697,8 +697,8 @@ CELL single_step(void)
         break;
  throw:
     case O_THROW:
-        /* EP can be unaligned in an error condition, so do BYTE * arithmetic */
-        M0[2] = BAD = EP;
+        // exception may already be set, so CELL_STORE may have no effect here.
+        beetle_store_cell(8, BAD = EP);
         if (!IN_MAIN_MEMORY((UCELL)*THROW) || !IS_ALIGNED((UCELL)*THROW))
             return -259;
         EP = (UCELL)*THROW;
