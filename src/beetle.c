@@ -454,8 +454,11 @@ static void do_command(int no)
             check_range(start, end, MEMORY, "Address");
             while (start < end) {
                 printf("%08lXh: ", (unsigned long)start);
-                for (int i = 0; i < 8 && start < end; i++, start++)
-                    printf("%02X ", ((BYTE *)M0)[start]);
+                for (int i = 0; i < 8 && start < end; i++, start++) {
+                    BYTE byte;
+                    beetle_load_byte(start, &byte);
+                    printf("%02X ", byte);
+                }
                 putchar('\n');
             }
         }
