@@ -73,12 +73,31 @@ static void check_aligned(UCELL adr, const char *quantity)
     }
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=pure"
 static void check_aligned_in_range(UCELL adr, UCELL limit, const char *quantity)
 {
     check_in_range(adr, limit, quantity);
     check_aligned(adr, quantity);
 }
+#pragma GCC diagnostic pop
 
+static void check_range(UCELL start, UCELL end, UCELL limit, const char *quantity)
+{
+    check_in_range(start, limit, quantity);
+    check_in_range(end, limit, quantity);
+    if (start >= end) {
+        printf("Start address must be less than end address\n");
+        longjmp(env, 1);
+    }
+}
+
+static void check_aligned_range(UCELL start, UCELL end, UCELL limit, const char *quantity)
+{
+    check_aligned(start, quantity);
+    check_aligned(end, quantity);
+    check_range(start, end, limit, quantity);
+}
 
 static void upper(char *s)
 {
@@ -438,12 +457,7 @@ static void do_command(int no)
             long start, end;
 
             double_arg(strtok(NULL, ""), &start, &end);
-            check_aligned_in_range(start, MEMORY, "Address");
-            check_aligned_in_range(end, MEMORY, "Address/offset");
-            if (start >= end) {
-                printf("Start address must be less than end address\n");
-                return;
-            }
+            check_aligned_range(start, end, MEMORY, "Address");
             disassemble((CELL)start / CELL_W, (CELL)end / CELL_W);
         }
         break;
@@ -471,12 +485,7 @@ static void do_command(int no)
         {
             long start, end;
             double_arg(strtok(NULL, ""), &start, &end);
-            check_in_range(start, MEMORY, "Address");
-            check_in_range(end, MEMORY, "Address");
-            if (start >= end) {
-                printf("Start address must be less than end address\n");
-                return;
-            }
+            check_range(start, end, MEMORY, "Address");
             while (start < end) {
                 printf("%08lXh: ", (unsigned long)start);
                 for (int i = 0; i < 8 && start < end; i++, start++)
@@ -619,12 +628,7 @@ static void do_command(int no)
             long start, end;
             double_arg(strtok(NULL, ""), &start, &end);
 
-            check_aligned_in_range(start, MEMORY, "Address");
-            check_aligned_in_range(end, MEMORY, "Address/offset");
-            if (start >= end) {
-                printf("Start address must be less than end address\n");
-                return;
-            }
+            check_aligned_range(start, end, MEMORY, "Address");
             FILE *handle;
             if ((handle = fopen(file, "wb")) == NULL) {
                 printf("Cannot open file %s\n", file);
