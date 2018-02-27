@@ -526,7 +526,6 @@ static void do_command(int no)
             FILE *handle;
             int ret;
 
-            check_aligned_in_range(adr, MEMORY, "Address");
             if ((handle = fopen(file, "rb")) == NULL) {
                 printf("Cannot open file %s\n", file);
                 return;
@@ -628,7 +627,6 @@ static void do_command(int no)
             long start, end;
             double_arg(strtok(NULL, ""), &start, &end);
 
-            check_aligned_range(start, end, MEMORY, "Address");
             FILE *handle;
             if ((handle = fopen(file, "wb")) == NULL) {
                 printf("Cannot open file %s\n", file);
