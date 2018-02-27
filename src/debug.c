@@ -141,18 +141,29 @@ char *val_data_stack(void)
 
 void show_data_stack(void)
 {
-    printf("Data stack: %s\n", val_data_stack());
+    if (SP == S0)
+        printf("Data stack empty\n");
+    else if (SP > S0)
+        printf("Data stack underflow\n");
+    else
+        printf("Data stack: %s\n", val_data_stack());
 }
 
 void show_return_stack(void)
 {
-    printf("Return stack: ");
-    for (UCELL i = R0 - CELL_W; i >= RP; i -= CELL_W) {
-        CELL c;
-        beetle_load_cell(i, &c);
-        printf("%"PRIX32"h ", (UCELL)c);
-        if (i == 0)
-            break;
+    if (RP == R0)
+        printf("Return stack empty\n");
+    else if (RP > R0)
+        printf("Return stack underflow\n");
+    else {
+        printf("Return stack: ");
+        for (UCELL i = R0 - CELL_W; i >= RP; i -= CELL_W) {
+            CELL c;
+            beetle_load_cell(i, &c);
+            printf("%"PRIX32"h ", (UCELL)c);
+            if (i == 0)
+                break;
+        }
+        putchar('\n');
     }
-    putchar('\n');
 }

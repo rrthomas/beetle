@@ -273,7 +273,6 @@ static void do_ass(char *token)
             printf("Can't assign to %s\n", regist[no]);
             break;
         case r_EP:
-            check_aligned_in_range(value, MEMORY, "EP");
             EP = value;
             break;
         case r_I:
@@ -284,23 +283,18 @@ static void do_ass(char *token)
             I = value;
             break;
         case r_RP:
-            check_aligned_in_range(value, MEMORY + 1, "RP");
             RP = value;
             break;
         case r_R0:
-            check_aligned_in_range(value, MEMORY + 1, "R0");
             R0 = value;
             break;
         case r_SP:
-            check_aligned_in_range(value, MEMORY + 1, "SP");
             SP = value;
             break;
         case r_S0:
-            check_aligned_in_range(value, MEMORY + 1, "S0");
             S0 = value;
             break;
         case r_THROW:
-            check_aligned_in_range(value, MEMORY, "'THROW");
             *THROW = value;
         default:
             {
@@ -409,24 +403,12 @@ static void do_command(int no)
     case c_TOD:
         {
             long value = single_arg(strtok(NULL, " "));
-
-            check_in_range(SP, MEMORY + 1, "SP");
-            if (SP == 0) {
-                printf("SP is 0h: no more stack items can be pushed\n");
-                return;
-            }
             PUSH(value);
         }
         break;
     case c_TOR:
         {
             long value = single_arg(strtok(NULL, " "));
-
-            check_in_range(SP, MEMORY + 1, "RP");
-            if (RP == 0) {
-                printf("RP is 0h: no more stack items can be pushed\n");
-                return;
-            }
             PUSH_RETURN(value);
         }
         break;
@@ -453,7 +435,6 @@ static void do_command(int no)
         break;
     case c_DFROM:
         {
-            check_in_range(SP, MEMORY, "SP");
             CELL value = POP;
             printf("%"PRId32" (%"PRIX32"h)\n", value, (UCELL)value);
         }
@@ -462,12 +443,7 @@ static void do_command(int no)
     case c_STACKS:
         check_in_range(RP, MEMORY + 1, "SP");
         check_in_range(S0, MEMORY + 1, "S0");
-        if (SP == S0)
-            printf("Data stack empty\n");
-        else if (SP > S0)
-            printf("Data stack underflow\n");
-        else
-            show_data_stack();
+        show_data_stack();
         if (no == c_STACKS)
             goto c_ret;
         break;
@@ -489,7 +465,6 @@ static void do_command(int no)
             char *arg = strtok(NULL, " ");
             if (arg != NULL) {
                 long adr = single_arg(arg);
-                check_aligned_in_range(adr, MEMORY, "EP");
                 EP = adr;
             }
             NEXT;
@@ -541,7 +516,6 @@ static void do_command(int no)
         break;
     case c_RFROM:
         {
-            check_in_range(RP, MEMORY, "RP");
             CELL value = POP_RETURN;
             printf("%"PRIX32"h (%"PRId32")\n", (UCELL)value, value);
         }
@@ -550,14 +524,6 @@ static void do_command(int no)
     case c_RETURN:
         check_in_range(RP, MEMORY + 1, "RP");
         check_in_range(R0, MEMORY + 1, "R0");
-        if (RP == R0) {
-            printf("Return stack empty\n");
-            return;
-        }
-        if (RP > R0) {
-            printf("Return stack underflow\n");
-            return;
-        }
         show_return_stack();
         break;
     case c_RUN:
@@ -628,6 +594,18 @@ static void do_command(int no)
         }
         break;
     default: /* This cannot happen */
+        break;
+    }
+
+    switch (exception) {
+    case -9:
+        printf("Invalid address\n");
+        break;
+    case -23:
+        printf("Address alignment exception\n");
+        break;
+    default:
+    case 0:
         break;
     }
 }
