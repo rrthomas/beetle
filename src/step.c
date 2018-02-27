@@ -41,7 +41,7 @@ static int getstr(UCELL adr, UCELL len, char **res)
 
     *res = calloc(1, len + 1);
     if (*res == NULL)
-        exception = -261; // FIXME: Document this!
+        exception = -511;
     else
         for (size_t i = 0; exception == 0 && i < len; i++, adr++) {
             exception = beetle_load_byte(adr, (BYTE *)((*res) + i));
@@ -750,8 +750,8 @@ CELL single_step(void)
                     UCELL len = POP;
                     UCELL str = POP;
                     char *file;
-                    int res = getstr(str, len, &file);
-                    int fd = res == 0 ? open(file, perm, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) : -1;
+                    exception = getstr(str, len, &file);
+                    int fd = exception == 0 ? open(file, perm, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) : -1;
                     free(file);
                     PUSH((CELL)fd);
                     PUSH(fd < 0 || (binary && set_binary_mode(fd, O_BINARY) < 0) ? -1 : 0);
@@ -837,16 +837,13 @@ CELL single_step(void)
                     UCELL len2 = POP;
                     UCELL str2 = POP;
                     char *from;
-                    int res = getstr(str2, len2, &from);
                     char *to = NULL;
-                    if (res == 0)
-                        res = getstr(str1, len1, &to);
-                    if (res == 0)
-                        res = rename(from, to);
+                    exception = getstr(str2, len2, &from) ||
+                        getstr(str1, len1, &to) ||
+                        rename(from, to);
                     free(from);
                     free(to);
-
-                    PUSH(res);
+                    PUSH(exception);
                 }
                 break;
 
@@ -855,12 +852,10 @@ CELL single_step(void)
                     UCELL len = POP;
                     UCELL str = POP;
                     char *file;
-                    int res = getstr(str, len, &file);
-                    if (res == 0)
-                        res = remove(file);
+                    exception = getstr(str, len, &file) ||
+                        remove(file);
                     free(file);
-
-                    PUSH(res);
+                    PUSH(exception);
                 }
                 break;
 
