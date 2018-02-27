@@ -219,7 +219,7 @@ int beetle_pre_dma(UCELL from, UCELL to)
     from &= -CELL_W;
     to = ALIGNED(to);
     if (to < from)
-        exception = -262; // FIXME: Document this!
+        exception = -1;
     CHECK_MAIN_MEMORY_ALIGNED(from);
     CHECK_MAIN_MEMORY_ALIGNED(to);
     if (exception == 0 && ENDISM)
