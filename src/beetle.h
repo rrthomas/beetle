@@ -166,13 +166,5 @@ typedef union {
    quantities is implementation-defined in C99). */
 #define ARSHIFT(n, p) ((n) = ((n) >> (p)) | (-((n) < 0) << (CELL_BIT - p)))
 
-/* Division macros */
-#define ABS(x) ((x) >= 0 ? (x) : -(x))
-#define SGN(x) ((x) > 0 ? 1 : -1)  /* not a proper sign function! */
-
-#define FDIV(a, b) ((a) / (b) - ((((a) ^ (b)) < 0) && ((a) % (b)) != 0))
-#define FMOD(a, b, t) (t = (a) % (b), (((a) ^ (b)) >= 0 || t == 0)) ? t : \
-  SGN(b) * (ABS(b)-ABS(t))
-
 
 #endif
