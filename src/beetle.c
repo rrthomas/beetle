@@ -101,17 +101,17 @@ static void check_aligned_range(UCELL start, UCELL end, UCELL limit, const char 
 
 static void upper(char *s)
 {
-    size_t i, len = strlen(s);
+    size_t len = strlen(s);
 
-    for (i = 0; i < len; i++, s++)
+    for (size_t i = 0; i < len; i++, s++)
         *s = toupper(*s);
 }
 
 static size_t search(const char *token, const char *list[], size_t entries)
 {
-    size_t i, len = strlen(token);
+    size_t len = strlen(token);
 
-    for (i = 0; i < entries; i++)
+    for (size_t i = 0; i < entries; i++)
         if (strncmp(token, list[i], len) == 0)
             return i;
 
@@ -121,16 +121,14 @@ static size_t search(const char *token, const char *list[], size_t entries)
 
 static long single_arg(const char *s)
 {
-    long n;
-    char *endp;
-    int len;
-
     if (s == NULL) {
         printf("Too few arguments\n");
         longjmp(env, 1);
     }
-    len = strlen(s);
+    size_t len = strlen(s);
 
+    long n;
+    char *endp;
     if (s[len - 1] == 'H' || s[len - 1] == 'h') {
         n = strtol(s, &endp, 16);
         len -= 1;
@@ -147,23 +145,23 @@ static long single_arg(const char *s)
 
 static void double_arg(char *s, long *start, long *end)
 {
-    char *token, copy[MAXLEN];
-    size_t i;
-    bool plus = false;
-
     if (s == NULL) {
         printf("Too few arguments\n");
         longjmp(env, 1);
     }
 
+    char *token, copy[MAXLEN];
     strcpy(copy, s);
     if ((token = strtok(copy, " +")) == NULL) {
         printf("Too few arguments\n");
         longjmp(env, 1);
     }
 
+    size_t i;
     for (i = strlen(token); s[i] == ' ' && i < strlen(s); i++)
         ;
+
+    bool plus = false;
     if (i < strlen(s))
         plus = s[i] == '+';
 
@@ -192,35 +190,35 @@ static int imm_op(BYTE o)
     return load_op(o & 0xFE);
 }
 
-static void disassemble(CELL start, CELL end)
+static void disassemble(UCELL start, UCELL end)
 {
-    CELL a, *p = M0 + start;
-    BYTE i;
-    const char *token;
-
-    while (p < M0 + end) {
-        printf("%08"PRIX32"h: ", (UCELL)((p - M0) * CELL_W));
-        a = *p++;
+    for (UCELL p = start; p < end; ) {
+        printf("%08"PRIX32"h: ", p);
+        CELL a;
+        beetle_load_cell(p, &a);
+        p += CELL_W;
 
         do {
-            i = (BYTE)a;
+            BYTE i = (BYTE)a;
             ARSHIFT(a, 8);
-            token = disass(i);
+            const char *token = disass(i);
             if (strcmp(token, ""))
                 printf("%s", token);
             else
                 printf("Undefined instruction");
 
             if (load_op(i)) {
+                CELL lit;
+                beetle_load_cell(p, &lit);
                 if (i != O_LITERAL)
-                    printf(" %"PRIX32"h", (UCELL)*p);
+                    printf(" %"PRIX32"h", (UCELL)lit);
                 else
-                    printf(" %"PRId32" (%"PRIX32"h)", *p, (UCELL)*p);
-                p++;
+                    printf(" %"PRId32" (%"PRIX32"h)", lit, (UCELL)lit);
+                p += CELL_W;
             } else {
                 if (imm_op(i)) {
                     if (i != O_LITERALI)
-                        printf(" %"PRIX32"h", (UCELL)((p - M0 + a) * CELL_W));
+                        printf(" %"PRIX32"h", p + a * CELL_W);
                     else
                         printf(" %"PRId32" (%"PRIX32"h)", a, (UCELL)a);
                     a = 0;
@@ -236,11 +234,10 @@ static void disassemble(CELL start, CELL end)
 
 static void do_ass(char *token)
 {
-    int no = search(token, regist, registers);
     char *number = strtok(NULL, " ");
     int len = strlen(number);
     long value;
-    int byte = 0;
+    bool byte = false;
 
     upper(number);
     if (number[0] == 'O') {
@@ -249,11 +246,11 @@ static void do_ass(char *token)
             printf("Invalid opcode\n");
             return;
         }
-        byte = 1;
+        byte = true;
     } else {
         value = single_arg(number);
         if (number[len - 1] == 'H' && len < 4)
-            byte = 1;
+            byte = true;
         else {
             if ((unsigned long)value < 10)
                 byte = len == 1;
@@ -264,6 +261,7 @@ static void do_ass(char *token)
         }
     }
 
+    int no = search(token, regist, registers);
     switch (no) {
         case r_A:
             A = value;
@@ -315,12 +313,12 @@ static void do_ass(char *token)
                 CELL adr = (CELL)single_arg(token);
 
                 check_in_range(adr, MEMORY, "Address");
-                if (!IS_ALIGNED(adr) && byte == 0) {
+                if (!IS_ALIGNED(adr) && byte == false) {
                     printf("Only a byte can be assigned to an unaligned "
                         "address\n");
                     return;
                 }
-                if (byte == 1)
+                if (byte == true)
                     beetle_store_byte(adr, value);
                 else
                     beetle_store_cell(adr, value);
@@ -440,9 +438,7 @@ static void do_command(int no)
         break;
     case c_COUNTS:
         {
-            int i;
-
-            for (i = 0; i < 92; i++) {
+            for (int i = 0; i < 92; i++) {
                 printf("%10s: %7ld", disass(i), count[i]);
                 if ((i + 1) % 4)
                     putchar(' ');
@@ -458,7 +454,7 @@ static void do_command(int no)
 
             double_arg(strtok(NULL, ""), &start, &end);
             check_aligned_range(start, end, MEMORY, "Address");
-            disassemble((CELL)start / CELL_W, (CELL)end / CELL_W);
+            disassemble((UCELL)start, (UCELL)end);
         }
         break;
     case c_DFROM:
@@ -523,14 +519,13 @@ static void do_command(int no)
         {
             const char *file = strtok(NULL, " ");
             long adr = single_arg(strtok(NULL, " "));
-            FILE *handle;
-            int ret;
 
+            FILE *handle;
             if ((handle = fopen(file, "rb")) == NULL) {
                 printf("Cannot open file %s\n", file);
                 return;
             }
-            ret = load_object(handle, adr);
+            int ret = load_object(handle, adr);
             fclose(handle);
 
             switch (ret) {
@@ -575,18 +570,12 @@ static void do_command(int no)
         show_return_stack();
         break;
     case c_RUN:
-        {
-            CELL ret;
-
-            ret = run();
-            printf("HALT code %"PRId32" was returned\n", ret);
-        }
+        printf("HALT code %"PRId32" was returned\n", run());
         break;
     case c_STEP:
     case c_TRACE:
         {
             char *arg = strtok(NULL, " ");
-            unsigned long i, limit;
             CELL ret = -260;
 
             if (arg == NULL) {
@@ -597,7 +586,7 @@ static void do_command(int no)
             } else {
                 upper(arg);
                 if (strcmp(arg, "TO") == 0) {
-                    limit = single_arg(strtok(NULL, ""));
+                    unsigned long limit = single_arg(strtok(NULL, ""));
                     check_aligned_in_range(limit, MEMORY, "Address");
                     while ((unsigned long)EP != limit && ret == -260) {
                         ret = single_step();
@@ -608,7 +597,7 @@ static void do_command(int no)
                         printf("HALT code %"PRId32" was returned at EP = %Xh\n",
                                ret, EP);
                 } else {
-                    limit = single_arg(arg);
+                    unsigned long limit = single_arg(arg), i;
                     for (i = 0; i < limit && ret == -260; i++) {
                         ret = single_step();
                         if (no == c_TRACE) do_registers();
@@ -655,10 +644,6 @@ static void do_command(int no)
 
 static void parse(char *input)
 {
-    char *token, copy[MAXLEN];
-    size_t i, no;
-    bool ass = false;
-
     if (input[0] == '!') {
         int result = system(input + 1);
         if (result == -1)
@@ -668,17 +653,21 @@ static void parse(char *input)
         return;
     }
 
+    char copy[MAXLEN];
     strcpy(copy, input);
-    token = strtok(copy, strchr(copy, '=') == NULL ? " " : "=");
+    char *token = strtok(copy, strchr(copy, '=') == NULL ? " " : "=");
     if (token == NULL || strlen(token) == 0) return;
     upper(token);
 
+    size_t i;
     for (i = strlen(token); input[i] == ' ' && i < strlen(input); i++)
         ;
+
+    bool ass = false;
     if (i < strlen(input))
         ass = input[i] == '=';
 
-    no = search(token, command, commands);
+    size_t no = search(token, command, commands);
     if (no != SIZE_MAX)
         do_command(no);
     else {
