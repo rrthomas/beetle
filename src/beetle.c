@@ -145,14 +145,8 @@ static long single_arg(const char *s)
 
 static void double_arg(char *s, long *start, long *end)
 {
-    if (s == NULL) {
-        printf("Too few arguments\n");
-        longjmp(env, 1);
-    }
-
     char *token, copy[MAXLEN];
-    strcpy(copy, s);
-    if ((token = strtok(copy, " +")) == NULL) {
+    if (s == NULL || (token = strtok(strcpy(copy, s), " +")) == NULL) {
         printf("Too few arguments\n");
         longjmp(env, 1);
     }
