@@ -75,6 +75,12 @@ static void check_aligned(UCELL adr, const char *quantity)
     }
 }
 
+static void check_aligned_in_range(UCELL adr, UCELL limit, const char *quantity)
+{
+    check_in_range(adr, limit, quantity);
+    check_aligned(adr, quantity);
+}
+
 
 static void upper(char *s)
 {
@@ -264,8 +270,7 @@ static void do_ass(char *token)
             printf("Can't assign to ENDISM\n");
             break;
         case r_EP:
-            check_in_range(value, MEMORY, "EP");
-            check_aligned(value, "EP");
+            check_aligned_in_range(value, MEMORY, "EP");
             if (debug)
                 printf("Assign EP %lX\n", (unsigned long)value);
             EP = value;
@@ -286,36 +291,31 @@ static void do_ass(char *token)
             printf("Can't assign to MEMORY\n");
             break;
         case r_RP:
-            check_in_range(value, MEMORY + 1, "RP");
-            check_aligned(value, "RP");
+            check_aligned_in_range(value, MEMORY + 1, "RP");
             if (debug)
                 printf("Assign RP %lX\n", (unsigned long)value);
             RP = value;
             break;
         case r_R0:
-            check_in_range(value, MEMORY + 1, "R0");
-            check_aligned(value, "R0");
+            check_aligned_in_range(value, MEMORY + 1, "R0");
             if (debug)
                 printf("Assign R0 %lX\n", (unsigned long)value);
             R0 = value;
             break;
         case r_SP:
-            check_in_range(value, MEMORY + 1, "SP");
-            check_aligned(value, "SP");
+            check_aligned_in_range(value, MEMORY + 1, "SP");
             if (debug)
                 printf("Assign SP %lX\n", (unsigned long)value);
             SP = value;
             break;
         case r_S0:
-            check_in_range(value, MEMORY + 1, "S0");
-            check_aligned(value, "S0");
+            check_aligned_in_range(value, MEMORY + 1, "S0");
             if (debug)
                 printf("Assign S0 %lX\n", (unsigned long)value);
             S0 = value;
             break;
         case r_THROW:
-            check_in_range(value, MEMORY, "'THROW");
-            check_aligned(value, "'THROW");
+            check_aligned_in_range(value, MEMORY, "'THROW");
             if (debug)
                 printf("Assign 'THROW %lX\n", (unsigned long)value);
             *THROW = value;
@@ -478,14 +478,12 @@ static void do_command(int no)
             long start, end;
 
             double_arg(strtok(NULL, ""), &start, &end);
-            check_in_range(start, MEMORY, "Address");
-            check_in_range(end, MEMORY, "Address");
+            check_aligned_in_range(start, MEMORY, "Address");
+            check_aligned_in_range(end, MEMORY, "Address/offset");
             if (start >= end) {
                 printf("Start address must be less than end address\n");
                 return;
             }
-            check_aligned(start, "Address");
-            check_aligned(end, "Address/offset");
             if (debug)
                 printf("Disassemble from %lX to %lX\n", (unsigned long)start, (unsigned long)end);
             disassemble((CELL)start / CELL_W, (CELL)end / CELL_W);
@@ -546,8 +544,7 @@ static void do_command(int no)
             char *arg = strtok(NULL, " ");
             if (arg != NULL) {
                 long adr = single_arg(arg);
-                check_in_range(adr, MEMORY, "EP");
-                check_aligned(adr, "Address");
+                check_aligned_in_range(adr, MEMORY, "EP");
                 if (debug)
                     printf("Set EP to %lXh\n", (unsigned long)adr);
                 EP = adr;
@@ -580,7 +577,7 @@ static void do_command(int no)
             FILE *handle;
             int ret;
 
-            check_aligned(adr, "Address");
+            check_aligned_in_range(adr, MEMORY, "Address");
             if ((handle = fopen(file, "rb")) == NULL) {
                 printf("Cannot open file %s\n", file);
                 return;
@@ -661,8 +658,7 @@ static void do_command(int no)
                 upper(arg);
                 if (strcmp(arg, "TO") == 0) {
                     limit = single_arg(strtok(NULL, ""));
-                    check_aligned(limit, "Address");
-                    check_in_range(limit, MEMORY, "Address");
+                    check_aligned_in_range(limit, MEMORY, "Address");
                     if (debug)
                         printf("STEP TO %lX\n", limit);
                     while ((unsigned long)EP != limit && ret == -260) {
@@ -695,8 +691,8 @@ static void do_command(int no)
             long start, end;
             double_arg(strtok(NULL, ""), &start, &end);
 
-            check_aligned(start, "Address");
-            check_aligned(end, "Address/offset");
+            check_aligned_in_range(start, MEMORY, "Address");
+            check_aligned_in_range(end, MEMORY, "Address/offset");
             if (start >= end) {
                 printf("Start address must be less than end address\n");
                 return;
