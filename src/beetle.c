@@ -511,12 +511,9 @@ static void do_command(int no)
             R0 = RP;
             *THROW = 0;
             A = 0;
-            if (no == c_LOAD)
-                goto c_load;
-            break;
-        }
- c_load:
-        {
+            if (no != c_LOAD)
+                break;
+
             const char *file = strtok(NULL, " ");
             long adr = single_arg(strtok(NULL, " "));
 
