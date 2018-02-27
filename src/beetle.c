@@ -256,10 +256,10 @@ static void do_ass(char *token)
             M0[2] = BAD = value;
             break;
         case r_CHECKED:
-            printf("Can't assign to CHECKED\n");
-            break;
         case r_ENDISM:
-            printf("Can't assign to ENDISM\n");
+        case r_M0:
+        case r_MEMORY:
+            printf("Can't assign to %s\n", regist[no]);
             break;
         case r_EP:
             check_aligned_in_range(value, MEMORY, "EP");
@@ -271,12 +271,6 @@ static void do_ass(char *token)
                 break;
             }
             I = value;
-            break;
-        case r_M0:
-            printf("Can't assign to M0\n");
-            break;
-        case r_MEMORY:
-            printf("Can't assign to MEMORY\n");
             break;
         case r_RP:
             check_aligned_in_range(value, MEMORY + 1, "RP");
