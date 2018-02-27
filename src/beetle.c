@@ -58,12 +58,13 @@ static int registers = sizeof(regist) / sizeof(*regist);
 static long count[256];
 
 
-static int range(CELL adr, CELL limit, const char *quantity)
+static void range(UCELL adr, UCELL limit, const char *quantity)
 {
-    if (adr < limit) return 0;
-    printf("%s must be in the range {0..%"PRIX32"h} ({0..%"PRIu32"})\n",
-           quantity, (UCELL)limit, (UCELL)limit);
-    return 1;
+    if (adr >= limit) {
+        printf("%s must be in the range {0..%"PRIX32"h} ({0..%"PRIu32"})\n",
+               quantity, (UCELL)limit, (UCELL)limit);
+        longjmp(env, 1);
+    }
 }
 
 
@@ -255,8 +256,7 @@ static void do_ass(char *token)
             printf("Can't assign to ENDISM\n");
             break;
         case r_EP:
-            if (range(value, MEMORY, "EP"))
-                return;
+            range(value, MEMORY, "EP");
             if (!IS_ALIGNED(value)) {
                 printf("EP must be cell-aligned\n");
                 break;
@@ -281,8 +281,7 @@ static void do_ass(char *token)
             printf("Can't assign to MEMORY\n");
             break;
         case r_RP:
-            if (range(value, MEMORY + 1, "RP"))
-                return;
+            range(value, MEMORY + 1, "RP");
             if (!IS_ALIGNED(value)) {
                 printf("RP must be cell-aligned\n");
                 break;
@@ -292,8 +291,7 @@ static void do_ass(char *token)
             RP = value;
             break;
         case r_R0:
-            if (range(value, MEMORY + 1, "R0"))
-                return;
+            range(value, MEMORY + 1, "R0");
             if (!IS_ALIGNED(value)) {
                 printf("R0 must be cell-aligned\n");
                 break;
@@ -303,8 +301,7 @@ static void do_ass(char *token)
             R0 = value;
             break;
         case r_SP:
-            if (range(value, MEMORY + 1, "SP"))
-                return;
+            range(value, MEMORY + 1, "SP");
             if (!IS_ALIGNED(value)) {
                 printf("SP must be cell-aligned\n");
                 break;
@@ -314,8 +311,7 @@ static void do_ass(char *token)
             SP = value;
             break;
         case r_S0:
-            if (range(value, MEMORY + 1, "S0"))
-                return;
+            range(value, MEMORY + 1, "S0");
             if (!IS_ALIGNED(value)) {
                 printf("S0 must be cell-aligned\n");
                 break;
@@ -325,8 +321,7 @@ static void do_ass(char *token)
             S0 = value;
             break;
         case r_THROW:
-            if (range(value, MEMORY, "'THROW"))
-                return;
+            range(value, MEMORY, "'THROW");
             if (!IS_ALIGNED(value)) {
                 printf("'THROW must be cell-aligned\n");
                 break;
@@ -338,8 +333,7 @@ static void do_ass(char *token)
             {
                 CELL adr = (CELL)single_arg(token);
 
-                if (range(adr, MEMORY, "Address"))
-                    return;
+                range(adr, MEMORY, "Address");
                 if (!IS_ALIGNED(adr) && byte == 0) {
                     printf("Only a byte can be assigned to an unaligned "
                         "address\n");
@@ -411,8 +405,7 @@ static void do_display(const char *token, const char *format)
 
                 if (debug)
                     printf("Display contents of memory location %"PRIX32"\n", (UCELL)adr);
-                if (range(adr, MEMORY, "Address"))
-                    return;
+                range(adr, MEMORY, "Address");
                 if (!IS_ALIGNED(adr)) {
                     BYTE b;
                     beetle_load_byte(adr, &b);
@@ -444,7 +437,6 @@ static void do_registers(void)
 
 static void do_command(int no)
 {
-    // FIXME: Use these next two!
     int exception = 0;
     CELL temp = 0;
 
@@ -455,8 +447,7 @@ static void do_command(int no)
 
             if (debug)
                 printf("Push %ld on to the data stack\n", value);
-            if (range(SP, MEMORY + 1, "SP"))
-                return;
+            range(SP, MEMORY + 1, "SP");
             if (SP == 0) {
                 printf("SP is 0h: no more stack items can be pushed\n");
                 return;
@@ -470,8 +461,7 @@ static void do_command(int no)
 
             if (debug)
                 printf("Push %ld on to the return stack\n", value);
-            if (range(SP, MEMORY + 1, "RP"))
-                return;
+            range(SP, MEMORY + 1, "RP");
             if (RP == 0) {
                 printf("RP is 0h: no more stack items can be pushed\n");
                 return;
@@ -498,10 +488,8 @@ static void do_command(int no)
             long start, end;
 
             double_arg(strtok(NULL, ""), &start, &end);
-            if (range(start, MEMORY, "Address"))
-                return;
-            if (range(end, MEMORY, "Address"))
-                return;
+            range(start, MEMORY, "Address");
+            range(end, MEMORY, "Address");
             if (start >= end) {
                 printf("Start address must be less than end address\n");
                 return;
@@ -519,8 +507,7 @@ static void do_command(int no)
         {
             if (debug)
                 printf("Pop a number from the data stack and display it\n");
-            if (range(SP, MEMORY, "SP"))
-                return;
+            range(SP, MEMORY, "SP");
             CELL value = POP;
             printf("%"PRId32" (%"PRIX32"h)\n", value, (UCELL)value);
         }
@@ -529,15 +516,14 @@ static void do_command(int no)
     case c_STACKS:
         if (debug)
             printf("Display the data stack\n");
-        if (!range(RP, MEMORY + 1, "SP") &&
-            !range(S0, MEMORY + 1, "S0")) {
-            if (SP == S0)
-                printf("Data stack empty\n");
-            else if (SP > S0)
-                printf("Data stack underflow\n");
-            else
-                show_data_stack();
-        }
+        range(RP, MEMORY + 1, "SP");
+        range(S0, MEMORY + 1, "S0");
+        if (SP == S0)
+            printf("Data stack empty\n");
+        else if (SP > S0)
+            printf("Data stack underflow\n");
+        else
+            show_data_stack();
         if (no == c_STACKS)
             goto c_ret;
         break;
@@ -551,8 +537,8 @@ static void do_command(int no)
         {
             long start, end;
             double_arg(strtok(NULL, ""), &start, &end);
-            if (range(start, MEMORY, "Address")) return;
-            if (range(end, MEMORY, "Address")) return;
+            range(start, MEMORY, "Address");
+            range(end, MEMORY, "Address");
             if (start >= end) {
                 printf("Start address must be less than end address\n");
                 return;
@@ -572,8 +558,7 @@ static void do_command(int no)
             char *arg = strtok(NULL, " ");
             if (arg != NULL) {
                 long adr = single_arg(arg);
-                if (range(adr, MEMORY, "EP"))
-                    return;
+                range(adr, MEMORY, "EP");
                 if (!IS_ALIGNED(adr)) {
                     printf("Address must be cell-aligned\n");
                     break;
@@ -647,7 +632,7 @@ static void do_command(int no)
         {
             if (debug)
                 printf("Pop a number from the return stack and display it\n");
-            if (range(RP, MEMORY, "RP")) return;
+            range(RP, MEMORY, "RP");
             CELL value = POP_RETURN;
             printf("%"PRIX32"h (%"PRId32")\n", (UCELL)value, value);
         }
@@ -656,10 +641,8 @@ static void do_command(int no)
     case c_RETURN:
         if (debug)
             printf("Display the return stack\n");
-        if (range(RP, MEMORY + 1, "RP"))
-            return;
-        if (range(R0, MEMORY + 1, "R0"))
-            return;
+        range(RP, MEMORY + 1, "RP");
+        range(R0, MEMORY + 1, "R0");
         if (RP == R0) {
             printf("Return stack empty\n");
             return;
@@ -700,8 +683,7 @@ static void do_command(int no)
                         printf("Address must be cell-aligned\n");
                         return;
                     }
-                    if (range(limit, MEMORY, "Address"))
-                        return;
+                    range(limit, MEMORY, "Address");
                     if (debug)
                         printf("STEP TO %lX\n", limit);
                     while ((unsigned long)EP != limit && ret == -260) {
