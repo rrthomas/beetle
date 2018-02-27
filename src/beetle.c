@@ -27,8 +27,6 @@
 #include "debug.h"
 
 
-bool debug = false; // User interface debug control
-
 #define DEFAULT_MEMORY 1048576 // Default size of Beetle's memory in cells (4Mb)
 #define MAX_MEMORY 536870912 // Maximum size of memory in cells (2Gb)
 static UCELL memory_size = DEFAULT_MEMORY; // Size of Beetle's memory in cells
@@ -39,11 +37,11 @@ static jmp_buf env;
 
 static const char *command[] = {
     ">D", ">R", "COUNTS", "DISASSEMBLE", "D>", "DATA",
-    "DEBUG", "DUMP", "FROM", "INITIALISE", "LOAD", "QUIT", "REGISTERS", "R>",
+    "DUMP", "FROM", "INITIALISE", "LOAD", "QUIT", "REGISTERS", "R>",
     "RETURN", "RUN", "STEP", "SAVE", "STACKS", "TRACE"
 };
 enum commands { c_TOD, c_TOR, c_COUNTS, c_DISASSEMBLE, c_DFROM, c_DATA,
-    c_DEBUG, c_DUMP, c_FROM, c_INITIALISE, c_LOAD, c_QUIT, c_REGISTERS, c_RFROM,
+    c_DUMP, c_FROM, c_INITIALISE, c_LOAD, c_QUIT, c_REGISTERS, c_RFROM,
     c_RETURN, c_RUN, c_STEP, c_SAVE, c_STACKS, c_TRACE };
 static int commands = sizeof(command) / sizeof(*command);
 
@@ -249,18 +247,12 @@ static void do_ass(char *token)
 
     switch (no) {
         case r_A:
-            if (debug)
-                printf("Assign A %lX\n", (unsigned long)value);
             A = value;
             break;
         case r_NOT_ADDRESS:
-            if (debug)
-                printf("Assign -ADDRESS %lX\n", (unsigned long)value);
             M0[3] = NOT_ADDRESS = value;
             break;
         case r_BAD:
-            if (debug)
-                printf("Assign 'BAD %lX\n", (unsigned long)value);
             M0[2] = BAD = value;
             break;
         case r_CHECKED:
@@ -271,8 +263,6 @@ static void do_ass(char *token)
             break;
         case r_EP:
             check_aligned_in_range(value, MEMORY, "EP");
-            if (debug)
-                printf("Assign EP %lX\n", (unsigned long)value);
             EP = value;
             break;
         case r_I:
@@ -280,8 +270,6 @@ static void do_ass(char *token)
                 printf("I must be assigned a byte\n");
                 break;
             }
-            if (debug)
-                printf("Assign I %lX\n", (unsigned long)value);
             I = value;
             break;
         case r_M0:
@@ -292,32 +280,22 @@ static void do_ass(char *token)
             break;
         case r_RP:
             check_aligned_in_range(value, MEMORY + 1, "RP");
-            if (debug)
-                printf("Assign RP %lX\n", (unsigned long)value);
             RP = value;
             break;
         case r_R0:
             check_aligned_in_range(value, MEMORY + 1, "R0");
-            if (debug)
-                printf("Assign R0 %lX\n", (unsigned long)value);
             R0 = value;
             break;
         case r_SP:
             check_aligned_in_range(value, MEMORY + 1, "SP");
-            if (debug)
-                printf("Assign SP %lX\n", (unsigned long)value);
             SP = value;
             break;
         case r_S0:
             check_aligned_in_range(value, MEMORY + 1, "S0");
-            if (debug)
-                printf("Assign S0 %lX\n", (unsigned long)value);
             S0 = value;
             break;
         case r_THROW:
             check_aligned_in_range(value, MEMORY, "'THROW");
-            if (debug)
-                printf("Assign 'THROW %lX\n", (unsigned long)value);
             *THROW = value;
         default:
             {
@@ -329,10 +307,6 @@ static void do_ass(char *token)
                         "address\n");
                     return;
                 }
-                if (debug)
-                    printf("Assign %lX to memory location %"PRIX32"%s\n",
-                           (unsigned long)value, (UCELL)adr,
-                           ((byte == 1 && IS_ALIGNED(adr)) ? " (byte)" : ""));
                 if (byte == 1)
                     beetle_store_byte(adr, value);
                 else
@@ -393,8 +367,6 @@ static void do_display(const char *token, const char *format)
             {
                 CELL adr = (CELL)single_arg(token);
 
-                if (debug)
-                    printf("Display contents of memory location %"PRIX32"\n", (UCELL)adr);
                 check_in_range(adr, MEMORY, "Address");
                 if (!IS_ALIGNED(adr)) {
                     BYTE b;
@@ -418,8 +390,6 @@ static void do_display(const char *token, const char *format)
 
 static void do_registers(void)
 {
-    if (debug)
-        printf("Display EP, I and A\n");
     do_display("EP", "%-25s");
     do_display("I", "%-22s");
     do_display("A", "%-16s\n");
@@ -435,8 +405,6 @@ static void do_command(int no)
         {
             long value = single_arg(strtok(NULL, " "));
 
-            if (debug)
-                printf("Push %ld on to the data stack\n", value);
             check_in_range(SP, MEMORY + 1, "SP");
             if (SP == 0) {
                 printf("SP is 0h: no more stack items can be pushed\n");
@@ -449,8 +417,6 @@ static void do_command(int no)
         {
             long value = single_arg(strtok(NULL, " "));
 
-            if (debug)
-                printf("Push %ld on to the return stack\n", value);
             check_in_range(SP, MEMORY + 1, "RP");
             if (RP == 0) {
                 printf("RP is 0h: no more stack items can be pushed\n");
@@ -484,15 +450,11 @@ static void do_command(int no)
                 printf("Start address must be less than end address\n");
                 return;
             }
-            if (debug)
-                printf("Disassemble from %lX to %lX\n", (unsigned long)start, (unsigned long)end);
             disassemble((CELL)start / CELL_W, (CELL)end / CELL_W);
         }
         break;
     case c_DFROM:
         {
-            if (debug)
-                printf("Pop a number from the data stack and display it\n");
             check_in_range(SP, MEMORY, "SP");
             CELL value = POP;
             printf("%"PRId32" (%"PRIX32"h)\n", value, (UCELL)value);
@@ -500,8 +462,6 @@ static void do_command(int no)
         break;
     case c_DATA:
     case c_STACKS:
-        if (debug)
-            printf("Display the data stack\n");
         check_in_range(RP, MEMORY + 1, "SP");
         check_in_range(S0, MEMORY + 1, "S0");
         if (SP == S0)
@@ -513,12 +473,6 @@ static void do_command(int no)
         if (no == c_STACKS)
             goto c_ret;
         break;
-    case c_DEBUG:
-        {
-            char *arg = strtok(NULL, " ");
-            debug = arg ? (single_arg(arg) != 0) : !debug;
-        }
-        break;
     case c_DUMP:
         {
             long start, end;
@@ -529,8 +483,6 @@ static void do_command(int no)
                 printf("Start address must be less than end address\n");
                 return;
             }
-            if (debug)
-                printf("Dump memory from %lX to %lX\n", (unsigned long)start, (unsigned long)end);
             while (start < end) {
                 printf("%08lXh: ", (unsigned long)start);
                 for (int i = 0; i < 8 && start < end; i++, start++)
@@ -545,20 +497,14 @@ static void do_command(int no)
             if (arg != NULL) {
                 long adr = single_arg(arg);
                 check_aligned_in_range(adr, MEMORY, "EP");
-                if (debug)
-                    printf("Set EP to %lXh\n", (unsigned long)adr);
                 EP = adr;
             }
-            if (debug)
-                printf("Perform NEXT\n");
             NEXT;
         }
         break;
     case c_INITIALISE:
     case c_LOAD:
         {
-            if (debug)
-                printf("Initialise Beetle\n");
             memset(M0, 0, memory_size);
             memset(count, 0, 256 * sizeof(long));
             init_beetle(M0, memory_size, 16);
@@ -582,8 +528,6 @@ static void do_command(int no)
                 printf("Cannot open file %s\n", file);
                 return;
             }
-            if (debug)
-                printf("Load binary image %s to address %lX\n", file, (unsigned long)adr);
             ret = load_object(handle, adr);
             fclose(handle);
 
@@ -609,8 +553,6 @@ static void do_command(int no)
         break;
     case c_RFROM:
         {
-            if (debug)
-                printf("Pop a number from the return stack and display it\n");
             check_in_range(RP, MEMORY, "RP");
             CELL value = POP_RETURN;
             printf("%"PRIX32"h (%"PRId32")\n", (UCELL)value, value);
@@ -618,8 +560,6 @@ static void do_command(int no)
         break;
     c_ret:
     case c_RETURN:
-        if (debug)
-            printf("Display the return stack\n");
         check_in_range(RP, MEMORY + 1, "RP");
         check_in_range(R0, MEMORY + 1, "R0");
         if (RP == R0) {
@@ -648,8 +588,6 @@ static void do_command(int no)
             CELL ret = -260;
 
             if (arg == NULL) {
-                if (debug)
-                    printf("Step once\n");
                 if ((ret = single_step()))
                     printf("HALT code %"PRId32" was returned\n", ret);
                 if (no == c_TRACE) do_registers();
@@ -659,8 +597,6 @@ static void do_command(int no)
                 if (strcmp(arg, "TO") == 0) {
                     limit = single_arg(strtok(NULL, ""));
                     check_aligned_in_range(limit, MEMORY, "Address");
-                    if (debug)
-                        printf("STEP TO %lX\n", limit);
                     while ((unsigned long)EP != limit && ret == -260) {
                         ret = single_step();
                         if (no == c_TRACE) do_registers();
@@ -671,8 +607,6 @@ static void do_command(int no)
                                ret, EP);
                 } else {
                     limit = single_arg(arg);
-                    if (debug)
-                        printf("STEP for %lu instructions\n", limit);
                     for (i = 0; i < limit && ret == -260; i++) {
                         ret = single_step();
                         if (no == c_TRACE) do_registers();
@@ -702,9 +636,6 @@ static void do_command(int no)
                 printf("Cannot open file %s\n", file);
                 return;
             }
-            if (debug)
-                printf("Save memory to file %s from %lX to %lX\n", file,
-                       (unsigned long)start, (unsigned long)end);
             int ret = save_object(handle, start, (UCELL)((end - start) / CELL_W));
             fclose(handle);
 
@@ -733,8 +664,6 @@ static void parse(char *input)
     bool ass = false;
 
     if (input[0] == '!') {
-        if (debug)
-            printf("Send %s to the environment\n", input + 1);
         int result = system(input + 1);
         if (result == -1)
             printf("Could not run command\n");
@@ -839,9 +768,6 @@ int main(int argc, char *argv[])
                         die("memory size must be a positive number up to %"PRIu32, (UCELL)MAX_MEMORY);
                     break;
                 }
-            case 1:
-                debug = true;
-                break;
             case 2:
                 usage();
                 exit(EXIT_SUCCESS);
