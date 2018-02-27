@@ -707,7 +707,7 @@ CELL single_step(void)
  throw:
     case O_THROW:
         // exception may already be set, so CELL_STORE may have no effect here.
-        beetle_store_cell(8, BAD = EP);
+        beetle_store_cell(2 * CELL_W, BAD = EP);
         if (!IN_MAIN_MEMORY((UCELL)*THROW) || !IS_ALIGNED((UCELL)*THROW))
             return -259;
         EP = (UCELL)*THROW;

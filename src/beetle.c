@@ -261,10 +261,10 @@ static void do_ass(char *token)
             A = value;
             break;
         case r_NOT_ADDRESS:
-            M0[3] = NOT_ADDRESS = value;
+            beetle_store_cell(3 * CELL_W, (NOT_ADDRESS = value));
             break;
         case r_BAD:
-            M0[2] = BAD = value;
+            beetle_store_cell(2 * CELL_W, (BAD = value));
             break;
         case r_CHECKED:
         case r_ENDISM:
