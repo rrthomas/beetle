@@ -144,9 +144,12 @@ typedef union {
      himem_addr(FLIP(a)))
 
 /* Address checking */
+#define SET_NOT_ADDRESS(a)                      \
+    M0[3] = NOT_ADDRESS = (a);
+
 #define CHECK_ADDRESS(a, cond, code, label)     \
     if (!(cond)) {                              \
-        M0[3] = NOT_ADDRESS = (a);              \
+        SET_NOT_ADDRESS(a);                     \
         exception = code;                       \
         goto label;                             \
     }
