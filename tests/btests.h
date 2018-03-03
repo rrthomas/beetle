@@ -11,7 +11,14 @@
 #define BEETLE_BTESTS
 
 
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+#include <inttypes.h>
+
 #include "beetle.h"
+#include "debug.h"
+#include "opcodes.h"
 
 #define str(s) #s
 #define xstr(s) str(s)

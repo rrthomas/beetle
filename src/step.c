@@ -120,7 +120,7 @@ CELL single_step(void)
     switch (I) {
     case O_NEXT00:
     case O_NEXTFF:
-        NEXTC;
+        NEXT;
         break;
     case O_DUP:
         {
@@ -554,26 +554,26 @@ CELL single_step(void)
             CELL addr = LOAD_CELL(EP);
             CHECK_MAIN_MEMORY_ALIGNED(addr);
             EP = addr;
-            NEXTC;
+            NEXT;
         }
         break;
     case O_BRANCHI:
         EP += A * CELL_W;
-        NEXTC;
+        NEXT;
         break;
     case O_QBRANCH:
         if (POP == B_FALSE) {
             CELL addr = LOAD_CELL(EP);
             CHECK_MAIN_MEMORY_ALIGNED(addr);
             EP = addr;
-            NEXTC;
+            NEXT;
         } else
             EP += CELL_W;
         break;
     case O_QBRANCHI:
         if (POP == B_FALSE)
             EP += A * CELL_W;
-        NEXTC;
+        NEXT;
         break;
     case O_EXECUTE:
         {
@@ -581,7 +581,7 @@ CELL single_step(void)
             CHECK_MAIN_MEMORY_ALIGNED(addr);
             PUSH_RETURN(EP);
             EP = addr;
-            NEXTC;
+            NEXT;
         }
         break;
     case O_FEXECUTE:
@@ -592,7 +592,7 @@ CELL single_step(void)
             addr = LOAD_CELL(addr);
             CHECK_MAIN_MEMORY_ALIGNED(addr);
             EP = addr;
-            NEXTC;
+            NEXT;
         }
         break;
     case O_CALL:
@@ -601,20 +601,20 @@ CELL single_step(void)
             CELL addr = LOAD_CELL(EP);
             CHECK_MAIN_MEMORY_ALIGNED(addr);
             EP = addr;
-            NEXTC;
+            NEXT;
         }
         break;
     case O_CALLI:
         PUSH_RETURN(EP);
         EP += A * CELL_W;
-        NEXTC;
+        NEXT;
         break;
     case O_EXIT:
         {
             CELL addr = POP_RETURN;
             CHECK_MAIN_MEMORY_ALIGNED(addr);
             EP = addr;
-            NEXTC;
+            NEXT;
         }
         break;
     case O_DO:
@@ -638,7 +638,7 @@ CELL single_step(void)
                 CELL addr = LOAD_CELL(EP);
                 CHECK_MAIN_MEMORY_ALIGNED(addr);
                 EP = addr;
-                NEXTC;
+                NEXT;
             }
         }
         break;
@@ -652,7 +652,7 @@ CELL single_step(void)
                 (void)POP_RETURN;
             } else
                 EP += A * CELL_W;
-            NEXTC;
+            NEXT;
         }
         break;
     case O_PLOOP:
@@ -670,7 +670,7 @@ CELL single_step(void)
                 CELL addr = LOAD_CELL(EP);
                 CHECK_MAIN_MEMORY_ALIGNED(addr);
                 EP = addr;
-                NEXTC;
+                NEXT;
             }
         }
         break;
@@ -686,7 +686,7 @@ CELL single_step(void)
                 (void)POP_RETURN;
             } else
                 EP += A * CELL_W;
-            NEXTC;
+            NEXT;
         }
         break;
     case O_UNLOOP:
@@ -702,7 +702,7 @@ CELL single_step(void)
         break;
     case O_LITERALI:
         PUSH(A);
-        NEXTC;
+        NEXT;
         break;
  throw:
     case O_THROW:
@@ -711,7 +711,7 @@ CELL single_step(void)
         if (!IN_MAIN_MEMORY((UCELL)*THROW) || !IS_ALIGNED((UCELL)*THROW))
             return -259;
         EP = (UCELL)*THROW;
-        NEXTC;
+        NEXT;
         exception = 0; // Any exception has now been dealt with
         break;
     case O_HALT:

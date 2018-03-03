@@ -8,14 +8,7 @@
 */
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <inttypes.h>
-#include "beetle.h"     /* main header */
-#include "btests.h"	/* Beetle tests header */
-#include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"      /* debugging functions */
+#include "btests.h"
 
 
 const char *correct[] = { "0 1 2", "3 2 1 0", "1", "1 2 3 4", "1 1" };
@@ -101,6 +94,7 @@ int main(void)
         exit(1);
     }
 
+    assert(exception == 0);
     printf("DoLoopT ran OK\n");
     return 0;
 }

@@ -10,14 +10,7 @@
 */
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <inttypes.h>
-#include "beetle.h"     /* main header */
-#include "btests.h"	/* Beetle tests header */
-#include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"      /* debugging functions */
+#include "btests.h"
 
 
 const char *correct[] = {
@@ -55,6 +48,7 @@ int main(void)
         printf("I = %s\n", disass(I));
     }
 
+    assert(exception == 0);
     printf("LogicT ran OK\n");
     return 0;
 }

@@ -158,12 +158,7 @@ typedef union {
     CHECK_ADDRESS(a, IN_MAIN_MEMORY(a), -9, badadr)     \
     CHECK_ADDRESS(a, IS_ALIGNED(a), -23, badadr)
 
-#define NEXT (EP += CELL_W, beetle_load_cell(EP - CELL_W, &A))
-
-// FIXME: Merge with NEXT
-#define NEXTC                                   \
-    CHECK_MAIN_MEMORY_ALIGNED(EP)               \
-    NEXT
+#define NEXT (exception = (EP += CELL_W, beetle_load_cell(EP - CELL_W, &A)))
 
 /* Portable arithmetic right shift (the behaviour of >> on signed
    quantities is implementation-defined in C99). */

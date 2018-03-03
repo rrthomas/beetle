@@ -7,10 +7,7 @@
 */
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <inttypes.h>
-#include "beetle.h"     /* main header */
+#include "btests.h"
 
 
 int correct[] = { -1, -1, 0 };
@@ -31,7 +28,8 @@ static int try(const char *file, UCELL address, UCELL length)
 
 int main(void)
 {
-    int i, res;
+    int exception = 0;
+    int i;
     CELL adr[] = { 0, 0, 0 };
     UCELL len[] = { 16, 2000, 16 };
 
@@ -42,7 +40,7 @@ int main(void)
     beetle_store_cell(4, 0x05060708);
 
     for (i = 0; i < 3; i++) {
-        res = try("saveobj", adr[i], len[i]);
+        int res = try("saveobj", adr[i], len[i]);
         if (i != 2)
           remove("saveobj");
         printf(" should be %d\n", correct[i]);
@@ -77,6 +75,7 @@ int main(void)
         }
     }
 
+    assert(exception == 0);
     printf("SaveObjT ran OK\n");
     return 0;
 }

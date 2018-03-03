@@ -7,13 +7,7 @@
 */
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <inttypes.h>
-#include "beetle.h"     /* main header */
-#include "btests.h"	/* Beetle tests header */
-#include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"      /* debugging functions */
+#include "btests.h"
 
 
 unsigned correct[] = { 20, 20, 20 };
@@ -21,6 +15,8 @@ unsigned correct[] = { 20, 20, 20 };
 
 int main(void)
 {
+    int exception = 0;
+
     init_beetle((CELL *)malloc(1024), 256);
     here = EP;
     S0 = SP;	/* save base of stack */
@@ -41,6 +37,7 @@ int main(void)
         printf("I = %s\n", disass(I));
     }
 
+    assert(exception == 0);
     printf("EpfetchT ran OK\n");
     return 0;
 }

@@ -8,15 +8,7 @@
 */
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <inttypes.h>
-#include <assert.h>
-#include "beetle.h"	/* main header */
-#include "btests.h"	/* Beetle tests header */
-#include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"	/* debugging functions */
+#include "btests.h"
 
 
 int main(void)

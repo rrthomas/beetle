@@ -7,23 +7,19 @@
 */
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <inttypes.h>
-#include "beetle.h"     /* main header */
-#include "btests.h"	/* Beetle tests header */
-#include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"      /* debugging functions */
+#include "btests.h"
 
 
 UCELL test[] = { 16, 20, 28, 40, 52, 56, 60, 64, 72, 76, 80, 84, 88, 92 };
 CELL result[] = { -258, -9, 100, 0, -23, -23, -10, -9, -9, -23, -256, -257, -258, -259 };
-UCELL bad[] = { -1, 28, 28, 28, 56, 60, 64, 16384, 76, 80, 84, 88, 88, 100 };
-UCELL address[] = { -4, 16384, 0, 0, 5, 1, 0, 16384, -4, 1, 0, 0, -4, -4 };
+UCELL bad[] = { -1, 28, 28, 28, 56, 60, 64, 16388, 76, 80, 84, 88, 88, 100 };
+UCELL address[] = { -4, 16384, 0, 0, 5, 1, 0, 16388, -4, 1, 0, 0, -4, -4 };
 
 
 int main(void)
 {
+    int exception = 0;
+
     init_beetle((CELL *)malloc(16384), 4096);
     S0 = SP;	/* save base of stack */
 
@@ -82,6 +78,7 @@ int main(void)
         putchar('\n');
     }
 
+    assert(exception == 0);
     if (error == 0)
         printf("ExceptsT ran OK\n");
     return error;

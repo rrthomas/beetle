@@ -9,14 +9,7 @@
 */
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <inttypes.h>
-#include "beetle.h"     /* main header */
-#include "btests.h"	/* Beetle tests header */
-#include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"      /* debugging functions */
+#include "btests.h"
 
 
 int exception = 0;
@@ -107,6 +100,7 @@ int main(void)
     stack1();
     step(30, 34);   /* do the U> tests */
 
+    assert(exception == 0);
     printf("CompareT ran OK\n");
     return 0;
 }

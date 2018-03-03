@@ -14,14 +14,7 @@
 */
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <inttypes.h>
-#include "beetle.h"     /* main header */
-#include "btests.h"	/* Beetle tests header */
-#include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"      /* debugging functions */
+#include "btests.h"
 
 
 const char *correct[] = {
@@ -36,6 +29,8 @@ const char *correct[] = {
 
 int main(void)
 {
+    int exception = 0;
+
     init_beetle((CELL *)calloc(1024, 1), 256);
     here = EP;
     S0 = SP;	/* save base of stack */
@@ -69,6 +64,7 @@ int main(void)
         printf("I = %s\n", disass(I));
     }
 
+    assert(exception == 0);
     printf("AritmtiT ran OK\n");
     return 0;
 }

@@ -11,13 +11,7 @@
 */
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <inttypes.h>
-#include "beetle.h"     /* main header */
-#include "btests.h"	/* Beetle tests header */
-#include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"      /* debugging functions */
+#include "btests.h"
 
 
 unsigned correct[] = { 20, 100, 52, 10004, 10004, 10008, 10008, 10012, 10012, 11004,
@@ -26,6 +20,8 @@ unsigned correct[] = { 20, 100, 52, 10004, 10004, 10008, 10008, 10012, 10012, 11
 
 int main(void)
 {
+    int exception = 0;
+
     size_t size = 4096;
     init_beetle((CELL *)calloc(size, sizeof(CELL)), size);
     S0 = SP;	/* save base of stack */
@@ -96,6 +92,7 @@ int main(void)
         printf("I = %s\n", disass(I));
     }
 
+    assert(exception == 0);
     printf("BranchT ran OK\n");
     return 0;
 }

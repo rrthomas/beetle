@@ -8,16 +8,7 @@
 */
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <inttypes.h>
-#include <assert.h>
-
-#include "beetle.h"     /* main header */
 #include "btests.h"	/* Beetle tests header */
-#include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"      /* debugging functions */
 
 
 const char *correct[] = {
@@ -31,6 +22,8 @@ const char *correct[] = {
 
 int main(void)
 {
+    int exception = 0;
+
     /* Data for himem tests */
     char *onetwothreefour = strdup("\x01\x02\x03\x04");
     char *item[] = {onetwothreefour, strdup("\x01"), strdup("\x02\x03"), strdup("basilisk")};
@@ -74,6 +67,7 @@ int main(void)
         printf("I = %s\n", disass(I));
     }
 
+    assert(exception == 0);
     printf("MemoryT ran OK\n");
     return 0;
 }

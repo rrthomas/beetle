@@ -8,12 +8,7 @@
 */
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-
-#include "beetle.h"     /* main header */
-#include "btests.h"	/* Beetle tests header */
+#include "btests.h"
 
 
 int main(void)

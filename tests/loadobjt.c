@@ -7,12 +7,7 @@
 */
 
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <inttypes.h>
-#include "beetle.h"	/* main header */
+#include "btests.h"
 
 
 static int correct[] = { -2, -2, -1, -3, 0, 0 };
