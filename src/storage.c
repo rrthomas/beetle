@@ -219,11 +219,5 @@ UCELL himem_allot(void *p, size_t n)
 
 UCELL himem_align(void)
 {
-    struct {
-        uint8_t byte1 __attribute__ ((__aligned__));
-        uint8_t byte2 __attribute__ ((__aligned__));
-    } test;
-    size_t max_alignment = &test.byte2 - &test.byte1;
-
-    return _himem_here = (_himem_here + max_alignment - 1) & (-max_alignment);
+    return _himem_here = ALIGNED(_himem_here);
 }
