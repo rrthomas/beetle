@@ -27,7 +27,7 @@ static void test(void)
 
 int main(void)
 {
-    init_beetle((CELL *)malloc(16384), 4096, 16);
+    init_beetle((CELL *)malloc(16384), 4096);
     S0 = SP;	/* save base of stack */
 
     here = EP;	/* start assembling at 16 */

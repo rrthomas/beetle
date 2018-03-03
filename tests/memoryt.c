@@ -36,7 +36,7 @@ int main(void)
     char *item[] = {onetwothreefour, strdup("\x01"), strdup("\x02\x03"), strdup("basilisk")};
     unsigned nitems = sizeof(item) / sizeof(item[0]);
 
-    init_beetle((CELL *)malloc(16384), 4096, 16);
+    init_beetle((CELL *)malloc(16384), 4096);
     for (unsigned i = 0; i < nitems; i++) {
         printf("Himem item %u allocated at address %"PRIX32"\n",
                i, himem_allot(item[i], strlen(item[i])));

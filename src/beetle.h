@@ -107,7 +107,7 @@ int load_object(FILE *file, UCELL address);
 int save_object(FILE *file, UCELL address, UCELL length);
 
 /* Additional routines, macros, types and quantities provided by C Beetle */
-int init_beetle(CELL *c_array, size_t size, UCELL e0);
+int init_beetle(CELL *c_array, size_t size);
 bool register_args(int argc, char *argv[]);
 
 #define B_TRUE ((CELL)0xFFFFFFFF)   /* Beetle's TRUE flag */

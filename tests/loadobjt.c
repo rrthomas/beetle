@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    init_beetle((CELL *)calloc(1024, 1), 256, 16);
+    init_beetle((CELL *)calloc(1024, 1), 256);
 
     for (i = 0; i < 4; i++) {
         char *s = obj_name(prefix, files[i]);

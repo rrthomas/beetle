@@ -36,7 +36,7 @@ const char *correct[] = {
 
 int main(void)
 {
-    init_beetle((CELL *)calloc(1024, 1), 256, 16);
+    init_beetle((CELL *)calloc(1024, 1), 256);
     here = EP;
     S0 = SP;	/* save base of stack */
 

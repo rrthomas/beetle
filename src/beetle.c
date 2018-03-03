@@ -478,7 +478,7 @@ static void do_command(int no)
         {
             memset(native_address(0), 0, memory_size);
             memset(count, 0, 256 * sizeof(long));
-            init_beetle((CELL *)native_address(0), memory_size, 16);
+            init_beetle((CELL *)native_address(0), memory_size);
             S0 = SP;
             R0 = RP;
             *THROW = 0;
@@ -745,7 +745,7 @@ int main(int argc, char *argv[])
     if ((mem = (CELL *)calloc(memory_size, sizeof(CELL))) == NULL)
         die("could not allocate %"PRIu32" cells of memory", memory_size);
 
-    init_beetle(mem, memory_size, 16);
+    init_beetle(mem, memory_size);
     S0 = SP;
     R0 = RP;
     *THROW = 0;

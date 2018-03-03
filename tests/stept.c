@@ -18,22 +18,7 @@
 
 int main(void)
 {
-    int i = init_beetle((CELL *)NULL, 1, 1);
-    printf("init_beetle((CELL *)NULL, 1, 1) should return 1; returns: %d\n", i);
-    if (i != 1) {
-        printf("Error in StepT: init_beetle with invalid parameters "
-            "succeeded\n");
-        exit(1);
-    }
-    i = init_beetle((CELL *)NULL, 1, 4);
-    printf("init_beetle((CELL *)NULL, 1, 4) should return 1; returns: %d\n", i);
-    if (i != 1) {
-        printf("Error in StepT: init_beetle with invalid parameters "
-            "succeeded\n");
-        exit(1);
-    }
-
-    i = init_beetle((CELL *)calloc(1024, 1), 256, 16);
+    int i = init_beetle((CELL *)calloc(1024, 1), 256);
     if (i != 0) {
         printf("Error in StepT: init_beetle with valid parameters failed\n");
         exit(1);

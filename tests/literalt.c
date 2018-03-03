@@ -22,7 +22,7 @@ const char *correct[] = { "", "-257", "-257 12345678", "-257 12345678 -2" };
 
 int main(void)
 {
-    init_beetle((CELL *)calloc(1024, 1), 256, 16);
+    init_beetle((CELL *)calloc(1024, 1), 256);
     here = EP;
     S0 = SP;	/* save base of stack */
 

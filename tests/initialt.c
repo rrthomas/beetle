@@ -17,7 +17,7 @@
 
 int main(void)
 {
-    init_beetle((CELL *)malloc(1024), 256, 16);
+    init_beetle((CELL *)malloc(1024), 256);
 
     printf("InitialT ran OK\n");
     return 0;

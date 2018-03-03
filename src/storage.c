@@ -154,13 +154,10 @@ int beetle_post_dma(UCELL from, UCELL to)
 
 /* Initialise registers that are not fixed */
 
-int init_beetle(CELL *c_array, size_t size, UCELL e0)
+int init_beetle(CELL *c_array, size_t size)
 {
-    if (!IS_ALIGNED(e0) || e0 >= size * CELL_W)
-        return 1;
-
     M0 = c_array;
-    EP = e0;
+    EP = 16;
     MEMORY = size * CELL_W;
     beetle_store_cell(1 * CELL_W, MEMORY);
     SP = MEMORY - 0x100;

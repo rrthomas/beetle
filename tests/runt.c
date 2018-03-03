@@ -23,7 +23,7 @@ CELL temp;
 
 int main(void)
 {
-    int i = init_beetle((CELL *)calloc(1024, 1), 256, 16);
+    int i = init_beetle((CELL *)calloc(1024, 1), 256);
     if (i != 0) {
         printf("Error in RunT: init_beetle with valid parameters failed\n");
         exit(1);

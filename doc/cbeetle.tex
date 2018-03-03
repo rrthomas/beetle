@@ -188,15 +188,12 @@ occurs, the return code is -3.}
 file system error occurs, the return code is -3.}
 \end{description}
 
-In addition to the required interface calls C Beetle provides an initialisation routine {\bf init\_beetle()} which, given a byte array, its size and an initial value for {\tt EP}, initialises Beetle:
+In addition to the required interface calls C Beetle provides an initialisation routine {\bf init\_beetle()} which, given a byte array and its size, initialises Beetle:
 
 \begin{description}
-\ifacec{int init\_beetle(BYTE *b\_array, long size, UCELL e0)}{{\tt size} is
-the length of {\tt b\_array} in {\em cells} (not bytes), and {\tt e0} is the
-Beetle address to which EP will be set. The return value is -1 if {\tt e0} is
-not aligned or out of range, and 0 otherwise. All the registers are
-initialised as per~\cite{beetle}, and those held in Beetle's memory as well
-are copied there.}
+\ifacec{int init\_beetle(BYTE *b\_array, long size)}{{\tt size} is
+the length of {\tt b\_array} in {\em cells} (not bytes). The return value is 0.
+All the registers are initialised as per~\cite{beetle} ({\tt EP} is set to $16$), and those held in Beetle's memory as well are copied there.}
 \end{description}
 
 The following routines are provided to map system memory to Beetle’s address space and vice versa:
