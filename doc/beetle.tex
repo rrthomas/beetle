@@ -84,7 +84,7 @@
 
 \title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
-\date{29th October 1993; revised 10th February 2018}
+\date{29th October 1993; revised 3rd March 2018}
 
 \begin{document}
 \maketitle
@@ -741,20 +741,6 @@ native machine code.
 \end{description}
 
 
-\subsection{Recursion}
-\label{recurseinst}
-
-These instructions are provided to simplify the task of writing a low-level
-debugger for Beetle that runs directly on Beetle. Such a debugger might be
-written in pForth. The instructions perform roughly the same function as the
-interface calls {\bf run()} and {\bf single\_step()}.
-
-\begin{description}
-\inst{RUN}{59h}{\aaddr1 \aaddr2 \aaddr3 x -- n}{Save the current values of {\tt EP}, {\tt A}, {\tt SP}, {\tt RP}, {\tt 'THROW}, {\tt 'BAD} and {\tt -ADDRESS} and load \aaddr1 into {\tt SP}, \aaddr2 into {\tt RP}, \aaddr3 into {\tt EP}, and \spic{x} into {\tt A}. Enter the execution loop. If Beetle halts, restore the contents of the registers to those saved, and push the reason code on to the stack.}
-\inst{STEP}{5Ah}{\aaddr1 \aaddr2 \aaddr3 x -- n}{Save the current values of {\tt EP}, {\tt A}, {\tt SP}, {\tt RP}, {\tt 'THROW}, {\tt 'BAD} and {\tt -ADDRESS} and load \aaddr1 into {\tt SP}, \aaddr2 into {\tt RP}, \aaddr3 into {\tt EP} and \spic{x} into {\tt A}. Perform the contents of the execution loop once. Restore the contents of the registers to those saved, and push the reason code on to the stack.}
-\end{description}
-
-
 \subsection{Opcodes}
 \label{opcodes}
 
@@ -766,37 +752,36 @@ undefined opcodes (5Ch--FEh) raise exception $-256$.
 \begin{tabular}{*{3}{cc}} \toprule
 \bf Opcode & \bf Instruction & \bf Opcode & \bf
     Instruction & \bf Opcode & \bf Instruction \\ \midrule
-\opcodetbl{00}{NEXT}	{1F}{-}		{3E}{SP@}
-\opcodetbl{01}{DUP}	{20}{>-<}	{3F}{SP!}
-\opcodetbl{02}{DROP}	{21}{1+}	{40}{RP@}
-\opcodetbl{03}{SWAP}	{22}{1-}	{41}{RP!}
-\opcodetbl{04}{OVER}	{23}{CELL+}	{42}{BRANCH}
-\opcodetbl{05}{ROT}	{24}{CELL-}	{43}{BRANCHI}
-\opcodetbl{06}{-ROT}	{25}{*}		{44}{?BRANCH}
-\opcodetbl{07}{TUCK}	{26}{/}	{45}{?BRANCHI}
-\opcodetbl{08}{NIP}	{27}{MOD}	{46}{EXECUTE}
-\opcodetbl{09}{PICK}	{28}{/MOD}	{47}{@EXECUTE}
-\opcodetbl{0A}{ROLL}	{29}{U/MOD}	{48}{CALL}
-\opcodetbl{0B}{?DUP}	{2A}{S/REM}	{49}{CALLI}
-\opcodetbl{0C}{>R}	{2B}{2/}	{4A}{EXIT}
-\opcodetbl{0D}{R>}	{2C}{CELLS}	{4B}{(DO)}
-\opcodetbl{0E}{R@}	{2D}{ABS}	{4C}{(LOOP)}
-\opcodetbl{0F}{<}	{2E}{NEGATE}	{4D}{(LOOP)I}
-\opcodetbl{10}{>}	{2F}{MAX}	{4E}{(+LOOP)}
-\opcodetbl{11}{=}	{30}{MIN}	{4F}{(+LOOP)I}
-\opcodetbl{12}{<>}	{31}{INVERT}	{50}{UNLOOP}
-\opcodetbl{13}{0<}	{32}{AND}	{51}{J}
-\opcodetbl{14}{0>}	{33}{OR}	{52}{(LITERAL)}
-\opcodetbl{15}{0=}	{34}{XOR}	{53}{(LITERAL)I}
-\opcodetbl{16}{0<>}	{35}{LSHIFT}	{54}{THROW}
-\opcodetbl{17}{U<}	{36}{RSHIFT}	{55}{HALT}
-\opcodetbl{18}{U>}	{37}{1LSHIFT}	{56}{EP@}
-\opcodetbl{19}{0}	{38}{1RSHIFT}	{57}{LIB}
-\opcodetbl{1A}{1}	{39}{@}		{58}{LINK}
-\opcodetbl{1B}{-1}	{3A}{!}		{59}{RUN}
-\opcodetbl{1C}{CELL}	{3B}{C@}	{5A}{STEP}
-\opcodetbltwo{1D}{-CELL}	{3C}{C!}
-\opcodetbl{1E}{+}	{3D}{+!}	{FF}{NEXT}	\bottomrule
+\opcodetbl{00}{NEXT}	{1E}{+}		{3C}{C!}
+\opcodetbl{01}{DUP}	{1F}{-}		{3D}{+!}
+\opcodetbl{02}{DROP}	{20}{>-<}	{3E}{SP@}
+\opcodetbl{03}{SWAP}	{21}{1+}	{3F}{SP!}
+\opcodetbl{04}{OVER}	{22}{1-}	{40}{RP@}
+\opcodetbl{05}{ROT}	{23}{CELL+}	{41}{RP!}
+\opcodetbl{06}{-ROT}	{24}{CELL-}	{42}{BRANCH}
+\opcodetbl{07}{TUCK}	{25}{*}		{43}{BRANCHI}
+\opcodetbl{08}{NIP}	{26}{/}		{44}{?BRANCH}
+\opcodetbl{09}{PICK}	{27}{MOD}	{45}{?BRANCHI}
+\opcodetbl{0A}{ROLL}	{28}{/MOD}	{46}{EXECUTE}
+\opcodetbl{0B}{?DUP}	{29}{U/MOD}	{47}{@EXECUTE}
+\opcodetbl{0C}{>R}	{2A}{S/REM}	{48}{CALL}
+\opcodetbl{0D}{R>}	{2B}{2/}	{49}{CALLI}
+\opcodetbl{0E}{R@}	{2C}{CELLS}	{4A}{EXIT}
+\opcodetbl{0F}{<}	{2D}{ABS}	{4B}{(DO)}
+\opcodetbl{10}{>}	{2E}{NEGATE}	{4C}{(LOOP)}
+\opcodetbl{11}{=}	{2F}{MAX}	{4D}{(LOOP)I}
+\opcodetbl{12}{<>}	{30}{MIN}	{4E}{(+LOOP)}
+\opcodetbl{13}{0<}	{31}{INVERT}	{4F}{(+LOOP)I}
+\opcodetbl{14}{0>}	{32}{AND}	{50}{UNLOOP}
+\opcodetbl{15}{0=}	{33}{OR}	{51}{J}
+\opcodetbl{16}{0<>}	{34}{XOR}	{52}{(LITERAL)}
+\opcodetbl{17}{U<}	{35}{LSHIFT}	{53}{(LITERAL)I}
+\opcodetbl{18}{U>}	{36}{RSHIFT}	{54}{THROW}
+\opcodetbl{19}{0}	{37}{1LSHIFT}	{55}{HALT}
+\opcodetbl{1A}{1}	{38}{1RSHIFT}	{56}{EP@}
+\opcodetbl{1B}{-1}	{39}{@}		{57}{LIB}
+\opcodetbl{1C}{CELL}	{3A}{!}		{58}{LINK}
+\opcodetbl{1D}{-CELL}	{3B}{C@}	{FF}{NEXT} \bottomrule
 \end{tabular}
 \caption{\label{opcodetable}Beetle's opcodes}
 \end{center}

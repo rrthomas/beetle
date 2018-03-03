@@ -882,10 +882,6 @@ CELL single_step(void)
             address.pointer();
         }
         break;
-    case O_RUN:
-        break;
-    case O_STEP:
-        break;
     default:
         PUSH(-256);
         goto throw;

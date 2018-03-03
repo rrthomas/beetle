@@ -102,8 +102,6 @@ enum {
     O_EPFETCH,
     O_LIB,
     O_LINK,
-    O_RUN,
-    O_STEP,
     O_NEXTFF = 0xff
 };
 
