@@ -192,7 +192,8 @@ In addition to the required interface calls C Beetle provides an initialisation 
 
 \begin{description}
 \ifacec{int init\_beetle(BYTE *b\_array, long size)}{{\tt size} is
-the length of {\tt b\_array} in {\em cells} (not bytes). The return value is 0.
+the length of {\tt b\_array} in {\em cells} (not bytes). The return value is -1 if {\tt b\_array} is
+{\tt NULL} or {\tt size} is less than $4$, and 0 otherwise.
 All the registers are initialised as per~\cite{beetle} ({\tt EP} is set to $16$), and those held in Beetle's memory as well are copied there.}
 \end{description}
 

@@ -18,15 +18,11 @@
 
 int main(void)
 {
-    int i = init_beetle((CELL *)calloc(1024, 1), 256);
-    if (i != 0) {
-        printf("Error in StepT: init_beetle with valid parameters failed\n");
-        exit(1);
-    }
+    init_beetle((CELL *)calloc(1024, 1), 256);
 
     NEXT;
 
-    for (i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++) {
         printf("EP = %u\n", EP);
         single_step();
     }

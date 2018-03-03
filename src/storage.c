@@ -156,6 +156,9 @@ int beetle_post_dma(UCELL from, UCELL to)
 
 int init_beetle(CELL *c_array, size_t size)
 {
+    if (c_array == NULL || size < 4)
+        return -1;
+
     M0 = c_array;
     EP = 16;
     MEMORY = size * CELL_W;
