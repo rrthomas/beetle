@@ -24,8 +24,7 @@
 #include "verify.h"
 
 
-/* Types required by CBeetle: BYTE should be an unsigned eight-bit quantity,
-   CELL a signed four-byte quantity, and UCELL an unsigned CELL. */
+/* Basic types */
 typedef uint8_t BYTE;
 typedef int32_t CELL;
 typedef uint32_t UCELL;
