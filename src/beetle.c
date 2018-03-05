@@ -47,10 +47,10 @@ static int commands = sizeof(command) / sizeof(*command);
 
 static const char *regist[] = {
     "A", "-ADDRESS", "'BAD", "CHECKED", "ENDISM", "EP", "I",
-    "M0", "MEMORY", "RP", "R0", "SP", "S0", "'THROW"
+    "MEMORY", "RP", "R0", "SP", "S0", "'THROW"
 };
 enum registers { r_A, r_NOT_ADDRESS, r_BAD, r_CHECKED, r_ENDISM, r_EP, r_I,
-    r_M0, r_MEMORY, r_RP, r_R0, r_SP, r_S0, r_THROW };
+    r_MEMORY, r_RP, r_R0, r_SP, r_S0, r_THROW };
 static int registers = sizeof(regist) / sizeof(*regist);
 
 static long count[256];
@@ -268,7 +268,6 @@ static void do_ass(char *token)
             break;
         case r_CHECKED:
         case r_ENDISM:
-        case r_M0:
         case r_MEMORY:
             printf("Can't assign to %s\n", regist[no]);
             break;
@@ -340,9 +339,6 @@ static void do_display(const char *token, const char *format)
             break;
         case r_I:
             display = xasprintf("I = %-10s (%02Xh)", disass(I), I);
-            break;
-        case r_M0:
-            display = xasprintf("M0 = %p", M0);
             break;
         case r_MEMORY:
             display = xasprintf("MEMORY = %"PRIX32"h (%"PRIu32")", MEMORY, MEMORY);

@@ -46,7 +46,6 @@ typedef uint64_t DUCELL;
 extern UCELL EP;
 extern BYTE I;
 extern CELL A;
-extern CELL *M0;
 extern UCELL MEMORY;
 extern UCELL SP, RP;
 extern CELL *THROW;     /* 'THROW is not a valid C identifier */
@@ -94,10 +93,10 @@ int beetle_post_dma(UCELL from, UCELL to);
     (RP += CELL_W, LOAD_CELL(RP - CELL_W))
 
 /* High memory */
-UCELL himem_here(void);
-uint8_t *himem_addr(UCELL addr);
-UCELL himem_allot(void *p, size_t n);
-UCELL himem_align(void);
+UCELL mem_here(void);
+uint8_t *native_address(UCELL addr);
+UCELL mem_allot(void *p, size_t n);
+UCELL mem_align(void);
 
 /* Interface calls */
 CELL run(void);
@@ -128,19 +127,6 @@ typedef union {
 
 /* Check whether a Beetle address is in main memory */
 #define IN_MAIN_MEMORY(a) ((UCELL)(a) < MEMORY)
-
-/* Macro for byte addressing */
-#ifdef WORDS_BIGENDIAN
-#define FLIP(addr) ((addr) ^ (CELL_W - 1))
-#else
-#define FLIP(addr) (addr)
-#endif
-
-/* Get the native address of a Beetle address */
-#define native_address(a)                       \
-    (IN_MAIN_MEMORY(a) ?                        \
-     FLIP(a) + (BYTE *)M0 :                     \
-     himem_addr(FLIP(a)))
 
 /* Address checking */
 #define SET_NOT_ADDRESS(a)                      \

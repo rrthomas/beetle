@@ -84,7 +84,7 @@
 
 \title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
-\date{29th October 1993; revised 3rd March 2018}
+\date{29th October 1993; revised 5th March 2018}
 
 \begin{document}
 \maketitle
@@ -168,8 +168,6 @@ The registers, each with its function and pronunciation, are set out in table~\r
     to be executed. \\
 {\tt A} & ``a'' & The instruction {\tt A}ccumulator. Holds the opcodes of
     instructions to be executed, and immediate operands. \\
-{\tt M0} & ``m-zero'' & The address of Beetle's main memory on the host
-    system, which must be aligned on a four-byte boundary. \\
 {\tt MEMORY} & ``memory'' & The size in bytes of Beetle's main memory,
     which must be a multiple of four. \\
 {\tt SP} & ``s-p'' & The data {\tt S}tack {\tt P}ointer. \\
@@ -191,11 +189,10 @@ The registers, each with its function and pronunciation, are set out in table~\r
 
 {\tt EP}, {\tt A}, {\tt MEMORY}, {\tt SP}, {\tt RP}, {\tt 'THROW}, {\tt 'BAD}
 and {\tt -ADDRESS} are cell-wide quantities; {\tt I}, {\tt ENDISM} and {\tt
-CHECKED} are one byte wide, and {\tt M0}'s size depends on the implementation;
-it would normally have the same width as addresses on the host computer. The
+CHECKED} are one byte wide. The
 values of {\tt MEMORY}, {\tt 'BAD} and {\tt -ADDRESS} are available in Beetle's
 address space; {\tt 'THROW} must be physically held there so that it can be
-changed as well as read by programs. Their addresses relative to {\tt M0} are
+changed as well as read by programs. Their Beetle addresses are
 shown in table~\ref{mappedtable}.
 
 \begin{table}[htbp]
@@ -246,7 +243,7 @@ always mentioned explicitly.
 \subsection{Operation}
 \label{operation}
 
-Before Beetle is started, {\tt M0}, {\tt MEMORY} and {\tt ENDISM} should be set
+Before Beetle is started, {\tt MEMORY} and {\tt ENDISM} should be set
 to implementation-dependent values; {\tt 'THROW} should be set to point to the
 exception handler, and {\tt EP} to the bForth code that is to be executed. {\tt
 CHECKED} should be set to 0 or 1 as desired. The other registers should be
@@ -843,10 +840,12 @@ basic types are used, and the semantics are simple, it is expected that
 implementations in different language producing the same result will be easy to
 program. A Modula-like syntax is used to give the definitions here.
 Implementation-defined error codes must be documented, but are optional. All
-addresses passed as parameters must be cell-aligned. There are six calls which a
-Beetle must provide:
+addresses passed as parameters must be cell-aligned. A Beetle must provide the
+following calls:
 
 \begin{description}
+\iface{native\_address}{integer}{pointer}{Return a native pointer corresponding
+    to the given Beetle address. If the Beetle address is invalid, so is the returned pointer.}
 \iface{run}{}{integer}{Start Beetle by entering the execution cycle as
     described in section~\ref{operation}. If Beetle ever executes a {\tt
     HALT} instruction (see section~\ref{exceptinst}), the reason code is

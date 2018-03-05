@@ -99,7 +99,7 @@ bool register_args(int argc, char *argv[])
 
     for (int i = 0; i < argc; i++) {
         size_t len = strlen(argv[i]);
-        main_argv[i] = himem_allot(argv[i], len);
+        main_argv[i] = mem_allot(argv[i], len);
         if (main_argv[i] == 0)
             return false;
         main_argv_len[i] = len;
@@ -784,7 +784,7 @@ CELL single_step(void)
                     if (exception == 0) {
                         exception = beetle_pre_dma(buf, buf + nbytes);
                         if (exception == 0) {
-                            res = read(fd, (BYTE *)M0 + buf, nbytes);
+                            res = read(fd, native_address(buf), nbytes);
                             exception = beetle_post_dma(buf, buf + nbytes);
                         }
                     }
@@ -804,7 +804,7 @@ CELL single_step(void)
                     if (exception == 0) {
                         exception = beetle_pre_dma(buf, buf + nbytes);
                         if (exception == 0) {
-                            res = write(fd, (BYTE *)M0 + buf, nbytes);
+                            res = write(fd, native_address(buf), nbytes);
                             exception = beetle_post_dma(buf, buf + nbytes);
                         }
                     }

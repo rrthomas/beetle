@@ -41,7 +41,7 @@ int load_object(FILE *file, UCELL address)
     if (address + length * CELL_W > MEMORY)
         return -1;
 
-    if (fread((BYTE *)M0 + address, CELL_W, length, file) != length)
+    if (fread(native_address(address), CELL_W, length, file) != length)
         return -3;
     if (reversed)
         beetle_reverse(address, length);

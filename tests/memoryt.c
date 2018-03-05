@@ -24,17 +24,17 @@ int main(void)
 {
     int exception = 0;
 
-    /* Data for himem tests */
-    char *onetwothreefour = strdup("\x01\x02\x03\x04");
+    /* Data for extra memory area tests */
+    char *onetwothreefour = strdup("\x01\x02\x03\x04"); // FIXME: Why is this separate?
     char *item[] = {onetwothreefour, strdup("\x01"), strdup("\x02\x03"), strdup("basilisk")};
     unsigned nitems = sizeof(item) / sizeof(item[0]);
 
     init_beetle((CELL *)malloc(16384), 4096);
     for (unsigned i = 0; i < nitems; i++) {
-        printf("Himem item %u allocated at address %"PRIX32"\n",
-               i, himem_allot(item[i], strlen(item[i])));
+        printf("Extra memory area %u allocated at address %"PRIX32"\n",
+               i, mem_allot(item[i], strlen(item[i])));
         if (i == 2)
-            himem_align();
+            mem_align();
     }
     here = EP;
     S0 = SP;	/* save base of stack */

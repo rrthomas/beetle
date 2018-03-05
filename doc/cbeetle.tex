@@ -31,7 +31,7 @@
 
 \title{An implementation of the Beetle virtual machine for POSIX}
 \author{Reuben Thomas}
-\date{7th February 2018}
+\date{5th March 2018}
 
 \begin{document}
 \maketitle
@@ -98,11 +98,6 @@ kept in Beetle's memory). {\tt THROW} is a pointer to the Beetle register
 {\tt 'THROW}, so the expression {\tt *THROW} may be used as the Beetle
 register. {\tt CHECKED} is the constant $1$; it may be read but not
 assigned to.
-
-The main memory is accessed via {\tt M0}, which points to the first byte of
-memory. Before Beetle is started by calling {\bf run()} or {\bf
-single\_step()}, {\tt M0} must be set to point to a {\tt CELL} array which will be
-Beetle's memory.
 
 The main memory may be at most \SI{2}{GB}, and is always mapped into Beetle’s address space starting from address $0$. C Beetle provides the ability to map native memory blocks into the upper \SI{2}{GB} of the address space; see below.
 
@@ -197,13 +192,14 @@ the length of {\tt b\_array} in {\em cells} (not bytes). The return value is -1 
 All the registers are initialised as per~\cite{beetle} ({\tt EP} is set to $16$), and those held in Beetle's memory as well are copied there.}
 \end{description}
 
+{\bf native\_address()} returns {\tt NULL} when passed an invalid address.
+
 The following routines are provided to map system memory to Beetle’s address space and vice versa:
 
 \begin{description}
-\ifacec{uint8\_t *native\_addr(UCELL addr)}{Returns the native address corresponding to the given Beetle address, if any. If the address is not mapped, {\tt NULL} is returned.}
-\ifacec{UCELL himem\_here()}{Returns the Beetle address at which the next mapping will be made.}
-\ifacec{UCELL himem\_allot(void *p, size\_t n)}{Map {\tt n} bytes pointed to by {\tt p} into Beetle’s address space, and return the address mapped. Addresses are mapped sequentially.}
-\ifacec{UCELL himem\_align(void)}{Like Forth’s {\tt ALIGN}, rounds up the address at which the next high memory allocation will occur to the next cell.}
+\ifacec{UCELL mem\_here()}{Returns the Beetle address at which the next mapping will be made.}
+\ifacec{UCELL mem\_allot(void *p, size\_t n)}{Map {\tt n} bytes pointed to by {\tt p} into Beetle’s address space, and return the address mapped. Addresses are mapped sequentially.}
+\ifacec{UCELL mem\_align(void)}{Like Forth’s {\tt ALIGN}, rounds up the address at which the next high memory allocation will occur to the next cell.}
 \end{description}
 
 Programs which use C Beetle's interface must {\tt \#include} the header file
