@@ -15,8 +15,8 @@ const char *correct[] = {
     "", "16384", "16380", "16380 513",
     "16380 513 16380", "16380", "16380 16380", "16380 513", "16380",
     "16380 16380", "16380 1", "16381", "2", "2 16383", "", "16380", "33554945",
-    "", "16128", "", "16384", "", "0", "", "0", "", "-2147483648", "67305985",
-    "", "-2147483643", "2", "", "1", "1 -2147483647", "", "-2147483647", "1", "",
+    "", "16128", "", "16384", "", "0", "", "0", "", "16384", "67305985",
+    "", "16389", "2", "", "1", "1 16385", "", "16385", "1", "",
 };
 
 
@@ -50,10 +50,10 @@ int main(void)
     ass(O_FETCH); ass(O_DROP); ass(O_SPFETCH); ass(O_SPSTORE);
     ass(O_RPFETCH); ass(O_DROP); ass(O_ZERO); ass(O_RPSTORE);
     ass(O_RPFETCH); ass(O_DROP);
-    ass(O_LITERAL); lit(0x80000000); ass(O_FETCH); ass(O_DROP);
-    ass(O_LITERAL); lit(0x80000005); ass(O_CFETCH); ass(O_DROP);
-    ass(O_ONE); ass(O_LITERAL); lit(0x80000001); ass(O_CSTORE);
-    ass(O_LITERAL); lit(0x80000001); ass(O_CFETCH); ass(O_DROP);
+    ass(O_LITERAL); lit(size * CELL_W); ass(O_FETCH); ass(O_DROP);
+    ass(O_LITERAL); lit(size * CELL_W + 5); ass(O_CFETCH); ass(O_DROP);
+    ass(O_ONE); ass(O_LITERAL); lit(size * CELL_W + 1); ass(O_CSTORE);
+    ass(O_LITERAL); lit(size * CELL_W + 1); ass(O_CFETCH); ass(O_DROP);
     end_ass();
 
     NEXT;   /* load first instruction word */

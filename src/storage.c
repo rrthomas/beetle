@@ -27,11 +27,9 @@ UCELL BAD;	/* 'BAD is not a valid C identifier */
 UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
 
 
-/* High memory */
-#define MEM_START 0x80000000UL // #define so they are constant expressions
-#define MEM_SIZE  0x80000000UL
+/* Memory allocation and mapping */
 gl_list_t mem_areas;
-static UCELL _mem_here = MEM_START;
+static UCELL _mem_here = 0UL;
 
 typedef struct {
     UCELL start;
@@ -66,13 +64,7 @@ static bool mem_init(CELL *m0, UCELL memory_size)
         == false)
         return false;
 
-    Mem_area *main_a = malloc(sizeof(Mem_area));
-    if (main_a == NULL)
-        return false;
-    *main_a = (Mem_area){0, memory_size * CELL_W, (uint8_t *)m0};
-    return gl_sortedlist_nx_add(mem_areas, cmp_mem_area, main_a) != NULL;
-
-    return true;
+    return mem_allot(m0, memory_size * CELL_W) != CELL_MASK;
 }
 
 _GL_ATTRIBUTE_PURE UCELL mem_here(void)
@@ -106,10 +98,9 @@ uint8_t *native_address_range_in_one_area(UCELL start, UCELL end)
 
 UCELL mem_allot(void *p, size_t n)
 {
-    /* Return 0 if not enough room */
-    if (n > UINT32_MAX / 2 ||
-        (_mem_here - MEM_SIZE) + n > MEM_SIZE)
-        return 0;
+    /* Return highest possible address if not enough room */
+    if (n > (CELL_MAX - _mem_here))
+        return CELL_MASK;
 
     size_t start = _mem_here;
     Mem_area *start_a = malloc(sizeof(Mem_area));

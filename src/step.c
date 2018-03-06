@@ -95,7 +95,7 @@ static int getflags(UCELL perm, bool *binary)
     return flags;
 }
 
-/* Register command-line args in Beetle high memory */
+/* Register command-line args in Beetle memory */
 int main_argc = 0;
 UCELL *main_argv;
 UCELL *main_argv_len;

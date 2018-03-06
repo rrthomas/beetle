@@ -200,7 +200,7 @@ The following routines are provided to map system memory to Beetle’s address s
 \begin{description}
 \ifacec{UCELL mem\_here()}{Returns the Beetle address at which the next mapping will be made.}
 \ifacec{UCELL mem\_allot(void *p, size\_t n)}{Map {\tt n} bytes pointed to by {\tt p} into Beetle’s address space, and return the address mapped. Addresses are mapped sequentially.}
-\ifacec{UCELL mem\_align(void)}{Like Forth’s {\tt ALIGN}, rounds up the address at which the next high memory allocation will occur to the next cell.}
+\ifacec{UCELL mem\_align(void)}{Like Forth’s {\tt ALIGN}, rounds up the address at which the next memory allocation will occur to the next cell.}
 \end{description}
 
 Programs which use C Beetle's interface must {\tt \#include} the header file

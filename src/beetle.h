@@ -32,6 +32,7 @@ typedef uint64_t DUCELL;
 #define CHAR_MASK ((1 << CHAR_BIT) - 1)
 #define CELL_BIT (sizeof(CELL_W) * CHAR_BIT)
 #define CELL_MASK ((1ULL << CELL_BIT) - 1)
+#define CELL_MAX (UINT32_MAX)
 
 /* Beetle's registers */
 
@@ -91,7 +92,7 @@ int beetle_post_dma(UCELL from, UCELL to);
 #define POP_RETURN                              \
     (RP += CELL_W, LOAD_CELL(RP - CELL_W))
 
-/* High memory */
+/* Memory */
 UCELL mem_here(void);
 uint8_t *native_address(UCELL addr);
 uint8_t *native_address_range_in_one_area(UCELL start, UCELL end);
