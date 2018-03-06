@@ -209,6 +209,23 @@ static void disassemble(UCELL start, UCELL end)
 }
 
 
+static int save_object(FILE *file, UCELL address, UCELL length)
+{
+    uint8_t *ptr = native_address_range_in_one_area(address, address + length);
+    if (!IS_ALIGNED(address) || ptr == NULL)
+        return -1;
+
+    if (fputs("BEETLE", file) == EOF ||
+        putc('\0', file) == EOF ||
+        putc((char)ENDISM, file) == EOF ||
+        fwrite(&length, CELL_W, 1, file) != 1 ||
+        fwrite(ptr, CELL_W, length, file) != length)
+        return -3;
+
+    return 0;
+}
+
+
 static void do_ass(char *token)
 {
     char *number = strtok(NULL, " ");

@@ -856,11 +856,6 @@ following calls:
     memory, converting it if the endianness value is different from the current
     value of {\tt ENDISM}. The result is 0 if successful, and some other
     implementation-defined value if there is a filing system or other error.}
-\iface{save\_object}{file, address, length}{integer}{Save the \textit{length}
-    cells in Beetle's memory starting at \textit{address} as an object module
-    under the filename or other specifier \textit{file}. The result is 0 if
-    successful, $-1$ if there is a Beetle error (the requested area of memory is not all valid), and some other
-    implementation-defined value if there is a filing system or other error.}
 \end{description}
 
 Beetle must also provide access to its registers and address space through
