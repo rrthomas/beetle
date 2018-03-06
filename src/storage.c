@@ -21,7 +21,6 @@
 UCELL EP;
 BYTE I;
 CELL A;
-UCELL MEMORY;
 UCELL SP, RP;
 CELL *THROW;	/* 'THROW is not a valid C identifier */
 UCELL BAD;	/* 'BAD is not a valid C identifier */
@@ -60,7 +59,7 @@ static void free_mem_area(const void *a)
     free((void *)a);
 }
 
-static bool mem_init(CELL *m0)
+static bool mem_init(CELL *m0, UCELL memory_size)
 {
     if ((mem_areas =
          gl_list_nx_create_empty(GL_AVLTREE_LIST, eq_mem_area, NULL, free_mem_area, false))
@@ -70,7 +69,7 @@ static bool mem_init(CELL *m0)
     Mem_area *main_a = malloc(sizeof(Mem_area));
     if (main_a == NULL)
         return false;
-    *main_a = (Mem_area){0, MEMORY, (uint8_t *)m0};
+    *main_a = (Mem_area){0, memory_size * CELL_W, (uint8_t *)m0};
     return gl_sortedlist_nx_add(mem_areas, cmp_mem_area, main_a) != NULL;
 
     return true;
@@ -94,6 +93,15 @@ _GL_ATTRIBUTE_PURE uint8_t *native_address(UCELL addr)
 {
     Mem_area *a = mem_area(addr);
     return a ? addr_in_area(a, addr) : NULL;
+}
+
+// Return address of a range [start,end) iff it falls inside an area
+uint8_t *native_address_range_in_one_area(UCELL start, UCELL end)
+{
+    Mem_area *a = mem_area(start);
+    if (a && end <= a->start + a->size)
+        return addr_in_area(a, start);
+    return NULL;
 }
 
 UCELL mem_allot(void *p, size_t n)
@@ -138,16 +146,16 @@ int beetle_load_cell(UCELL addr, CELL *value)
     }
 
     // Aligned access to a single memory area
-    Mem_area *a = mem_area(addr);
-    if (a && addr + CELL_W <= a->start + a->size) {
-        *value = *(CELL *)addr_in_area(a, addr);
+    uint8_t *ptr = native_address_range_in_one_area(addr, addr + CELL_W);
+    if (ptr != NULL && IS_ALIGNED((size_t)ptr)) {
+        *value = *(CELL *)ptr;
         return 0;
     }
 
     // Awkward access
     *value = 0;
     for (unsigned i = 0; i < CELL_W; i++, addr++) {
-        uint8_t *ptr = native_address(addr);
+        ptr = native_address(addr);
         if (ptr == NULL) {
             SET_NOT_ADDRESS(addr);
             return -9;
@@ -174,15 +182,15 @@ int beetle_store_cell(UCELL addr, CELL value)
     }
 
     // Aligned access to a single memory allocation
-    Mem_area *a = mem_area(addr);
-    if (a && addr + CELL_W <= a->start + a->size) {
-        *(CELL *)addr_in_area(a, addr) = value;
+    uint8_t *ptr = native_address_range_in_one_area(addr, addr + CELL_W);
+    if (ptr != NULL && IS_ALIGNED((size_t)ptr)) {
+        *(CELL *)ptr = value;
         return 0;
     }
 
     // Awkward access
     for (unsigned i = 0; i < CELL_W; i++, addr++) {
-        uint8_t *ptr = native_address(addr);
+        ptr = native_address(addr);
         if (ptr == NULL) {
             SET_NOT_ADDRESS(addr);
             return -9;
@@ -226,6 +234,8 @@ int beetle_reverse(UCELL start, UCELL length)
     return ret;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=const"
 int beetle_pre_dma(UCELL from, UCELL to)
 {
     int exception = 0;
@@ -234,14 +244,15 @@ int beetle_pre_dma(UCELL from, UCELL to)
     to = ALIGNED(to);
     if (to < from)
         exception = -1;
-    CHECK_MAIN_MEMORY_ALIGNED(from);
-    CHECK_MAIN_MEMORY_ALIGNED(to);
+    CHECK_ALIGNED(from);
+    CHECK_ALIGNED(to);
     if (exception == 0 && ENDISM)
         exception = beetle_reverse(from, to - from);
 
  badadr:
     return exception;
 }
+#pragma GCC diagnostic pop
 
 int beetle_post_dma(UCELL from, UCELL to)
 {
@@ -257,11 +268,10 @@ int init_beetle(CELL *c_array, size_t size)
         return -1;
 
     EP = 16;
-    MEMORY = size * CELL_W;
-    if (!mem_init(c_array))
+    if (!mem_init(c_array, size))
         return -2;
-    beetle_store_cell(1 * CELL_W, MEMORY);
-    SP = MEMORY - 0x100;
+    beetle_store_cell(1 * CELL_W, size * CELL_W); // FIXME: remove
+    SP = size * CELL_W - 0x100;
     RP = size * CELL_W;
     THROW = (CELL *)native_address(0);
     beetle_store_cell(2 * CELL_W, BAD = 0xFFFFFFFF);

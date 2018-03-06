@@ -47,20 +47,19 @@ static int commands = sizeof(command) / sizeof(*command);
 
 static const char *regist[] = {
     "A", "-ADDRESS", "'BAD", "CHECKED", "ENDISM", "EP", "I",
-    "MEMORY", "RP", "R0", "SP", "S0", "'THROW"
+    "RP", "R0", "SP", "S0", "'THROW"
 };
 enum registers { r_A, r_NOT_ADDRESS, r_BAD, r_CHECKED, r_ENDISM, r_EP, r_I,
-    r_MEMORY, r_RP, r_R0, r_SP, r_S0, r_THROW };
+    r_RP, r_R0, r_SP, r_S0, r_THROW };
 static int registers = sizeof(regist) / sizeof(*regist);
 
 static long count[256];
 
 
-static void check_in_range(UCELL adr, UCELL limit, const char *quantity)
+static void check_valid(UCELL adr, const char *quantity)
 {
-    if (adr >= limit) {
-        printf("%s must be in the range {0..%"PRIX32"h} ({0..%"PRIu32"})\n",
-               quantity, (UCELL)limit, (UCELL)limit);
+    if (native_address(adr) == NULL) {
+        printf("%s is invalid\n", quantity);
         longjmp(env, 1);
     }
 }
@@ -73,30 +72,14 @@ static void check_aligned(UCELL adr, const char *quantity)
     }
 }
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wsuggest-attribute=pure"
-static void check_aligned_in_range(UCELL adr, UCELL limit, const char *quantity)
+static void check_range(UCELL start, UCELL end, const char *quantity)
 {
-    check_in_range(adr, limit, quantity);
-    check_aligned(adr, quantity);
-}
-#pragma GCC diagnostic pop
-
-static void check_range(UCELL start, UCELL end, UCELL limit, const char *quantity)
-{
-    check_in_range(start, limit, quantity);
-    check_in_range(end, limit, quantity);
+    check_valid(start, quantity);
+    check_valid(end, quantity);
     if (start >= end) {
         printf("Start address must be less than end address\n");
         longjmp(env, 1);
     }
-}
-
-static void check_aligned_range(UCELL start, UCELL end, UCELL limit, const char *quantity)
-{
-    check_aligned(start, quantity);
-    check_aligned(end, quantity);
-    check_range(start, end, limit, quantity);
 }
 
 static void upper(char *s)
@@ -268,7 +251,6 @@ static void do_ass(char *token)
             break;
         case r_CHECKED:
         case r_ENDISM:
-        case r_MEMORY:
             printf("Can't assign to %s\n", regist[no]);
             break;
         case r_EP:
@@ -299,7 +281,7 @@ static void do_ass(char *token)
             {
                 CELL adr = (CELL)single_arg(token);
 
-                check_in_range(adr, MEMORY, "Address");
+                check_valid(adr, "Address");
                 if (!IS_ALIGNED(adr) && byte == false) {
                     printf("Only a byte can be assigned to an unaligned "
                         "address\n");
@@ -340,9 +322,6 @@ static void do_display(const char *token, const char *format)
         case r_I:
             display = xasprintf("I = %-10s (%02Xh)", disass(I), I);
             break;
-        case r_MEMORY:
-            display = xasprintf("MEMORY = %"PRIX32"h (%"PRIu32")", MEMORY, MEMORY);
-            break;
         case r_RP:
             display = xasprintf("RP = %"PRIX32"h (%"PRIu32")", RP, RP);
             break;
@@ -362,7 +341,7 @@ static void do_display(const char *token, const char *format)
             {
                 CELL adr = (CELL)single_arg(token);
 
-                check_in_range(adr, MEMORY, "Address");
+                check_valid(adr, "Address");
                 if (!IS_ALIGNED(adr)) {
                     BYTE b;
                     beetle_load_byte(adr, &b);
@@ -425,7 +404,9 @@ static void do_command(int no)
             long start, end;
 
             double_arg(strtok(NULL, ""), &start, &end);
-            check_aligned_range(start, end, MEMORY, "Address");
+            check_aligned(start, "Address");
+            check_aligned(end, "Address");
+            check_range(start, end, "Address");
             disassemble((UCELL)start, (UCELL)end);
         }
         break;
@@ -437,8 +418,6 @@ static void do_command(int no)
         break;
     case c_DATA:
     case c_STACKS:
-        check_in_range(RP, MEMORY + 1, "SP");
-        check_in_range(S0, MEMORY + 1, "S0");
         show_data_stack();
         if (no == c_STACKS)
             goto c_ret;
@@ -447,7 +426,7 @@ static void do_command(int no)
         {
             long start, end;
             double_arg(strtok(NULL, ""), &start, &end);
-            check_range(start, end, MEMORY, "Address");
+            check_range(start, end, "Address");
             while (start < end) {
                 printf("%08lXh: ", (unsigned long)start);
                 for (int i = 0; i < 8 && start < end; i++, start++) {
@@ -521,8 +500,6 @@ static void do_command(int no)
         break;
     c_ret:
     case c_RETURN:
-        check_in_range(RP, MEMORY + 1, "RP");
-        check_in_range(R0, MEMORY + 1, "R0");
         show_return_stack();
         break;
     case c_RUN:
@@ -543,7 +520,8 @@ static void do_command(int no)
                 upper(arg);
                 if (strcmp(arg, "TO") == 0) {
                     unsigned long limit = single_arg(strtok(NULL, ""));
-                    check_aligned_in_range(limit, MEMORY, "Address");
+                    check_valid(limit, "Address");
+                    check_aligned(limit, "Address");
                     while ((unsigned long)EP != limit && ret == -260) {
                         ret = single_step();
                         if (no == c_TRACE) do_registers();
@@ -582,7 +560,7 @@ static void do_command(int no)
 
             switch (ret) {
             case -1:
-                printf("Invalid address or save area extends beyond MEMORY\n");
+                printf("Save area contains an invalid address\n");
                 break;
             case -3:
                 printf("Error while saving module\n");
@@ -716,8 +694,8 @@ int main(int argc, char *argv[])
                 {
                     char *endptr;
                     errno = 0;
-                    MEMORY = strtol(optarg, &endptr, 10);
-                    if (*optarg == '\0' || *endptr != '\0' || MEMORY <= 0 || MEMORY > MAX_MEMORY)
+                    memory_size = strtol(optarg, &endptr, 10);
+                    if (*optarg == '\0' || *endptr != '\0' || memory_size <= 0 || memory_size > MAX_MEMORY)
                         die("memory size must be a positive number up to %"PRIu32, (UCELL)MAX_MEMORY);
                     break;
                 }
@@ -738,7 +716,7 @@ int main(int argc, char *argv[])
     }
 
     CELL *mem;
-    if ((mem = (CELL *)calloc(memory_size, sizeof(CELL))) == NULL)
+    if ((mem = (CELL *)calloc(memory_size, CELL_W)) == NULL)
         die("could not allocate %"PRIu32" cells of memory", memory_size);
 
     init_beetle(mem, memory_size);

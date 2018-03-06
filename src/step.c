@@ -26,6 +26,15 @@
 verify(sizeof(int) <= sizeof(CELL));
 
 
+/* Check whether a Beetle address points to a native cell-aligned cell */
+#define CELL_IN_ONE_AREA(a)                             \
+    (native_address_range_in_one_area((a), (a) + CELL_W) != NULL)
+
+#define CHECK_ALIGNED_WHOLE_CELL(a)                     \
+    CHECK_ADDRESS(a, CELL_IN_ONE_AREA(a), -9, badadr)   \
+    CHECK_ADDRESS(a, IS_ALIGNED(a), -23, badadr)
+
+
 /* Division macros */
 #define ABS(x) ((x) >= 0 ? (x) : -(x))
 #define SGN(x) ((x) > 0 ? 1 : -1)  /* not a proper sign function! */
@@ -535,7 +544,7 @@ CELL single_step(void)
     case O_SPSTORE:
         {
             CELL value = POP;
-            CHECK_MAIN_MEMORY_ALIGNED(value);
+            CHECK_ALIGNED_WHOLE_CELL(value);
             SP = value;
         }
         break;
@@ -545,14 +554,14 @@ CELL single_step(void)
     case O_RPSTORE:
         {
             CELL value = POP;
-            CHECK_MAIN_MEMORY_ALIGNED(value);
+            CHECK_ALIGNED_WHOLE_CELL(value);
             RP = value;
         }
         break;
     case O_BRANCH:
         {
             CELL addr = LOAD_CELL(EP);
-            CHECK_MAIN_MEMORY_ALIGNED(addr);
+            CHECK_ALIGNED_WHOLE_CELL(addr);
             EP = addr;
             NEXT;
         }
@@ -564,7 +573,7 @@ CELL single_step(void)
     case O_QBRANCH:
         if (POP == B_FALSE) {
             CELL addr = LOAD_CELL(EP);
-            CHECK_MAIN_MEMORY_ALIGNED(addr);
+            CHECK_ALIGNED_WHOLE_CELL(addr);
             EP = addr;
             NEXT;
         } else
@@ -578,7 +587,7 @@ CELL single_step(void)
     case O_EXECUTE:
         {
             CELL addr = POP;
-            CHECK_MAIN_MEMORY_ALIGNED(addr);
+            CHECK_ALIGNED_WHOLE_CELL(addr);
             PUSH_RETURN(EP);
             EP = addr;
             NEXT;
@@ -587,10 +596,10 @@ CELL single_step(void)
     case O_FEXECUTE:
         {
             CELL addr = POP;
-            CHECK_MAIN_MEMORY_ALIGNED(addr);
+            CHECK_ALIGNED_WHOLE_CELL(addr);
             PUSH_RETURN(EP);
             addr = LOAD_CELL(addr);
-            CHECK_MAIN_MEMORY_ALIGNED(addr);
+            CHECK_ALIGNED_WHOLE_CELL(addr);
             EP = addr;
             NEXT;
         }
@@ -599,7 +608,7 @@ CELL single_step(void)
         {
             PUSH_RETURN(EP + CELL_W);
             CELL addr = LOAD_CELL(EP);
-            CHECK_MAIN_MEMORY_ALIGNED(addr);
+            CHECK_ALIGNED_WHOLE_CELL(addr);
             EP = addr;
             NEXT;
         }
@@ -612,7 +621,7 @@ CELL single_step(void)
     case O_EXIT:
         {
             CELL addr = POP_RETURN;
-            CHECK_MAIN_MEMORY_ALIGNED(addr);
+            CHECK_ALIGNED_WHOLE_CELL(addr);
             EP = addr;
             NEXT;
         }
@@ -636,7 +645,7 @@ CELL single_step(void)
                 EP += CELL_W;
             } else {
                 CELL addr = LOAD_CELL(EP);
-                CHECK_MAIN_MEMORY_ALIGNED(addr);
+                CHECK_ALIGNED_WHOLE_CELL(addr);
                 EP = addr;
                 NEXT;
             }
@@ -668,7 +677,7 @@ CELL single_step(void)
                 EP += CELL_W;
             } else {
                 CELL addr = LOAD_CELL(EP);
-                CHECK_MAIN_MEMORY_ALIGNED(addr);
+                CHECK_ALIGNED_WHOLE_CELL(addr);
                 EP = addr;
                 NEXT;
             }
@@ -708,7 +717,7 @@ CELL single_step(void)
     case O_THROW:
         // exception may already be set, so CELL_STORE may have no effect here.
         beetle_store_cell(2 * CELL_W, BAD = EP);
-        if (!IN_MAIN_MEMORY((UCELL)*THROW) || !IS_ALIGNED((UCELL)*THROW))
+        if (!CELL_IN_ONE_AREA((UCELL)*THROW) || !IS_ALIGNED((UCELL)*THROW))
             return -259;
         EP = (UCELL)*THROW;
         NEXT;
@@ -895,7 +904,7 @@ CELL single_step(void)
     // "manually".
  badadr:
     SP -= CELL_W;
-    if (!IN_MAIN_MEMORY(SP) || !IS_ALIGNED(SP))
+    if (!CELL_IN_ONE_AREA(SP) || !IS_ALIGNED(SP))
       return -258;
     beetle_store_cell(SP, exception);
     goto throw;

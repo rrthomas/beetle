@@ -46,7 +46,6 @@ typedef uint64_t DUCELL;
 extern UCELL EP;
 extern BYTE I;
 extern CELL A;
-extern UCELL MEMORY;
 extern UCELL SP, RP;
 extern CELL *THROW;     /* 'THROW is not a valid C identifier */
 extern UCELL BAD;       /* 'BAD is not a valid C identifier */
@@ -95,6 +94,7 @@ int beetle_post_dma(UCELL from, UCELL to);
 /* High memory */
 UCELL mem_here(void);
 uint8_t *native_address(UCELL addr);
+uint8_t *native_address_range_in_one_area(UCELL start, UCELL end);
 UCELL mem_allot(void *p, size_t n);
 UCELL mem_align(void);
 
@@ -125,9 +125,6 @@ typedef union {
 /* Check whether a Beetle address is aligned */
 #define IS_ALIGNED(a)     (((a) & (CELL_W - 1)) == 0)
 
-/* Check whether a Beetle address is in main memory */
-#define IN_MAIN_MEMORY(a) ((UCELL)(a) < MEMORY)
-
 /* Address checking */
 #define SET_NOT_ADDRESS(a)                      \
     beetle_store_cell(3 * CELL_W, NOT_ADDRESS = (a))
@@ -139,8 +136,7 @@ typedef union {
         goto label;                             \
     }
 
-#define CHECK_MAIN_MEMORY_ALIGNED(a)                    \
-    CHECK_ADDRESS(a, IN_MAIN_MEMORY(a), -9, badadr)     \
+#define CHECK_ALIGNED(a)                                \
     CHECK_ADDRESS(a, IS_ALIGNED(a), -23, badadr)
 
 #define NEXT (exception = (EP += CELL_W, beetle_load_cell(EP - CELL_W, &A)))

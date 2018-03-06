@@ -15,7 +15,7 @@
 
 #define xstr(s) #s
 #define str(s) xstr(s)
-#define MEMORY_MESSAGE "set MEMORY to the given NUMBER of cells\n" \
+#define MEMORY_MESSAGE "set memory size to the given NUMBER of cells\n" \
   "                        0 < NUMBER <= " str(MAX_MEMORY) " [default " str(DEFAULT_MEMORY) "]"
 O("memory", 'm', required_argument, "NUMBER", MEMORY_MESSAGE)
 O("help", '\0', no_argument, "", "display this help message and exit")

@@ -123,8 +123,15 @@ char *val_data_stack(void)
 
     for (UCELL i = S0 - CELL_W; i >= SP; i -= CELL_W) {
         CELL c;
-        beetle_load_cell(i, &c);
-        char *ptr = xasprintf("%s%"PRId32, picture, c);
+        char *ptr;
+        int exception = beetle_load_cell(i, &c);
+        if (exception != 0) {
+            ptr = xasprintf("%sinvalid address!", picture);
+            free(picture);
+            picture = ptr;
+            break;
+        }
+        ptr = xasprintf("%s%"PRId32, picture, c);
         free(picture);
         picture = ptr;
         if (i != SP) {
@@ -159,7 +166,11 @@ void show_return_stack(void)
         printf("Return stack: ");
         for (UCELL i = R0 - CELL_W; i >= RP; i -= CELL_W) {
             CELL c;
-            beetle_load_cell(i, &c);
+            int exception = beetle_load_cell(i, &c);
+            if (exception != 0) {
+                printf("invalid address!\n");
+                break;
+            }
             printf("%"PRIX32"h ", (UCELL)c);
             if (i == 0)
                 break;

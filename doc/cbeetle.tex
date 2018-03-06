@@ -90,7 +90,7 @@ memory for Beetle, nor does it initialise any of the registers. C Beetle
 provides the interface call {\bf init\_beetle()} to do this (see
 section~\ref{usingcalls}).
 
-The variables {\tt EP}, {\tt I}, {\tt A}, {\tt MEMORY}, {\tt SP}, {\tt RP}, {\tt BAD} and {\tt ADDRESS}
+The variables {\tt EP}, {\tt I}, {\tt A}, {\tt SP}, {\tt RP}, {\tt BAD} and {\tt ADDRESS}
 correspond exactly with the Beetle registers they represent, and may be read
 and assigned to accordingly, bearing in mind the restrictions on their use
 given in~\cite{beetle} (e.g. copies of {\tt BAD} and {\tt ADDRESS} must be
@@ -99,7 +99,7 @@ kept in Beetle's memory). {\tt THROW} is a pointer to the Beetle register
 register. {\tt CHECKED} is the constant $1$; it may be read but not
 assigned to.
 
-The main memory may be at most \SI{2}{GB}, and is always mapped into Beetle’s address space starting from address $0$. C Beetle provides the ability to map native memory blocks into the upper \SI{2}{GB} of the address space; see below.
+C Beetle provides the ability to map native memory blocks into Beetle’s address space; see below.
 
 
 \subsection{Extra library calls}
@@ -186,10 +186,11 @@ file system error occurs, the return code is -3.}
 In addition to the required interface calls C Beetle provides an initialisation routine {\bf init\_beetle()} which, given a byte array and its size, initialises Beetle:
 
 \begin{description}
-\ifacec{int init\_beetle(BYTE *b\_array, long size)}{{\tt size} is
+\ifacec{int init\_beetle(CELL *b\_array, long size)}{{\tt size} is
 the length of {\tt b\_array} in {\em cells} (not bytes). The return value is -1 if {\tt b\_array} is
 {\tt NULL} or {\tt size} is less than $4$, and 0 otherwise.
-All the registers are initialised as per~\cite{beetle} ({\tt EP} is set to $16$), and those held in Beetle's memory as well are copied there.}
+All the registers are initialised as per~\cite{beetle} ({\tt EP} is set to $16$, {\tt SP} to {\tt size}~$-$~100h and
+{\tt RP} to {\tt size}), and those held in Beetle's memory as well are copied there.}
 \end{description}
 
 {\bf native\_address()} returns {\tt NULL} when passed an invalid address.

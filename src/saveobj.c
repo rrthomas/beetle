@@ -16,15 +16,15 @@
 
 int save_object(FILE *file, UCELL address, UCELL length)
 {
-    if (!IN_MAIN_MEMORY(address) || !IS_ALIGNED(address) ||
-        address + length * CELL_W > MEMORY)
+    uint8_t *ptr = native_address_range_in_one_area(address, address + length);
+    if (!IS_ALIGNED(address) || ptr == NULL)
         return -1;
 
     if (fputs("BEETLE", file) == EOF ||
         putc('\0', file) == EOF ||
         putc((char)ENDISM, file) == EOF ||
         fwrite(&length, CELL_W, 1, file) != 1 ||
-        fwrite(native_address(address), CELL_W, length, file) != length)
+        fwrite(ptr, CELL_W, length, file) != length)
         return -3;
 
     return 0;

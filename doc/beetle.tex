@@ -168,8 +168,6 @@ The registers, each with its function and pronunciation, are set out in table~\r
     to be executed. \\
 {\tt A} & ``a'' & The instruction {\tt A}ccumulator. Holds the opcodes of
     instructions to be executed, and immediate operands. \\
-{\tt MEMORY} & ``memory'' & The size in bytes of Beetle's main memory,
-    which must be a multiple of four. \\
 {\tt SP} & ``s-p'' & The data {\tt S}tack {\tt P}ointer. \\
 {\tt RP} & ``r-p'' & The {\tt R}eturn stack {\tt P}ointer. \\
 {\tt 'THROW} & ``tick-throw'' & The address placed in {\tt EP} by a {\tt THROW}
@@ -187,10 +185,10 @@ The registers, each with its function and pronunciation, are set out in table~\r
 \end{center}
 \end{table}
 
-{\tt EP}, {\tt A}, {\tt MEMORY}, {\tt SP}, {\tt RP}, {\tt 'THROW}, {\tt 'BAD}
+{\tt EP}, {\tt A}, {\tt SP}, {\tt RP}, {\tt 'THROW}, {\tt 'BAD}
 and {\tt -ADDRESS} are cell-wide quantities; {\tt I}, {\tt ENDISM} and {\tt
 CHECKED} are one byte wide. The
-values of {\tt MEMORY}, {\tt 'BAD} and {\tt -ADDRESS} are available in Beetle's
+values of {\tt 'BAD} and {\tt -ADDRESS} are available in Beetle's
 address space; {\tt 'THROW} must be physically held there so that it can be
 changed as well as read by programs. Their Beetle addresses are
 shown in table~\ref{mappedtable}.
@@ -200,7 +198,6 @@ shown in table~\ref{mappedtable}.
 \begin{tabular}{cc} \toprule
 \bf Register & \bf Address \\ \midrule
 {\tt 'THROW} & 0h \\
-{\tt MEMORY} & 4h \\
 {\tt 'BAD} & 8h \\
 {\tt -ADDRESS} & Ch \\ \bottomrule
 \end{tabular}
@@ -214,8 +211,7 @@ by bForth instructions (see section~\ref{registerinst}).
 
 \subsection{Memory}
 
-Beetle's memory is a contiguous sequence of bytes numbered from 0 to {\tt
-MEMORY}~$-$~1.
+Beetle's memory is a discontiguous sequence of bytes with addresses in the range $0$ to $2^{32}-1$.
 
 
 \subsection{Stacks}
@@ -243,7 +239,7 @@ always mentioned explicitly.
 \subsection{Operation}
 \label{operation}
 
-Before Beetle is started, {\tt MEMORY} and {\tt ENDISM} should be set
+Before Beetle is started, {\tt ENDISM}, {\tt SP} and {\tt RP} should be set
 to implementation-dependent values; {\tt 'THROW} should be set to point to the
 exception handler, and {\tt EP} to the bForth code that is to be executed. {\tt
 CHECKED} should be set to 0 or 1 as desired. The other registers should be
@@ -254,8 +250,6 @@ which need not be initialised.
 \begin{center}
 \begin{tabular}{cc} \toprule
 \bf Register & \bf Initial value \\ \midrule
-{\tt SP} & {\tt MEMORY} $-$ 100h \\
-{\tt RP} & {\tt MEMORY} \\
 {\tt 'BAD} & {FFFFFFFFh} \\
 {\tt -ADDRESS} & {FFFFFFFFh} \\ \bottomrule
 \end{tabular}
@@ -263,7 +257,7 @@ which need not be initialised.
 \end{center}
 \end{table}
 
-{\tt MEMORY} should be copied to 4h; its value and those of {\tt ENDISM} and
+The values of {\tt ENDISM} and
 {\tt CHECKED} must not change while Beetle is executing. Next, the action of
 {\tt NEXT} should be performed (see section~\ref{miscinst}): {\tt A} is loaded
 from the cell to which {\tt EP} points, and four is added to {\tt EP}.
@@ -335,9 +329,7 @@ $-257$ & Library routine not implemented (see section~\ref{accessinst}). \\ \bot
 \end{table}
 
 Exception $-9$ is raised whenever an attempt is made to access an invalid
-address (for most operations, only addresses between zero and {\tt MEMORY $-$ 1}
-inclusive are valid; for memory fetch and store instructions other addresses may
-also be valid at the discretion of the implementation), either by an
+address, either by an
 instruction, or during an instruction fetch (because {\tt EP} contains an
 invalid address). Exception $-23$ is raised when a bForth instruction expecting
 an address of type \spic{a-addr} (cell-aligned) is given a non-aligned address.
@@ -431,8 +423,8 @@ shows the subtype relationships. The subtype relation is transitive.
 \end{center}
 \end{table}
 
-Numbers are represented in twos complement form. \spic{a-addr} consists of all
-unsigned numbers less than {\tt MEMORY}. Numeric constants can be included in
+Numbers are represented in twos complement form. \spic{c-addr} consists of all
+valid addresses. Numeric constants can be included in
 stack pictures, and are of type \spic{n{\tt |}u}.
 
 Each type may be suffixed by a number in stack pictures; if the same combination
@@ -867,8 +859,7 @@ following calls:
 \iface{save\_object}{file, address, length}{integer}{Save the \textit{length}
     cells in Beetle's memory starting at \textit{address} as an object module
     under the filename or other specifier \textit{file}. The result is 0 if
-    successful, $-1$ if there is a Beetle error (the address is out of range or
-    the area extends beyond {\tt MEMORY}), and some other
+    successful, $-1$ if there is a Beetle error (the requested area of memory is not all valid), and some other
     implementation-defined value if there is a filing system or other error.}
 \end{description}
 
@@ -896,3 +887,5 @@ more understandable to readers without a knowledge of Forth.
 
 
 \end{document}
+
+% LocalWords:  discontiguous

@@ -34,8 +34,8 @@ int main(void)
     UCELL len[] = { 16, 2000, 16 };
 
     size_t size = 256;
-    init_beetle((CELL *)calloc(size, sizeof(CELL)), size);
-    adr[0] = MEMORY + CELL_W;
+    init_beetle((CELL *)calloc(size, CELL_W), size);
+    adr[0] = (size + 1) * CELL_W;
     beetle_store_cell(0, 0x01020304);
     beetle_store_cell(4, 0x05060708);
 
