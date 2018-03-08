@@ -19,6 +19,8 @@ const char *correct[] = {
     "", "16389", "2", "", "1", "1 16385", "", "16385", "1", "", "16392", "16392 16392", "-20",
 };
 
+const unsigned area[] = {0x4000, 0x4004, 0x4005, 0x4008};
+
 
 int main(void)
 {
@@ -32,9 +34,13 @@ int main(void)
     size_t size = 4096;
     init_beetle((CELL *)calloc(size, CELL_W), size);
     for (unsigned i = 0; i < nitems; i++) {
-        // FIXME: Check address of each allocation
-        printf("Extra memory area %u allocated at address %"PRIX32"\n",
-               i, mem_allot(item[i], strlen(item[i]), i < 3));
+        UCELL addr = mem_allot(item[i], strlen(item[i]), i < 3);
+        printf("Extra memory area %u allocated at address %"PRIX32" (should be %"PRIX32")\n",
+               i, addr, area[i]);
+        if (addr != area[i]) {
+            printf("Error in MemoryT: incorrect address for memory allocation\n");
+            exit(1);
+        }
         if (i == 2)
             mem_align();
     }
