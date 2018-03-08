@@ -21,7 +21,7 @@ int main(void)
     int exception = 0;
 
     size_t size = 4096;
-    init_beetle((CELL *)calloc(size, CELL_W), size);
+    init_beetle((CELL *)calloc(size - 4, CELL_W), size - 4);
     S0 = SP;	/* save base of stack */
 
     here = EP;	/* start assembling at 16 */
@@ -54,7 +54,7 @@ int main(void)
     ass(O_HALT);
     end_ass();
 
-    *THROW = 100;   /* set address of exception handler */
+    THROW = 100;   /* set address of exception handler */
 
     UCELL error = 0;
     for (size_t i = 0; i < sizeof(test) / sizeof(test[0]); i++) {

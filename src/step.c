@@ -31,8 +31,8 @@ verify(sizeof(int) <= sizeof(CELL));
     (native_address_range_in_one_area((a), (a) + CELL_W, false) != NULL)
 
 #define CHECK_ALIGNED_WHOLE_CELL(a)                     \
-    CHECK_ADDRESS(a, CELL_IN_ONE_AREA(a), -9, badadr)   \
-    CHECK_ADDRESS(a, IS_ALIGNED(a), -23, badadr)
+    CHECK_ADDRESS(a, IS_ALIGNED(a), -23, badadr)        \
+    CHECK_ADDRESS(a, CELL_IN_ONE_AREA(a), -9, badadr)
 
 
 /* Division macros */
@@ -717,9 +717,9 @@ CELL single_step(void)
     case O_THROW:
         // exception may already be set, so CELL_STORE may have no effect here.
         beetle_store_cell(2 * CELL_W, BAD = EP);
-        if (!CELL_IN_ONE_AREA((UCELL)*THROW) || !IS_ALIGNED((UCELL)*THROW))
+        if (!CELL_IN_ONE_AREA(THROW) || !IS_ALIGNED(THROW))
             return -259;
-        EP = (UCELL)*THROW;
+        EP = THROW;
         NEXT;
         exception = 0; // Any exception has now been dealt with
         break;

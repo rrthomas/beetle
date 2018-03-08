@@ -23,13 +23,6 @@ int main(void)
     size_t size = 1024;
     CELL *ptr = (CELL *)malloc(size / CELL_W);
     assert(ptr);
-    i = init_beetle(ptr, 1);
-    printf("init_beetle(ptr, 1) should return -1; returns: %d\n", i);
-    if (i != -1) {
-        printf("Error in InitialT: init_beetle with invalid parameters "
-            "succeeded\n");
-        exit(1);
-    }
 
     i = init_beetle(ptr, size / CELL_W);
     if (i != 0) {

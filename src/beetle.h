@@ -48,7 +48,7 @@ extern UCELL EP;
 extern BYTE I;
 extern CELL A;
 extern UCELL SP, RP;
-extern CELL *THROW;     /* 'THROW is not a valid C identifier */
+extern UCELL THROW;     /* 'THROW is not a valid C identifier */
 extern UCELL BAD;       /* 'BAD is not a valid C identifier */
 extern UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
 #define CHECKED 1       /* C Beetle makes address checking mandatory */
@@ -126,12 +126,9 @@ typedef union {
 #define IS_ALIGNED(a)     (((a) & (CELL_W - 1)) == 0)
 
 /* Address checking */
-#define SET_NOT_ADDRESS(a)                      \
-    beetle_store_cell(3 * CELL_W, NOT_ADDRESS = (a))
-
 #define CHECK_ADDRESS(a, cond, code, label)     \
     if (!(cond)) {                              \
-        SET_NOT_ADDRESS(a);                     \
+        NOT_ADDRESS = a;                        \
         exception = code;                       \
         goto label;                             \
     }

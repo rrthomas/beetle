@@ -30,6 +30,7 @@
 #define DEFAULT_MEMORY 1048576 // Default size of Beetle's memory in cells (4Mb)
 #define MAX_MEMORY 536870912 // Maximum size of memory in cells (2Gb)
 static UCELL memory_size = DEFAULT_MEMORY; // Size of Beetle's memory in cells
+CELL *memory;
 
 #define MAXLEN 80   // Maximum input line length
 
@@ -209,6 +210,17 @@ static void disassemble(UCELL start, UCELL end)
 }
 
 
+static void reinit(void)
+{
+    memset(memory, 0, memory_size);
+    init_beetle(memory, memory_size);
+    S0 = SP;
+    R0 = RP;
+    THROW = 0;
+    A = 0;
+}
+
+
 static int save_object(FILE *file, UCELL address, UCELL length)
 {
     uint8_t *ptr = native_address_range_in_one_area(address, address + length, false);
@@ -293,7 +305,7 @@ static void do_ass(char *token)
             S0 = value;
             break;
         case r_THROW:
-            *THROW = value;
+            THROW = value;
         default:
             {
                 CELL adr = (CELL)single_arg(token);
@@ -352,7 +364,7 @@ static void do_display(const char *token, const char *format)
             display = xasprintf("S0 = %"PRIX32"h (%"PRIu32")", S0, S0);
             break;
         case r_THROW:
-            display = xasprintf("'THROW = %"PRIX32"h (%"PRIu32")", (UCELL)*THROW, (UCELL)*THROW);
+            display = xasprintf("'THROW = %"PRIX32"h (%"PRIu32")", THROW, THROW);
             break;
         default:
             {
@@ -468,18 +480,8 @@ static void do_command(int no)
     case c_INITIALISE:
     case c_LOAD:
         {
-            uint8_t *ptr = native_address_range_in_one_area(0, memory_size, true);
-            if (ptr == NULL) {
-                printf("Cannot write to Beetle memory!\n");
-                break;
-            }
-            memset(ptr, 0, memory_size);
             memset(count, 0, 256 * sizeof(long));
-            init_beetle((CELL *)ptr, memory_size);
-            S0 = SP;
-            R0 = RP;
-            *THROW = 0;
-            A = 0;
+            reinit();
             if (no != c_LOAD)
                 break;
 
@@ -737,15 +739,9 @@ int main(int argc, char *argv[])
             }
     }
 
-    CELL *mem;
-    if ((mem = (CELL *)calloc(memory_size, CELL_W)) == NULL)
+    if ((memory = (CELL *)calloc(memory_size, CELL_W)) == NULL)
         die("could not allocate %"PRIu32" cells of memory", memory_size);
-
-    init_beetle(mem, memory_size);
-    S0 = SP;
-    R0 = RP;
-    *THROW = 0;
-    A = 0;
+    reinit();
 
     argc -= optind;
     if (argc >= 1) {

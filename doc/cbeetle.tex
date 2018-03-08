@@ -31,7 +31,7 @@
 
 \title{An implementation of the Beetle virtual machine for POSIX}
 \author{Reuben Thomas}
-\date{5th March 2018}
+\date{8th March 2018}
 
 \begin{document}
 \maketitle
@@ -90,14 +90,10 @@ memory for Beetle, nor does it initialise any of the registers. C Beetle
 provides the interface call {\bf init\_beetle()} to do this (see
 section~\ref{usingcalls}).
 
-The variables {\tt EP}, {\tt I}, {\tt A}, {\tt SP}, {\tt RP}, {\tt BAD} and {\tt ADDRESS}
+The variables {\tt EP}, {\tt I}, {\tt A}, {\tt SP}, {\tt RP}, {\tt THROW}, {\tt BAD} and {\tt ADDRESS}
 correspond exactly with the Beetle registers they represent, and may be read
 and assigned to accordingly, bearing in mind the restrictions on their use
-given in~\cite{beetle} (e.g. copies of {\tt BAD} and {\tt ADDRESS} must be
-kept in Beetle's memory). {\tt THROW} is a pointer to the Beetle register
-{\tt 'THROW}, so the expression {\tt *THROW} may be used as the Beetle
-register. {\tt CHECKED} is the constant $1$; it may be read but not
-assigned to.
+given in~\cite{beetle}. {\tt THROW}, {\tt BAD} and {\tt ADDRESS} are mapped into Beetle's memory, so they are automatically updated when the corresponding memory locations are written to, and vice versa. {\tt CHECKED} is the constant $1$; it may be read but not assigned to.
 
 C Beetle provides the ability to map native memory blocks into Beetle’s address space; see below.
 
@@ -181,14 +177,12 @@ is a Beetle cell.}
 occurs, the return code is -3.}
 \end{description}
 
-In addition to the required interface calls C Beetle provides an initialisation routine {\bf init\_beetle()} which, given a byte array and its size, initialises Beetle:
+In addition to the required interface calls C Beetle provides an initialisation routine {\bf init\_beetle()} which, given a cell array and its size, initialises Beetle:
 
 \begin{description}
 \ifacec{int init\_beetle(CELL *b\_array, long size)}{{\tt size} is
-the length of {\tt b\_array} in {\em cells} (not bytes). The return value is -1 if {\tt b\_array} is
-{\tt NULL} or {\tt size} is less than $4$, and 0 otherwise.
-All the registers are initialised as per~\cite{beetle} ({\tt EP} is set to $16$, {\tt SP} to {\tt size}~$-$~100h and
-{\tt RP} to {\tt size}), and those held in Beetle's memory as well are copied there.}
+the size of {\tt b\_array} in {\em cells} (not bytes). The return value is $-1$ if {\tt b\_array} is {\tt NULL}, and $0$ otherwise.
+All the registers are initialised as per~\cite{beetle} ({\tt EP} is set to $16$, {\tt SP} to {\tt size}~$-$~100h and {\tt RP} to {\tt size}).}
 \end{description}
 
 {\bf native\_address()} returns {\tt NULL} when passed an invalid address.

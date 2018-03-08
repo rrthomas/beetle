@@ -22,7 +22,8 @@ UCELL EP;
 BYTE I;
 CELL A;
 UCELL SP, RP;
-CELL *THROW;	/* 'THROW is not a valid C identifier */
+UCELL THROW;	/* 'THROW is not a valid C identifier */
+UCELL MEMORY;   // Size of main memory
 UCELL BAD;	/* 'BAD is not a valid C identifier */
 UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
 
@@ -125,7 +126,7 @@ UCELL mem_align(void)
 int beetle_load_cell(UCELL addr, CELL *value)
 {
     if (!IS_ALIGNED(addr)) {
-        SET_NOT_ADDRESS(addr);
+        NOT_ADDRESS = addr;
         return -23;
     }
 
@@ -141,7 +142,7 @@ int beetle_load_cell(UCELL addr, CELL *value)
     for (unsigned i = 0; i < CELL_W; i++, addr++) {
         ptr = native_address(addr, false);
         if (ptr == NULL) {
-            SET_NOT_ADDRESS(addr);
+            NOT_ADDRESS = addr;
             return -9;
         }
         ((BYTE *)value)[ENDISM ? CELL_W - i : i] = *ptr;
@@ -161,7 +162,7 @@ int beetle_load_byte(UCELL addr, BYTE *value)
 int beetle_store_cell(UCELL addr, CELL value)
 {
     if (!IS_ALIGNED(addr)) {
-        SET_NOT_ADDRESS(addr);
+        NOT_ADDRESS = addr;
         return -23;
     }
 
@@ -183,10 +184,10 @@ int beetle_store_byte(UCELL addr, BYTE value)
 {
     Mem_area *a = mem_area(FLIP(addr));
     if (a == NULL) {
-        SET_NOT_ADDRESS(addr);
+        NOT_ADDRESS = addr;
         return -9;
     } else if (!a->writable) {
-        SET_NOT_ADDRESS(addr);
+        NOT_ADDRESS = addr;
         return -20;
     }
     *addr_in_area(a, addr) = value;
@@ -248,7 +249,7 @@ int beetle_post_dma(UCELL from, UCELL to)
 
 int init_beetle(CELL *c_array, size_t size)
 {
-    if (c_array == NULL || size < 4)
+    if (c_array == NULL)
         return -1;
 
     EP = 16;
@@ -258,15 +259,19 @@ int init_beetle(CELL *c_array, size_t size)
         == false)
         return -2;
 
-    if (mem_allot(c_array, size * CELL_W, true) == CELL_MASK)
+    if (mem_allot(&THROW, CELL_W, true) == CELL_MASK
+        || mem_allot(&MEMORY, CELL_W, false) == CELL_MASK
+        || mem_allot(&BAD, CELL_W, true) == CELL_MASK
+        || mem_allot(&NOT_ADDRESS, CELL_W, true) == CELL_MASK
+        || mem_allot(c_array, size * CELL_W, true) == CELL_MASK)
         return -2;
 
-    beetle_store_cell(1 * CELL_W, size * CELL_W); // FIXME: move to mem_allot
+    size += 4; // FIXME
+    MEMORY = size * CELL_W; // FIXME: move to mem_allot
     SP = size * CELL_W - 0x100;
     RP = size * CELL_W;
-    THROW = (CELL *)native_address(0, true);
-    beetle_store_cell(2 * CELL_W, BAD = 0xFFFFFFFF);
-    SET_NOT_ADDRESS(0xFFFFFFFF);
+    BAD = 0xFFFFFFFF;
+    NOT_ADDRESS = 0xFFFFFFFF;
 
     return 0;
 }
