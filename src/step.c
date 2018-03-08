@@ -28,7 +28,7 @@ verify(sizeof(int) <= sizeof(CELL));
 
 /* Check whether a Beetle address points to a native cell-aligned cell */
 #define CELL_IN_ONE_AREA(a)                             \
-    (native_address_range_in_one_area((a), (a) + CELL_W) != NULL)
+    (native_address_range_in_one_area((a), (a) + CELL_W, false) != NULL)
 
 #define CHECK_ALIGNED_WHOLE_CELL(a)                     \
     CHECK_ADDRESS(a, CELL_IN_ONE_AREA(a), -9, badadr)   \
@@ -108,7 +108,7 @@ bool register_args(int argc, char *argv[])
 
     for (int i = 0; i < argc; i++) {
         size_t len = strlen(argv[i]);
-        main_argv[i] = mem_allot(argv[i], len);
+        main_argv[i] = mem_allot(argv[i], len, true);
         if (main_argv[i] == 0)
             return false;
         main_argv_len[i] = len;
@@ -791,9 +791,9 @@ CELL single_step(void)
 
                     ssize_t res = 0;
                     if (exception == 0) {
-                        exception = beetle_pre_dma(buf, buf + nbytes);
+                        exception = beetle_pre_dma(buf, buf + nbytes, true);
                         if (exception == 0) {
-                            res = read(fd, native_address(buf), nbytes);
+                            res = read(fd, native_address(buf, true), nbytes);
                             exception = beetle_post_dma(buf, buf + nbytes);
                         }
                     }
@@ -811,9 +811,9 @@ CELL single_step(void)
 
                     ssize_t res = 0;
                     if (exception == 0) {
-                        exception = beetle_pre_dma(buf, buf + nbytes);
+                        exception = beetle_pre_dma(buf, buf + nbytes, false);
                         if (exception == 0) {
-                            res = write(fd, native_address(buf), nbytes);
+                            res = write(fd, native_address(buf, false), nbytes);
                             exception = beetle_post_dma(buf, buf + nbytes);
                         }
                     }

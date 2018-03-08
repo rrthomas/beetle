@@ -58,7 +58,7 @@ static long count[256];
 
 static void check_valid(UCELL adr, const char *quantity)
 {
-    if (native_address(adr) == NULL) {
+    if (native_address(adr, false) == NULL) {
         printf("%s is invalid\n", quantity);
         longjmp(env, 1);
     }
@@ -211,7 +211,7 @@ static void disassemble(UCELL start, UCELL end)
 
 static int save_object(FILE *file, UCELL address, UCELL length)
 {
-    uint8_t *ptr = native_address_range_in_one_area(address, address + length);
+    uint8_t *ptr = native_address_range_in_one_area(address, address + length, false);
     if (!IS_ALIGNED(address) || ptr == NULL)
         return -1;
 
@@ -468,9 +468,14 @@ static void do_command(int no)
     case c_INITIALISE:
     case c_LOAD:
         {
-            memset(native_address(0), 0, memory_size);
+            uint8_t *ptr = native_address_range_in_one_area(0, memory_size, true);
+            if (ptr == NULL) {
+                printf("Cannot write to Beetle memory!\n");
+                break;
+            }
+            memset(ptr, 0, memory_size);
             memset(count, 0, 256 * sizeof(long));
-            init_beetle((CELL *)native_address(0), memory_size);
+            init_beetle((CELL *)ptr, memory_size);
             S0 = SP;
             R0 = RP;
             *THROW = 0;

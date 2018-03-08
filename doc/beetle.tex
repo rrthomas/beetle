@@ -84,7 +84,7 @@
 
 \title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
-\date{29th October 1993; revised 5th March 2018}
+\date{29th October 1993; revised 8th March 2018}
 
 \begin{document}
 \maketitle
@@ -211,7 +211,7 @@ by bForth instructions (see section~\ref{registerinst}).
 
 \subsection{Memory}
 
-Beetle's memory is a discontiguous sequence of bytes with addresses in the range $0$ to $2^{32}-1$.
+Beetle's memory is a discontiguous sequence of bytes with addresses in the range $0$ to $2^{32}-1$. Some locations may be read-only.
 
 
 \subsection{Stacks}
@@ -320,6 +320,7 @@ additionally reserve exceptions $-512$ to $-4095$ for their own exceptions
 \bf Code & \bf Meaning \\ \midrule
 $-9$ & Invalid address (see below). \\
 $-10$ & Division by zero attempted (see section~\ref{arithmetic}). \\
+$-20$ & Attempt to write to a read-only memory location. \\
 $-23$ & Address alignment exception (see below). \\
 $-256$ & Illegal opcode (see section~\ref{opcodes}). \\
 $-257$ & Library routine not implemented (see section~\ref{accessinst}). \\ \bottomrule

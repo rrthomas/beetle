@@ -35,6 +35,7 @@ typedef struct {
     UCELL start;
     UCELL size;
     uint8_t *ptr;
+    bool writable;
 } Mem_area;
 
 static int cmp_mem_area(const void *a_, const void *b_)
@@ -57,16 +58,6 @@ static void free_mem_area(const void *a)
     free((void *)a);
 }
 
-static bool mem_init(CELL *m0, UCELL memory_size)
-{
-    if ((mem_areas =
-         gl_list_nx_create_empty(GL_AVLTREE_LIST, eq_mem_area, NULL, free_mem_area, false))
-        == false)
-        return false;
-
-    return mem_allot(m0, memory_size * CELL_W) != CELL_MASK;
-}
-
 _GL_ATTRIBUTE_PURE UCELL mem_here(void)
 {
     return _mem_here;
@@ -74,29 +65,31 @@ _GL_ATTRIBUTE_PURE UCELL mem_here(void)
 
 static Mem_area *mem_area(UCELL addr)
 {
-    Mem_area a_addr = {addr, CELL_W, NULL};
+    Mem_area a_addr = {addr, CELL_W, NULL, true};
     gl_list_node_t elt = gl_sortedlist_search(mem_areas, cmp_mem_area, &a_addr);
     return elt ? (Mem_area *)gl_list_node_value(mem_areas, elt) : NULL;
 }
 
 #define addr_in_area(a, addr) (a->ptr + (addr - a->start))
 
-_GL_ATTRIBUTE_PURE uint8_t *native_address(UCELL addr)
+_GL_ATTRIBUTE_PURE uint8_t *native_address(UCELL addr, bool write)
 {
     Mem_area *a = mem_area(addr);
-    return a ? addr_in_area(a, addr) : NULL;
+    if (a == NULL || (write && !a->writable))
+        return NULL;
+    return addr_in_area(a, addr);
 }
 
 // Return address of a range [start,end) iff it falls inside an area
-uint8_t *native_address_range_in_one_area(UCELL start, UCELL end)
+uint8_t *native_address_range_in_one_area(UCELL start, UCELL end, bool write)
 {
     Mem_area *a = mem_area(start);
-    if (a && end <= a->start + a->size)
-        return addr_in_area(a, start);
-    return NULL;
+    if (a == NULL || (write && !a->writable) || end > a->start + a->size)
+        return NULL;
+    return addr_in_area(a, start);
 }
 
-UCELL mem_allot(void *p, size_t n)
+UCELL mem_allot(void *p, size_t n, bool writable)
 {
     /* Return highest possible address if not enough room */
     if (n > (CELL_MAX - _mem_here))
@@ -106,7 +99,7 @@ UCELL mem_allot(void *p, size_t n)
     Mem_area *start_a = malloc(sizeof(Mem_area));
     if (start_a == NULL)
         return 0;
-    *start_a = (Mem_area){_mem_here, n, p};
+    *start_a = (Mem_area){_mem_here, n, p, writable};
     gl_list_node_t elt = gl_sortedlist_nx_add(mem_areas, cmp_mem_area, start_a);
     if (elt == NULL)
         return 0;
@@ -137,7 +130,7 @@ int beetle_load_cell(UCELL addr, CELL *value)
     }
 
     // Aligned access to a single memory area
-    uint8_t *ptr = native_address_range_in_one_area(addr, addr + CELL_W);
+    uint8_t *ptr = native_address_range_in_one_area(addr, addr + CELL_W, false);
     if (ptr != NULL && IS_ALIGNED((size_t)ptr)) {
         *value = *(CELL *)ptr;
         return 0;
@@ -146,7 +139,7 @@ int beetle_load_cell(UCELL addr, CELL *value)
     // Awkward access
     *value = 0;
     for (unsigned i = 0; i < CELL_W; i++, addr++) {
-        ptr = native_address(addr);
+        ptr = native_address(addr, false);
         if (ptr == NULL) {
             SET_NOT_ADDRESS(addr);
             return -9;
@@ -158,7 +151,7 @@ int beetle_load_cell(UCELL addr, CELL *value)
 
 int beetle_load_byte(UCELL addr, BYTE *value)
 {
-    uint8_t *ptr = native_address(FLIP(addr));
+    uint8_t *ptr = native_address(FLIP(addr), false);
     if (ptr == NULL)
         return -9;
     *value = *ptr;
@@ -173,30 +166,30 @@ int beetle_store_cell(UCELL addr, CELL value)
     }
 
     // Aligned access to a single memory allocation
-    uint8_t *ptr = native_address_range_in_one_area(addr, addr + CELL_W);
+    uint8_t *ptr = native_address_range_in_one_area(addr, addr + CELL_W, true);
     if (ptr != NULL && IS_ALIGNED((size_t)ptr)) {
         *(CELL *)ptr = value;
         return 0;
     }
 
     // Awkward access
-    for (unsigned i = 0; i < CELL_W; i++, addr++) {
-        ptr = native_address(addr);
-        if (ptr == NULL) {
-            SET_NOT_ADDRESS(addr);
-            return -9;
-        }
-        *ptr = value >> ((ENDISM ? CELL_W - i : i) * CHAR_BIT);
-    }
-    return 0;
+    int exception = 0;
+    for (unsigned i = 0; exception == 0 && i < CELL_W; i++)
+        exception = beetle_store_byte(addr + i, value >> ((ENDISM ? CELL_W - i : i) * CHAR_BIT));
+    return exception;
 }
 
 int beetle_store_byte(UCELL addr, BYTE value)
 {
-    uint8_t *ptr = native_address(FLIP(addr));
-    if (ptr == NULL)
+    Mem_area *a = mem_area(FLIP(addr));
+    if (a == NULL) {
+        SET_NOT_ADDRESS(addr);
         return -9;
-    *ptr = value;
+    } else if (!a->writable) {
+        SET_NOT_ADDRESS(addr);
+        return -20;
+    }
+    *addr_in_area(a, addr) = value;
     return 0;
 }
 
@@ -227,13 +220,13 @@ int beetle_reverse(UCELL start, UCELL length)
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsuggest-attribute=const"
-int beetle_pre_dma(UCELL from, UCELL to)
+int beetle_pre_dma(UCELL from, UCELL to, bool write)
 {
     int exception = 0;
 
     from &= -CELL_W;
     to = ALIGNED(to);
-    if (to < from)
+    if (to < from || native_address_range_in_one_area(from, to, write) == NULL)
         exception = -1;
     CHECK_ALIGNED(from);
     CHECK_ALIGNED(to);
@@ -247,7 +240,7 @@ int beetle_pre_dma(UCELL from, UCELL to)
 
 int beetle_post_dma(UCELL from, UCELL to)
 {
-    return beetle_pre_dma(from, to);
+    return beetle_pre_dma(from, to, false);
 }
 
 
@@ -259,12 +252,19 @@ int init_beetle(CELL *c_array, size_t size)
         return -1;
 
     EP = 16;
-    if (!mem_init(c_array, size))
+
+    if ((mem_areas =
+         gl_list_nx_create_empty(GL_AVLTREE_LIST, eq_mem_area, NULL, free_mem_area, false))
+        == false)
         return -2;
-    beetle_store_cell(1 * CELL_W, size * CELL_W); // FIXME: remove
+
+    if (mem_allot(c_array, size * CELL_W, true) == CELL_MASK)
+        return -2;
+
+    beetle_store_cell(1 * CELL_W, size * CELL_W); // FIXME: move to mem_allot
     SP = size * CELL_W - 0x100;
     RP = size * CELL_W;
-    THROW = (CELL *)native_address(0);
+    THROW = (CELL *)native_address(0, true);
     beetle_store_cell(2 * CELL_W, BAD = 0xFFFFFFFF);
     SET_NOT_ADDRESS(0xFFFFFFFF);
 

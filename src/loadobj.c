@@ -39,7 +39,7 @@ int load_object(FILE *file, UCELL address)
     if (reversed)
         length = (UCELL)beetle_reverse_cell((CELL)length);
 
-    uint8_t *ptr = native_address_range_in_one_area(address, address + length * CELL_W);
+    uint8_t *ptr = native_address_range_in_one_area(address, address + length * CELL_W, true);
     if (ptr == NULL)
         return -1;
 

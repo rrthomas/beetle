@@ -64,7 +64,7 @@ int beetle_store_byte(UCELL addr, BYTE value);
 
 CELL beetle_reverse_cell(CELL value);
 int beetle_reverse(UCELL start, UCELL length);
-int beetle_pre_dma(UCELL from, UCELL to);
+int beetle_pre_dma(UCELL from, UCELL to, bool write);
 int beetle_post_dma(UCELL from, UCELL to);
 
 /* Memory access */
@@ -94,9 +94,9 @@ int beetle_post_dma(UCELL from, UCELL to);
 
 /* Memory */
 UCELL mem_here(void);
-uint8_t *native_address(UCELL addr);
-uint8_t *native_address_range_in_one_area(UCELL start, UCELL end);
-UCELL mem_allot(void *p, size_t n);
+uint8_t *native_address(UCELL addr, bool writable);
+uint8_t *native_address_range_in_one_area(UCELL start, UCELL end, bool writable);
+UCELL mem_allot(void *p, size_t n, bool writable);
 UCELL mem_align(void);
 
 /* Interface calls */

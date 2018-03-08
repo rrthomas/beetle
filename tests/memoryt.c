@@ -16,7 +16,7 @@ const char *correct[] = {
     "16380 513 16380", "16380", "16380 16380", "16380 513", "16380",
     "16380 16380", "16380 1", "16381", "2", "2 16383", "", "16380", "33554945",
     "", "16128", "", "16384", "", "0", "", "0", "", "16384", "67305985",
-    "", "16389", "2", "", "1", "1 16385", "", "16385", "1", "",
+    "", "16389", "2", "", "1", "1 16385", "", "16385", "1", "", "16392", "16392 16392", "-20",
 };
 
 
@@ -25,15 +25,16 @@ int main(void)
     int exception = 0;
 
     /* Data for extra memory area tests */
-    char *onetwothreefour = strdup("\x01\x02\x03\x04"); // FIXME: Why is this separate?
+    char *onetwothreefour = strdup("\x01\x02\x03\x04"); // Hold on to this to prevent a memory leak
     char *item[] = {onetwothreefour, strdup("\x01"), strdup("\x02\x03"), strdup("basilisk")};
     unsigned nitems = sizeof(item) / sizeof(item[0]);
 
     size_t size = 4096;
     init_beetle((CELL *)calloc(size, CELL_W), size);
     for (unsigned i = 0; i < nitems; i++) {
+        // FIXME: Check address of each allocation
         printf("Extra memory area %u allocated at address %"PRIX32"\n",
-               i, mem_allot(item[i], strlen(item[i])));
+               i, mem_allot(item[i], strlen(item[i]), i < 3));
         if (i == 2)
             mem_align();
     }
@@ -54,6 +55,7 @@ int main(void)
     ass(O_LITERAL); lit(size * CELL_W + 5); ass(O_CFETCH); ass(O_DROP);
     ass(O_ONE); ass(O_LITERAL); lit(size * CELL_W + 1); ass(O_CSTORE);
     ass(O_LITERAL); lit(size * CELL_W + 1); ass(O_CFETCH); ass(O_DROP);
+    ass(O_LITERAL); lit(size * CELL_W + 8); ass(O_DUP); ass(O_CSTORE);
     end_ass();
 
     NEXT;   /* load first instruction word */
