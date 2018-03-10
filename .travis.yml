@@ -12,6 +12,7 @@ addons:
       - texlive-science
       - texlive-fonts-recommended
       - texlive-fonts-extra
+      - help2man
       - rubber
       - hevea
       - valgrind
@@ -41,4 +42,5 @@ matrix:
 
 script:
   - ./bootstrap && ./configure --enable-silent-rules
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install help2man ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then make check ; else make distcheck ; fi
