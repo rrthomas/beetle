@@ -133,7 +133,10 @@ int beetle_load_cell(UCELL addr, CELL *value)
     // Aligned access to a single memory area
     uint8_t *ptr = native_address_range_in_one_area(addr, addr + CELL_W, false);
     if (ptr != NULL && IS_ALIGNED((size_t)ptr)) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-align"
         *value = *(CELL *)ptr;
+#pragma GCC diagnostic pop
         return 0;
     }
 
@@ -169,7 +172,10 @@ int beetle_store_cell(UCELL addr, CELL value)
     // Aligned access to a single memory allocation
     uint8_t *ptr = native_address_range_in_one_area(addr, addr + CELL_W, true);
     if (ptr != NULL && IS_ALIGNED((size_t)ptr)) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-align"
         *(CELL *)ptr = value;
+#pragma GCC diagnostic pop
         return 0;
     }
 
