@@ -11,7 +11,7 @@ bin_PROGRAMS = beetle
 if HAVE_RLWRAP
 bin_SCRIPTS = beetlei
 endif
-man_MANS = beetle.1
+man_MANS = beetle.1 beetlei.1
 beetle_LDADD = libbeetle.la $(top_builddir)/lib/libgnu.la
 beetle_SOURCES = beetle.c tbl_opts.h
 
