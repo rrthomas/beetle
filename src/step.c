@@ -877,6 +877,35 @@ CELL single_step(void)
                 }
                 break;
 
+            case 14: /* FILE-SIZE */
+                {
+                    struct stat st;
+                    int fd = POP;
+                    int res = fstat(fd, &st);
+                    PUSH_DOUBLE(st.st_size);
+                    PUSH(res);
+                }
+                break;
+
+            case 15: /* RESIZE-FILE */
+                {
+                    int fd = POP;
+                    DUCELL ud = POP_DOUBLE;
+                    int res = ftruncate(fd, (off_t)ud);
+                    PUSH(res);
+                }
+                break;
+
+            case 16: /* FILE-STATUS */
+                {
+                    struct stat st;
+                    int fd = POP;
+                    int res = fstat(fd, &st);
+                    PUSH(st.st_mode);
+                    PUSH(res);
+                }
+                break;
+
             default: /* Unimplemented LIB call */
                 PUSH(-257);
                 goto throw;
