@@ -267,8 +267,8 @@ int init_beetle(CELL *c_array, size_t size)
 
     if (mem_allot(&THROW, CELL_W, true) == CELL_MASK
         || mem_allot(&MEMORY, CELL_W, false) == CELL_MASK
-        || mem_allot(&BAD, CELL_W, true) == CELL_MASK
-        || mem_allot(&NOT_ADDRESS, CELL_W, true) == CELL_MASK
+        || mem_allot(&BAD, CELL_W, false) == CELL_MASK
+        || mem_allot(&NOT_ADDRESS, CELL_W, false) == CELL_MASK
         || mem_allot(c_array, size * CELL_W, true) == CELL_MASK)
         return -2;
 

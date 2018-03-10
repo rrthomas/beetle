@@ -48,10 +48,10 @@ static int commands = sizeof(command) / sizeof(*command);
 
 static const char *regist[] = {
     "A", "-ADDRESS", "'BAD", "CHECKED", "ENDISM", "EP", "I",
-    "RP", "R0", "SP", "S0", "'THROW"
+    "MEMORY", "RP", "R0", "SP", "S0", "'THROW"
 };
 enum registers { r_A, r_NOT_ADDRESS, r_BAD, r_CHECKED, r_ENDISM, r_EP, r_I,
-    r_RP, r_R0, r_SP, r_S0, r_THROW };
+    r_MEMORY, r_RP, r_R0, r_SP, r_S0, r_THROW };
 static int registers = sizeof(regist) / sizeof(*regist);
 
 static long count[256];
@@ -273,13 +273,14 @@ static void do_ass(char *token)
             A = value;
             break;
         case r_NOT_ADDRESS:
-            beetle_store_cell(3 * CELL_W, (NOT_ADDRESS = value));
+            NOT_ADDRESS = value;
             break;
         case r_BAD:
-            beetle_store_cell(2 * CELL_W, (BAD = value));
+            BAD = value;
             break;
         case r_CHECKED:
         case r_ENDISM:
+        case r_MEMORY:
             printf("Can't assign to %s\n", regist[no]);
             break;
         case r_EP:
@@ -350,6 +351,9 @@ static void do_display(const char *token, const char *format)
             break;
         case r_I:
             display = xasprintf("I = %-10s (%02Xh)", disass(I), I);
+            break;
+        case r_MEMORY:
+            display = xasprintf("MEMORY = %"PRIX32"h (%"PRIu32")", MEMORY, MEMORY);
             break;
         case r_RP:
             display = xasprintf("RP = %"PRIX32"h (%"PRIu32")", RP, RP);

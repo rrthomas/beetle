@@ -31,7 +31,7 @@
 
 \title{An implementation of the Beetle virtual machine for POSIX}
 \author{Reuben Thomas}
-\date{8th March 2018}
+\date{10th March 2018}
 
 \begin{document}
 \maketitle
@@ -90,7 +90,7 @@ memory for Beetle, nor does it initialise any of the registers. C Beetle
 provides the interface call {\bf init\_beetle()} to do this (see
 section~\ref{usingcalls}).
 
-The variables {\tt EP}, {\tt I}, {\tt A}, {\tt SP}, {\tt RP}, {\tt THROW}, {\tt BAD} and {\tt ADDRESS}
+The variables {\tt EP}, {\tt I}, {\tt A}, {\tt MEMORY}, {\tt SP}, {\tt RP}, {\tt THROW}, {\tt BAD} and {\tt ADDRESS}
 correspond exactly with the Beetle registers they represent, and may be read
 and assigned to accordingly, bearing in mind the restrictions on their use
 given in~\cite{beetle}. {\tt THROW}, {\tt BAD} and {\tt ADDRESS} are mapped into Beetle's memory, so they are automatically updated when the corresponding memory locations are written to, and vice versa. {\tt CHECKED} is the constant $1$; it may be read but not assigned to.

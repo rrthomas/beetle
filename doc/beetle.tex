@@ -84,7 +84,7 @@
 
 \title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
-\date{29th October 1993; revised 8th March 2018}
+\date{29th October 1993; revised 10th March 2018}
 
 \begin{document}
 \maketitle
@@ -168,6 +168,8 @@ The registers, each with its function and pronunciation, are set out in table~\r
     to be executed. \\
 {\tt A} & ``a'' & The instruction {\tt A}ccumulator. Holds the opcodes of
     instructions to be executed, and immediate operands. \\
+{\tt MEMORY} & ``memory'' & The size in bytes of Beetle's main memory,
+    which must be a multiple of four. \\
 {\tt SP} & ``s-p'' & The data {\tt S}tack {\tt P}ointer. \\
 {\tt RP} & ``r-p'' & The {\tt R}eturn stack {\tt P}ointer. \\
 {\tt 'THROW} & ``tick-throw'' & The address placed in {\tt EP} by a {\tt THROW}
@@ -185,19 +187,18 @@ The registers, each with its function and pronunciation, are set out in table~\r
 \end{center}
 \end{table}
 
-{\tt EP}, {\tt A}, {\tt SP}, {\tt RP}, {\tt 'THROW}, {\tt 'BAD}
+{\tt EP}, {\tt A}, {\tt MEMORY}, {\tt SP}, {\tt RP}, {\tt 'THROW}, {\tt 'BAD}
 and {\tt -ADDRESS} are cell-wide quantities; {\tt I}, {\tt ENDISM} and {\tt
 CHECKED} are one byte wide. The
-values of {\tt 'BAD} and {\tt -ADDRESS} are available in Beetle's
-address space; {\tt 'THROW} must be physically held there so that it can be
-changed as well as read by programs. Their Beetle addresses are
-shown in table~\ref{mappedtable}.
+values of {\tt MEMORY}, {\tt 'THROW}, {\tt 'BAD} and {\tt -ADDRESS} are mapped into Beetle's address space; apart from {\tt 'THROW} they are read-only.
+Their Beetle addresses are shown in table~\ref{mappedtable}.
 
 \begin{table}[htbp]
 \begin{center}
 \begin{tabular}{cc} \toprule
 \bf Register & \bf Address \\ \midrule
 {\tt 'THROW} & 0h \\
+{\tt MEMORY} & 4h \\
 {\tt 'BAD} & 8h \\
 {\tt -ADDRESS} & Ch \\ \bottomrule
 \end{tabular}
@@ -211,8 +212,7 @@ by bForth instructions (see section~\ref{registerinst}).
 
 \subsection{Memory}
 
-Beetle's memory is a discontiguous sequence of bytes with addresses in the range $0$ to $2^{32}-1$. Some locations may be read-only.
-
+Beetle's memory is a discontiguous sequence of bytes with addresses in the range $0$ to $2^{32}-1$. Some locations may be read-only. The memory is contiguous in the range $0$ to {\tt MEMORY}~$-$~1; this part is referred to as ``main memory''.
 
 \subsection{Stacks}
 
@@ -250,6 +250,8 @@ which need not be initialised.
 \begin{center}
 \begin{tabular}{cc} \toprule
 \bf Register & \bf Initial value \\ \midrule
+{\tt SP} & {\tt MEMORY} $-$ 100h \\
+{\tt RP} & {\tt MEMORY} \\
 {\tt 'BAD} & {FFFFFFFFh} \\
 {\tt -ADDRESS} & {FFFFFFFFh} \\ \bottomrule
 \end{tabular}
@@ -257,7 +259,7 @@ which need not be initialised.
 \end{center}
 \end{table}
 
-The values of {\tt ENDISM} and
+{\tt MEMORY} should be mapped to 4h; its value and those of {\tt ENDISM} and
 {\tt CHECKED} must not change while Beetle is executing. Next, the action of
 {\tt NEXT} should be performed (see section~\ref{miscinst}): {\tt A} is loaded
 from the cell to which {\tt EP} points, and four is added to {\tt EP}.

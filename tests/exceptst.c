@@ -27,19 +27,19 @@ int main(void)
     here = EP;	/* start assembling at 16 */
     start_ass();
     ass(O_ZERO); ass(O_SPSTORE); ass(O_DUP); ass(O_NEXT00); /* test 1 */
-    ass(O_LITERALI); ilit(size * CELL_W);  /* test 2 */
+    ass(O_LITERALI); ilit(MEMORY);  /* test 2 */
     ass(O_SPSTORE); ass(O_TOR); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_CELL); ass(O_SPSTORE); ass(O_DUP); ass(O_DROP);   /* test 3 */
     ass(O_LITERALI); ilit(100);	/* reset 'THROW, overwritten by the DUP above */
     ass(O_HALT); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
-    ass(O_LITERALI); ilit(size * CELL_W);  /* test 4 */
+    ass(O_LITERALI); ilit(MEMORY);  /* test 4 */
     ass(O_MINUSCELL); ass(O_SPSTORE); ass(O_TOR); ass(O_ZERO);
     ass(O_HALT); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_ONE); ass(O_PLUSCELL); ass(O_SPSTORE); ass(O_NEXT00);	/* test 5 */
     ass(O_ONE); ass(O_EXECUTE);	ass(O_NEXT00); ass(O_NEXT00);	/* test 6 */
     ass(O_ONE); ass(O_ZERO); ass(O_SLASH); ass(O_NEXT00);   /* test 7 */
     ass(O_BRANCH); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);	/* test 8 */
-    lit((size - 1) * CELL_W);
+    lit(MEMORY - CELL_W);
     ass(O_MCELL); ass(O_FETCH);	ass(O_NEXT00); ass(O_NEXT00);	/* test 9 */
     ass(O_ONE); ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00); /* test 10 */
     ass(0x60);	ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);	/* test 11 */

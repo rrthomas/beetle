@@ -47,6 +47,7 @@ typedef uint64_t DUCELL;
 extern UCELL EP;
 extern BYTE I;
 extern CELL A;
+extern UCELL MEMORY;
 extern UCELL SP, RP;
 extern UCELL THROW;     /* 'THROW is not a valid C identifier */
 extern UCELL BAD;       /* 'BAD is not a valid C identifier */
