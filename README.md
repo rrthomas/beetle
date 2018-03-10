@@ -32,6 +32,8 @@ RISK.
 
 Beetle should work on any POSIX-1.2001-compatible system.
 
+To build the documentation, a comprehensive TeX system such as TeXLive is required.
+
 Beetle has been tested on x86_64 GNU/Linux with GNU C.
 
 Previous releases were known to work on Acorn RISC OS 3, Digital UNIX

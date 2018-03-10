@@ -13,7 +13,7 @@ addons:
       - texlive-fonts-recommended
       - texlive-fonts-extra
       - help2man
-      - rubber
+      - latexmk
       - hevea
       - valgrind
       - gcc-5

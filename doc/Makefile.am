@@ -30,9 +30,9 @@ pdf-local: $(LATEX_PDFS)
 MAINTAINERCLEANFILES = $(LATEX_PDFS)
 
 clean-local:
-	$(RUBBER) --clean $(LATEX_SRCS)
+	$(LATEXMK) --clean $(LATEX_SRCS)
 
 EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS)
 
 .tex.pdf:
-	$(RUBBER) --pdf --inplace $<
+	$(LATEXMK) -pdf $<

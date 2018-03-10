@@ -9,7 +9,7 @@ AC_PROG_CC_C99
 gl_EARLY
 AM_PROG_AR
 LT_INIT
-AC_PATH_PROG(RUBBER, rubber, true)
+AC_PATH_PROG(LATEXMK, latexmk, true)
 
 dnl help2man
 dnl Set a value even if not found, so that an invocation via build-aux/missing works
