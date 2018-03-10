@@ -689,9 +689,9 @@ static void usage(void)
 #define O(longname, shortname, arg, argstring, docstring)               \
     shortopt = xasprintf(", -%c", shortname);                           \
     buf = xasprintf("--%s%s %s", longname, shortname ? shortopt : "", argstring); \
-    printf("%-24s%s\n", buf, docstring);
+    printf("  %-24s%s\n", buf, docstring);
 #define A(argstring, docstring)                 \
-    printf("%-24s%s\n", argstring, docstring);
+    printf("  %-24s%s\n", argstring, docstring);
 #include "tbl_opts.h"
 #undef O
 #undef A
@@ -727,10 +727,10 @@ int main(int argc, char *argv[])
                         die("memory size must be a positive number up to %"PRIu32, (UCELL)MAX_MEMORY);
                     break;
                 }
-            case 2:
+            case 1:
                 usage();
                 exit(EXIT_SUCCESS);
-            case 3:
+            case 2:
                 printf(PACKAGE_NAME " " VERSION "\n"
                        BEETLE_COPYRIGHT_STRING "\n"
                        PACKAGE_NAME " comes with ABSOLUTELY NO WARRANTY.\n"
