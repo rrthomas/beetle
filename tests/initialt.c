@@ -20,10 +20,10 @@ int main(void)
             "succeeded\n");
         exit(1);
     }
-    size_t size = 1024;
-    CELL *ptr = (CELL *)malloc(size / CELL_W);
-    assert(ptr);
 
+    size_t size = 1024;
+    CELL *ptr = (CELL *)malloc(size);
+    assert(ptr);
     i = init_beetle(ptr, size / CELL_W);
     if (i != 0) {
         printf("Error in InitialT: init_beetle with valid parameters failed\n");
