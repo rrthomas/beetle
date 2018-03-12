@@ -27,12 +27,13 @@ all: pdf
 
 pdf-local: $(LATEX_PDFS)
 
-MAINTAINERCLEANFILES = $(LATEX_PDFS)
+# FIXME: Why do we need beetle.bbl here?
+MAINTAINERCLEANFILES = $(LATEX_PDFS) beetle.bbl
 
 clean-local:
-	$(LATEXMK) --clean $(LATEX_SRCS)
+	$(LATEXMK) -C $(LATEX_SRCS)
 
 EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS)
 
 .tex.pdf:
-	$(LATEXMK) -pdf $<
+	$(LATEXMK) -pdf -cd -f $<

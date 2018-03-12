@@ -17,7 +17,7 @@ beetle_LDADD = libbeetle.la $(top_builddir)/lib/libgnu.la
 beetle_SOURCES = beetle.c tbl_opts.h tbl_commands.h tbl_registers.h
 
 completions: tbl_registers.h tbl_commands.h
-	$(CPP) completions.h | grep -v "^#" > $@
+	$(CPP) -I$(srcdir) $(srcdir)/completions.h | grep -v "^#" > $@
 
 beetle.1: beetle.c $(top_srcdir)/configure.ac
 ## Exit gracefully if beetle.1 is not writeable, such as during distcheck!
@@ -42,4 +42,6 @@ CLOC = cloc --force-lang="C",h
 loc:
 	$(CLOC) $(libbeetle_la_SOURCES) $(beetle_SOURCES)
 
-EXTRA_DIST = ARMbeetle.bas
+EXTRA_DIST = ARMbeetle.bas beetlei.in beetlei.1 completions.h
+
+DISTCLEANFILES = beetlei beetle.1 completions
