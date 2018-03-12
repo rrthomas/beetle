@@ -8,7 +8,7 @@ endif
 LATEX_SRCS = \
 	$(srcdir)/beetle.tex \
 	$(srcdir)/cbeetle.tex \
-	$(srcdir)/uiface.tex \
+	$(srcdir)/debugger.tex \
 	$(srcdir)/papers/intro.tex \
 	$(srcdir)/papers/litencode.tex \
 	$(srcdir)/papers/tradeoffs.tex \
@@ -18,7 +18,7 @@ LATEX_SRCS = \
 LATEX_PDFS = \
 	beetle.pdf \
 	cbeetle.pdf \
-	uiface.pdf \
+	debugger.pdf \
 	papers/intro.pdf \
 	papers/litencode.pdf \
 	papers/tradeoffs.pdf

@@ -1,5 +1,5 @@
 %
-% Documentation for Beetle User-Interface
+% Documentation for Beetle debugger
 %
 % Reuben Thomas
 %
@@ -8,12 +8,15 @@
 
 \documentclass[english]{article}
 \usepackage[utf8x]{inputenc}
-\usepackage{a4wide,newpxtext,booktabs,url}
+\usepackage{a4wide,newpxtext,booktabs,url,xr}
 
 % Alter some default parameters for general typesetting
 
 \frenchspacing
 
+% Allow external cross-references
+\externaldocument{beetle}
+\externaldocument{cbeetle}
 
 % Macros
 
@@ -22,9 +25,9 @@
 \newcommand{\angb}[1]{$\langle #1\rangle$}
 
 
-\title{A simple user-interface for the\\Beetle virtual machine}
+\title{A simple debugger for the\\Beetle virtual machine}
 \author{Reuben Thomas}
-\date{3rd February 2018}
+\date{10th March 2018}
 
 \begin{document}
 \maketitle
@@ -32,59 +35,30 @@
 
 \section{Introduction}
 
-The Beetle virtual machine~\cite{beetle} provides a portable
-environment for the pForth Forth compiler~\cite{beetledis}, a compiler
-for ANSI Standard Forth~\cite{ANSIforth}. C Beetle~\cite{cbeetle} is
-a version of Beetle written in ISO C with POSIX APIs so that it is
-itself easily portable. This paper describes a simple user-interface
-for Beetle which uses C Beetle, as it is itself written in C, though
-with suitable calling-interface glue it could be made to work with a
-native code Beetle. The user-interface provides access to Beetle's
-registers, allows the stacks to be displayed, and provides disassembly
-and single-stepping.
+This is the manual for the debugger for C Beetle~\cite{cbeetle}, which provides access to Beetle's registers, allows the stacks to be displayed, and provides disassembly and single-stepping.
 
-
-\section{Compilation}
-
-As supplied, the program consists of one C file, {\tt beetle.c}, which
-is part of the C Beetle distribution, and is compiled when the entire
-distribution is made, resulting in the executable file {\tt beetle}.
-It can be made separately as the Make target {\tt beetle}. Run {\tt beetle --help} to see its syntax; most importantly, if given a single parameter, the name of an object file, the file is loaded and run. Any further arguments will be passed to Beetle, accessible via the {\tt ARGC} and {\tt ARG} library calls.
+Starting {\tt beetle} with no arguments enters the debugger. Refer to the man page \textbf{beetle}(1) for more details and options.
 
 
 \section{Initialisation}
 \label{uifaceinit}
 
-When the user-interface is started, an embedded Beetle is created, by default with $1,048,576$ cells of memory (4Mb); a different amount may be specified with the \verb|--memory| option. The registers which are set to system-dependent values are initialised as shown in table~\ref{uinittable}.
-
-\begin{table}[htbp]
-\begin{center}
-\begin{tabular}{cc} \toprule
-\bf Register & \bf Initial value \\ \midrule
-{\tt EP} & 10h \\
-{\tt MEMORY} & \emph{see above} \\
-{\tt 'THROW} & 0h \\ \bottomrule
-\end{tabular}
-\caption{\label{uinittable}Registers with system-dependent initial values}
-\end{center}
-\end{table}
-
-{\tt I} is uninitialised. {\tt A} is set to zero: this has the effect that
-when a {\tt STEP} or {\tt RUN} command is given, a {\tt NEXT} instruction
+When the virtual machine is started, an embedded Beetle is created. The registers are initialised as described in~\cite[section~\ref{usingcalls}]{cbeetle}; additionally, {\tt 'THROW} is set to 0h, and {\tt I} is uninitialised. {\tt A} is set to zero: this has the effect that when a {\tt STEP} or {\tt RUN} command is given, a {\tt NEXT} instruction
 will be performed. Thus, when initialisation is performed by a {\tt LOAD}
 command (see section~\ref{uifaceload}), the Beetle may be started with {\tt
 RUN} or {\tt STEP} immediately after the {\tt LOAD} command, without the need
-for {\tt FROM}. The memory from byte 16 upwards is zeroed.
+for {\tt FROM}. The main memory is zeroed.
 
 
 \section{Commands}
 \label{commands}
 
-The user-interface is command-driven. All commands and register names may be
-abbreviated to their first few letters; where commands start with the same
-letters, there is a set order of precedence, aimed at giving the most
-commonly used commands the shortest minimum abbreviations (see
-section~\ref{abbrev}). All commands are case-insensitive.
+The debugger is command-driven. All commands and register names may be
+abbreviated to their first few letters; where ambiguities are resolved with a set order of precedence, aimed at giving the most
+commonly used commands the shortest minimum abbreviations, and commands
+take precedence over registers.
+Alternatively, if you have {\tt beetlei} (which uses {\tt rlwrap}), you can use Tab-completion (press the Tab key to show possible commands and registers starting with the letters you have typed so far).
+All commands are case-insensitive.
 
 If an unrecognised command is given, or the command has too few arguments, or
 they are badly formed, an error message is displayed. Command lines
@@ -106,10 +80,8 @@ as numbers are shown in angle brackets, thus: \angb{number}. Vertical bars
 separate alternatives, and square brackets enclose optional syntax.
 
 There are three types of numeric meta-parameter: \angb{number}, which is any
-number; \angb{address}, which is a valid address (between zero and {\tt
-MEMORY} $-$ 1 inclusive, or zero and {\tt MEMORY} if assigning to {\tt RP},
-{\tt R0}, {\tt SP} or {\tt S0}); and \angb{value}, which is a number or an
-opcode.
+number; \angb{address}, which is a valid address (see~\cite[section~\ref{exceptions}]{beetle});
+and \angb{value}, which is a number or an opcode.
 
 \subsection{Registers}
 
@@ -125,7 +97,7 @@ of range address to a register which must hold an aligned address, such as
 {\tt SP}. The {\tt FROM} command (see section~\ref{from}) should be used in
 preference to assigning to {\tt EP}.
 
-Two additional pseudo-registers are provided by the user-interface: they are
+Two additional pseudo-registers are provided by the debugger: they are
 called {\tt S0} and {\tt R0}, and are the address of the base of the data and
 return stacks respectively. They are set to the initial values of {\tt RP}
 and {\tt SP}, and are provided so that they can be changed if the stacks are
@@ -285,47 +257,11 @@ already exists; it is overwritten.
 
 \subsection{Exiting}
 
-The command {\tt QUIT} exits the user-interface. No warning is given.
-
-
-\section{Command abbreviations} \label{abbrev}
-
-Below are listed the commands, each with its minimum abbreviation. Register
-names may be abbreviated similarly, as long as the abbreviation does not
-clash with a command abbreviation: if there is an ambiguity, it is assumed
-that the command was intended.
-
-\begin{table}[h]
-\begin{center}
-\begin{tabular}{cc} \toprule
-\bf Command & \bf Minimum abbreviation \\ \midrule
-{\tt >D} & {\tt >} \\
-{\tt >R} & {\tt >R} \\
-{\tt COUNTS} & {\tt C} \\
-{\tt DISASSEMBLE} & {\tt D} \\
-{\tt D>} & {\tt D>} \\
-{\tt DATA} & {\tt DA} \\
-{\tt DUMP} & {\tt DU} \\
-{\tt FROM} & {\tt F} \\
-{\tt INITIALISE} & {\tt I} \\
-{\tt LOAD} & {\tt L} \\
-{\tt QUIT} & {\tt Q} \\
-{\tt REGISTERS} & {\tt R} \\
-{\tt R>} & {\tt R>} \\
-{\tt RETURN} & {\tt RET} \\
-{\tt RUN} & {\tt RU} \\
-{\tt STEP} & {\tt S} \\
-{\tt SAVE} & {\tt SA} \\
-{\tt STACKS} & {\tt ST} \\
-{\tt TRACE} & {\tt T} \\ \bottomrule
-\end{tabular}
-\caption{Minimum abbreviations of commands}
-\end{center}
-\end{table}
+The command {\tt QUIT} exits Beetle. No warning is given.
 
 
 \bibliographystyle{plain}
-\bibliography{vm,rrt}
+\bibliography{rrt}
 
 
 \end{document}

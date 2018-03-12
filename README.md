@@ -56,7 +56,7 @@ should be used.
 
 ## Use
 
-Run `beetle` (see `beetle --help` or `uiface.pdf` for documentation). If you have `rlwrap`, you can run `beetlei` instead to get readline support.
+Run `beetle` (see `beetle --help` and `debugger.pdf` for documentation). If you have `rlwrap`, you can run `beetlei` instead to get readline support.
 
 
 ## Documentation
@@ -67,8 +67,8 @@ The canonical documentation consists of:
 The design of the Beetle Forth virtual machine is described. This is an implementor's guide, but it's probably also useful to programmers.
 * _[An implementation of the Beetle virtual machine for POSIX](doc/cbeetle.pdf)_  
 A portable implementation of Beetle is described, with instructions for porting, compiling and running it.
-* _[A simple user-interface for the Beetle virtual machine](doc/uiface.pdf)_  
-A user guide for a simple debugger shell for Beetle.
+* _[A simple debugger for the Beetle virtual machine](doc/debugger.pdf)_  
+The user guide for Beetle’s debugger.
 
 The following documents include extra material not covered in Beetle’s documentation:
 
