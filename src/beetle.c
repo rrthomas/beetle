@@ -37,21 +37,27 @@ CELL *memory;
 static jmp_buf env;
 
 static const char *command[] = {
-    ">D", ">R", "COUNTS", "DISASSEMBLE", "D>", "DATA",
-    "DUMP", "FROM", "INITIALISE", "LOAD", "QUIT", "REGISTERS", "R>",
-    "RETURN", "RUN", "STEP", "SAVE", "STACKS", "TRACE"
+#define C(cmd) #cmd,
+#include "tbl_commands.h"
+#undef C
 };
-enum commands { c_TOD, c_TOR, c_COUNTS, c_DISASSEMBLE, c_DFROM, c_DATA,
-    c_DUMP, c_FROM, c_INITIALISE, c_LOAD, c_QUIT, c_REGISTERS, c_RFROM,
-    c_RETURN, c_RUN, c_STEP, c_SAVE, c_STACKS, c_TRACE };
+enum commands {
+#define C(cmd) c_##cmd,
+#include "tbl_commands.h"
+#undef C
+};
 static int commands = sizeof(command) / sizeof(*command);
 
 static const char *regist[] = {
-    "A", "-ADDRESS", "'BAD", "CHECKED", "ENDISM", "EP", "I",
-    "MEMORY", "RP", "R0", "SP", "S0", "'THROW"
+#define R(reg) #reg,
+#include "tbl_registers.h"
+#undef R
 };
-enum registers { r_A, r_NOT_ADDRESS, r_BAD, r_CHECKED, r_ENDISM, r_EP, r_I,
-    r_MEMORY, r_RP, r_R0, r_SP, r_S0, r_THROW };
+enum registers {
+#define R(reg) r_##reg,
+#include "tbl_registers.h"
+#undef R
+};
 static int registers = sizeof(regist) / sizeof(*regist);
 
 static long count[256];

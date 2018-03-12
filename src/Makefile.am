@@ -12,8 +12,12 @@ if HAVE_RLWRAP
 bin_SCRIPTS = beetlei
 endif
 man_MANS = beetle.1 beetlei.1
+pkgdata_DATA = completions
 beetle_LDADD = libbeetle.la $(top_builddir)/lib/libgnu.la
-beetle_SOURCES = beetle.c tbl_opts.h
+beetle_SOURCES = beetle.c tbl_opts.h tbl_commands.h tbl_registers.h
+
+completions: tbl_registers.h tbl_commands.h
+	$(CPP) completions.h | grep -v "^#" > $@
 
 beetle.1: beetle.c $(top_srcdir)/configure.ac
 ## Exit gracefully if beetle.1 is not writeable, such as during distcheck!
@@ -23,6 +27,13 @@ beetle.1: beetle.c $(top_srcdir)/configure.ac
 		--name="Forth virtual machine" \
 		--output=$@ ./beetle; \
 	fi
+
+do_subst = sed -e 's,[@]pkgdatadir[@],$(pkgdatadir),g' \
+	-e 's,[@]RLWRAP[@],$(RLWRAP),g'
+
+beetlei: beetlei.in Makefile
+	$(do_subst) < $(srcdir)/beetlei.in > beetlei
+	chmod +x beetlei
 
 check-local: libbeetle.la
 

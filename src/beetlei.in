@@ -2,6 +2,4 @@
 # Run Beetle with command-line completion and history
 # (c) Reuben Thomas 2018
 
-# FIXME: Add Beetle command completion
-
-@RLWRAP@ --complete-filenames --history-filename $HOME/.beetle_history beetle "$@"
+@RLWRAP@ --complete-filenames --case-insensitive --file @pkgdatadir@/completions --history-filename $HOME/.beetle_history beetle "$@"

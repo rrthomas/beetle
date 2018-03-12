@@ -60,6 +60,17 @@ take precedence over registers.
 Alternatively, if you have {\tt beetlei} (which uses {\tt rlwrap}), you can use Tab-completion (press the Tab key to show possible commands and registers starting with the letters you have typed so far).
 All commands are case-insensitive.
 
+The following registers are renamed for ease of typing:
+
+\begin{center}
+\begin{tabular}{cc} \toprule
+\bf Register & \bf Name in debugger \\ \midrule
+{\tt 'THROW} & {\tt THROW} \\
+{\tt 'BAD} & {\tt BAD} \\
+{\tt -ADDRESS} & {\tt NOT\_ADDRESS} \\ \bottomrule
+\end{tabular}
+\end{center}
+
 If an unrecognised command is given, or the command has too few arguments, or
 they are badly formed, an error message is displayed. Command lines
 containing extraneous characters after a valid command are generally
@@ -112,16 +123,16 @@ The stacks may be manipulated crudely using the registers {\tt SP} and {\tt
 RP} but it is usually more convenient to use the commands
 
 \begin{center}
-{\tt >D} \angb{number}\\
-{\tt D>}
+{\tt TOD} \angb{number}\\
+{\tt DFROM}
 \end{center}
 
 which respectively push a number on to the data stack and pop one, displaying
 it, and
 
 \begin{center}
-{\tt >R} \angb{number}\\
-{\tt R>}
+{\tt TOR} \angb{number}\\
+{\tt RFROM}
 \end{center}
 
 which do the same for the return stack.

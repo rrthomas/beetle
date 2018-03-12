@@ -70,5 +70,4 @@ AC_C_BIGENDIAN
 dnl Generate output files
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile lib/Makefile src/Makefile tests/Makefile doc/Makefile])
-AC_CONFIG_FILES([src/beetlei], [chmod +x src/beetlei])
 AC_OUTPUT
