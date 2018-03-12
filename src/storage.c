@@ -10,6 +10,7 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <string.h>
 #include "gl_avltree_list.h"
 #include "gl_list.h"
 
@@ -253,12 +254,12 @@ int beetle_post_dma(UCELL from, UCELL to)
 
 /* Initialise registers that are not fixed */
 
-int init_beetle(CELL *c_array, size_t size)
+int init_beetle(CELL *memory, size_t size)
 {
-    if (c_array == NULL)
+    if (memory == NULL)
         return -1;
-
-    EP = 16;
+    memset(memory, 0, size * CELL_W);
+    MEMORY = (size + 4) * CELL_W; // FIXME
 
     if ((mem_areas =
          gl_list_nx_create_empty(GL_AVLTREE_LIST, eq_mem_area, NULL, free_mem_area, false))
@@ -269,13 +270,14 @@ int init_beetle(CELL *c_array, size_t size)
         || mem_allot(&MEMORY, CELL_W, false) == CELL_MASK
         || mem_allot(&BAD, CELL_W, false) == CELL_MASK
         || mem_allot(&NOT_ADDRESS, CELL_W, false) == CELL_MASK
-        || mem_allot(c_array, size * CELL_W, true) == CELL_MASK)
+        || mem_allot(memory, size * CELL_W, true) == CELL_MASK) // FIXME
         return -2;
 
-    size += 4; // FIXME
-    MEMORY = size * CELL_W; // FIXME: move to mem_allot
-    SP = size * CELL_W - 0x100;
-    RP = size * CELL_W;
+    EP = 16;
+    A = 0;
+    SP = MEMORY - 0x100;
+    RP = MEMORY;
+    THROW = 0;
     BAD = 0xFFFFFFFF;
     NOT_ADDRESS = 0xFFFFFFFF;
 

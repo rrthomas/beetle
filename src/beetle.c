@@ -212,12 +212,9 @@ static void disassemble(UCELL start, UCELL end)
 
 static void reinit(void)
 {
-    memset(memory, 0, memory_size);
     init_beetle(memory, memory_size);
     S0 = SP;
     R0 = RP;
-    THROW = 0;
-    A = 0;
 }
 
 

@@ -142,9 +142,15 @@ The file system calls correspond directly to ANS Forth words, as defined in~\cit
 10 & {\tt REPOSITION-FILE} \\
 11 & {\tt FLUSH-FILE} \\
 12 & {\tt RENAME-FILE} \\
-13 & {\tt DELETE-FILE} \\ \bottomrule
+13 & {\tt DELETE-FILE} \\
+14 & {\tt FILE-SIZE} \\
+15 & {\tt RESIZE-FILE} \\
+16 & {\tt FILE-STATUS} \\
+\bottomrule
 \end{tabular}
 \end{center}
+
+The implementation-dependent cell returned by {\tt FILE-STATUS} contains the POSIX protection bits, given by the {\tt st\_mode} member of the {\tt struct stat} returned for the given file descriptor.
 
 File access methods are bit-masks, composed as follows:
 
@@ -182,7 +188,7 @@ In addition to the required interface calls C Beetle provides an initialisation 
 \begin{description}
 \ifacec{int init\_beetle(CELL *b\_array, long size)}{{\tt size} is
 the size of {\tt b\_array} in {\em cells} (not bytes). The return value is $-1$ if {\tt b\_array} is {\tt NULL}, and $0$ otherwise.
-All the registers are initialised as per~\cite{beetle} ({\tt EP} is set to $16$, {\tt SP} to {\tt size}~$-$~100h and {\tt RP} to {\tt size}).}
+All the registers are initialised as per~\cite{beetle} ({\tt EP} is set to $16$).}
 \end{description}
 
 {\bf native\_address()} returns {\tt NULL} when passed an invalid address.
