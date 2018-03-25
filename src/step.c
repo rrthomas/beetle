@@ -17,8 +17,11 @@
 #include <string.h>
 #include "binary-io.h"
 #include "minmax.h"
+#include "verify.h"
 
 #include "beetle.h"     /* main header */
+#include "beetle_aux.h"
+#include "beetle_private.h"
 #include "opcodes.h"	/* opcode enumeration */
 
 

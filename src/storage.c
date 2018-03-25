@@ -15,6 +15,8 @@
 #include "gl_list.h"
 
 #include "beetle.h"	/* main header */
+#include "beetle_aux.h"
+#include "beetle_private.h"
 
 
 /* Beetle's registers */

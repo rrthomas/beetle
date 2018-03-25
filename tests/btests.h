@@ -17,6 +17,7 @@
 #include <inttypes.h>
 
 #include "beetle.h"
+#include "beetle_aux.h"
 #include "debug.h"
 #include "opcodes.h"
 

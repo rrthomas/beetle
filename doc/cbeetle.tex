@@ -216,6 +216,12 @@ The following routines are provided to map system memory to Beetle’s address s
 \ifacec{UCELL mem\_align(void)}{Like Forth’s {\tt ALIGN}, rounds up the address at which the next memory allocation will occur to the next cell.}
 \end{description}
 
+The following routine allows the calling program to register command-line arguments that can be retrieved by the {\tt ARG} and {\tt ARGC} {\tt LIB} calls.
+
+\begin{description}
+\ifacec{bool register\_args(int argc, char *argv[])}{Maps the given arguments register, which has the same format as that supplied to {\bf main()}, into Beetle’s memory. Returns {\tt true} on success and {\tt false} on failure (either because memory could not be allocated, or could not be mapped to Beetle’s address space).}
+\end{description}
+
 Programs which use C Beetle's interface must {\tt \#include} the header file
 {\tt beetle.h} and be linked with the Beetle library. {\tt
 opcodes.h}, which contains an enumeration type of Beetle's instruction set,

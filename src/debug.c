@@ -14,7 +14,9 @@
 #include <string.h>
 #include <inttypes.h>
 #include "xvasprintf.h"
+
 #include "beetle.h"	/* main header */
+#include "beetle_aux.h"
 #include "opcodes.h"	/* opcode enumeration */
 #include "debug.h"	/* the header we're implementing */
 

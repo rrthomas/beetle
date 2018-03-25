@@ -23,6 +23,7 @@
 #include "xvasprintf.h"
 
 #include "beetle.h"
+#include "beetle_aux.h"
 #include "opcodes.h"
 #include "debug.h"
 

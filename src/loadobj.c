@@ -11,7 +11,9 @@
 
 #include <stdio.h>
 #include <string.h>
+
 #include "beetle.h"	/* main header */
+#include "beetle_aux.h"
 
 
 int load_object(FILE *file, UCELL address)
