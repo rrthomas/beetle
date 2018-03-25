@@ -31,7 +31,7 @@
 
 \title{An implementation of the Beetle virtual machine for POSIX}
 \author{Reuben Thomas}
-\date{10th March 2018}
+\date{25th March 2018}
 
 \begin{document}
 \maketitle
@@ -175,9 +175,10 @@ Files to be loaded and saved are passed as C file descriptors. Thus, the
 calling program must itself open and close the files.
 
 \begin{description}
-\ifacec{CELL run()}{The reason code returned by {\bf run()} is a Beetle
+\ifacec{uint8\_t *native\_address(UCELL address, bool writable)}{Returns {\tt NULL} when the address is invalid, or the writable flag is true and the address is read-only.}
+\ifacec{CELL run(void)}{The reason code returned by {\bf run()} is a Beetle
 cell.}
-\ifacec{CELL single\_step()}{The reason code returned by {\bf single\_step()}
+\ifacec{CELL single\_step(void)}{The reason code returned by {\bf single\_step()}
 is a Beetle cell.}
 \ifacec{int load\_object(FILE *file, UCELL address)}{If a file system error
 occurs, the return code is -3.}
@@ -191,7 +192,21 @@ the size of {\tt b\_array} in {\em cells} (not bytes). The return value is $-1$ 
 All the registers are initialised as per~\cite{beetle} ({\tt EP} is set to $16$).}
 \end{description}
 
-{\bf native\_address()} returns {\tt NULL} when passed an invalid address.
+The following routines give easier access to Beetle’s address space at the byte and cell level. On success, they return $0$, and on failure, the relevant exception code.
+
+\begin{description}
+\ifacec{int beetle\_load\_cell(UCELL address, CELL *value)}{Load the cell at the given address into the given {\tt CELL *}.}
+\ifacec{int beetle\_store\_cell(UCELL address, CELL value)}{Store the given {\tt CELL} value at the given address.}
+\ifacec{int beetle\_load\_byte(UCELL address, BYTE *value)}{Load the byte at the given address into the given {\tt BYTE *}.}
+\ifacec{int beetle\_store\_byte(UCELL address, BYTE value)}{Store the given {\tt BYTE} value at the given address.}
+\end{description}
+
+The following routines give easier access to contiguous areas of Beetle’s address space. On success, $0$ is returned; if {\tt to} if not less than {\tt from}, or the addresses are not contained in the same area, or not writable if desired, $-1$ is returned; if either address is unaligned, or some other error occurs, a memory exception code is returned.
+
+\begin{description}
+\ifacec{int beetle\_pre\_dma(UCELL from, UCELL to, bool write)}{Convert the given range to native byte order, so that it can be read (or written) directly.}
+\ifacec{int beetle\_post\_dma(UCELL from, UCELL to)}{Convert the given range to Beetle byte order, so that it can be used by Beetle after a direct access.}
+\end{description}
 
 The following routines are provided to map system memory to Beetle’s address space and vice versa:
 

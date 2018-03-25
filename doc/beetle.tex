@@ -84,7 +84,7 @@
 
 \title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
-\date{29th October 1993; revised 10th March 2018}
+\date{29th October 1993; revised 25th March 2018}
 
 \begin{document}
 \maketitle
@@ -836,8 +836,8 @@ addresses passed as parameters must be cell-aligned. A Beetle must provide the
 following calls:
 
 \begin{description}
-\iface{native\_address}{integer}{pointer}{Return a native pointer corresponding
-    to the given Beetle address. If the Beetle address is invalid, so is the returned pointer.}
+\iface{native\_address}{integer, boolean}{pointer}{Return a native pointer corresponding
+    to the given Beetle address. If the Beetle address is invalid, or the Boolean flag is true and the address is read-only, then a distinguished invalid pointer is returned.}
 \iface{run}{}{integer}{Start Beetle by entering the execution cycle as
     described in section~\ref{operation}. If Beetle ever executes a {\tt
     HALT} instruction (see section~\ref{exceptinst}), the reason code is

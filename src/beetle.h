@@ -59,8 +59,8 @@ extern UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
 /* Return value is 0 if OK, or exception code for invalid or unaligned
    address. */
 int beetle_load_cell(UCELL addr, CELL *value);
-int beetle_load_byte(UCELL addr, BYTE *value);
 int beetle_store_cell(UCELL addr, CELL value);
+int beetle_load_byte(UCELL addr, BYTE *value);
 int beetle_store_byte(UCELL addr, BYTE value);
 
 CELL beetle_reverse_cell(CELL value);
@@ -93,19 +93,19 @@ int beetle_post_dma(UCELL from, UCELL to);
 #define POP_RETURN                              \
     (RP += CELL_W, LOAD_CELL(RP - CELL_W))
 
-/* Memory */
+/* Memory mapping */
 UCELL mem_here(void);
-uint8_t *native_address(UCELL addr, bool writable);
-uint8_t *native_address_range_in_one_area(UCELL start, UCELL end, bool writable);
 UCELL mem_allot(void *p, size_t n, bool writable);
 UCELL mem_align(void);
 
 /* Interface calls */
+uint8_t *native_address(UCELL addr, bool writable);
 CELL run(void);
 CELL single_step(void);
 int load_object(FILE *file, UCELL address);
 
 /* Additional routines, macros, types and quantities provided by C Beetle */
+uint8_t *native_address_range_in_one_area(UCELL start, UCELL end, bool writable);
 int init_beetle(CELL *c_array, size_t size);
 bool register_args(int argc, char *argv[]);
 
