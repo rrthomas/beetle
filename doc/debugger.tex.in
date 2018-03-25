@@ -25,9 +25,9 @@
 \newcommand{\angb}[1]{$\langle #1\rangle$}
 
 
-\title{A simple debugger for the\\Beetle virtual machine}
+\title{A simple debugger for the\\Beetle virtual machine\\version @VERSION@}
 \author{Reuben Thomas}
-\date{10th March 2018}
+\date{26th March 2018}
 
 \begin{document}
 \maketitle

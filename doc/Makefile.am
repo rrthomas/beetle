@@ -7,8 +7,6 @@ endif
 
 LATEX_SRCS = \
 	$(srcdir)/beetle.tex \
-	$(srcdir)/cbeetle.tex \
-	$(srcdir)/debugger.tex \
 	$(srcdir)/papers/intro.tex \
 	$(srcdir)/papers/litencode.tex \
 	$(srcdir)/papers/tradeoffs.tex \
@@ -31,9 +29,9 @@ pdf-local: $(LATEX_PDFS)
 MAINTAINERCLEANFILES = $(LATEX_PDFS) beetle.bbl
 
 clean-local:
-	$(LATEXMK) -C $(LATEX_SRCS)
+	$(LATEXMK) -C $(LATEX_SRCS) $(srcdir)/cbeetle.tex $(srcdir)/debugger.tex
 
-EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS)
+EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS) cbeetle.tex.in debugger.tex.in
 
 .tex.pdf:
-	$(LATEXMK) -pdf -cd -f $<
+	$(LATEXMK) -cd -f $<

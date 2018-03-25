@@ -6,4 +6,6 @@
 *.log
 *.pdf
 *.synctex.gz
+/cbeetle.tex
+/debugger.tex
 /primes

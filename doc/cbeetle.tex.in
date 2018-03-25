@@ -29,9 +29,9 @@
 \newcommand{\spic}[1]{{\spfont\setlength{\baselineskip}{\normalbaselineskip}#1\/}}
 
 
-\title{An implementation of the Beetle virtual machine for POSIX}
+\title{An implementation of the Beetle virtual machine\\for POSIX\\version @VERSION@}
 \author{Reuben Thomas}
-\date{25th March 2018}
+\date{26th March 2018}
 
 \begin{document}
 \maketitle
