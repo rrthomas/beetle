@@ -700,6 +700,9 @@ static void usage(void)
 #undef O
 #undef A
     printf("\n"
+           "The debugger is entered by running Beetle with no non-option arguments.\n"
+           "It is documented in @docdir@/debugger.pdf.\n"
+           "\n"
            "Report bugs to " PACKAGE_BUGREPORT ".\n");
 }
 

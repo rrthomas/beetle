@@ -21,6 +21,9 @@ LATEX_PDFS = \
 	papers/litencode.pdf \
 	papers/tradeoffs.pdf
 
+dist_doc_DATA = $(LATEX_PDFS)
+
+
 all: pdf
 
 pdf-local: $(LATEX_PDFS)

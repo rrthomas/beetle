@@ -30,7 +30,11 @@ beetle.1: beetle.c $(top_srcdir)/configure.ac
 	fi
 
 do_subst = sed -e 's,[@]pkgdatadir[@],$(pkgdatadir),g' \
+	-e 's,[@]docdir[@],$(docdir),g' \
 	-e 's,[@]RLWRAP[@],$(RLWRAP),g'
+
+beetle.c: beetle.c.in Makefile
+	$(do_subst) < $(srcdir)/beetle.c.in > beetle.c
 
 beetlei: beetlei.in Makefile
 	$(do_subst) < $(srcdir)/beetlei.in > beetlei
