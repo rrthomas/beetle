@@ -28,13 +28,12 @@ all: pdf
 
 pdf-local: $(LATEX_PDFS)
 
-# FIXME: Why do we need beetle.bbl here?
-MAINTAINERCLEANFILES = $(LATEX_PDFS) beetle.bbl
+MAINTAINERCLEANFILES = $(LATEX_PDFS)
 
 clean-local:
-	$(LATEXMK) -C $(LATEX_SRCS) $(srcdir)/cbeetle.tex $(srcdir)/debugger.tex
+	$(LATEXMK) -r $(srcdir)/latexmkrc -C -f $(LATEX_SRCS) $(builddir)/cbeetle.tex $(builddir)/debugger.tex
 
-EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS) cbeetle.tex.in debugger.tex.in
+EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS) cbeetle.tex.in debugger.tex.in latexmkrc
 
 .tex.pdf:
-	$(LATEXMK) -cd -f $<
+	$(LATEXMK) -r $(abs_srcdir)/latexmkrc -cd -f $<

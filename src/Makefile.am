@@ -47,6 +47,6 @@ CLOC = cloc --force-lang="C",h
 loc:
 	$(CLOC) $(libbeetle_la_SOURCES) $(beetle_SOURCES) $(include_HEADERS)
 
-EXTRA_DIST = ARMbeetle.bas beetlei.in beetlei.1 completions.h
+EXTRA_DIST = ARMbeetle.bas beetlei.in beetlei.1 completions.h beetle.c.in
 
-DISTCLEANFILES = beetlei beetle.1 completions
+DISTCLEANFILES = beetlei beetle.1 completions beetle.c
