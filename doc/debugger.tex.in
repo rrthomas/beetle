@@ -37,7 +37,7 @@
 
 This is the manual for the debugger for C Beetle~\cite{cbeetle}, which provides access to Beetle's registers, allows the stacks to be displayed, and provides disassembly and single-stepping.
 
-Starting {\tt beetle} with no arguments enters the debugger. Refer to the man page \textbf{beetle}(1) for more details and options.
+Starting {\tt beetle} with no arguments enters the debugger; passing the {\tt -\/-debug} option causes the debugger to be entered on exception (interpreted as a negative value being passed to {\tt HALT}). Refer to the man page \textbf{beetle}(1) or {\tt beetle -\/-help} for more details and options.
 
 
 \section{Initialisation}

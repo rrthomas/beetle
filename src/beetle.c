@@ -37,6 +37,8 @@ CELL *memory;
 
 static jmp_buf env;
 
+static bool debug_on_error = false;
+
 static const char *command[] = {
 #define C(cmd) #cmd,
 #include "tbl_commands.h"
@@ -715,8 +717,8 @@ int main(int argc, char *argv[])
     // Options string starts with '+' to stop option processing at first non-option, then
     // leading ':' so as to return ':' for a missing arg, not '?'
     for (;;) {
-        int this_optind = optind ? optind : 1, longindex;
-        int c = getopt_long(argc, argv, "+:m:", longopts, &longindex);
+        int this_optind = optind ? optind : 1, longindex = -1;
+        int c = getopt_long(argc, argv, "+:dm:", longopts, &longindex);
 
         if (c == -1)
             break;
@@ -724,7 +726,12 @@ int main(int argc, char *argv[])
             die("option '%s' requires an argument", argv[this_optind]);
         else if (c == '?')
             die("unrecognised option '%s'\nTry '%s --help' for more information.", argv[this_optind], program_name);
-        else switch (longindex) {
+        else if (c == 'm')
+            longindex = 0;
+        else if (c == 'd')
+            longindex = 1;
+
+        switch (longindex) {
             case 0:
                 {
                     char *endptr;
@@ -735,9 +742,12 @@ int main(int argc, char *argv[])
                     break;
                 }
             case 1:
+                debug_on_error = true;
+                break;
+            case 2:
                 usage();
                 exit(EXIT_SUCCESS);
-            case 2:
+            case 3:
                 printf(PACKAGE_NAME " " VERSION "\n"
                        BEETLE_COPYRIGHT_STRING "\n"
                        PACKAGE_NAME " comes with ABSOLUTELY NO WARRANTY.\n"
@@ -766,7 +776,9 @@ int main(int argc, char *argv[])
         if (ret != 0)
             die("could not read file %s", argv[1]);
 
-        return run();
+        int res = run();
+        if (!debug_on_error || res >= 0)
+            return res;
     }
 
     printf("%s\n%s\n\n", BEETLE_VERSION_STRING, BEETLE_COPYRIGHT_STRING);
