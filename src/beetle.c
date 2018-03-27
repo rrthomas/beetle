@@ -673,9 +673,11 @@ struct option longopts[] = {
 #define O(longname, shortname, arg, argstring, docstring) \
   {longname, arg, NULL, shortname},
 #define A(argstring, docstring)
+#define D(docstring)
 #include "tbl_opts.h"
 #undef O
 #undef A
+#undef D
   {0, 0, 0, 0}
 };
 
@@ -696,16 +698,12 @@ static void usage(void)
     printf("  %-24s%s\n", buf, docstring);
 #define A(argstring, docstring)                 \
     printf("  %-24s%s\n", argstring, docstring);
+#define D(text)                                 \
+    printf(text "\n");
 #include "tbl_opts.h"
 #undef O
 #undef A
-    printf("\n"
-           "The ARGUMENTs are available to Beetle.\n"
-           "\n"
-           "The debugger is entered by running Beetle with no non-option arguments.\n"
-           "It is documented in @docdir@/debugger.pdf.\n"
-           "\n"
-           "Report bugs to " PACKAGE_BUGREPORT ".\n");
+#undef D
 }
 
 int main(int argc, char *argv[])

@@ -16,8 +16,15 @@
 #define xstr(s) #s
 #define str(s) xstr(s)
 #define MEMORY_MESSAGE "set memory size to the given NUMBER of cells\n" \
-  "                        0 < NUMBER <= " str(MAX_MEMORY) " [default " str(DEFAULT_MEMORY) "]"
+  "                          0 < NUMBER <= " str(MAX_MEMORY) " [default " str(DEFAULT_MEMORY) "]"
 O("memory", 'm', required_argument, "NUMBER", MEMORY_MESSAGE)
 O("help", '\0', no_argument, "", "display this help message and exit")
 O("version", '\0', no_argument, "", "display version information and exit")
 A("FILE", "load and run object FILE")
+D("")
+D("The ARGUMENTs are available to Beetle.")
+D("")
+D("The debugger is entered by running Beetle with no non-option arguments.")
+D("It is documented in @docdir@/debugger.pdf.")
+D("")
+D("Report bugs to " PACKAGE_BUGREPORT ".")
