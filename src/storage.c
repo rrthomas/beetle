@@ -67,11 +67,21 @@ _GL_ATTRIBUTE_PURE UCELL mem_here(void)
     return _mem_here;
 }
 
-static Mem_area *mem_area(UCELL addr)
+/* Given a range of addresses, return Mem_area corresponding to some address
+   in that range.
+   This is used a) to find the area for a particular cell;
+              b) to test whether part of a range has already been allocated
+*/
+static Mem_area *mem_range(UCELL start, UCELL end)
 {
-    Mem_area a_addr = {addr, CELL_W, NULL, true};
+    Mem_area a_addr = {start, end, NULL, true};
     gl_list_node_t elt = gl_sortedlist_search(mem_areas, cmp_mem_area, &a_addr);
     return elt ? (Mem_area *)gl_list_node_value(mem_areas, elt) : NULL;
+}
+
+static Mem_area *mem_area(UCELL addr)
+{
+    return mem_range(addr, CELL_W);
 }
 
 #define addr_in_area(a, addr) (a->ptr + (addr - a->start))
@@ -93,20 +103,31 @@ uint8_t *native_address_range_in_one_area(UCELL start, UCELL end, bool write)
     return addr_in_area(a, start);
 }
 
+// Map the given native block of memory to Beetle address addr
+static bool mem_map(UCELL addr, void *p, size_t n, bool writable)
+{
+    // Return false if area is too big, or covers already-allocated addreses
+    if (n > (CELL_MAX - addr) || mem_range(addr, addr + n) != NULL)
+        return false;
+
+    Mem_area *area = malloc(sizeof(Mem_area));
+    if (area == NULL)
+        return false;
+    *area = (Mem_area){addr, n, p, writable};
+
+    gl_list_node_t elt = gl_sortedlist_nx_add(mem_areas, cmp_mem_area, area);
+    if (elt == NULL)
+        return false;
+
+    return true;
+}
+
 UCELL mem_allot(void *p, size_t n, bool writable)
 {
-    /* Return highest possible address if not enough room */
-    if (n > (CELL_MAX - _mem_here))
+    if (!mem_map(_mem_here, p, n, writable))
         return CELL_MASK;
 
     size_t start = _mem_here;
-    Mem_area *start_a = malloc(sizeof(Mem_area));
-    if (start_a == NULL)
-        return 0;
-    *start_a = (Mem_area){_mem_here, n, p, writable};
-    gl_list_node_t elt = gl_sortedlist_nx_add(mem_areas, cmp_mem_area, start_a);
-    if (elt == NULL)
-        return 0;
     _mem_here += n;
     return start;
 }
