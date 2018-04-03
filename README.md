@@ -46,9 +46,12 @@ To build Beetle from a release tarball, run
 
 `./configure && make && make check`
 
-If building from a Git repository, first run
+To build from a Git repository, first run
 
-`./bootstrap`
+```
+git submodule update --init --recursive
+./bootstrap
+```
 
 For the bibliographies in the documentation to be built correctly, GNU Make
 should be used.
