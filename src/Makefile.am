@@ -42,8 +42,6 @@ beetlei: beetlei.in Makefile
 	$(do_subst) < $(srcdir)/beetlei.in > beetlei
 	chmod +x beetlei
 
-check-local: libbeetle.la
-
 CLOC = cloc --force-lang="C",h
 
 loc:
