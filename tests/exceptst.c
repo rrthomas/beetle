@@ -10,10 +10,10 @@
 #include "btests.h"
 
 
-UCELL test[] = { 16, 20, 28, 40, 52, 56, 60, 64, 72, 76, 80, 84, 88, 92 };
-CELL result[] = { -258, -9, 100, 0, -23, -23, -10, -9, -9, -23, -256, -257, -258, -259 };
-UCELL bad[] = { -1, 28, 28, 28, 56, 60, 64, 16388, 76, 80, 84, 88, 88, 100 };
-UCELL address[] = { -4, 16384, 0, 0, 5, 1, 0, 16388, -4, 1, 0, 0, -4, -4 };
+UCELL test[] = { 16, 24, 32, 44, 56, 60, 64, 68, 76, 84, 88, 92, 96 };
+CELL result[] = { -258, -9, 200, 0, -23, -23, -10, -9, -9, -23, -256, -257, -259 };
+UCELL bad[] = { -1, 32, 32, 32, 60, 64, 68, 16388, 84, 88, 92, 96, 104 };
+UCELL address[] = { -20, 16384, 0, 0, 5, 1, 0, 16384, -20, 1, 0, 0, 1 };
 
 
 int main(void)
@@ -21,16 +21,19 @@ int main(void)
     int exception = 0;
 
     size_t size = 4096;
-    init_beetle((CELL *)calloc(size - 4, CELL_W), size - 4);
+    init_beetle((CELL *)calloc(size, CELL_W), size);
     S0 = SP;	/* save base of stack */
 
     here = EP;	/* start assembling at 16 */
     start_ass();
-    ass(O_ZERO); ass(O_SPSTORE); ass(O_DUP); ass(O_NEXT00); /* test 1 */
-    ass(O_LITERALI); ilit(MEMORY);  /* test 2 */
+    // test 1: DUP into non-existent memory
+    ass(O_LITERAL); lit(0xfffffff0);
+    ass(O_SPSTORE); ass(O_DUP); ass(O_NEXT00);
+    // test 2: set SP to MEMORY, then try to pop (>R) the stack
+    ass(O_LITERALI); ilit(MEMORY);
     ass(O_SPSTORE); ass(O_TOR); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_CELL); ass(O_SPSTORE); ass(O_DUP); ass(O_DROP);   /* test 3 */
-    ass(O_LITERALI); ilit(100);	/* reset 'THROW, overwritten by the DUP above */
+    ass(O_LITERALI); ilit(200);	/* reset 'THROW, overwritten by the DUP above */
     ass(O_HALT); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_LITERALI); ilit(MEMORY);  /* test 4 */
     ass(O_MINUSCELL); ass(O_SPSTORE); ass(O_TOR); ass(O_ZERO);
@@ -38,41 +41,44 @@ int main(void)
     ass(O_ONE); ass(O_PLUSCELL); ass(O_SPSTORE); ass(O_NEXT00);	/* test 5 */
     ass(O_ONE); ass(O_EXECUTE);	ass(O_NEXT00); ass(O_NEXT00);	/* test 6 */
     ass(O_ONE); ass(O_ZERO); ass(O_SLASH); ass(O_NEXT00);   /* test 7 */
-    ass(O_BRANCH); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);	/* test 8 */
+    // test 8: allow execution to run off the end of a memory area
+    ass(O_BRANCH); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     lit(MEMORY - CELL_W);
-    ass(O_MCELL); ass(O_FETCH);	ass(O_NEXT00); ass(O_NEXT00);	/* test 9 */
+    // test 9: fetch from an invalid address
+    ass(O_LITERAL); lit(0xffffffec);
+    ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_ONE); ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00); /* test 10 */
     ass(0x60);	ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);	/* test 11 */
     ass(O_MCELL); ass(O_LIB); ass(O_NEXT00); ass(O_NEXT00);	/* test 12 */
-    ass(O_ZERO); ass(O_SPSTORE); ass(O_DUP); ass(O_NEXT00);	/* test 13 */
-    ass(O_ONE); ass(O_DUP); ass(O_ZERO); ass(O_STORE);	/* test 14 */
+    // test 13: test invalid 'THROW contents
+    ass(O_ONE); ass(O_DUP); ass(O_MCELL); ass(O_STORE);
     ass(O_THROW);
     end_ass();
 
-    here = 100;	/* start assembling at 100 */
+    here = 200;	/* start assembling at 200 */
     start_ass();
     ass(O_HALT);
     end_ass();
 
-    THROW = 100;   /* set address of exception handler */
+    THROW = 200;   /* set address of exception handler */
 
     UCELL error = 0;
     for (size_t i = 0; i < sizeof(test) / sizeof(test[0]); i++) {
         SP = S0;    /* reset stack pointer */
 
+        printf("Test %zu\n", i + 1);
         EP = test[i];
         NEXT;   /* load first instruction word */
         CELL res = run();
 
-        printf("Test %zu\n", i + 1);
         if (result[i] != res || (result[i] != 0 && bad[i] != BAD) ||
-            ((result[i] <= -258 || result[i] == 9 || result[i] == -23) &&
+            ((result[i] <= -258 || result[i] == -9 || result[i] == -23) &&
              address[i] != NOT_ADDRESS)) {
              printf("Error in ExceptsT: test %zu failed; EP = %"PRIu32"\n", i + 1, EP);
              printf("Return code is %d; should be %d\n", res, result[i]);
              if (result[i] != 0)
                  printf("'BAD = %"PRIX32"; should be %"PRIX32"\n", BAD, bad[i]);
-             if (result[i] <= -258 || result[i] == 9 || result[i] == -23)
+             if (result[i] <= -258 || result[i] == -9 || result[i] == -23)
                  printf("-ADDRESS = %"PRIX32"; should be %"PRIX32"\n", NOT_ADDRESS, address[i]);
              error++;
         }

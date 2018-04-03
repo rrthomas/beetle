@@ -229,7 +229,7 @@ static void reinit(void)
 
 static int save_object(FILE *file, UCELL address, UCELL length)
 {
-    uint8_t *ptr = native_address_range_in_one_area(address, address + length, false);
+    uint8_t *ptr = native_address_range_in_one_area(address, length, false);
     if (!IS_ALIGNED(address) || ptr == NULL)
         return -1;
 

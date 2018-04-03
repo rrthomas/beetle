@@ -12,7 +12,7 @@
 
 
 const char *correct[] = {
-    "", QCELL_W, "16384", "16380", "16380 513",
+    "", "-8", "16384", "16380", "16380 513",
     "16380 513 16380", "16380", "16380 16380", "16380 513", "16380",
     "16380 16380", "16380 1", "16381", "2", "2 16383", "", "16380", "33554945",
     "", "16128", "", "16384", "", "0", "", "0", "", "16384", "67305985",
@@ -32,7 +32,7 @@ int main(void)
     unsigned nitems = sizeof(item) / sizeof(item[0]);
 
     size_t size = 4096;
-    init_beetle((CELL *)calloc(size - 4, CELL_W), size - 4);
+    init_beetle((CELL *)calloc(size, CELL_W), size);
     for (unsigned i = 0; i < nitems; i++) {
         UCELL addr = mem_allot(item[i], strlen(item[i]), i < 3);
         printf("Extra memory area %u allocated at address %"PRIX32" (should be %"PRIX32")\n",
@@ -48,7 +48,7 @@ int main(void)
     S0 = SP;	/* save base of stack */
 
     start_ass();
-    ass(O_CELL); ass(O_FETCH); ass(O_MINUSCELL); ass(O_LITERAL); lit(513);
+    ass(O_LITERAL); lit(-8); ass(O_FETCH); ass(O_MINUSCELL); ass(O_LITERAL); lit(513);
     ass(O_OVER); ass(O_STORE); ass(O_DUP); ass(O_FETCH);
     ass(O_DROP); ass(O_DUP); ass(O_CFETCH); ass(O_PLUS);
     ass(O_CFETCH); ass(O_LITERAL); lit(16383); ass(O_CSTORE); ass(O_LITERAL);

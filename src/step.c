@@ -31,7 +31,7 @@ verify(sizeof(int) <= sizeof(CELL));
 
 /* Check whether a Beetle address points to a native cell-aligned cell */
 #define CELL_IN_ONE_AREA(a)                             \
-    (native_address_range_in_one_area((a), (a) + CELL_W, false) != NULL)
+    (native_address_range_in_one_area((a), CELL_W, false) != NULL)
 
 #define CHECK_ALIGNED_WHOLE_CELL(a)                     \
     CHECK_ADDRESS(a, IS_ALIGNED(a), -23, badadr)        \

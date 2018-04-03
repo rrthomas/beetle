@@ -51,7 +51,7 @@ int beetle_reverse(UCELL start, UCELL length);
 #define POP_RETURN                              \
     (RP += CELL_W, LOAD_CELL(RP - CELL_W))
 
-uint8_t *native_address_range_in_one_area(UCELL start, UCELL end, bool writable);
+uint8_t *native_address_range_in_one_area(UCELL start, UCELL length, bool writable);
 
 /* Align a Beetle address */
 #define ALIGNED(a) ((a + CELL_W - 1) & (-CELL_W))

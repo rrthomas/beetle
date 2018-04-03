@@ -45,9 +45,9 @@ typedef struct {
 static int cmp_mem_area(const void *a_, const void *b_)
 {
     const Mem_area *a = (const Mem_area *)a_, *b = (const Mem_area *)b_;
-    if (a->start + a->size <= b->start)
+    if (a->start + a->size - 1 < b->start)
         return -1;
-    else if (a->start >= b->start + b->size)
+    else if (a->start > b->start + b->size - 1)
         return 1;
     return 0;
 }
@@ -70,35 +70,30 @@ _GL_ATTRIBUTE_PURE UCELL mem_here(void)
 /* Given a range of addresses, return Mem_area corresponding to some address
    in that range.
    This is used a) to find the area for a particular cell;
-              b) to test whether part of a range has already been allocated
+                b) to test whether part of a range has already been allocated
 */
-static Mem_area *mem_range(UCELL start, UCELL end)
+static Mem_area *mem_range(UCELL start, UCELL length)
 {
-    Mem_area a_addr = {start, end, NULL, true};
+    Mem_area a_addr = {start, length, NULL, true};
     gl_list_node_t elt = gl_sortedlist_search(mem_areas, cmp_mem_area, &a_addr);
     return elt ? (Mem_area *)gl_list_node_value(mem_areas, elt) : NULL;
 }
 
-static Mem_area *mem_area(UCELL addr)
-{
-    return mem_range(addr, CELL_W);
-}
-
-#define addr_in_area(a, addr) (a->ptr + (addr - a->start))
+#define addr_in_area(a, addr) (a->ptr + ((addr) - a->start))
 
 _GL_ATTRIBUTE_PURE uint8_t *native_address(UCELL addr, bool write)
 {
-    Mem_area *a = mem_area(addr);
+    Mem_area *a = mem_range(addr, 1);
     if (a == NULL || (write && !a->writable))
         return NULL;
     return addr_in_area(a, addr);
 }
 
-// Return address of a range [start,end) iff it falls inside an area
-uint8_t *native_address_range_in_one_area(UCELL start, UCELL end, bool write)
+// Return address of a range iff it falls inside an area
+uint8_t *native_address_range_in_one_area(UCELL start, UCELL length, bool write)
 {
-    Mem_area *a = mem_area(start);
-    if (a == NULL || (write && !a->writable) || end > a->start + a->size)
+    Mem_area *a = mem_range(start, 1);
+    if (a == NULL || (write && !a->writable) || a->size - (start - a->start) < length)
         return NULL;
     return addr_in_area(a, start);
 }
@@ -106,8 +101,8 @@ uint8_t *native_address_range_in_one_area(UCELL start, UCELL end, bool write)
 // Map the given native block of memory to Beetle address addr
 static bool mem_map(UCELL addr, void *p, size_t n, bool writable)
 {
-    // Return false if area is too big, or covers already-allocated addreses
-    if (n > (CELL_MAX - addr) || mem_range(addr, addr + n) != NULL)
+    // Return false if area is too big, or covers already-allocated addresses
+    if ((addr > 0 && n > (CELL_MAX - addr + 1)) || mem_range(addr, n) != NULL)
         return false;
 
     Mem_area *area = malloc(sizeof(Mem_area));
@@ -155,7 +150,7 @@ int beetle_load_cell(UCELL addr, CELL *value)
     }
 
     // Aligned access to a single memory area
-    uint8_t *ptr = native_address_range_in_one_area(addr, addr + CELL_W, false);
+    uint8_t *ptr = native_address_range_in_one_area(addr, CELL_W, false);
     if (ptr != NULL && IS_ALIGNED((size_t)ptr)) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-align"
@@ -194,7 +189,7 @@ int beetle_store_cell(UCELL addr, CELL value)
     }
 
     // Aligned access to a single memory allocation
-    uint8_t *ptr = native_address_range_in_one_area(addr, addr + CELL_W, true);
+    uint8_t *ptr = native_address_range_in_one_area(addr, CELL_W, true);
     if (ptr != NULL && IS_ALIGNED((size_t)ptr)) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-align"
@@ -212,7 +207,7 @@ int beetle_store_cell(UCELL addr, CELL value)
 
 int beetle_store_byte(UCELL addr, BYTE value)
 {
-    Mem_area *a = mem_area(FLIP(addr));
+    Mem_area *a = mem_range(FLIP(addr), 1);
     if (a == NULL) {
         NOT_ADDRESS = addr;
         return -9;
@@ -220,7 +215,7 @@ int beetle_store_byte(UCELL addr, BYTE value)
         NOT_ADDRESS = addr;
         return -20;
     }
-    *addr_in_area(a, addr) = value;
+    *addr_in_area(a, FLIP(addr)) = value;
     return 0;
 }
 
@@ -257,7 +252,7 @@ int beetle_pre_dma(UCELL from, UCELL to, bool write)
 
     from &= -CELL_W;
     to = ALIGNED(to);
-    if (to < from || native_address_range_in_one_area(from, to, write) == NULL)
+    if (to < from || native_address_range_in_one_area(from, to - from, write) == NULL)
         exception = -1;
     CHECK_ALIGNED(from);
     CHECK_ALIGNED(to);
@@ -281,19 +276,21 @@ int init_beetle(CELL *memory, size_t size)
 {
     if (memory == NULL)
         return -1;
-    memset(memory, 0, size * CELL_W);
-    MEMORY = (size + 4) * CELL_W; // FIXME
+    MEMORY = size * CELL_W;
+    memset(memory, 0, MEMORY);
 
     if ((mem_areas =
          gl_list_nx_create_empty(GL_AVLTREE_LIST, eq_mem_area, NULL, free_mem_area, false))
         == false)
         return -2;
 
-    if (mem_allot(&THROW, CELL_W, true) == CELL_MASK
-        || mem_allot(&MEMORY, CELL_W, false) == CELL_MASK
-        || mem_allot(&BAD, CELL_W, false) == CELL_MASK
-        || mem_allot(&NOT_ADDRESS, CELL_W, false) == CELL_MASK
-        || mem_allot(memory, size * CELL_W, true) == CELL_MASK) // FIXME
+    if (mem_allot(memory, MEMORY, true) == CELL_MASK)
+        return -2;
+
+    if (!mem_map(0xfffffffc, &THROW, CELL_W, true)
+        || !mem_map(0xfffffff8, &MEMORY, CELL_W, false)
+        || !mem_map(0xfffffff4, &BAD, CELL_W, false)
+        || !mem_map(0xfffffff0, &NOT_ADDRESS, CELL_W, false))
         return -2;
 
     EP = 16;
@@ -301,8 +298,8 @@ int init_beetle(CELL *memory, size_t size)
     SP = MEMORY - 0x100;
     RP = MEMORY;
     THROW = 0;
-    BAD = 0xFFFFFFFF;
-    NOT_ADDRESS = 0xFFFFFFFF;
+    BAD = CELL_MAX;
+    NOT_ADDRESS = CELL_MAX;
 
     return 0;
 }

@@ -23,7 +23,7 @@ int main(void)
     int exception = 0;
 
     size_t size = 4096;
-    init_beetle((CELL *)calloc(size, sizeof(CELL)), size);
+    init_beetle((CELL *)calloc(size, CELL_W), size);
     S0 = SP;	/* save base of stack */
 
     here = EP;	/* start assembling at 16 */

@@ -28,8 +28,8 @@ typedef uint32_t UCELL;
 typedef uint64_t DUCELL;
 #define CHAR_MASK ((1 << CHAR_BIT) - 1)
 #define CELL_BIT (sizeof(CELL_W) * CHAR_BIT)
-#define CELL_MASK ((1ULL << CELL_BIT) - 1)
 #define CELL_MAX (UINT32_MAX)
+#define CELL_MASK CELL_MAX
 
 /* Beetle's registers */
 
