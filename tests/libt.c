@@ -33,7 +33,7 @@ int main(void)
 
     NEXT;   /* load first instruction word */
 
-    while (EP < 28)
+    while (EP < 12)
         single_step();
     printf("argc is %"PRId32", and should be %d\n\n", LOAD_CELL(SP), argc);
     if (POP != argc) {
@@ -41,7 +41,7 @@ int main(void)
         exit(1);
     }
 
-    while (EP < 36)
+    while (EP < 20)
         single_step();
     printf("arg 1's length is %"PRId32", and should be %zu\n", LOAD_CELL(SP), strlen(argv[1]));
     if ((UCELL)POP != strlen(argv[1])) {

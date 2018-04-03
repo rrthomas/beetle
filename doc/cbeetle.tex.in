@@ -31,7 +31,7 @@
 
 \title{An implementation of the Beetle virtual machine\\for POSIX\\version @VERSION@}
 \author{Reuben Thomas}
-\date{26th March 2018}
+\date{3rd April 2018}
 
 \begin{document}
 \maketitle
@@ -189,7 +189,7 @@ In addition to the required interface calls C Beetle provides an initialisation 
 \begin{description}
 \ifacec{int init\_beetle(CELL *b\_array, long size)}{{\tt size} is
 the size of {\tt b\_array} in {\em cells} (not bytes). The return value is $-1$ if {\tt b\_array} is {\tt NULL}, and $0$ otherwise.
-All the registers are initialised as per~\cite{beetle} ({\tt EP} is set to $16$).}
+All the registers are initialised as per~\cite{beetle}.}
 \end{description}
 
 The following routines give easier access to Beetle’s address space at the byte and cell level. On success, they return $0$, and on failure, the relevant exception code.

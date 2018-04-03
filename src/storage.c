@@ -293,7 +293,7 @@ int init_beetle(CELL *memory, size_t size)
         || !mem_map(0xfffffff0, &NOT_ADDRESS, CELL_W, false))
         return -2;
 
-    EP = 16;
+    EP = 0;
     A = 0;
     SP = MEMORY - 0x100;
     RP = MEMORY;

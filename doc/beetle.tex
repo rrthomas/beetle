@@ -84,7 +84,7 @@
 
 \title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
-\date{29th October 1993; revised 25th March 2018}
+\date{29th October 1993; revised 3rd April 2018}
 
 \begin{document}
 \maketitle
@@ -239,12 +239,13 @@ always mentioned explicitly.
 \subsection{Operation}
 \label{operation}
 
-Before Beetle is started, {\tt ENDISM} and {\tt EP} should be set to implementation-dependent values. {\tt CHECKED} should be set to $0$ or $1$ as desired. The other registers should be initialised as shown in table~\ref{inittable}, except for {\tt I}, which need not be initialised.
+Before Beetle is started, {\tt ENDISM} should be set to $0$ or $1$ according to the implementation. {\tt CHECKED} should be set to $0$ or $1$ as desired. The other registers should be initialised as shown in table~\ref{inittable}, except for {\tt I}, which need not be initialised.
 
 \begin{table}[htbp]
 \begin{center}
 \begin{tabular}{cc} \toprule
 \bf Register & \bf Initial value \\ \midrule
+{\tt EP} & 0h \\
 {\tt A} & 0h \\
 {\tt SP} & {\tt MEMORY} $-$ 100h \\
 {\tt RP} & {\tt MEMORY} \\

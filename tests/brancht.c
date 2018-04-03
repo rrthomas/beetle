@@ -14,7 +14,7 @@
 #include "btests.h"
 
 
-unsigned correct[] = { 20, 100, 52, 10004, 10004, 10008, 10008, 10012, 10012, 11004,
+unsigned correct[] = { 4, 100, 52, 10004, 10004, 10008, 10008, 10012, 10012, 11004,
                        11004, 11020, 11024, 68, 204, 304, 212, 72, 76, 80, 80, 80, 68 };
 
 
@@ -26,9 +26,9 @@ int main(void)
     init_beetle((CELL *)calloc(size, CELL_W), size);
     S0 = SP;	/* save base of stack */
 
-    here = EP;	/* start assembling at 16 */
+    here = EP;	/* start assembling at 0 */
     start_ass();
-    ass(O_BRANCHI); ilit(19);
+    ass(O_BRANCHI); ilit(23);
     end_ass();
     instrs++;	/* correct instrs after final immediate literal */
 

@@ -26,12 +26,12 @@ int main(void)
     start_ass();
     ass(O_LITERALI); ilit(3);
     ass(O_ZERO); ass(O_DO); ilit(0);	/* pad instruction word with NEXT */
-    ass(O_RFETCH); ass(O_LOOP); lit(24); ilit(0);   /* pad instruction word with
+    ass(O_RFETCH); ass(O_LOOP); lit(8); ilit(0);   /* pad instruction word with
                                                        NEXT */
     ass(O_ZERO); ass(O_LITERAL); lit(3); ass(O_DO); ass(O_NEXT00);
     ass(O_RFETCH); ass(O_MONE); ass(O_PLOOPI); ilit(-1);
     ass(O_CELL); ass(O_ONE); ass(O_DO); ass(O_NEXT00);
-    ass(O_RFETCH); ass(O_CELL); ass(O_PLOOP); lit(48); ass(O_NEXT00);
+    ass(O_RFETCH); ass(O_CELL); ass(O_PLOOP); lit(32); ass(O_NEXT00);
     ass(O_ONE); ass(O_ONE); ass(O_DO); ass(O_NEXT00);
     ass(O_RFETCH); ass(O_LOOPI); ilit(-1);
     ass(O_ONE); ass(O_TOR); ass(O_CELL); ass(O_TOR);
@@ -41,7 +41,7 @@ int main(void)
 
     NEXT;   /* load first instruction word */
 
-    while (EP < 36) single_step();
+    while (EP < 20) single_step();
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[0]);
     if (strcmp(correct[0], val_data_stack())) {
@@ -50,7 +50,7 @@ int main(void)
     }
     SP = S0;
 
-    while (EP < 48) single_step();
+    while (EP < 32) single_step();
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[1]);
     if (strcmp(correct[1], val_data_stack())) {
@@ -59,7 +59,7 @@ int main(void)
     }
     SP = S0;
 
-    while (EP < 56) single_step();
+    while (EP < 40) single_step();
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[2]);
     if (strcmp(correct[2], val_data_stack())) {
@@ -77,8 +77,8 @@ int main(void)
     }
     SP = S0;
 
-    EP = 64;  NEXT;	/* start execution at 64 */
-    while (EP < 76) single_step();
+    EP = 48;  NEXT;	/* start execution at 64 */
+    while (EP < 60) single_step();
     CELL ret3 = LOAD_CELL(RP + 2 * CELL_W);
     printf("3rd item on return stack is %"PRId32" (should be %"PRId32").\n", ret3, LOAD_CELL(SP));
     if (ret3 != LOAD_CELL(SP)) {

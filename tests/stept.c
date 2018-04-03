@@ -24,8 +24,8 @@ int main(void)
         single_step();
     }
 
-    printf("EP should now be 60\n");
-    if (EP != 60) {
+    printf("EP should now be 44\n");
+    if (EP != 44) {
         printf("Error in StepT: EP = %"PRIu32"\n", EP);
         exit(1);
     }

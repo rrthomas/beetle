@@ -10,7 +10,7 @@
 #include "btests.h"
 
 
-unsigned correct[] = { 20, 20, 20 };
+unsigned correct[] = { 4, 4, 4 };
 
 
 int main(void)

@@ -10,9 +10,9 @@
 #include "btests.h"
 
 
-UCELL test[] = { 16, 24, 32, 44, 56, 60, 64, 68, 76, 84, 88, 92, 96 };
+UCELL test[] = { 0, 8, 16, 28, 40, 44, 48, 52, 60, 68, 72, 76, 80 };
 CELL result[] = { -258, -9, 200, 0, -23, -23, -10, -9, -9, -23, -256, -257, -259 };
-UCELL bad[] = { -1, 32, 32, 32, 60, 64, 68, 16388, 84, 88, 92, 96, 104 };
+UCELL bad[] = { -1, 16, 16, 32, 44, 48, 52, 16388, 68, 72, 76, 80, 88 };
 UCELL address[] = { -20, 16384, 0, 0, 5, 1, 0, 16384, -20, 1, 0, 0, 1 };
 
 
@@ -24,7 +24,7 @@ int main(void)
     init_beetle((CELL *)calloc(size, CELL_W), size);
     S0 = SP;	/* save base of stack */
 
-    here = EP;	/* start assembling at 16 */
+    here = EP;	/* start assembling at 0 */
     start_ass();
     // test 1: DUP into non-existent memory
     ass(O_LITERAL); lit(0xfffffff0);
