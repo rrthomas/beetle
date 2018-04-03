@@ -771,7 +771,7 @@ int main(int argc, char *argv[])
         FILE *handle = fopen(argv[optind], "r");
         if (handle == NULL)
             die("cannot not open file %s", argv[1]);
-        int ret = load_object(handle, 16);
+        int ret = load_object(handle, 0);
         fclose(handle);
         if (ret != 0)
             die("could not read file %s", argv[1]);
