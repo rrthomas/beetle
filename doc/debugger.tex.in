@@ -153,7 +153,7 @@ A larger section of memory may be displayed with the command {\tt DUMP},
 which may be used in the two forms
 
 \begin{center}
-{\tt DUMP} \angb{address} \tt{+} \angb{number}\\
+{\tt DUMP} \angb{address} {\tt +} \angb{number}\\
 {\tt DUMP} \angb{address_1} \angb{address_2}
 \end{center}
 
@@ -220,7 +220,7 @@ The command {\tt DISASSEMBLE} disassembles bForth code. It may be used in the
 two forms
 
 \begin{center}
-{\tt DISASSEMBLE} \angb{address} \tt{+} \angb{number}\\
+{\tt DISASSEMBLE} \angb{address} {\tt +} \angb{number}\\
 {\tt DISASSEMBLE} \angb{address_1} \angb{address_2}
 \end{center}
 
@@ -251,7 +251,7 @@ displayed.
 The command {\tt SAVE} saves an object module. It has the two forms
 
 \begin{center}
-{\tt SAVE} \angb{file} \angb{address} \tt{+} \angb{number}\\
+{\tt SAVE} \angb{file} \angb{address} {\tt +} \angb{number}\\
 {\tt SAVE} \angb{file} \angb{address_1} \angb{address_2}
 \end{center}
 
