@@ -67,7 +67,6 @@ int main(void)
 {
     init_beetle((CELL *)malloc(1024), 256);
     here = EP;
-    S0 = SP;	/* save base of stack */
 
     start_ass();
     ass(O_LESS); ass(O_LESS); ass(O_LESS); ass(O_LESS);

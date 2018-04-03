@@ -33,7 +33,6 @@ int main(void)
 
     init_beetle((CELL *)calloc(1024, 1), 256);
     here = EP;
-    S0 = SP;	/* save base of stack */
 
     start_ass();
     ass(O_ZERO); ass(O_ONE); ass(O_MONE); ass(O_CELL);

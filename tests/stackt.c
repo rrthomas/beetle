@@ -23,7 +23,6 @@ int main(void)
 
     init_beetle((CELL *)malloc(1024), 256);
     here = EP;
-    S0 = SP;	/* save base of stack */
 
     PUSH(1); PUSH(2); PUSH(3);	/* initialise the stack */
 

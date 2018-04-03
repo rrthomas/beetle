@@ -19,8 +19,6 @@ extern int ibytes;  /* number of opcodes assembled in current instruction word
                        so far */
 extern UCELL current;	/* where the current instruction word will be stored */
 extern UCELL here;  /* where we assemble the next instruction word or literal */
-extern UCELL S0;    /* address of base of data stack */
-extern UCELL R0;    /* address of base of return stack */
 
 void ass(BYTE instr);	/* assemble an instruction */
 void lit(CELL literal);	/* assemble a cell literal */

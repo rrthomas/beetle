@@ -45,7 +45,6 @@ int main(void)
             mem_align();
     }
     here = EP;
-    S0 = SP;	/* save base of stack */
 
     start_ass();
     ass(O_LITERAL); lit(-8); ass(O_FETCH); ass(O_MINUSCELL); ass(O_LITERAL); lit(513);

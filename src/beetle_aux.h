@@ -20,6 +20,9 @@
 #include <limits.h>
 
 
+extern UCELL S0;    /* address of base of data stack */
+extern UCELL R0;    /* address of base of return stack */
+
 /* Memory access */
 
 /* Return value is 0 if OK, or exception code for invalid or unaligned

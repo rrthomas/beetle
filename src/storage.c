@@ -25,6 +25,7 @@ UCELL EP;
 BYTE I;
 CELL A;
 UCELL SP, RP;
+UCELL S0, R0;
 UCELL THROW;	/* 'THROW is not a valid C identifier */
 UCELL MEMORY;   // Size of main memory
 UCELL BAD;	/* 'BAD is not a valid C identifier */
@@ -295,8 +296,8 @@ int init_beetle(CELL *memory, size_t size)
 
     EP = 0;
     A = 0;
-    SP = MEMORY - 0x100;
-    RP = MEMORY;
+    S0 = SP = MEMORY - 0x100;
+    R0 = RP = MEMORY;
     THROW = 0;
     BAD = CELL_MAX;
     NOT_ADDRESS = CELL_MAX;
