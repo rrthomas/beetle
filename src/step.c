@@ -44,7 +44,7 @@ verify(sizeof(int) <= sizeof(CELL));
 
 #define FDIV(a, b) ((a) / (b) - ((((a) ^ (b)) < 0) && ((a) % (b)) != 0))
 #define FMOD(a, b, t) (t = (a) % (b), (((a) ^ (b)) >= 0 || t == 0)) ? t : \
-  SGN(b) * (ABS(b)-ABS(t))
+    SGN(b) * (ABS(b)-ABS(t))
 
 #define DIVZERO(x)                              \
     if (x == 0) {                               \
@@ -547,7 +547,7 @@ CELL single_step(void)
     case O_SPSTORE:
         {
             CELL value = POP;
-            CHECK_ALIGNED_WHOLE_CELL(value);
+            CHECK_ALIGNED(value);
             SP = value;
         }
         break;
@@ -557,7 +557,7 @@ CELL single_step(void)
     case O_RPSTORE:
         {
             CELL value = POP;
-            CHECK_ALIGNED_WHOLE_CELL(value);
+            CHECK_ALIGNED(value);
             RP = value;
         }
         break;

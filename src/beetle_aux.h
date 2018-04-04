@@ -1,4 +1,4 @@
-/* BEETLE.H
+/* BEETLE_AUX.H
 
     (c) Reuben Thomas 1994-2018
 
@@ -22,6 +22,9 @@
 
 extern UCELL S0;    /* address of base of data stack */
 extern UCELL R0;    /* address of base of return stack */
+
+#define DATA_STACK_SEGMENT   0xfd000000
+#define RETURN_STACK_SEGMENT 0xfe000000
 
 /* Memory access */
 

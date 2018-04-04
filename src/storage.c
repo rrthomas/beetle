@@ -288,16 +288,25 @@ int init_beetle(CELL *memory, size_t size)
     if (mem_allot(memory, MEMORY, true) == CELL_MASK)
         return -2;
 
+    UCELL d_stack_size = 4096;
+    UCELL r_stack_size = 4096;
+    CELL *d_stack = calloc(d_stack_size, CELL_W);
+    CELL *r_stack = calloc(r_stack_size, CELL_W);
+    if (d_stack == NULL || r_stack == NULL)
+        return -2;
+
     if (!mem_map(0xfffffffc, &THROW, CELL_W, true)
         || !mem_map(0xfffffff8, &MEMORY, CELL_W, false)
         || !mem_map(0xfffffff4, &BAD, CELL_W, false)
-        || !mem_map(0xfffffff0, &NOT_ADDRESS, CELL_W, false))
+        || !mem_map(0xfffffff0, &NOT_ADDRESS, CELL_W, false)
+        || !mem_map(DATA_STACK_SEGMENT, d_stack, d_stack_size, true)
+        || !mem_map(RETURN_STACK_SEGMENT, r_stack, r_stack_size, true))
         return -2;
 
     EP = 0;
     A = 0;
-    S0 = SP = MEMORY - 0x100;
-    R0 = RP = MEMORY;
+    S0 = SP = DATA_STACK_SEGMENT + d_stack_size;
+    R0 = RP = RETURN_STACK_SEGMENT + r_stack_size;
     THROW = 0;
     BAD = CELL_MAX;
     NOT_ADDRESS = CELL_MAX;
