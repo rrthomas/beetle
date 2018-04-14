@@ -13,8 +13,8 @@
  * A(argument, docstring)
  */
 
-#define xstr(s) #s
-#define str(s) xstr(s)
+#include "stringify.h"
+
 #define MEMORY_MESSAGE "set memory size to the given NUMBER of cells\n" \
   "                          0 < NUMBER <= " str(MAX_MEMORY) " [default " str(DEFAULT_MEMORY) "]"
 O("memory", 'm', required_argument, "NUMBER", MEMORY_MESSAGE)

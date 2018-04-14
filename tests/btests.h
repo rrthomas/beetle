@@ -20,10 +20,7 @@
 #include "beetle_aux.h"
 #include "debug.h"
 #include "opcodes.h"
-
-#define str(s) #s
-#define xstr(s) str(s)
-#define QCELL_W xstr(CELL_W)
+#include "stringify.h"
 
 
 #endif

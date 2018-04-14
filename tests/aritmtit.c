@@ -8,7 +8,7 @@
     the stack handling and basic correctness of the operators here,
     assuming that if the arithmetic works in one case, it will work in
     all. Note that the correct stack values are not quite independent
-    of the cell size (in CELL_W and QCELL_W); some stack pictures
+    of the cell size (in CELL_W and str(CELL_W)); some stack pictures
     implicitly refer to it.
 
 */
@@ -18,13 +18,13 @@
 
 
 const char *correct[] = {
-    "", "0", "0 1", "0 1 -1", "0 1 -1 " QCELL_W,
-    "0 1 -1 " QCELL_W " -" QCELL_W, "0 1 " QCELL_W " -" QCELL_W " -1",
-    "0 1 " QCELL_W " -5", "0 1 -1", "0 2", "0 3", "0 2", "2 0", "2 " QCELL_W,
-    "2 0", "2 0 -1", "2 0 -1 " QCELL_W, "2 0 -" QCELL_W, "2 -" QCELL_W, "-2 -1",
-    "2", "2 -1", "0", "1", QCELL_W, "2", "", QCELL_W, "-" QCELL_W, QCELL_W,
-    QCELL_W, QCELL_W " 1", QCELL_W, QCELL_W " -" QCELL_W, "-" QCELL_W,
-    "-" QCELL_W " 3", "-1 -1", "-1", "-1 -2", "1 1" };
+    "", "0", "0 1", "0 1 -1", "0 1 -1 " str(CELL_W),
+    "0 1 -1 " str(CELL_W) " -" str(CELL_W), "0 1 " str(CELL_W) " -" str(CELL_W) " -1",
+    "0 1 " str(CELL_W) " -5", "0 1 -1", "0 2", "0 3", "0 2", "2 0", "2 " str(CELL_W),
+    "2 0", "2 0 -1", "2 0 -1 " str(CELL_W), "2 0 -" str(CELL_W), "2 -" str(CELL_W), "-2 -1",
+    "2", "2 -1", "0", "1", str(CELL_W), "2", "", str(CELL_W), "-" str(CELL_W), str(CELL_W),
+    str(CELL_W), str(CELL_W) " 1", str(CELL_W), str(CELL_W) " -" str(CELL_W), "-" str(CELL_W),
+    "-" str(CELL_W) " 3", "-1 -1", "-1", "-1 -2", "1 1" };
 
 
 int main(void)
