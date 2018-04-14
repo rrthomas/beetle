@@ -1,9 +1,7 @@
-/* LOADOBJT.C
-
-    (c) Reuben Thomas 1995-2018
-
+/*
     Test load_object().
 
+    (c) Reuben Thomas 1995-2018
 */
 
 
@@ -54,7 +52,7 @@ int main(int argc, char *argv[])
         free(s);
         printf(" should be %d\n", correct[i]);
         if (res != correct[i]) {
-            printf("Error in LoadObjT: file %s\n", files[i]);
+            printf("Error in load_obj() tests: file %s\n", files[i]);
             exit(1);
         }
     }
@@ -67,15 +65,15 @@ int main(int argc, char *argv[])
         printf(" should be %d\n", correct[i]);
         printf("Word 0 of memory is %"PRIX32"; should be 1020304\n", (UCELL)(beetle_load_cell(0, &c), c));
         if ((beetle_load_cell(0, &c), c) != 0x1020304) {
-            printf("Error in LoadObjT: file %s\n", files[i]);
+            printf("Error in load_obj() tests: file %s\n", files[i]);
             exit(1);
         }
         if (res != correct[i]) {
-            printf("Error in LoadObjT: file %s\n", files[i]);
+            printf("Error in load_obj() tests: file %s\n", files[i]);
             exit(1);
         }
     }
 
-    printf("LoadObjT ran OK\n");
+    printf("load_object() tests ran OK\n");
     return 0;
 }

@@ -1,10 +1,8 @@
-/* INITIALT.C
-
-    (c) Reuben Thomas 1994-2018
-
+/*
     Test that the Beetle headers beetle.h compiles properly, and that the
     storage allocation and register initialisation in storage.c works.
 
+    (c) Reuben Thomas 1994-2018
 */
 
 
@@ -16,7 +14,7 @@ int main(void)
     int i = init_beetle((CELL *)NULL, 4);
     printf("init_beetle((CELL *)NULL, 4) should return -1; returns: %d\n", i);
     if (i != -1) {
-        printf("Error in InitialT: init_beetle with invalid parameters "
+        printf("Error in init_beetle() tests: init_beetle with invalid parameters "
             "succeeded\n");
         exit(1);
     }
@@ -26,10 +24,10 @@ int main(void)
     assert(ptr);
     i = init_beetle(ptr, size / CELL_W);
     if (i != 0) {
-        printf("Error in InitialT: init_beetle with valid parameters failed\n");
+        printf("Error in init_beetle() tests: init_beetle with valid parameters failed\n");
         exit(1);
     }
 
-    printf("InitialT ran OK\n");
+    printf("init_beetle() tests ran OK\n");
     return 0;
 }

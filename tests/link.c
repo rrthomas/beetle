@@ -1,9 +1,7 @@
-/* LINKT.C
-
-    (c) Reuben Thomas 1995-2018
-
+/*
     Test the LINK instruction.
 
+    (c) Reuben Thomas 1995-2018
 */
 
 
@@ -31,18 +29,18 @@ int main(void)
     NEXT;   /* load first instruction word */
     CELL res = run();
     if (res != 0) {
-        printf("Error in LinkT: test aborted with return code %"PRId32"\n", res);
+        printf("Error in LINK tests: test aborted with return code %"PRId32"\n", res);
         exit(1);
     }
 
     printf("Top of stack is %d; should be %d\n", LOAD_CELL(SP), 37);
     show_data_stack();
     if (LOAD_CELL(SP) != 37) {
-        printf("Error in LinkT: incorrect value on top of stack\n");
+        printf("Error in LINK tests: incorrect value on top of stack\n");
         exit(1);
     }
 
     assert(exception == 0);
-    printf("LinkT ran OK\n");
+    printf("LINK tests ran OK\n");
     return 0;
 }

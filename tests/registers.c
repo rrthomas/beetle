@@ -1,10 +1,8 @@
-/* REGISTERST.C
-
-    (c) Reuben Thomas 1994-2018
-
-    Test the register instructions; except for those operating on RP and SP
+/*
+    Test the register instructions, except for those operating on RP and SP
     (see memoryt.c). Also uses NEXT.
 
+    (c) Reuben Thomas 1994-2018
 */
 
 
@@ -41,7 +39,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in RegistersT: EP = %"PRIu32"\n", EP);
+            printf("Error in registers tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();
@@ -49,6 +47,6 @@ int main(void)
     }
 
     assert(exception == 0);
-    printf("RegistersT ran OK\n");
+    printf("Registers tests ran OK\n");
     return 0;
 }

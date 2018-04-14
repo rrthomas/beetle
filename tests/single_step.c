@@ -1,10 +1,8 @@
-/* STEPT.C
-
-    (c) Reuben Thomas 1994-2018
-
+/*
     Test that single_step works, and that address alignment and bounds
     checking is properly performed on EP.
 
+    (c) Reuben Thomas 1994-2018
 */
 
 
@@ -26,11 +24,11 @@ int main(void)
 
     printf("EP should now be 44\n");
     if (EP != 44) {
-        printf("Error in StepT: EP = %"PRIu32"\n", EP);
+        printf("Error in single_step() tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 
     assert(exception == 0);
-    printf("StepT ran OK\n");
+    printf("single_step() tests ran OK\n");
     return 0;
 }
