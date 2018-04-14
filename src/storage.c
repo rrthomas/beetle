@@ -25,11 +25,13 @@ UCELL EP;
 BYTE I;
 CELL A;
 UCELL SP, RP;
+UCELL HASHS = 4096;
 UCELL S0, R0;
-UCELL THROW;	/* 'THROW is not a valid C identifier */
-UCELL MEMORY;   // Size of main memory
-UCELL BAD;	/* 'BAD is not a valid C identifier */
-UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
+UCELL HASHR = 4096;
+UCELL THROW;
+UCELL MEMORY;
+UCELL BAD;
+UCELL NOT_ADDRESS;
 
 
 /* Memory allocation and mapping */
@@ -288,10 +290,8 @@ int init_beetle(CELL *memory, size_t size)
     if (mem_allot(memory, MEMORY, true) == CELL_MASK)
         return -2;
 
-    UCELL d_stack_size = 4096;
-    UCELL r_stack_size = 4096;
-    CELL *d_stack = calloc(d_stack_size, CELL_W);
-    CELL *r_stack = calloc(r_stack_size, CELL_W);
+    CELL *d_stack = calloc(HASHS, CELL_W);
+    CELL *r_stack = calloc(HASHR, CELL_W);
     if (d_stack == NULL || r_stack == NULL)
         return -2;
 
@@ -299,14 +299,14 @@ int init_beetle(CELL *memory, size_t size)
         || !mem_map(0xfffffff8, &MEMORY, CELL_W, false)
         || !mem_map(0xfffffff4, &BAD, CELL_W, false)
         || !mem_map(0xfffffff0, &NOT_ADDRESS, CELL_W, false)
-        || !mem_map(DATA_STACK_SEGMENT, d_stack, d_stack_size, true)
-        || !mem_map(RETURN_STACK_SEGMENT, r_stack, r_stack_size, true))
+        || !mem_map(DATA_STACK_SEGMENT, d_stack, HASHS, true)
+        || !mem_map(RETURN_STACK_SEGMENT, r_stack, HASHR, true))
         return -2;
 
     EP = 0;
     A = 0;
-    S0 = SP = DATA_STACK_SEGMENT + d_stack_size;
-    R0 = RP = RETURN_STACK_SEGMENT + r_stack_size;
+    S0 = SP = DATA_STACK_SEGMENT + HASHS;
+    R0 = RP = RETURN_STACK_SEGMENT + HASHR;
     THROW = 0;
     BAD = CELL_MAX;
     NOT_ADDRESS = CELL_MAX;

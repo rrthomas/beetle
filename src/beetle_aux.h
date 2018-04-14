@@ -20,9 +20,6 @@
 #include <limits.h>
 
 
-extern UCELL S0;    /* address of base of data stack */
-extern UCELL R0;    /* address of base of return stack */
-
 #define DATA_STACK_SEGMENT   0xfd000000
 #define RETURN_STACK_SEGMENT 0xfe000000
 

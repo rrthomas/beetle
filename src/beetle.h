@@ -46,9 +46,11 @@ extern BYTE I;
 extern CELL A;
 extern UCELL MEMORY;
 extern UCELL SP, RP;
-extern UCELL THROW;     /* 'THROW is not a valid C identifier */
-extern UCELL BAD;       /* 'BAD is not a valid C identifier */
-extern UCELL NOT_ADDRESS; /* -ADDRESS is not a valid C identifier */
+extern UCELL S0, R0;
+extern UCELL HASHS, HASHR;
+extern UCELL THROW;
+extern UCELL BAD;
+extern UCELL NOT_ADDRESS;
 #define CHECKED 1       /* C Beetle makes address checking mandatory */
 
 /* Memory access */

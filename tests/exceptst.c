@@ -10,9 +10,9 @@
 #include "btests.h"
 
 
-UCELL test[] = { 0, 8, 16, 28, 40, 44, 48, 52, 60, 68, 72, 76, 80 };
-CELL result[] = { -258, -258, 200, 0, -23, -23, -10, -9, -9, -23, -256, -257, -259 };
-UCELL bad[] = { -1, -1, -1, 32, 44, 48, 52, 16388, 68, 72, 76, 80, 88 };
+UCELL test[] = { 0, 8, 16, 24, 36, 40, 44, 48, 56, 64, 68, 72, 76 };
+CELL result[] = { -258, -258, 42, 0, -23, -23, -10, -9, -9, -23, -256, -257, -259 };
+UCELL bad[] = { -1, -1, -1, 28, 40, 44, 48, 16388, 64, 68, 72, 76, 84 };
 UCELL address[] = { -20, 16384, 0, 0, 5, 1, 0, 16384, -20, 1, 0, 0, 1 };
 
 
@@ -31,8 +31,8 @@ int main(void)
     // test 2: set SP to MEMORY, then try to pop (>R) the stack
     ass(O_LITERALI); ilit(MEMORY);
     ass(O_SPSTORE); ass(O_TOR); ass(O_NEXT00); ass(O_NEXT00);
-    ass(O_CELL); ass(O_SPSTORE); ass(O_DUP); ass(O_DROP);   /* test 3 */
-    ass(O_LITERALI); ilit(200);	/* reset 'THROW, overwritten by the DUP above */
+    // test 3: test arbitrary throw code
+    ass(O_LITERALI); ilit(42);
     ass(O_HALT); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_LITERALI); ilit(MEMORY);  /* test 4 */
     ass(O_MINUSCELL); ass(O_SPSTORE); ass(O_TOR); ass(O_ZERO);
@@ -47,7 +47,8 @@ int main(void)
     ass(O_LITERAL); lit(0xffffffec);
     ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_ONE); ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00); /* test 10 */
-    ass(0x60);	ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);	/* test 11 */
+    // test 11: test invalid opcode
+    ass(0xfe);	ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_MCELL); ass(O_LIB); ass(O_NEXT00); ass(O_NEXT00);	/* test 12 */
     // test 13: test invalid 'THROW contents
     ass(O_ONE); ass(O_DUP); ass(O_MCELL); ass(O_STORE);

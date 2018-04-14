@@ -172,6 +172,10 @@ The registers, each with its function and pronunciation, are set out in table~\r
     which must be a multiple of four. \\
 {\tt SP} & ``s-p'' & The data {\tt S}tack {\tt P}ointer. \\
 {\tt RP} & ``r-p'' & The {\tt R}eturn stack {\tt P}ointer. \\
+{\tt S0} & ``s-nought'' & The data {\tt S}tack base. \\
+{\tt R0} & ``r-nought'' & The {\tt R}eturn stack base. \\
+{\tt \#S} & ``hash-s'' & The number of cells allocated for the data stack. \\
+{\tt \#R} & ``hash-r'' & The number of cells allocated for the return stack. \\
 {\tt 'THROW} & ``tick-throw'' & The address placed in {\tt EP} by a {\tt THROW}
     instruction. \\
 {\tt ENDISM} & ``endism'' & The endianness of Beetle: 0 = Little-endian,
@@ -187,27 +191,11 @@ The registers, each with its function and pronunciation, are set out in table~\r
 \end{center}
 \end{table}
 
-{\tt EP}, {\tt A}, {\tt MEMORY}, {\tt SP}, {\tt RP}, {\tt 'THROW}, {\tt 'BAD}
-and {\tt -ADDRESS} are cell-wide quantities; {\tt I}, {\tt ENDISM} and {\tt
-CHECKED} are one byte wide. The
-values of {\tt MEMORY}, {\tt 'THROW}, {\tt 'BAD} and {\tt -ADDRESS} are mapped into Beetle's address space; apart from {\tt 'THROW} they are read-only.
-Their Beetle addresses are shown in table~\ref{mappedtable}.
+All of the registers are cell-wide quantities except for {\tt I}, {\tt ENDISM} and {\tt
+CHECKED}, which are one byte wide.
 
-\begin{table}[htbp]
-\begin{center}
-\begin{tabular}{cc} \toprule
-\bf Register & \bf Address \\ \midrule
-{\tt 'THROW} & FFFFFFFCh \\
-{\tt MEMORY} & FFFFFFF8h \\
-{\tt 'BAD} & FFFFFFF4h \\
-{\tt -ADDRESS} & FFFFFFF0h \\ \bottomrule
-\end{tabular}
-\caption{\label{mappedtable}Registers which appear in Beetle's address space}
-\end{center}
-\end{table}
-
-To ease efficient implementation, Beetle's stack pointers may only be accessed
-by bForth instructions (see section~\ref{registerinst}).
+To ease efficient implementation, the registers may only be accessed
+by bForth instructions (see section~\ref{registerinst}); not all registers are accessible, and only a few are writable.
 
 
 \subsection{Memory}
@@ -247,8 +235,6 @@ Before Beetle is started, {\tt ENDISM} should be set to $0$ or $1$ according to 
 \bf Register & \bf Initial value \\ \midrule
 {\tt EP} & 0h \\
 {\tt A} & 0h \\
-{\tt SP} & {\tt MEMORY} $-$ 100h \\
-{\tt RP} & {\tt MEMORY} \\
 {\tt THROW} & 0h \\
 {\tt 'BAD} & {FFFFFFFFh} \\
 {\tt -ADDRESS} & {FFFFFFFFh} \\ \bottomrule
@@ -257,9 +243,8 @@ Before Beetle is started, {\tt ENDISM} should be set to $0$ or $1$ according to 
 \end{center}
 \end{table}
 
-{\tt MEMORY} should be mapped to 4h; its value and those of {\tt ENDISM} and
-{\tt CHECKED} must not change while Beetle is executing. Next, the action of
-{\tt NEXT} should be performed (see section~\ref{miscinst}): {\tt A} is loaded
+{\tt MEMORY}, {\tt ENDISM} and {\tt CHECKED} must not change while Beetle is executing. Next, the action of
+{\tt NEXT} should be performed (see section~\ref{execinst}): {\tt A} is loaded
 from the cell to which {\tt EP} points, and four is added to {\tt EP}.
 
 Beetle is started by a call to the interface calls {\bf run()} or {\bf
@@ -470,6 +455,17 @@ branch is stored with the bytes in the same order as for a four-byte number, at
 the most significant end of the instruction cell.
 
 
+\subsection{Execution cycle}
+\label{execinst}
+
+{\tt NEXT} performs an instruction fetch when Beetle runs out of
+instructions in the {\tt A} register.
+
+\begin{description}
+\inst{NEXT}{00h/FFh}{--}{Load the cell pointed to by {\tt EP} into {\tt A} then add four to {\tt EP}.}
+\end{description}
+
+
 \subsection{Stack manipulation}
 \label{stackinst}
 
@@ -636,6 +632,16 @@ RP} may only be accessed through special instructions:
 \instp{SP!}{s-p-store}{3Fh}{a-addr --}{Set {\tt SP} to \spic{a-addr}.}
 \instp{RP@}{r-p-fetch}{40h}{-- a-addr}{\spic{a-addr} is the value of {\tt RP}.}
 \instp{RP!}{r-p-store}{41h}{a-addr --}{Set {\tt RP} to \spic{a-addr}.}
+\instp{EP@}{bracket-create}{56h}{-- a-addr}{Push {\tt EP} on to the stack.}
+\instp{S0@}{s-nought-fetch}{57h}{-- a-addr}{Push {\tt S0} on to the stack.}
+\instp{\#S@}{hash-s-fetch}{58h}{-- u}{Push {\tt \#S} on to the stack.}
+\instp{R0@}{r-nought-fetch}{59h}{-- a-addr}{Push {\tt R0} on to the stack.}
+\instp{\#R@}{hash-r-fetch}{5Ah}{-- u}{Push {\tt \#R} on to the stack.}
+\instp{'THROW@}{tick-throw-fetch}{5Bh}{-- a-addr}{Push {\tt 'THROW} on to the stack.}
+\instp{'THROW!}{tick-throw-store}{5Ch}{a-addr --}{Set {\tt 'THROW} to \spic{a-addr}.}
+\instp{MEMORY@}{memory-fetch}{5Dh}{-- a-addr}{Push {\tt MEMORY} on to the stack.}
+\instp{'BAD@}{tick-bad-fetch}{5Eh}{-- a-addr}{Push {\tt 'BAD} on to the stack.}
+\instp{-ADDRESS@}{not-address-fetch}{5Fh}{-- a-addr}{Push {\tt -ADDRESS} on to the stack.}
 \end{description}
 
 
@@ -706,19 +712,6 @@ These instructions give access to Beetle's exception mechanisms.
 \end{description}
 
 
-\subsection{Miscellaneous}
-\label{miscinst}
-
-{\tt EP@} pushes {\tt EP} on to the stack (this is not a part of normal flow
-control!). {\tt NEXT} performs an instruction fetch when Beetle runs out of
-instructions in the {\tt A} register.
-
-\begin{description}
-\instp{EP@}{bracket-create}{56h}{-- a-addr}{Push {\tt EP} on to the stack.}
-\inst{NEXT}{00h/FFh}{--}{Load the cell pointed to by {\tt EP} into {\tt A} then add four to {\tt EP}.}
-\end{description}
-
-
 \subsection{External access}
 \label{accessinst}
 
@@ -726,8 +719,8 @@ These instructions allow access to Beetle's libraries, the operating system and
 native machine code.
 
 \begin{description}
-\inst{LIB}{57h}{i*x n -- j*x}{Call library routine \spic{n}. The parameters passed and returned depend on \spic{n}. If the library routine is not currently available, raise exception $-257$.}
-\inst{LINK}{58h}{i*x --}{Make a subroutine call to the routine at the address given (in the host machine's format, padded out to a number of cells) on the data stack. The size and format of this address are machine-dependent.}
+\inst{LIB}{60h}{i*x n -- j*x}{Call library routine \spic{n}. The parameters passed and returned depend on \spic{n}. If the library routine is not currently available, raise exception $-257$.}
+\inst{LINK}{61h}{i*x --}{Make a subroutine call to the routine at the address given (in the host machine's format, padded out to a number of cells) on the data stack. The size and format of this address are machine-dependent.}
 \end{description}
 
 
@@ -735,7 +728,7 @@ native machine code.
 \label{opcodes}
 
 In table~\ref{opcodetable} are listed the opcodes in numerical order. All
-undefined opcodes (5Ch--FEh) raise exception $-256$.
+undefined opcodes (62h--FEh) raise exception $-256$.
 
 \begin{table}[htb]
 \begin{center}
@@ -772,6 +765,7 @@ undefined opcodes (5Ch--FEh) raise exception $-256$.
 \opcodetbl{1B}{-1}	{39}{@}		{57}{LIB}
 \opcodetbl{1C}{CELL}	{3A}{!}		{58}{LINK}
 \opcodetbl{1D}{-CELL}	{3B}{C@}	{FF}{NEXT} \bottomrule
+% FIXME: add S0@, #S, R0@, #R, 'THROW@, 'THROW!, MEMORY@, 'BAD@, -ADDRESS@ once we’ve reordered the opcodes
 \end{tabular}
 \caption{\label{opcodetable}Beetle's opcodes}
 \end{center}

@@ -8,7 +8,7 @@ LDADD = $(top_builddir)/src/libbeetle.la
 
 check_PROGRAMS = $(TESTS) loadobjt
 
-TESTS = aritmtit brancht comparet epfetcht doloopt initialt libt literalt \
+TESTS = aritmtit brancht comparet registerst doloopt initialt libt literalt \
 	logict memoryt stackt stept runt exceptst linkt
 TESTS_ENVIRONMENT = \
 	if test -n "$(VALGRIND)"; then export VALGRIND='$(VALGRIND)'; fi; \

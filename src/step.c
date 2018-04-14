@@ -731,6 +731,37 @@ CELL single_step(void)
     case O_EPFETCH:
         PUSH(EP);
         break;
+    case O_S0FETCH:
+        PUSH(S0);
+        break;
+    case O_HASHS:
+        PUSH(HASHS);
+        break;
+    case O_R0FETCH:
+        PUSH(R0);
+        break;
+    case O_HASHR:
+        PUSH(HASHR);
+        break;
+    case O_THROWFETCH:
+        PUSH(THROW);
+        break;
+    case O_THROWSTORE:
+        {
+            CELL value = POP;
+            CHECK_ALIGNED(value);
+            THROW = value;
+        }
+        break;
+    case O_MEMORYFETCH:
+        PUSH(MEMORY);
+        break;
+    case O_BADFETCH:
+        PUSH(BAD);
+        break;
+    case O_NOT_ADDRESSFETCH:
+        PUSH(NOT_ADDRESS);
+        break;
     case O_LIB:
         {
             CELL routine = POP;

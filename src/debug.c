@@ -82,8 +82,9 @@ static const char *mnemonic[] = { "NEXT00", "DUP", "DROP", "SWAP", "OVER",
     "!", "C@", "C!", "+!", "SP@", "SP!", "RP@", "RP!", "BRANCH", "BRANCHI",
     "?BRANCH", "?BRANCHI", "EXECUTE", "@EXECUTE", "CALL", "CALLI", "EXIT",
     "(DO)", "(LOOP)", "(LOOP)I", "(+LOOP)", "(+LOOP)I", "UNLOOP", "J",
-    "(LITERAL)", "(LITERAL)I", "THROW", "HALT", "EP@", "LIB", "LINK",
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    "(LITERAL)", "(LITERAL)I", "THROW", "HALT", "EP@", "S0@", "#S", "R0@", "#R",
+    "'THROW@", "'THROW!", "MEMORY@", "'BAD@", "-ADDRESS@", "LIB", "LINK",
+    NULL, NULL, NULL,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
@@ -106,7 +107,7 @@ _GL_ATTRIBUTE_CONST const char *disass(BYTE opcode)
 
 _GL_ATTRIBUTE_PURE BYTE toass(char *token)
 {
-    for (int i = 0; i < 0x5c; i++)
+    for (int i = 0; i < 0x62; i++)
         if (strcmp(token, mnemonic[i]) == 0) return i;
 
     if (strcmp(token, mnemonic[0xff]) == 0) return 0xff;
