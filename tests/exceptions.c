@@ -1,9 +1,7 @@
-/* EXCEPTST.C
-
-    (c) Reuben Thomas 1995-2018
-
+/*
     Test the Beetle-generated exceptions and HALT codes.
 
+    (c) Reuben Thomas 1995-2018
 */
 
 
@@ -74,7 +72,7 @@ int main(void)
         if (result[i] != res || (result[i] != 0 && bad[i] != BAD) ||
             ((result[i] <= -258 || result[i] == -9 || result[i] == -23) &&
              address[i] != NOT_ADDRESS)) {
-             printf("Error in ExceptsT: test %zu failed; EP = %"PRIu32"\n", i + 1, EP);
+             printf("Error in exceptions tests: test %zu failed; EP = %"PRIu32"\n", i + 1, EP);
              printf("Return code is %d; should be %d\n", res, result[i]);
              if (result[i] != 0)
                  printf("'BAD = %"PRIX32"; should be %"PRIX32"\n", BAD, bad[i]);
@@ -87,6 +85,6 @@ int main(void)
 
     assert(exception == 0);
     if (error == 0)
-        printf("ExceptsT ran OK\n");
+        printf("Exceptions tests ran OK\n");
     return error;
 }

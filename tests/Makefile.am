@@ -6,17 +6,17 @@ LOG_COMPILER = $(srcdir)/run-test
 
 LDADD = $(top_builddir)/src/libbeetle.la
 
-check_PROGRAMS = $(TESTS) loadobjt
+check_PROGRAMS = $(TESTS) load_object
 
-TESTS = aritmtit brancht comparet registerst doloopt initialt libt literalt \
-	logict memoryt stackt stept runt exceptst linkt
+TESTS = arithmetic branch comparison doloop init_beetle lib literals \
+	logic memory registers stack single_step run exceptions link
 TESTS_ENVIRONMENT = \
 	if test -n "$(VALGRIND)"; then export VALGRIND='$(VALGRIND)'; fi; \
 	export LIBTOOL=$(top_builddir)/libtool;
 
-do_loadobjt: loadobjt
-	$(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(builddir)/loadobjt $(srcdir)
+do_load_object: load_object
+	$(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(builddir)/load_object $(srcdir)
 
-check-local: do_loadobjt
+check-local: do_load_object
 
 EXTRA_DIST = run-test btests.h badobj1 badobj2 badobj3 badobj4 testobj1 testobj2

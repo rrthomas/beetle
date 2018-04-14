@@ -1,7 +1,4 @@
-/* ARITMTIT.C
-
-    (c) Reuben Thomas 1994-2018
-
+/*
     Test the arithmetic operators. Also uses the NEXT, SWAP, ROT,
     DROP, and (LITERAL)I instructions. Since unsigned arithmetic
     overflow behaviour is guaranteed by the ISO standard, we only test
@@ -11,6 +8,7 @@
     of the cell size (in CELL_W and str(CELL_W)); some stack pictures
     implicitly refer to it.
 
+    (c) Reuben Thomas 1994-2018
 */
 
 
@@ -54,7 +52,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i]);
         if (strcmp(correct[i], val_data_stack())) {
-            printf("Error in AritmtiT: EP = %"PRIu32"\n", EP);
+            printf("Error in arithmetic tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();
@@ -64,6 +62,6 @@ int main(void)
     }
 
     assert(exception == 0);
-    printf("AritmtiT ran OK\n");
+    printf("Arithmetic tests ran OK\n");
     return 0;
 }

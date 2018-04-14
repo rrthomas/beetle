@@ -1,9 +1,7 @@
-/* LITERALT.C
-
-    (c) Reuben Thomas 1994-2018
-
+/*
     Test the literal instructions. Also uses the NEXT instruction.
 
+    (c) Reuben Thomas 1994-2018
 */
 
 
@@ -33,7 +31,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in LiteralT: EP = %"PRIu32"\n", EP);
+            printf("Error in literals tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();
@@ -41,6 +39,6 @@ int main(void)
     }
 
     assert(exception == 0);
-    printf("LiteralT ran OK\n");
+    printf("Literals tests ran OK\n");
     return 0;
 }

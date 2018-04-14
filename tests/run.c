@@ -1,10 +1,8 @@
-/* RUNT.C
-
-    (c) Reuben Thomas 1995-2018
-
+/*
     Test that run works, and that the return value of the HALT instruction is
     correctly returned.
 
+    (c) Reuben Thomas 1995-2018
 */
 
 
@@ -17,7 +15,7 @@ int main(void)
 
     int i = init_beetle((CELL *)calloc(1024, 1), 256);
     if (i != 0) {
-        printf("Error in RunT: init_beetle with valid parameters failed\n");
+        printf("Error in run() tests: init_beetle with valid parameters failed\n");
         exit(1);
     }
 
@@ -32,17 +30,17 @@ int main(void)
 
     printf("Return value should be 37 and is %"PRId32"\n", ret);
     if (ret != 37) {
-        printf("Error in RunT: incorrect return value from run\n");
+        printf("Error in run() tests: incorrect return value from run\n");
         exit(1);
     }
 
     printf("EP should now be 56\n");
     if (EP != 60) {
-        printf("Error in RunT: EP = %"PRIu32"\n", EP);
+        printf("Error in run() tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 
     assert(exception == 0);
-    printf("RunT ran OK\n");
+    printf("run() tests ran OK\n");
     return 0;
 }

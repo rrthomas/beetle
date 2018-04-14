@@ -1,10 +1,8 @@
-/* MEMORYT.C
-
-    (c) Reuben Thomas 1994-2018
-
+/*
     Test the memory operators. Also uses previously tested instructions.
     See exceptst.c for address exception handling tests.
 
+    (c) Reuben Thomas 1994-2018
 */
 
 
@@ -38,7 +36,7 @@ int main(void)
         printf("Extra memory area %u allocated at address %"PRIX32" (should be %"PRIX32")\n",
                i, addr, area[i]);
         if (addr != area[i]) {
-            printf("Error in MemoryT: incorrect address for memory allocation\n");
+            printf("Error in memory tests: incorrect address for memory allocation\n");
             exit(1);
         }
         if (i == 2)
@@ -68,7 +66,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in MemoryT: EP = %"PRIu32"\n", EP);
+            printf("Error in memory tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();
@@ -76,6 +74,6 @@ int main(void)
     }
 
     assert(exception == 0);
-    printf("MemoryT ran OK\n");
+    printf("Memory tests ran OK\n");
     return 0;
 }

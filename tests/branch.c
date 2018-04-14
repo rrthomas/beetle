@@ -1,13 +1,11 @@
-/* BRANCHT.C
-
-    (c) Reuben Thomas 1994-2018
-
+/*
     Test the branch instructions. Also uses other instructions with lower
     opcodes than the instructions tested (i.e. those already tested).
     See exceptst.c for address exception handling tests.
     The test program contains an infinite loop, but this is only executed
     once.
 
+    (c) Reuben Thomas 1994-2018
 */
 
 
@@ -84,7 +82,7 @@ int main(void)
     for (int i = 0; i <= instrs; i++) {
         printf("EP = %u; should be %u\n\n", EP, correct[i]);
         if (correct[i] != EP) {
-            printf("Error in BranchT: EP = %"PRIu32"\n", EP);
+            printf("Error in branch tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();
@@ -92,6 +90,6 @@ int main(void)
     }
 
     assert(exception == 0);
-    printf("BranchT ran OK\n");
+    printf("Branch tests ran OK\n");
     return 0;
 }

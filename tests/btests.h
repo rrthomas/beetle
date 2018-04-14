@@ -1,9 +1,7 @@
-/* BTESTS.H
-
-    (c) Reuben Thomas 1995-2018
-
+/*
     Header for Beetle tests.
 
+    (c) Reuben Thomas 1995-2018
 */
 
 

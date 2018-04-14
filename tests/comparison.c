@@ -1,11 +1,9 @@
-/* COMPARET.C
-
-    (c) Reuben Thomas 1994-2018
-
+/*
     Test the comparison operators. Also uses the NEXT instruction. We
     only test simple cases here, assuming that the C compiler's comparison
     routines will work for other cases.
 
+    (c) Reuben Thomas 1994-2018
 */
 
 
@@ -53,7 +51,7 @@ static void step(int start, int end)
             printf("Result: %d; correct result: %d\n\n", LOAD_CELL(SP),
                 correct[i - i / 5]);
             if (correct[i - i / 5] != LOAD_CELL(SP)) {
-                printf("Error in CompareT: EP = %"PRIu32"\n", EP);
+                printf("Error in comparison tests: EP = %"PRIu32"\n", EP);
                 exit(1);
             }
             (void)POP;	/* drop result of comparison */
@@ -100,6 +98,6 @@ int main(void)
     step(30, 34);   /* do the U> tests */
 
     assert(exception == 0);
-    printf("CompareT ran OK\n");
+    printf("Comparison tests ran OK\n");
     return 0;
 }

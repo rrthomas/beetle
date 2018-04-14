@@ -1,9 +1,7 @@
-/* STACKT.C
-
-    (c) Reuben Thomas 1994-2011
-
+/*
     Test the stack operators. Also uses the 0 and NEXT instructions.
 
+    (c) Reuben Thomas 1994-2011
 */
 
 
@@ -41,7 +39,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in StackT: EP = %"PRIu32"\n", EP);
+            printf("Error in stack tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();
@@ -57,7 +55,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack()) && i != first) {
-            printf("Error in StackT: EP = %"PRIu32"\n", EP);
+            printf("Error in stack tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();
@@ -65,6 +63,6 @@ int main(void)
     }
 
     assert(exception == 0);
-    printf("StackT ran OK\n");
+    printf("Stack tests ran OK\n");
     return 0;
 }

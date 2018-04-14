@@ -1,10 +1,8 @@
-/* DOLOOPT.C
-
-    (c) Reuben Thomas 1994-2018
-
+/*
     Test the DO...LOOP support instructions. Also uses instructions with
     lower opcodes.
 
+    (c) Reuben Thomas 1994-2018
 */
 
 
@@ -44,7 +42,7 @@ int main(void)
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[0]);
     if (strcmp(correct[0], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %"PRIu32"\n", EP);
+        printf("Error in DO...LOOP tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
     SP = S0;
@@ -53,7 +51,7 @@ int main(void)
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[1]);
     if (strcmp(correct[1], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %"PRIu32"\n", EP);
+        printf("Error in DO...LOOP tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
     SP = S0;
@@ -62,7 +60,7 @@ int main(void)
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[2]);
     if (strcmp(correct[2], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %"PRIu32"\n", EP);
+        printf("Error in DO...LOOP tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
     SP = S0;
@@ -71,7 +69,7 @@ int main(void)
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[3]);
     if (strcmp(correct[3], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %"PRIu32"\n", EP);
+        printf("Error in DO...LOOP tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
     SP = S0;
@@ -81,7 +79,7 @@ int main(void)
     CELL ret3 = LOAD_CELL(RP + 2 * CELL_W);
     printf("3rd item on return stack is %"PRId32" (should be %"PRId32").\n", ret3, LOAD_CELL(SP));
     if (ret3 != LOAD_CELL(SP)) {
-        printf("Error in DoLoopT: EP = %"PRIu32"\n", EP);
+        printf("Error in DO...LOOP tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 
@@ -89,11 +87,11 @@ int main(void)
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[4]);
     if (strcmp(correct[4], val_data_stack())) {
-        printf("Error in DoLoopT: EP = %"PRIu32"\n", EP);
+        printf("Error in DO...LOOP tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 
     assert(exception == 0);
-    printf("DoLoopT ran OK\n");
+    printf("DO...LOOP tests ran OK\n");
     return 0;
 }

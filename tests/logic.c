@@ -1,12 +1,10 @@
-/* LOGICT.C
-
-    (c) Reuben Thomas 1994-2018
-
+/*
     Test the logic operators. Also uses the NEXT and -ROT instructions. We
     only test the stack handling and basic correctness of the operators here,
     assuming that if the logic works in one case, it will work in all (if the
     C compiler doesn't implement it correctly, we're in trouble anyway!).
 
+    (c) Reuben Thomas 1994-2018
 */
 
 
@@ -40,7 +38,7 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in LogicT: EP = %"PRIu32"\n", EP);
+            printf("Error in logic tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();
@@ -48,6 +46,6 @@ int main(void)
     }
 
     assert(exception == 0);
-    printf("LogicT ran OK\n");
+    printf("Logic tests ran OK\n");
     return 0;
 }
