@@ -73,7 +73,7 @@ void end_ass(void)
     else instrs--;
 }
 
-static const char *mnemonic[] = { "NEXT00", "DUP", "DROP", "SWAP", "OVER",
+static const char *mnemonic[UINT8_MAX + 1] = { "NEXT00", "DUP", "DROP", "SWAP", "OVER",
     "ROT", "-ROT", "TUCK", "NIP", "PICK", "ROLL", "?DUP", ">R", "R>", "R@", "<",
     ">", "=", "<>", "0<", "0>", "0=", "0<>", "U<", "U>", "0", "1", "-1", "CELL",
     "-CELL", "+", "-", ">-<", "1+", "1-", "CELL+", "CELL-", "*", "/", "MOD",
