@@ -35,5 +35,10 @@ clean-local:
 
 EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS) cbeetle.tex.in debugger.tex.in latexmkrc
 
+# TODO: mv works around a bug in latexmk < 4.54, which sets $out_dir when it
+# shouldn't. Remove when we can require latexmk >= 4.54.
 .tex.pdf:
-	$(LATEXMK) -r $(abs_srcdir)/latexmkrc -cd -f $<
+	$(LATEXMK) -r $(abs_srcdir)/latexmkrc -cd -f $< && \
+	if test -e `basename $@` -a ! `basename $@` -ef $@; then \
+	    mv `basename $@` $@; \
+	fi
