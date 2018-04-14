@@ -6,7 +6,8 @@
 % Started 1/12/94-8/5/95
 %
 
-\documentclass[english]{article}
+\documentclass{article}
+\usepackage[british]{babel}
 \usepackage[utf8x]{inputenc}
 \usepackage{a4wide,newpxtext,booktabs,url,siunitx}
 
