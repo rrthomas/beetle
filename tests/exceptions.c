@@ -11,7 +11,7 @@
 UCELL test[] = { 0, 8, 16, 24, 36, 40, 44, 48, 56, 64, 68, 72, 76 };
 CELL result[] = { -258, -258, 42, 0, -23, -23, -10, -9, -9, -23, -256, -257, -259 };
 UCELL bad[] = { -1, -1, -1, 28, 40, 44, 48, 16388, 64, 68, 72, 76, 84 };
-UCELL address[] = { -20, 16384, 0, 0, 5, 1, 0, 16384, -20, 1, 0, 0, 1 };
+UCELL address[] = { -16, 16384, 0, 0, 5, 1, 0, 16384, -20, 1, 0, 0, 1 };
 
 
 int main(void)
@@ -49,8 +49,8 @@ int main(void)
     ass(0xfe);	ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_MCELL); ass(O_LIB); ass(O_NEXT00); ass(O_NEXT00);	/* test 12 */
     // test 13: test invalid 'THROW contents
-    ass(O_ONE); ass(O_DUP); ass(O_MCELL); ass(O_STORE);
-    ass(O_THROW);
+    ass(O_LITERAL); lit(0xffffffec);
+    ass(O_DUP); ass(O_THROWSTORE); ass(O_THROW);
     end_ass();
 
     here = 200;	/* start assembling at 200 */

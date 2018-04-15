@@ -20,8 +20,8 @@
 #include <limits.h>
 
 
-#define DATA_STACK_SEGMENT   0xfd000000
-#define RETURN_STACK_SEGMENT 0xfe000000
+#define DATA_STACK_SEGMENT   0xfe000000
+#define RETURN_STACK_SEGMENT 0xff000000
 
 /* Memory access */
 
