@@ -295,11 +295,7 @@ int init_beetle(CELL *memory, size_t size)
     if (d_stack == NULL || r_stack == NULL)
         return -2;
 
-    if (!mem_map(0xfffffffc, &THROW, CELL_W, true)
-        || !mem_map(0xfffffff8, &MEMORY, CELL_W, false)
-        || !mem_map(0xfffffff4, &BAD, CELL_W, false)
-        || !mem_map(0xfffffff0, &NOT_ADDRESS, CELL_W, false)
-        || !mem_map(DATA_STACK_SEGMENT, d_stack, HASHS, true)
+    if (!mem_map(DATA_STACK_SEGMENT, d_stack, HASHS, true)
         || !mem_map(RETURN_STACK_SEGMENT, r_stack, HASHR, true))
         return -2;
 
