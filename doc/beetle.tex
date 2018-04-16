@@ -41,34 +41,33 @@
 \newlength{\itemwidth}\itemwidth=\textwidth \advance\itemwidth by -0.1in
 \newlength{\instname}\instname=0.5in
 \newlength{\pronunc}\pronunc=1.7in
-\newlength{\opcode}\opcode=0.5in
 \newlength{\stackcom}\stackcom=3.0in
 \newlength{\beforestackcom} \advance\beforestackcom by \instname
-    \advance\beforestackcom by \pronunc \advance\beforestackcom by \opcode
+    \advance\beforestackcom by \pronunc
 
 % With no pronunciation or return stack
-\newcommand{\inst}[4]{\item[]\parbox{\itemwidth}%
-{\makebox[\instname][l]{\tt #1}\makebox[\pronunc][r]{}\makebox[\opcode][r]%
-{#2}\makebox[\stackcom][r]{\tt ( \spic{#3} )}\\[0.5ex]#4}}
+\newcommand{\inst}[3]{\item[]\parbox{\itemwidth}%
+{\makebox[\instname][l]{\tt #1}\makebox[\pronunc][r]{}%
+\makebox[\stackcom][r]{\tt ( \spic{#2} )}\\[0.5ex]#3}}
 
 % With pronunciation only
-\newcommand{\instp}[5]{\item[]\parbox{\itemwidth}%
+\newcommand{\instp}[4]{\item[]\parbox{\itemwidth}%
 {\makebox[\instname][l]{\tt #1}\makebox[\pronunc][r]{``#2''}%
-\makebox[\opcode][r]{#3}\makebox[\stackcom][r]{\tt ( \spic{#4} )}\\[0.5ex]%
-#5}}
+\makebox[\stackcom][r]{\tt ( \spic{#3} )}\\[0.5ex]%
+#4}}
 
 % With return stack only
-\newcommand{\instr}[5]{\item[]\parbox{\itemwidth}%
-{\makebox[\instname][l]{\tt #1}\makebox[\pronunc][r]{}\makebox[\opcode][r]%
-{#2}\makebox[\stackcom][r]{\tt ( \spic{#3} )}\\\makebox[\beforestackcom]{}%
-\makebox[\stackcom][r]{\tt R: ( \spic{#4} )}\\[0.5ex]#5}}
+\newcommand{\instr}[4]{\item[]\parbox{\itemwidth}%
+{\makebox[\instname][l]{\tt #1}\makebox[\pronunc][r]{}%
+\makebox[\stackcom][r]{\tt ( \spic{#2} )}\\\makebox[\beforestackcom]{}%
+\makebox[\stackcom][r]{\tt R: ( \spic{#3} )}\\[0.5ex]#4}}
 
 % With pronunciation and return stack
-\newcommand{\instpr}[6]{\item[]\parbox{\itemwidth}%
+\newcommand{\instpr}[5]{\item[]\parbox{\itemwidth}%
 {\makebox[\instname][l]{\tt #1}\makebox[\pronunc][r]{``#2''}%
-\makebox[\opcode][r]{#3}\makebox[\stackcom][r]{\tt ( \spic{#4} )}\\%
-\makebox[\beforestackcom]{}\makebox[\stackcom][r]{\tt R: ( \spic{#5} )}%
-\\[0.5ex]#6}}
+\makebox[\stackcom][r]{\tt ( \spic{#3} )}\\%
+\makebox[\beforestackcom]{}\makebox[\stackcom][r]{\tt R: ( \spic{#4} )}%
+\\[0.5ex]#5}}
 
 % Lay out an external interface call
 
@@ -346,11 +345,11 @@ with the instructions grouped according to function. The
 instructions are given in the following format:
 
 \begin{description}
-\instpr{NAME}{pronunciation}{00h}{before -- after}{before -- after}{Description.}
+\instpr{NAME}{pronunciation}{before -- after}{before -- after}{Description.}
 \end{description}
 
 The first line consists of the name of the instruction followed by the
-pronunciation in quotes, and the instruction's opcode. On the right are the
+pronunciation in quotes. On the right are the
 stack comment or comments. Underneath is the description. The two stack comments
 show the effect of the instruction on the data and return (R) stacks.
 
@@ -463,7 +462,7 @@ the most significant end of the instruction cell.
 instructions in the {\tt A} register.
 
 \begin{description}
-\inst{NEXT}{00h/FFh}{--}{Load the cell pointed to by {\tt EP} into {\tt A} then add four to {\tt EP}.}
+\inst{NEXT}{--}{Load the cell pointed to by {\tt EP} into {\tt A} then add four to {\tt EP}.}
 \end{description}
 
 
@@ -473,20 +472,20 @@ instructions in the {\tt A} register.
 These instructions manage the data stack and move values between stacks.
 
 \begin{description}
-\instp{DUP}{dupe}{01h}{x -- x x}{Duplicate \spic{x}.}
-\inst{DROP}{02h}{x --}{Remove \spic{x} from the stack.}
-\inst{SWAP}{03h}{\x1 \x2 -- \x2 \x1}{Exchange the top two stack items.}
-\inst{OVER}{04h}{\x1 \x2 -- \x1 \x2 \x1}{Place a copy of \x1 on top of the stack.}
-\instp{ROT}{rote}{05h}{\x1 \x2 \x3 -- \x2 \x3 \x1}{Rotate the top three stack entries.}
-\instp{-ROT}{not-rote}{06h}{\x1 \x2 \x3 -- \x3 \x1 \x2}{Perform the action of {\tt ROT} twice.}
-\inst{TUCK}{07h}{\x1 \x2 -- \x2 \x1 \x2}{Perform the action of {\tt SWAP} followed by {\tt OVER}.}
-\inst{NIP}{08h}{\x1 \x2 -- \x2}{Perform the action of {\tt SWAP} followed by {\tt DROP}.}
-\inst{PICK}{09h}{\x{u}\dots\x1 \x0 u -- \x{u}\dots \x1 \x0 \x{u}}{Remove \spic{u}. Copy \x{u} to the top of the stack. If \spic{u}~$=$~0, {\tt PICK} is equivalent to {\tt DUP}. If there are fewer than \spic{u}~$+$~2 items on the stack before {\tt PICK} is executed, the memory cell which would have been \x{u} were there \spic{u}~$+$~2 items is copied to the top of the stack.}
-\inst{ROLL}{0Ah}{\x{u} \x{u-1}\dots\x{0} u -- \x{u-1}\dots\x0 \x{u}}{Remove \spic{u}. Rotate \spic{u}~$+$~1 items on the top of the stack. If \spic{u}~$=$~0 {\tt ROLL} does nothing, and if \spic{u}~$=$~1 {\tt ROLL} is equivalent to {\tt SWAP}. If there are fewer than \spic{u}~$+$~2 items on the stack before {\tt ROLL} is executed, the memory cells which would have been on the stack were there \spic{u}~$+$~2 items are rotated.}
-\instp{?DUP}{question-dupe}{0Bh}{x -- $0$ {\tt |} x x}{Duplicate \spic{x} if it is non-zero.}
-\instpr{>R}{to-r}{0Ch}{x --}{-- x}{Move \spic{x} to the return stack.}
-\instpr{R>}{r-from}{0Dh}{-- x}{x --}{Move \spic{x} from the return stack to the data stack.}
-\instpr{R@}{r-fetch}{0Eh}{-- x}{x -- x}{Copy \spic{x} from the return stack to the data stack.}
+\instp{DUP}{dupe}{x -- x x}{Duplicate \spic{x}.}
+\inst{DROP}{x --}{Remove \spic{x} from the stack.}
+\inst{SWAP}{\x1 \x2 -- \x2 \x1}{Exchange the top two stack items.}
+\inst{OVER}{\x1 \x2 -- \x1 \x2 \x1}{Place a copy of \x1 on top of the stack.}
+\instp{ROT}{rote}{\x1 \x2 \x3 -- \x2 \x3 \x1}{Rotate the top three stack entries.}
+\instp{-ROT}{not-rote}{\x1 \x2 \x3 -- \x3 \x1 \x2}{Perform the action of {\tt ROT} twice.}
+\inst{TUCK}{\x1 \x2 -- \x2 \x1 \x2}{Perform the action of {\tt SWAP} followed by {\tt OVER}.}
+\inst{NIP}{\x1 \x2 -- \x2}{Perform the action of {\tt SWAP} followed by {\tt DROP}.}
+\inst{PICK}{\x{u}\dots\x1 \x0 u -- \x{u}\dots \x1 \x0 \x{u}}{Remove \spic{u}. Copy \x{u} to the top of the stack. If \spic{u}~$=$~0, {\tt PICK} is equivalent to {\tt DUP}. If there are fewer than \spic{u}~$+$~2 items on the stack before {\tt PICK} is executed, the memory cell which would have been \x{u} were there \spic{u}~$+$~2 items is copied to the top of the stack.}
+\inst{ROLL}{\x{u} \x{u-1}\dots\x{0} u -- \x{u-1}\dots\x0 \x{u}}{Remove \spic{u}. Rotate \spic{u}~$+$~1 items on the top of the stack. If \spic{u}~$=$~0 {\tt ROLL} does nothing, and if \spic{u}~$=$~1 {\tt ROLL} is equivalent to {\tt SWAP}. If there are fewer than \spic{u}~$+$~2 items on the stack before {\tt ROLL} is executed, the memory cells which would have been on the stack were there \spic{u}~$+$~2 items are rotated.}
+\instp{?DUP}{question-dupe}{x -- $0$ {\tt |} x x}{Duplicate \spic{x} if it is non-zero.}
+\instpr{>R}{to-r}{x --}{-- x}{Move \spic{x} to the return stack.}
+\instpr{R>}{r-from}{-- x}{x --}{Move \spic{x} from the return stack to the data stack.}
+\instpr{R@}{r-fetch}{-- x}{x -- x}{Copy \spic{x} from the return stack to the data stack.}
 \end{description}
 
 \subsection{Comparison}
@@ -496,16 +495,16 @@ stack, returning a flag, true with all bits set if the test succeeds and false
 otherwise.
 
 \begin{description}
-\instp{<}{less-than}{0Fh}{\n1 \n2 -- flag}{\spic{flag} is true if and only if \n1 is less than \n2.}
-\instp{>}{greater-than}{10h}{\n1 \n2 -- flag}{\spic{flag} is true if and only if \n1 is greater than \n2.}
-\instp{=}{equals}{11h}{\x1 \x2 -- flag}{\spic{flag} is true if and only if \x1 is bit-for-bit the same as \x2.}
-\instp{<>}{not-equals}{12h}{\x1 \x2 -- flag}{\spic{flag} is true if and only if \x1 is not bit-for-bit the same as \x2.}
-\instp{0<}{zero-less}{13h}{n -- flag}{\spic{flag} is true if and only if n is less than zero.}
-\instp{0>}{zero-greater}{14h}{n -- flag}{\spic{flag} is true if and only if \spic{n} is greater than zero.}
-\instp{0=}{zero-equals}{15h}{x -- flag}{\spic{flag} is true if and only if \spic{x} is equal to zero.}
-\instp{0<>}{zero-not-equals}{16h}{x -- flag}{\spic{flag} is true if and only if \spic{x} is not equal to zero.}
-\instp{U<}{u-less-than}{17h}{\U1 \U2 -- flag}{\spic{flag} is true if and only if \U1 is less than \U2.}
-\instp{U>}{u-greater-than}{18h}{\U1 \U2 -- flag}{\spic{flag} is true if and only if \U1 is greater than \U2.}
+\instp{<}{less-than}{\n1 \n2 -- flag}{\spic{flag} is true if and only if \n1 is less than \n2.}
+\instp{>}{greater-than}{\n1 \n2 -- flag}{\spic{flag} is true if and only if \n1 is greater than \n2.}
+\instp{=}{equals}{\x1 \x2 -- flag}{\spic{flag} is true if and only if \x1 is bit-for-bit the same as \x2.}
+\instp{<>}{not-equals}{\x1 \x2 -- flag}{\spic{flag} is true if and only if \x1 is not bit-for-bit the same as \x2.}
+\instp{0<}{zero-less}{n -- flag}{\spic{flag} is true if and only if n is less than zero.}
+\instp{0>}{zero-greater}{n -- flag}{\spic{flag} is true if and only if \spic{n} is greater than zero.}
+\instp{0=}{zero-equals}{x -- flag}{\spic{flag} is true if and only if \spic{x} is equal to zero.}
+\instp{0<>}{zero-not-equals}{x -- flag}{\spic{flag} is true if and only if \spic{x} is not equal to zero.}
+\instp{U<}{u-less-than}{\U1 \U2 -- flag}{\spic{flag} is true if and only if \U1 is less than \U2.}
+\instp{U>}{u-greater-than}{\U1 \U2 -- flag}{\spic{flag} is true if and only if \U1 is greater than \U2.}
 \end{description}
 
 
@@ -521,11 +520,11 @@ Constants:
 \nopagebreak
 
 \begin{description}
-\instp{0}{zero}{19h}{-- $0$}{Leave zero on the stack.}
-\instp{1}{one}{1Ah}{-- $1$}{Leave one on the stack.}
-\instp{-1}{minus-one}{1Bh}{-- $-1$}{Leave minus one on the stack.}
-\inst{CELL}{1Ch}{-- $4$}{Leave four on the stack.}
-\instp{-CELL}{minus-cell}{1Dh}{-- $-4$}{Leave minus four on the stack.}
+\instp{0}{zero}{-- $0$}{Leave zero on the stack.}
+\instp{1}{one}{-- $1$}{Leave one on the stack.}
+\instp{-1}{minus-one}{-- $-1$}{Leave minus one on the stack.}
+\inst{CELL}{-- $4$}{Leave four on the stack.}
+\instp{-CELL}{minus-cell}{-- $-4$}{Leave minus four on the stack.}
 \end{description}
 
 Addition and subtraction:
@@ -533,13 +532,13 @@ Addition and subtraction:
 \nopagebreak
 
 \begin{description}
-\instp{+}{plus}{1Eh}{\noru1 \noru2 -- \noru3}{Add \noru2 to \noru1, giving the sum \noru3.}
-\instp{-}{minus}{1Fh}{\noru1 \noru2 -- \noru3}{Subtract \noru2 from \noru1, giving the difference \noru3.}
-\instp{>-<}{reverse-minus}{20h}{\noru1 \noru2 -- \n3{\tt |}\U3}{Perform the action of {\tt SWAP} (see section~\ref{stackinst}) followed by {\tt -}.}
-\instp{1+}{one-plus}{21h}{\noru1 -- \noru2}{Add one to \n1{\tt |}\U1, giving the sum \noru2.}
-\instp{1-}{one-minus}{22h}{\noru1 -- \noru2}{Subtract one from \noru1, giving the difference \noru2.}
-\instp{CELL+}{cell-plus}{23h}{\noru1 -- \noru2}{Add four to \n1{\tt |}\U1, giving the sum \noru2.}
-\instp{CELL-}{cell-minus}{24h}{\noru1 -- \noru2}{Subtract four from \noru1, giving the difference \noru2.}
+\instp{+}{plus}{\noru1 \noru2 -- \noru3}{Add \noru2 to \noru1, giving the sum \noru3.}
+\instp{-}{minus}{\noru1 \noru2 -- \noru3}{Subtract \noru2 from \noru1, giving the difference \noru3.}
+\instp{>-<}{reverse-minus}{\noru1 \noru2 -- \n3{\tt |}\U3}{Perform the action of {\tt SWAP} (see section~\ref{stackinst}) followed by {\tt -}.}
+\instp{1+}{one-plus}{\noru1 -- \noru2}{Add one to \n1{\tt |}\U1, giving the sum \noru2.}
+\instp{1-}{one-minus}{\noru1 -- \noru2}{Subtract one from \noru1, giving the difference \noru2.}
+\instp{CELL+}{cell-plus}{\noru1 -- \noru2}{Add four to \n1{\tt |}\U1, giving the sum \noru2.}
+\instp{CELL-}{cell-minus}{\noru1 -- \noru2}{Subtract four from \noru1, giving the difference \noru2.}
 \end{description}
 
 Multiplication and division (note that all division instructions raise exception
@@ -549,14 +548,14 @@ infinity, except for {\tt S/REM}, which rounds the quotient towards zero):
 \nopagebreak
 
 \begin{description}
-\instp{*}{star}{25h}{\noru1 \noru2 -- \noru3}{Multiply \noru1 by \noru2 giving the product \noru3.}
-\instp{/}{slash}{26h}{\n1 \n2 -- \n3}{Divide \n1 by \n2, giving the single-cell quotient \n3.}
-\inst{MOD}{27h}{\n1 \n2 -- \n3}{Divide \n1 by \n2, giving the single-cell remainder \n3.}
-\instp{/MOD}{slash-mod}{28h}{\n1 \n2 -- \n3 \n4}{Divide \n1 by \n2, giving the single-cell remainder \n3 and the single-cell quotient \n4.}
-\instp{U/MOD}{u-slash-mod}{29h}{\U1 \U2 -- \U3 \U4}{Divide \U1 by \U2, giving the single-cell remainder \U3 and the single-cell quotient \U4.}
-\instp{S/REM}{s-slash-rem}{2Ah}{\n1 \n2 -- \n3 \n4}{Divide \n1 by \n2 using symmetric division, giving the single-cell remainder \n3 and the single-cell quotient \n4.}
-\instp{2/}{two-slash}{2Bh}{\x1 -- \x2}{\x2 is the result of shifting \x1 one bit toward the least-significant bit, leaving the most-significant bit unchanged.}
-\inst{CELLS}{2Ch}{\n1 -- \n2}{\n2 is the size in bytes of \n1 cells.}
+\instp{*}{star}{\noru1 \noru2 -- \noru3}{Multiply \noru1 by \noru2 giving the product \noru3.}
+\instp{/}{slash}{\n1 \n2 -- \n3}{Divide \n1 by \n2, giving the single-cell quotient \n3.}
+\inst{MOD}{\n1 \n2 -- \n3}{Divide \n1 by \n2, giving the single-cell remainder \n3.}
+\instp{/MOD}{slash-mod}{\n1 \n2 -- \n3 \n4}{Divide \n1 by \n2, giving the single-cell remainder \n3 and the single-cell quotient \n4.}
+\instp{U/MOD}{u-slash-mod}{\U1 \U2 -- \U3 \U4}{Divide \U1 by \U2, giving the single-cell remainder \U3 and the single-cell quotient \U4.}
+\instp{S/REM}{s-slash-rem}{\n1 \n2 -- \n3 \n4}{Divide \n1 by \n2 using symmetric division, giving the single-cell remainder \n3 and the single-cell quotient \n4.}
+\instp{2/}{two-slash}{\x1 -- \x2}{\x2 is the result of shifting \x1 one bit toward the least-significant bit, leaving the most-significant bit unchanged.}
+\inst{CELLS}{\n1 -- \n2}{\n2 is the size in bytes of \n1 cells.}
 \end{description}
 
 Sign functions:
@@ -564,8 +563,8 @@ Sign functions:
 \nopagebreak
 
 \begin{description}
-\instp{ABS}{abs}{2Dh}{n -- u}{\spic{u} is the absolute value of \spic{n}.}
-\inst{NEGATE}{2Eh}{\n1 -- \n2}{Negate \n1, giving its arithmetic inverse \n2.}
+\instp{ABS}{abs}{n -- u}{\spic{u} is the absolute value of \spic{n}.}
+\inst{NEGATE}{\n1 -- \n2}{Negate \n1, giving its arithmetic inverse \n2.}
 \end{description}
 
 Maxima and minima:
@@ -573,8 +572,8 @@ Maxima and minima:
 \nopagebreak
 
 \begin{description}
-\inst{MAX}{2Fh}{\n1 \n2 -- \n3}{\n3 is the greater of \n1 and \n2.}
-\inst{MIN}{30h}{\n1 \n2 -- \n3}{\n3 is the lesser of \n1 and \n2.}
+\inst{MAX}{\n1 \n2 -- \n3}{\n3 is the greater of \n1 and \n2.}
+\inst{MIN}{\n1 \n2 -- \n3}{\n3 is the lesser of \n1 and \n2.}
 \end{description}
 
 
@@ -589,10 +588,10 @@ Logic functions:
 \nopagebreak
 
 \begin{description}
-\inst{INVERT}{31h}{\x1 -- \x2}{Invert all bits of \x1, giving its logical inverse \x2.}
-\inst{AND}{32h}{\x1 \x2 -- \x3}{\x3 is the bit-by-bit logical ``and'' of \x1 with \x2.}
-\inst{OR}{33h}{\x1 \x2 -- \x3}{\x3 is the bit-by-bit inclusive-or of \x1 with \x2.}
-\instp{XOR}{x-or}{34h}{\x1 \x2 -- \x3}{\x3 is the bit-by-bit exclusive-or of \x1 with \x2.}
+\inst{INVERT}{\x1 -- \x2}{Invert all bits of \x1, giving its logical inverse \x2.}
+\inst{AND}{\x1 \x2 -- \x3}{\x3 is the bit-by-bit logical ``and'' of \x1 with \x2.}
+\inst{OR}{\x1 \x2 -- \x3}{\x3 is the bit-by-bit inclusive-or of \x1 with \x2.}
+\instp{XOR}{x-or}{\x1 \x2 -- \x3}{\x3 is the bit-by-bit exclusive-or of \x1 with \x2.}
 \end{description}
 
 Shifts:
@@ -600,10 +599,10 @@ Shifts:
 \nopagebreak
 
 \begin{description}
-\instp{LSHIFT}{l-shift}{35h}{\x1 u -- \x2}{Perform a logical left shift of \spic{u} bit-places on \x1, giving \x2. Put zero into the least significant bits vacated by the shift. If \spic{u} is greater than or equal to 32, \x2 is zero.}
-\instp{RSHIFT}{r-shift}{36h}{\x1 u -- \x2}{Perform a logical right shift of \spic{u} bit-places on \x1, giving \x2. Put zero into the most significant bits vacated by the shift. If \spic{u} is greater than or equal to 32, \x2 is zero.}
-\instp{1LSHIFT}{one-l-shift}{37h}{\x1 -- \x2}{Perform a logical left shift of one bit-place on \x1, giving \x2. Put zero into the least significant bit vacated by the shift.}
-\instp{1RSHIFT}{one-r-shift}{38h}{\x1 -- \x2}{Perform a logical right shift of one bit-place on \x1, giving \x2. Put zero into the most significant bit vacated by the shift.}
+\instp{LSHIFT}{l-shift}{\x1 u -- \x2}{Perform a logical left shift of \spic{u} bit-places on \x1, giving \x2. Put zero into the least significant bits vacated by the shift. If \spic{u} is greater than or equal to 32, \x2 is zero.}
+\instp{RSHIFT}{r-shift}{\x1 u -- \x2}{Perform a logical right shift of \spic{u} bit-places on \x1, giving \x2. Put zero into the most significant bits vacated by the shift. If \spic{u} is greater than or equal to 32, \x2 is zero.}
+\instp{1LSHIFT}{one-l-shift}{\x1 -- \x2}{Perform a logical left shift of one bit-place on \x1, giving \x2. Put zero into the least significant bit vacated by the shift.}
+\instp{1RSHIFT}{one-r-shift}{\x1 -- \x2}{Perform a logical right shift of one bit-place on \x1, giving \x2. Put zero into the most significant bit vacated by the shift.}
 \end{description}
 
 
@@ -614,11 +613,11 @@ These instructions fetch and store cells and bytes to and from memory; there is
 also an instruction to add a number to another stored in memory.
 
 \begin{description}
-\instp{@}{fetch}{39h}{a-addr -- x}{\spic{x} is the value stored at \spic{a-addr}.}
-\instp{!}{store}{3Ah}{x a-addr --}{Store \spic{x} at \spic{a-addr}.}
-\instp{C@}{c-fetch}{3Bh}{c-addr -- char}{If {\tt ENDISM} is 1, exclusive-or \spic{c-addr} with 3. Fetch the character stored at \spic{c-addr}. The unused high-order bits are all zeroes.}
-\instp{C!}{c-store}{3Ch}{char c-addr --}{If {\tt ENDISM} is 1, exclusive-or \spic{c-addr} with 3. Store \spic{char} at \spic{c-addr}. Only one byte is transferred.}
-\instp{+!}{plus-store}{3Dh}{n{\tt |}u a-addr --}{Add \spic{n{\tt |}u} to the single-cell number at \spic{a-addr}.}
+\instp{@}{fetch}{a-addr -- x}{\spic{x} is the value stored at \spic{a-addr}.}
+\instp{!}{store}{x a-addr --}{Store \spic{x} at \spic{a-addr}.}
+\instp{C@}{c-fetch}{c-addr -- char}{If {\tt ENDISM} is 1, exclusive-or \spic{c-addr} with 3. Fetch the character stored at \spic{c-addr}. The unused high-order bits are all zeroes.}
+\instp{C!}{c-store}{char c-addr --}{If {\tt ENDISM} is 1, exclusive-or \spic{c-addr} with 3. Store \spic{char} at \spic{c-addr}. Only one byte is transferred.}
+\instp{+!}{plus-store}{n{\tt |}u a-addr --}{Add \spic{n{\tt |}u} to the single-cell number at \spic{a-addr}.}
 \end{description}
 
 
@@ -629,20 +628,20 @@ As mentioned in section~\ref{registers}, the stack pointers {\tt SP} and {\tt
 RP} may only be accessed through special instructions:
 
 \begin{description}
-\instp{SP@}{s-p-fetch}{3Eh}{-- a-addr}{\spic{a-addr} is the value of {\tt SP}.}
-\instp{SP!}{s-p-store}{3Fh}{a-addr --}{Set {\tt SP} to \spic{a-addr}.}
-\instp{RP@}{r-p-fetch}{40h}{-- a-addr}{\spic{a-addr} is the value of {\tt RP}.}
-\instp{RP!}{r-p-store}{41h}{a-addr --}{Set {\tt RP} to \spic{a-addr}.}
-\instp{EP@}{bracket-create}{56h}{-- a-addr}{Push {\tt EP} on to the stack.}
-\instp{S0@}{s-nought-fetch}{57h}{-- a-addr}{Push {\tt S0} on to the stack.}
-\instp{\#S@}{hash-s-fetch}{58h}{-- u}{Push {\tt \#S} on to the stack.}
-\instp{R0@}{r-nought-fetch}{59h}{-- a-addr}{Push {\tt R0} on to the stack.}
-\instp{\#R@}{hash-r-fetch}{5Ah}{-- u}{Push {\tt \#R} on to the stack.}
-\instp{'THROW@}{tick-throw-fetch}{5Bh}{-- a-addr}{Push {\tt 'THROW} on to the stack.}
-\instp{'THROW!}{tick-throw-store}{5Ch}{a-addr --}{Set {\tt 'THROW} to \spic{a-addr}.}
-\instp{MEMORY@}{memory-fetch}{5Dh}{-- a-addr}{Push {\tt MEMORY} on to the stack.}
-\instp{'BAD@}{tick-bad-fetch}{5Eh}{-- a-addr}{Push {\tt 'BAD} on to the stack.}
-\instp{-ADDRESS@}{not-address-fetch}{5Fh}{-- a-addr}{Push {\tt -ADDRESS} on to the stack.}
+\instp{SP@}{s-p-fetch}{-- a-addr}{\spic{a-addr} is the value of {\tt SP}.}
+\instp{SP!}{s-p-store}{a-addr --}{Set {\tt SP} to \spic{a-addr}.}
+\instp{RP@}{r-p-fetch}{-- a-addr}{\spic{a-addr} is the value of {\tt RP}.}
+\instp{RP!}{r-p-store}{a-addr --}{Set {\tt RP} to \spic{a-addr}.}
+\instp{EP@}{bracket-create}{-- a-addr}{Push {\tt EP} on to the stack.}
+\instp{S0@}{s-nought-fetch}{-- a-addr}{Push {\tt S0} on to the stack.}
+\instp{\#S@}{hash-s-fetch}{-- u}{Push {\tt \#S} on to the stack.}
+\instp{R0@}{r-nought-fetch}{-- a-addr}{Push {\tt R0} on to the stack.}
+\instp{\#R@}{hash-r-fetch}{-- u}{Push {\tt \#R} on to the stack.}
+\instp{'THROW@}{tick-throw-fetch}{-- a-addr}{Push {\tt 'THROW} on to the stack.}
+\instp{'THROW!}{tick-throw-store}{a-addr --}{Set {\tt 'THROW} to \spic{a-addr}.}
+\instp{MEMORY@}{memory-fetch}{-- a-addr}{Push {\tt MEMORY} on to the stack.}
+\instp{'BAD@}{tick-bad-fetch}{-- a-addr}{Push {\tt 'BAD} on to the stack.}
+\instp{-ADDRESS@}{not-address-fetch}{-- a-addr}{Push {\tt -ADDRESS} on to the stack.}
 \end{description}
 
 
@@ -658,12 +657,12 @@ Branches:
 \nopagebreak
 
 \begin{description}
-\inst{BRANCH}{42h}{--}{Load {\tt EP} from the cell it points to, then perform the action of {\tt NEXT}.}
-\instp{BRANCHI}{branch-i}{43h}{--}{Add {\tt A} $\times$ 4 to {\tt EP}, then perform the action of {\tt NEXT}.}
-\instp{?BRANCH}{question-branch}{44h}{flag --}{If \spic{flag} is false then load {\tt EP} from the cell it points to and perform the action of {\tt NEXT}; otherwise add four to {\tt EP}.}
-\instp{?BRANCHI}{question-branch-i}{45h}{flag --}{If \spic{flag} is false then add {\tt A} $\times$ 4 to {\tt EP}. Perform the action of {\tt NEXT}.}
-\instr{EXECUTE}{46h}{\aaddr1 --}{ -- \aaddr2}{Push {\tt EP} on to the return stack, put \spic{\aaddr1} into {\tt EP}, then perform the action of {\tt NEXT}.}
-\instpr{@EXECUTE}{fetch-execute}{47h}{\aaddr1 --}{ -- \aaddr2}{Push {\tt EP} on to the return stack, put the contents of \spic{\aaddr1} into {\tt EP}, then perform the action of {\tt NEXT}.}
+\inst{BRANCH}{--}{Load {\tt EP} from the cell it points to, then perform the action of {\tt NEXT}.}
+\instp{BRANCHI}{branch-i}{--}{Add {\tt A} $\times$ 4 to {\tt EP}, then perform the action of {\tt NEXT}.}
+\instp{?BRANCH}{question-branch}{flag --}{If \spic{flag} is false then load {\tt EP} from the cell it points to and perform the action of {\tt NEXT}; otherwise add four to {\tt EP}.}
+\instp{?BRANCHI}{question-branch-i}{flag --}{If \spic{flag} is false then add {\tt A} $\times$ 4 to {\tt EP}. Perform the action of {\tt NEXT}.}
+\instr{EXECUTE}{\aaddr1 --}{ -- \aaddr2}{Push {\tt EP} on to the return stack, put \spic{\aaddr1} into {\tt EP}, then perform the action of {\tt NEXT}.}
+\instpr{@EXECUTE}{fetch-execute}{\aaddr1 --}{ -- \aaddr2}{Push {\tt EP} on to the return stack, put the contents of \spic{\aaddr1} into {\tt EP}, then perform the action of {\tt NEXT}.}
 \end{description}
 
 Subroutine call and return:
@@ -671,9 +670,9 @@ Subroutine call and return:
 \nopagebreak
 
 \begin{description}
-\instr{CALL}{48h}{--}{-- a-addr}{Push {\tt EP} $+$ 4 on to the return stack, then load {\tt EP} from the cell it points to. Perform the action of {\tt NEXT}.}
-\instpr{CALLI}{call-i}{49h}{--}{-- a-addr}{Push {\tt EP} on to the return stack, then add A $\times$ 4 to {\tt EP}. Perform the action of {\tt NEXT}.}
-\instr{EXIT}{4Ah}{--}{a-addr --}{Put \spic{a-addr} into {\tt EP}, then perform the action of {\tt NEXT}.}
+\instr{CALL}{--}{-- a-addr}{Push {\tt EP} $+$ 4 on to the return stack, then load {\tt EP} from the cell it points to. Perform the action of {\tt NEXT}.}
+\instpr{CALLI}{call-i}{--}{-- a-addr}{Push {\tt EP} on to the return stack, then add A $\times$ 4 to {\tt EP}. Perform the action of {\tt NEXT}.}
+\instr{EXIT}{--}{a-addr --}{Put \spic{a-addr} into {\tt EP}, then perform the action of {\tt NEXT}.}
 \end{description}
 
 {\tt DO}\dots{\tt LOOP} support:
@@ -681,13 +680,13 @@ Subroutine call and return:
 \nopagebreak
 
 \begin{description}
-\instpr{(DO)}{bracket-do}{4Bh}{\x1 \x2 --}{-- \x1 \x2}{Move the top two items on the data stack to the return stack.}
-\instpr{(LOOP)}{bracket-loop}{4Ch}{--}{\noru1 \noru2 -- {\tt |} \noru1 \noru3}{Add one to \noru2; if it then equals \noru1 discard both items and add four to {\tt EP}, otherwise load {\tt EP} from the cell to which it points and perform the action of {\tt NEXT}.}
-\instpr{(LOOP)I}{bracket-loop-i}{4Dh}{--}{\noru1 \noru2 -- {\tt |} \noru1 \noru3}{Add one to \noru2; if it then equals \noru1 discard both items, otherwise add {\tt A} $\times$ 4 to {\tt EP}. Perform the action of {\tt NEXT}.}
-\instpr{(+LOOP)}{bracket-plus-loop}{4Eh}{\noru1 --}{\noru2 \noru3 -- {\tt |} \noru2 \noru4}{Add \noru1 to \noru3; if \noru3 thereby crosses the $($\noru2 $-$ 1$)$ to \noru2 boundary discard both items and add four to {\tt EP}, otherwise load {\tt EP} from the cell to which it points and perform the action of {\tt NEXT}.}
-\instpr{(+LOOP)I}{bracket-plus-loop-i}{4Fh}{\noru1 --}{\noru2 \noru3 -- {\tt |} \noru2 \noru4}{Add \noru1 to \noru3; if \noru3 thereby crosses the $($\noru2 $-$ 1$)$ to \noru2 boundary discard both items, otherwise add {\tt A} $\times$ 4 to {\tt EP}. Perform the action of {\tt NEXT}.}
-\instr{UNLOOP}{50h}{--}{\x1 \x2 --}{Discard the top two items on the return stack.}
-\instr{J}{51h}{-- \x1}{\x1 \x2 \x3 -- \x1 \x2 \x3}{Copy the third item on the return stack to the data stack.}
+\instpr{(DO)}{bracket-do}{\x1 \x2 --}{-- \x1 \x2}{Move the top two items on the data stack to the return stack.}
+\instpr{(LOOP)}{bracket-loop}{--}{\noru1 \noru2 -- {\tt |} \noru1 \noru3}{Add one to \noru2; if it then equals \noru1 discard both items and add four to {\tt EP}, otherwise load {\tt EP} from the cell to which it points and perform the action of {\tt NEXT}.}
+\instpr{(LOOP)I}{bracket-loop-i}{--}{\noru1 \noru2 -- {\tt |} \noru1 \noru3}{Add one to \noru2; if it then equals \noru1 discard both items, otherwise add {\tt A} $\times$ 4 to {\tt EP}. Perform the action of {\tt NEXT}.}
+\instpr{(+LOOP)}{bracket-plus-loop}{\noru1 --}{\noru2 \noru3 -- {\tt |} \noru2 \noru4}{Add \noru1 to \noru3; if \noru3 thereby crosses the $($\noru2 $-$ 1$)$ to \noru2 boundary discard both items and add four to {\tt EP}, otherwise load {\tt EP} from the cell to which it points and perform the action of {\tt NEXT}.}
+\instpr{(+LOOP)I}{bracket-plus-loop-i}{\noru1 --}{\noru2 \noru3 -- {\tt |} \noru2 \noru4}{Add \noru1 to \noru3; if \noru3 thereby crosses the $($\noru2 $-$ 1$)$ to \noru2 boundary discard both items, otherwise add {\tt A} $\times$ 4 to {\tt EP}. Perform the action of {\tt NEXT}.}
+\instr{UNLOOP}{--}{\x1 \x2 --}{Discard the top two items on the return stack.}
+\instr{J}{-- \x1}{\x1 \x2 \x3 -- \x1 \x2 \x3}{Copy the third item on the return stack to the data stack.}
 \end{description}
 
 
@@ -697,8 +696,8 @@ Subroutine call and return:
 These instructions encode literal values which are placed on the stack.
 
 \begin{description}
-\instp{(LITERAL)}{bracket-literal}{52h}{-- x}{Push the cell pointed to by {\tt EP} on to the stack, then add four to {\tt EP}.}
-\instp{(LITERAL)I}{bracket-literal-i}{53h}{-- x}{Push the contents of {\tt A} on to the stack. Perform the action of {\tt NEXT}.}
+\instp{(LITERAL)}{bracket-literal}{-- x}{Push the cell pointed to by {\tt EP} on to the stack, then add four to {\tt EP}.}
+\instp{(LITERAL)I}{bracket-literal-i}{-- x}{Push the contents of {\tt A} on to the stack. Perform the action of {\tt NEXT}.}
 \end{description}
 
 
@@ -708,8 +707,8 @@ These instructions encode literal values which are placed on the stack.
 These instructions give access to Beetle's exception mechanisms.
 
 \begin{description}
-\instp{THROW}{throw}{54h}{--}{Put the contents of {\tt EP} into {\tt 'BAD}, then load {\tt EP} from {\tt 'THROW}. Perform the action of {\tt NEXT}. If {\tt 'THROW} contains an out of range or unaligned address stop Beetle, returning reason code $-259$ to the calling program (see section~\ref{calls}).}
-\inst{HALT}{55h}{x --}{Stop Beetle, returning reason code \spic{x} to the calling program (see section~\ref{calls}). If {\tt SP} is out of range or unaligned, $-258$ is returned as the reason code.}
+\instp{THROW}{throw}{--}{Put the contents of {\tt EP} into {\tt 'BAD}, then load {\tt EP} from {\tt 'THROW}. Perform the action of {\tt NEXT}. If {\tt 'THROW} contains an out of range or unaligned address stop Beetle, returning reason code $-259$ to the calling program (see section~\ref{calls}).}
+\inst{HALT}{x --}{Stop Beetle, returning reason code \spic{x} to the calling program (see section~\ref{calls}). If {\tt SP} is out of range or unaligned, $-258$ is returned as the reason code.}
 \end{description}
 
 
@@ -720,8 +719,8 @@ These instructions allow access to Beetle's libraries, the operating system and
 native machine code.
 
 \begin{description}
-\inst{LIB}{60h}{i*x n -- j*x}{Call library routine \spic{n}. The parameters passed and returned depend on \spic{n}. If the library routine is not currently available, raise exception $-257$.}
-\inst{LINK}{61h}{i*x --}{Make a subroutine call to the routine at the address given (in the host machine's format, padded out to a number of cells) on the data stack. The size and format of this address are machine-dependent.}
+\inst{LIB}{i*x n -- j*x}{Call library routine \spic{n}. The parameters passed and returned depend on \spic{n}. If the library routine is not currently available, raise exception $-257$.}
+\inst{LINK}{i*x --}{Make a subroutine call to the routine at the address given (in the host machine's format, padded out to a number of cells) on the data stack. The size and format of this address are machine-dependent.}
 \end{description}
 
 
