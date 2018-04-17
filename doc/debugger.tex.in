@@ -102,7 +102,7 @@ registers may also (where appropriate) be assigned to using the syntax
 
 \begin{center}\angb{register} $=$ \angb{value}\end{center}
 
-where \angb{value} is in the form given in section~\ref{commands}. An error
+\noindent where \angb{value} is in the form given in section~\ref{commands}. An error
 message is displayed if an attempt is made to assign to a register such as
 {\tt CHECKED}, which cannot be assigned to, or to assign an unaligned or out
 of range address to a register which must hold an aligned address, such as
@@ -128,7 +128,7 @@ RP} but it is usually more convenient to use the commands
 {\tt DFROM}
 \end{center}
 
-which respectively push a number on to the data stack and pop one, displaying
+\noindent which respectively push a number on to the data stack and pop one, displaying
 it, and
 
 \begin{center}
@@ -136,7 +136,7 @@ it, and
 {\tt RFROM}
 \end{center}
 
-which do the same for the return stack.
+\noindent which do the same for the return stack.
 
 The command {\tt DATA} displays the contents of the data stack, and {\tt
 RETURN} the contents of the return stack. {\tt STACKS} displays both stacks.
@@ -158,7 +158,7 @@ which may be used in the two forms
 {\tt DUMP} \angb{address_1} \angb{address_2}
 \end{center}
 
-where the first displays \angb{number} bytes starting at address
+\noindent where the first displays \angb{number} bytes starting at address
 \angb{address}, and the second displays memory from address \angb{address_1}
 up to, but not including, address \angb{address_2}. An error message is
 displayed if the start address is less than or equal to the end address or if
@@ -168,7 +168,7 @@ A command of the form
 
 \begin{center}\angb{address} $=$ \angb{value}\end{center}
 
-assigns the value \angb{value} to the address \angb{address}. If the address
+\noindent assigns the value \angb{value} to the address \angb{address}. If the address
 is not cell-aligned, the value must fit in a byte, and only that byte is
 assigned to. When assigning to an aligned memory location, a whole cell is
 assigned unless the number given fits in a byte, and is given using the
@@ -225,7 +225,7 @@ two forms
 {\tt DISASSEMBLE} \angb{address_1} \angb{address_2}
 \end{center}
 
-where the first disassembles \angb{number} bytes starting at address
+\noindent where the first disassembles \angb{number} bytes starting at address
 \angb{address}, and the second from address \angb{address_1} up to, but not
 including, address \angb{address_2}. The addresses must be cell-aligned, and
 the number of bytes must be a multiple of four. An error message is displayed
@@ -243,7 +243,7 @@ The command
 \label{uifaceload}
 \begin{center}{\tt LOAD} \angb{file} \angb{address}\end{center}
 
-initialises Beetle as in section~\ref{uifaceinit}, then loads the object
+\noindent initialises Beetle as in section~\ref{uifaceinit}, then loads the object
 module in file \angb{file} into memory at address \angb{address}. The address
 must be cell-aligned; if it is not, or if the module would not fit in memory
 at the address given, or there is some filing error, an error message is
@@ -256,7 +256,7 @@ The command {\tt SAVE} saves an object module. It has the two forms
 {\tt SAVE} \angb{file} \angb{address_1} \angb{address_2}
 \end{center}
 
-where the first saves \angb{number} bytes starting at address \angb{address},
+\noindent where the first saves \angb{number} bytes starting at address \angb{address},
 and the second saves from address \angb{address_1} up to, but not including,
 address \angb{address_2}. The addresses must be cell-aligned, and the number
 of bytes must be a multiple of four. An error message is displayed if the
