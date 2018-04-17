@@ -84,7 +84,7 @@
 
 \title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
-\date{29th October 1993; revised 3rd April 2018}
+\date{29th October 1993; revised 16th April 2018}
 
 \begin{document}
 \maketitle
@@ -735,37 +735,40 @@ undefined opcodes (62h--FEh) raise exception $-256$.
 \begin{tabular}{*{3}{cc}} \toprule
 \bf Opcode & \bf Instruction & \bf Opcode & \bf
     Instruction & \bf Opcode & \bf Instruction \\ \midrule
-\opcodetbl{00}{NEXT}	{1E}{+}		{3C}{C!}
-\opcodetbl{01}{DUP}	{1F}{-}		{3D}{+!}
-\opcodetbl{02}{DROP}	{20}{>-<}	{3E}{SP@}
-\opcodetbl{03}{SWAP}	{21}{1+}	{3F}{SP!}
-\opcodetbl{04}{OVER}	{22}{1-}	{40}{RP@}
-\opcodetbl{05}{ROT}	{23}{CELL+}	{41}{RP!}
-\opcodetbl{06}{-ROT}	{24}{CELL-}	{42}{BRANCH}
-\opcodetbl{07}{TUCK}	{25}{*}		{43}{BRANCHI}
-\opcodetbl{08}{NIP}	{26}{/}		{44}{?BRANCH}
-\opcodetbl{09}{PICK}	{27}{MOD}	{45}{?BRANCHI}
-\opcodetbl{0A}{ROLL}	{28}{/MOD}	{46}{EXECUTE}
-\opcodetbl{0B}{?DUP}	{29}{U/MOD}	{47}{@EXECUTE}
-\opcodetbl{0C}{>R}	{2A}{S/REM}	{48}{CALL}
-\opcodetbl{0D}{R>}	{2B}{2/}	{49}{CALLI}
-\opcodetbl{0E}{R@}	{2C}{CELLS}	{4A}{EXIT}
-\opcodetbl{0F}{<}	{2D}{ABS}	{4B}{(DO)}
-\opcodetbl{10}{>}	{2E}{NEGATE}	{4C}{(LOOP)}
-\opcodetbl{11}{=}	{2F}{MAX}	{4D}{(LOOP)I}
-\opcodetbl{12}{<>}	{30}{MIN}	{4E}{(+LOOP)}
-\opcodetbl{13}{0<}	{31}{INVERT}	{4F}{(+LOOP)I}
-\opcodetbl{14}{0>}	{32}{AND}	{50}{UNLOOP}
-\opcodetbl{15}{0=}	{33}{OR}	{51}{J}
-\opcodetbl{16}{0<>}	{34}{XOR}	{52}{(LITERAL)}
-\opcodetbl{17}{U<}	{35}{LSHIFT}	{53}{(LITERAL)I}
-\opcodetbl{18}{U>}	{36}{RSHIFT}	{54}{THROW}
-\opcodetbl{19}{0}	{37}{1LSHIFT}	{55}{HALT}
-\opcodetbl{1A}{1}	{38}{1RSHIFT}	{56}{EP@}
-\opcodetbl{1B}{-1}	{39}{@}		{57}{LIB}
-\opcodetbl{1C}{CELL}	{3A}{!}		{58}{LINK}
-\opcodetbl{1D}{-CELL}	{3B}{C@}	{FF}{NEXT} \bottomrule
-% FIXME: add S0@, #S, R0@, #R, 'THROW@, 'THROW!, MEMORY@, 'BAD@, -ADDRESS@ once we’ve reordered the opcodes
+\opcodetbl{00}{NEXT}	{21}{1+}	{42}{EP@}
+\opcodetbl{01}{DUP}	{22}{1-}	{43}{S0@}
+\opcodetbl{02}{DROP}	{23}{CELL+}	{44}{\#S}
+\opcodetbl{03}{SWAP}	{24}{CELL-}	{45}{R0@}
+\opcodetbl{04}{OVER}	{25}{*}		{46}{\#R}
+\opcodetbl{05}{ROT}	{26}{/}		{47}{'THROW@}
+\opcodetbl{06}{-ROT}	{27}{MOD}	{48}{'THROW!}
+\opcodetbl{07}{TUCK}	{28}{/MOD}	{49}{MEMORY@}
+\opcodetbl{08}{NIP}	{29}{U/MOD}	{4A}{'BAD@}
+\opcodetbl{09}{PICK}	{2A}{S/REM}	{4B}{-ADDRESS@}
+\opcodetbl{0A}{ROLL}	{2B}{2/}	{4C}{BRANCH}
+\opcodetbl{0B}{?DUP}	{2C}{CELLS}	{4D}{BRANCHI}
+\opcodetbl{0C}{>R}	{2D}{ABS}	{4E}{?BRANCH}
+\opcodetbl{0D}{R>}	{2E}{NEGATE}	{4F}{?BRANCHI}
+\opcodetbl{0E}{R@}	{2F}{MAX}	{50}{EXECUTE}
+\opcodetbl{0F}{<}	{30}{MIN}	{51}{@EXECUTE}
+\opcodetbl{10}{>}	{31}{INVERT}	{52}{CALL}
+\opcodetbl{11}{=}	{32}{AND}	{53}{CALLI}
+\opcodetbl{12}{<>}	{33}{OR}	{54}{EXIT}
+\opcodetbl{13}{0<}	{34}{XOR}	{55}{(DO)}
+\opcodetbl{14}{0>}	{35}{LSHIFT}	{56}{(LOOP)}
+\opcodetbl{15}{0=}	{36}{RSHIFT}	{57}{(LOOP)I}
+\opcodetbl{16}{0<>}	{37}{1LSHIFT}	{58}{(+LOOP)}
+\opcodetbl{17}{U<}	{38}{1RSHIFT}	{59}{(+LOOP)I}
+\opcodetbl{18}{U>}	{39}{@}		{5A}{UNLOOP}
+\opcodetbl{19}{0}	{3A}{!}		{5B}{J}
+\opcodetbl{1A}{1}	{3B}{C@}	{5C}{(LITERAL)}
+\opcodetbl{1B}{-1}	{3C}{C!}        {5D}{(LITERAL)I}
+\opcodetbl{1C}{CELL}	{3D}{+!}        {5E}{THROW}
+\opcodetbl{1D}{-CELL}	{3E}{SP@}	{5F}{HALT}
+\opcodetbl{1E}{+}	{3F}{SP!}       {60}{LIB}
+\opcodetbl{1F}{-}	{40}{RP@}       {61}{LINK}
+\opcodetbl{20}{>-<}	{41}{RP!}       {FF}{NEXT}
+ \bottomrule
 \end{tabular}
 \caption{\label{opcodetable}Beetle's opcodes}
 \end{center}
