@@ -7,8 +7,8 @@
 /comparison
 /doloop
 /exceptions
+/extra_instructions
 /init_beetle
-/lib
 /link
 /literals
 /load_object

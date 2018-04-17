@@ -8,10 +8,10 @@
 #include "btests.h"
 
 
-UCELL test[] = { 0, 8, 16, 24, 36, 40, 44, 48, 56, 64, 68, 72, 76 };
-CELL result[] = { -258, -258, 42, 0, -23, -23, -10, -9, -9, -23, -256, -257, -259 };
-UCELL bad[] = { -1, -1, -1, 28, 40, 44, 48, 16388, 64, 68, 72, 76, 84 };
-UCELL address[] = { -16, 16384, 0, 0, 5, 1, 0, 16384, -20, 1, 0, 0, 1 };
+UCELL test[] = { 0, 8, 16, 24, 36, 40, 44, 48, 56, 64, 68, 72 };
+CELL result[] = { -257, -257, 42, 0, -23, -23, -10, -9, -9, -23, -256, -258 };
+UCELL bad[] = { -1, -1, -1, 28, 40, 44, 48, 16388, 64, 68, 72, 80 };
+UCELL address[] = { -16, 16384, 0, 0, 5, 1, 0, 16384, -20, 1, 0, 1 };
 
 
 int main(void)
@@ -46,9 +46,8 @@ int main(void)
     ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_ONE); ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00); /* test 10 */
     // test 11: test invalid opcode
-    ass(0xfe);	ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
-    ass(O_MCELL); ass(O_LIB); ass(O_NEXT00); ass(O_NEXT00);	/* test 12 */
-    // test 13: test invalid 'THROW contents
+    ass(0x61);	ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
+    // test 12: test invalid 'THROW contents
     ass(O_LITERAL); lit(0xffffffec);
     ass(O_DUP); ass(O_THROWSTORE); ass(O_THROW);
     end_ass();
@@ -70,13 +69,13 @@ int main(void)
         CELL res = run();
 
         if (result[i] != res || (result[i] != 0 && bad[i] != BAD) ||
-            ((result[i] <= -258 || result[i] == -9 || result[i] == -23) &&
+            ((result[i] <= -257 || result[i] == -9 || result[i] == -23) &&
              address[i] != NOT_ADDRESS)) {
              printf("Error in exceptions tests: test %zu failed; EP = %"PRIu32"\n", i + 1, EP);
              printf("Return code is %d; should be %d\n", res, result[i]);
              if (result[i] != 0)
                  printf("'BAD = %"PRIX32"; should be %"PRIX32"\n", BAD, bad[i]);
-             if (result[i] <= -258 || result[i] == -9 || result[i] == -23)
+             if (result[i] <= -257 || result[i] == -9 || result[i] == -23)
                  printf("-ADDRESS = %"PRIX32"; should be %"PRIX32"\n", NOT_ADDRESS, address[i]);
              error++;
         }

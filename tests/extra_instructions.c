@@ -1,5 +1,5 @@
 /*
-    Test LIB instruction. Also uses previously-tested instructions.
+    Test extra instructions. Also uses previously-tested instructions.
     FIXME: test file routines.
 
     (c) Reuben Thomas 1994-2018
@@ -23,30 +23,26 @@ int main(void)
     here = EP;
 
     start_ass();
-    ass(O_LITERALI); ilit(0);
-    ass(O_LIB); ilit(0); /* pad out word with NEXT (00h) */
-    ass(O_ONE); ass(O_LITERALI); ilit(1);
-    ass(O_LIB); ilit(0); /* pad out word with NEXT (00h) */
+    ass(OX_ARGC); ass(O_ONE); ass(OX_ARG);
     end_ass();
 
     NEXT;   /* load first instruction word */
 
-    while (EP < 12)
-        single_step();
+    single_step();
     printf("argc is %"PRId32", and should be %d\n\n", LOAD_CELL(SP), argc);
     if (POP != argc) {
-       printf("Error in LIB tests: EP = %"PRIu32"\n", EP);
+       printf("Error in extra instructions tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 
-    while (EP < 20)
-        single_step();
+    single_step();
+    single_step();
     printf("arg 1's length is %"PRId32", and should be %zu\n", LOAD_CELL(SP), strlen(argv[1]));
     if ((UCELL)POP != strlen(argv[1])) {
-        printf("Error in LIB tests: EP = %"PRIu32"\n", EP);
+        printf("Error in extra instructions tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 
-    printf("LIB tests ran OK\n");
+    printf("Extra instructions tests ran OK\n");
     return 0;
 }
