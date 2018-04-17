@@ -8,8 +8,8 @@ LDADD = $(top_builddir)/src/libbeetle.la
 
 check_PROGRAMS = $(TESTS) load_object
 
-TESTS = arithmetic branch comparison doloop init_beetle lib literals \
-	logic memory registers stack single_step run exceptions link
+TESTS = arithmetic branch comparison doloop init_beetle literals logic memory \
+	registers stack single_step run exceptions link extra_instructions
 TESTS_ENVIRONMENT = \
 	if test -n "$(VALGRIND)"; then export VALGRIND='$(VALGRIND)'; fi; \
 	export LIBTOOL=$(top_builddir)/libtool;
