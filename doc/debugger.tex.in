@@ -28,7 +28,7 @@
 
 \title{A simple debugger for the\\Beetle virtual machine\\version @VERSION@}
 \author{Reuben Thomas}
-\date{26th March 2018}
+\date{17th April 2018}
 
 \begin{document}
 \maketitle
@@ -88,8 +88,7 @@ are set to zero.
 
 The syntax of the commands is shown below; literal text such as command names
 and other characters are shown in {\tt Typewriter font}; meta-parameters such
-as numbers are shown in angle brackets, thus: \angb{number}. Vertical bars
-separate alternatives, and square brackets enclose optional syntax.
+as numbers are shown in angle brackets, thus: \angb{number}. Square brackets enclose optional tokens.
 
 There are three types of numeric meta-parameter: \angb{number}, which is any
 number; \angb{address}, which is a valid address (see~\cite[section~\ref{exceptions}]{beetle});
@@ -185,12 +184,11 @@ The command {\tt STEP} may be used to single-step through a program. It has
 three forms:
 
 \begin{center}
-{\tt STEP}\\
-{\tt STEP} \angb{number}\\
+{\tt STEP} [\angb{number}]\\
 {\tt STEP TO} \angb{address}
 \end{center}
 
-Without arguments, {\tt STEP} executes one instruction. Given a number, {\tt
+With no argument, {\tt STEP} executes one instruction. Given a number, {\tt
 STEP} executes \angb{number} instructions. {\tt STEP TO} executes
 instructions until {\tt EP} is equal to \angb{address}.
 
@@ -204,14 +202,13 @@ code is also displayed if a {\tt HALT} instruction is ever executed during a
 {\tt STEP} command.
 
 \label{from}
-The command {\tt FROM} sets the point of execution. It has two forms:
+The command {\tt FROM} sets the point of execution:
 
 \begin{center}
-{\tt FROM}\\
-{\tt FROM} \angb{address}
+{\tt FROM} [\angb{address}]
 \end{center}
 
-Without arguments, {\tt FROM} performs the function of Beetle's {\tt NEXT}
+With no argument, {\tt FROM} performs the function of Beetle's {\tt NEXT}
 instruction, that is, it loads {\tt A} from the cell pointed to by {\tt EP},
 and adds four to {\tt EP}. With an argument, {\tt FROM} sets {\tt EP} to
 \angb{address}, and then performs the function of {\tt NEXT}. {\tt FROM}
@@ -241,10 +238,10 @@ that each Beetle instruction has been executed during {\tt STEP} or {\tt TRACE} 
 The command
 
 \label{uifaceload}
-\begin{center}{\tt LOAD} \angb{file} \angb{address}\end{center}
+\begin{center}{\tt LOAD} \angb{file} [\angb{address}]\end{center}
 
 \noindent initialises Beetle as in section~\ref{uifaceinit}, then loads the object
-module in file \angb{file} into memory at address \angb{address}. The address
+module in file \angb{file} into memory at address \angb{address} (or address 0h if the argument is omitted). The address
 must be cell-aligned; if it is not, or if the module would not fit in memory
 at the address given, or there is some filing error, an error message is
 displayed.
