@@ -487,18 +487,20 @@ static void do_command(int no)
         }
         break;
     case c_INITIALISE:
+        reinit();
+        break;
     case c_LOAD:
         {
-            memset(count, 0, 256 * sizeof(long));
             reinit();
-            if (no != c_LOAD)
-                break;
 
             const char *file = strtok(NULL, " ");
-            long adr = single_arg(strtok(NULL, " "));
+            long adr = 0;
+            char *arg = strtok(NULL, " ");
+            if (arg != NULL)
+                adr = single_arg(arg);
 
-            FILE *handle;
-            if ((handle = fopen(file, "rb")) == NULL) {
+            FILE *handle = fopen(file, "rb");
+            if (handle == NULL) {
                 printf("Cannot open file %s\n", file);
                 return;
             }
