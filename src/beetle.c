@@ -768,7 +768,7 @@ int main(int argc, char *argv[])
     if (argc >= 1) {
         if (!register_args(argc, argv + optind))
             die("could not allocate memory to map command-line arguments");
-        FILE *handle = fopen(argv[optind], "r");
+        FILE *handle = fopen(argv[optind], "rb");
         if (handle == NULL)
             die("cannot not open file %s", argv[1]);
         int ret = load_object(handle, 0);
