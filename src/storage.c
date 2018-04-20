@@ -35,8 +35,8 @@ UCELL NOT_ADDRESS;
 
 
 /* Memory allocation and mapping */
-gl_list_t mem_areas;
-static UCELL _mem_here = 0UL;
+static gl_list_t mem_areas;
+static UCELL _mem_here;
 
 typedef struct {
     UCELL start;
@@ -282,6 +282,10 @@ int init_beetle(CELL *memory, size_t size)
     MEMORY = size * CELL_W;
     memset(memory, 0, MEMORY);
 
+    _mem_here = 0UL;
+
+    if (mem_areas)
+        gl_list_free(mem_areas);
     if ((mem_areas =
          gl_list_nx_create_empty(GL_AVLTREE_LIST, eq_mem_area, NULL, free_mem_area, false))
         == false)
