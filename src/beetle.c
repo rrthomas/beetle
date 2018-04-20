@@ -221,9 +221,8 @@ static void disassemble(UCELL start, UCELL end)
 
 static void reinit(void)
 {
+    memset(count, 0, 256 * sizeof(long));
     init_beetle(memory, memory_size);
-    S0 = SP;
-    R0 = RP;
 }
 
 
