@@ -466,13 +466,19 @@ static void do_command(int no)
             double_arg(strtok(NULL, ""), &start, &end);
             check_range(start, end, "Address");
             while (start < end) {
-                printf("%08lXh: ", (unsigned long)start);
-                for (int i = 0; i < 8 && start < end; i++, start++) {
+                printf("%08lXh ", (unsigned long)start);
+                const int chunk = 16;
+                char ascii[chunk];
+                for (int i = 0; i < chunk && start < end; i++) {
                     BYTE byte;
-                    beetle_load_byte(start, &byte);
+                    beetle_load_byte(start + i, &byte);
+                    if (i % 8 == 0)
+                        putchar(' ');
                     printf("%02X ", byte);
+                    ascii[i] = isprint(byte) ? byte : '.';
                 }
-                putchar('\n');
+                start += chunk;
+                printf(" |%.*s|\n", chunk, ascii);
             }
         }
         break;
