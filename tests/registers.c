@@ -1,6 +1,6 @@
 /*
     Test the register instructions, except for those operating on RP and SP
-    (see memoryt.c). Also uses NEXT.
+    (see memory.c). Also uses NEXT.
 
     (c) Reuben Thomas 1994-2018
 */

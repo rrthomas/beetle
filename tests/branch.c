@@ -1,7 +1,7 @@
 /*
     Test the branch instructions. Also uses other instructions with lower
     opcodes than the instructions tested (i.e. those already tested).
-    See exceptst.c for address exception handling tests.
+    See exceptions.c for address exception handling tests.
     The test program contains an infinite loop, but this is only executed
     once.
 

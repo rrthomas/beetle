@@ -1,6 +1,6 @@
 /*
     Test the memory operators. Also uses previously tested instructions.
-    See exceptst.c for address exception handling tests.
+    See exceptions.c for address exception handling tests.
 
     (c) Reuben Thomas 1994-2018
 */
