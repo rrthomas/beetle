@@ -21,21 +21,26 @@ int main(void)
     here = EP;
 
     start_ass();
+    // here = 0: 3 0 DO  R>  LOOP
     ass(O_LITERALI); ilit(3);
     ass(O_ZERO); ass(O_DO); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_RFETCH); ass(O_LOOP); lit(8); ass(O_NEXT00); ass(O_NEXT00);
+    // here = 16: 0 3 DO  R>  -1 +LOOP
     ass(O_ZERO); ass(O_LITERAL); lit(3); ass(O_DO); ass(O_NEXT00);
     ass(O_RFETCH); ass(O_MONE); ass(O_PLOOPI); ilit(-1);
+    // here = 32: CELL 1 DO  R>  CELL +LOOP
     ass(O_CELL); ass(O_ONE); ass(O_DO); ass(O_NEXT00);
     ass(O_RFETCH); ass(O_CELL); ass(O_PLOOP); lit(32); ass(O_NEXT00);
+    // here = 40: 1 1 DO  R>  LOOP  (infinite loop!)
     ass(O_ONE); ass(O_ONE); ass(O_DO); ass(O_NEXT00);
     ass(O_RFETCH); ass(O_LOOPI); ilit(-1);
+    // here = 48: 1 >R CELL >R -1 >R J DUP UNLOOP
     ass(O_ONE); ass(O_TOR); ass(O_CELL); ass(O_TOR);
     ass(O_MONE); ass(O_TOR); ass(O_J); ass(O_NEXT00);
     ass(O_DUP); ass(O_UNLOOP);
     end_ass();
 
-    NEXT;   /* load first instruction word */
+    NEXT;
 
     while (EP < 20) single_step();
     show_data_stack();
@@ -77,7 +82,7 @@ int main(void)
     NEXT;  I = 0; // Exit infinite loop
     while (EP < 60) single_step();
     CELL ret3 = LOAD_CELL(RP - 2 * CELL_W * STACK_DIRECTION);
-    printf("3rd item on return stack is %"PRId32" (should be %"PRId32").\n", ret3, LOAD_CELL(SP));
+    printf("3rd item on return stack is %"PRId32" (should be %"PRId32")\n", ret3, LOAD_CELL(SP));
     if (ret3 != LOAD_CELL(SP)) {
         printf("Error in DO...LOOP tests: EP = %"PRIu32"\n", EP);
         exit(1);
