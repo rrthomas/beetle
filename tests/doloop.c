@@ -73,9 +73,10 @@ int main(void)
     }
     SP = S0;
 
-    EP = 48;  NEXT;
+    assert(EP == 48);
+    NEXT;  I = 0; // Exit infinite loop
     while (EP < 60) single_step();
-    CELL ret3 = LOAD_CELL(RP + 2 * CELL_W);
+    CELL ret3 = LOAD_CELL(RP - 2 * CELL_W * STACK_DIRECTION);
     printf("3rd item on return stack is %"PRId32" (should be %"PRId32").\n", ret3, LOAD_CELL(SP));
     if (ret3 != LOAD_CELL(SP)) {
         printf("Error in DO...LOOP tests: EP = %"PRIu32"\n", EP);
