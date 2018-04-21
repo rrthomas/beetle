@@ -22,9 +22,8 @@ int main(void)
 
     start_ass();
     ass(O_LITERALI); ilit(3);
-    ass(O_ZERO); ass(O_DO); ilit(0);	/* pad instruction word with NEXT */
-    ass(O_RFETCH); ass(O_LOOP); lit(8); ilit(0);   /* pad instruction word with
-                                                       NEXT */
+    ass(O_ZERO); ass(O_DO); ass(O_NEXT00); ass(O_NEXT00);
+    ass(O_RFETCH); ass(O_LOOP); lit(8); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_ZERO); ass(O_LITERAL); lit(3); ass(O_DO); ass(O_NEXT00);
     ass(O_RFETCH); ass(O_MONE); ass(O_PLOOPI); ilit(-1);
     ass(O_CELL); ass(O_ONE); ass(O_DO); ass(O_NEXT00);

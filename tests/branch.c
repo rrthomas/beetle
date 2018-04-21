@@ -68,9 +68,10 @@ int main(void)
 
     here = 200;	/* start assembling at 200 */
     start_ass();
-    ass(O_CALL); lit(300); ilit(0); /* pad out word with NEXT (00h) */
+    ass(O_CALL); lit(300); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_EXIT);
     end_ass();
+    instrs -= 3; /* correct instrs for NEXT00s */
 
     here = 300;	/* start assembling at 300 */
     start_ass();
@@ -79,8 +80,9 @@ int main(void)
 
     NEXT;   /* load first instruction word */
 
-    for (int i = 0; i <= instrs; i++) {
-        printf("EP = %u; should be %u\n\n", EP, correct[i]);
+    assert(instrs == sizeof(correct) / sizeof(correct[0]));
+    for (int i = 0; i < instrs; i++) {
+        printf("Instruction %d: EP = %u; should be %u\n\n", i, EP, correct[i]);
         if (correct[i] != EP) {
             printf("Error in branch tests: EP = %"PRIu32"\n", EP);
             exit(1);
