@@ -74,7 +74,7 @@ int main(void)
     }
     SP = S0;
 
-    EP = 48;  NEXT;	/* start execution at 64 */
+    EP = 48;  NEXT;
     while (EP < 60) single_step();
     CELL ret3 = LOAD_CELL(RP + 2 * CELL_W);
     printf("3rd item on return stack is %"PRId32" (should be %"PRId32").\n", ret3, LOAD_CELL(SP));
