@@ -30,6 +30,7 @@
 CELL beetle_reverse_cell(CELL value);
 int beetle_reverse(UCELL start, UCELL length);
 
+#define STACK_DIRECTION 1
 #define _LOAD_CELL(a, temp)                                             \
     ((exception = exception ? exception : beetle_load_cell((a), &temp)), temp)
 #define LOAD_CELL(a) _LOAD_CELL(a, temp)
@@ -40,19 +41,21 @@ int beetle_reverse(UCELL start, UCELL length);
 #define STORE_BYTE(a, v)                                                \
     (exception = exception ? exception : beetle_store_byte((a), (v)))
 #define PUSH(v)                                 \
-    (SP -= CELL_W, STORE_CELL(SP, (v)))
+    (SP += CELL_W * STACK_DIRECTION, STORE_CELL(SP, (v)))
 #define POP                                     \
-    (SP += CELL_W, LOAD_CELL(SP - CELL_W))
+    (SP -= CELL_W * STACK_DIRECTION, LOAD_CELL(SP + CELL_W * STACK_DIRECTION))
 #define PUSH_DOUBLE(ud)                         \
     PUSH((UCELL)(ud & CELL_MASK));              \
     PUSH((UCELL)((ud >> CELL_BIT) & CELL_MASK))
 #define POP_DOUBLE                              \
-    (SP += CELL_W * 2, (UCELL)LOAD_CELL(SP - CELL_W), temp |                 \
-     ((DUCELL)(UCELL)_LOAD_CELL(SP - 2 * CELL_W, temp2) << CELL_BIT))
+    (SP -= 2 * CELL_W * STACK_DIRECTION, (UCELL)LOAD_CELL(SP + CELL_W * STACK_DIRECTION), temp | \
+     ((DUCELL)(UCELL)_LOAD_CELL(SP + 2 * CELL_W * STACK_DIRECTION, temp2) << CELL_BIT))
 #define PUSH_RETURN(v)                          \
-    (RP -= CELL_W, STORE_CELL(RP, (v)))
+    (RP += CELL_W * STACK_DIRECTION, STORE_CELL(RP, (v)))
 #define POP_RETURN                              \
-    (RP += CELL_W, LOAD_CELL(RP - CELL_W))
+    (RP -= CELL_W * STACK_DIRECTION, LOAD_CELL(RP + CELL_W * STACK_DIRECTION))
+#define STACK_UNDERFLOW(ptr, base)              \
+    (ptr - base == 0 ? false : (STACK_DIRECTION > 0 ? ptr < base : ptr > base))
 
 uint8_t *native_address_range_in_one_area(UCELL start, UCELL length, bool writable);
 

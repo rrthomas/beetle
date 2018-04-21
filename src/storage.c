@@ -305,8 +305,8 @@ int init_beetle(CELL *memory, size_t size)
 
     EP = 0;
     A = 0;
-    S0 = SP = DATA_STACK_SEGMENT + HASHS;
-    R0 = RP = RETURN_STACK_SEGMENT + HASHR;
+    S0 = SP = DATA_STACK_SEGMENT;
+    R0 = RP = RETURN_STACK_SEGMENT;
     THROW = 0;
     BAD = CELL_MAX;
     NOT_ADDRESS = CELL_MAX;

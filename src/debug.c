@@ -122,9 +122,10 @@ char *val_data_stack(void)
     free(picture);
     picture = xasprintf("%s", "");
 
-    for (UCELL i = S0 - CELL_W; i >= SP; i -= CELL_W) {
+    for (UCELL i = S0; i != SP;) {
         CELL c;
         char *ptr;
+        i += CELL_W * STACK_DIRECTION;
         int exception = beetle_load_cell(i, &c);
         if (exception != 0) {
             ptr = xasprintf("%sinvalid address!", picture);
@@ -151,7 +152,7 @@ void show_data_stack(void)
 {
     if (SP == S0)
         printf("Data stack empty\n");
-    else if (SP > S0)
+    else if (STACK_UNDERFLOW(SP, S0))
         printf("Data stack underflow\n");
     else
         printf("Data stack: %s\n", val_data_stack());
@@ -161,12 +162,13 @@ void show_return_stack(void)
 {
     if (RP == R0)
         printf("Return stack empty\n");
-    else if (RP > R0)
+    else if (STACK_UNDERFLOW(RP, R0))
         printf("Return stack underflow\n");
     else {
         printf("Return stack: ");
-        for (UCELL i = R0 - CELL_W; i >= RP; i -= CELL_W) {
+        for (UCELL i = R0; i != RP;) {
             CELL c;
+            i += CELL_W * STACK_DIRECTION;
             int exception = beetle_load_cell(i, &c);
             if (exception != 0) {
                 printf("invalid address!\n");

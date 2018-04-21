@@ -153,7 +153,7 @@ CELL single_step(void)
         break;
     case O_OVER:
         {
-            CELL next = LOAD_CELL(SP + CELL_W);
+            CELL next = LOAD_CELL(SP - CELL_W * STACK_DIRECTION);
             PUSH(next);
         }
         break;
@@ -196,17 +196,17 @@ CELL single_step(void)
     case O_PICK:
         {
             CELL depth = POP;
-            CELL pickee = LOAD_CELL(SP + depth * CELL_W);
+            CELL pickee = LOAD_CELL(SP - depth * CELL_W * STACK_DIRECTION);
             PUSH(pickee);
         }
         break;
     case O_ROLL:
         {
             CELL depth = POP;
-            CELL rollee = LOAD_CELL(SP + depth * CELL_W);
+            CELL rollee = LOAD_CELL(SP - depth * CELL_W * STACK_DIRECTION);
             for (int i = depth; i > 0; i--)
-                STORE_CELL(SP + i * CELL_W,
-                           LOAD_CELL(SP + (i - 1) * CELL_W));
+                STORE_CELL(SP - i * CELL_W * STACK_DIRECTION,
+                           LOAD_CELL(SP - (i - 1) * CELL_W * STACK_DIRECTION));
             STORE_CELL(SP, rollee);
         }
         break;
@@ -706,7 +706,7 @@ CELL single_step(void)
         (void)POP_RETURN;
         break;
     case O_J:
-        PUSH(LOAD_CELL(RP + 2 * CELL_W));
+        PUSH(LOAD_CELL(RP - 2 * CELL_W * STACK_DIRECTION));
         break;
     case O_LITERAL:
         PUSH(LOAD_CELL(EP));
@@ -941,7 +941,7 @@ CELL single_step(void)
     // code from usual if SP is now invalid, push the exception code
     // "manually".
  badadr:
-    SP -= CELL_W;
+    SP += CELL_W * STACK_DIRECTION;
     if (!CELL_IN_ONE_AREA(SP) || !IS_ALIGNED(SP))
       return -257;
     beetle_store_cell(SP, exception);
