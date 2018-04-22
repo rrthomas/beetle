@@ -77,9 +77,9 @@
 
 % Lay out a line of the opcode table
 
-\newcommand{\opcodetbl}[6]{#1h & {\tt #2} & #3h & {\tt #4} & #5h & {\tt #6}
+\newcommand{\opcodetbl}[6]{\$#1 & {\tt #2} & \$#3 & {\tt #4} & \$#5 & {\tt #6}
 \\}
-\newcommand{\opcodetbltwo}[4]{#1h & {\tt #2} & #3h & {\tt #4} \\}
+\newcommand{\opcodetbltwo}[4]{\$#1 & {\tt #2} & \$#3 & {\tt #4} \\}
 
 
 \title{The Beetle Forth Virtual Machine}
@@ -108,8 +108,8 @@ separated by dashes; single letters should be pronounced as the name of the
 letter.
 
 Addresses are given in bytes and refer to Beetle's address space except where
-stated. Addresses are written in hexadecimal; all hex numbers are followed by
-``h''.
+stated. Addresses are written in hexadecimal; hex numbers are prefixed with
+“\$”.
 
 
 \section{Introduction}
@@ -232,11 +232,11 @@ Before Beetle is started, {\tt ENDISM} should be set to $0$ or $1$ according to 
 \begin{center}
 \begin{tabular}{cc} \toprule
 \bf Register & \bf Initial value \\ \midrule
-{\tt EP} & 0h \\
-{\tt A} & 0h \\
-{\tt THROW} & 0h \\
-{\tt 'BAD} & {FFFFFFFFh} \\
-{\tt -ADDRESS} & {FFFFFFFFh} \\ \bottomrule
+{\tt EP} & \$0 \\
+{\tt A} & \$0 \\
+{\tt THROW} & \$0 \\
+{\tt 'BAD} & {\$FFFFFFFF} \\
+{\tt -ADDRESS} & {\$FFFFFFFF} \\ \bottomrule
 \end{tabular}
 \caption{\label{inittable}Registers with prescribed initial values}
 \end{center}
@@ -432,7 +432,7 @@ being placed separately in the next available cell.
 \label{conventions}
 
 Since branch destinations must be cell-aligned, some instruction sequences may
-contain gaps. These must be padded with {\tt NEXT} (opcode 00h).
+contain gaps. These must be padded with {\tt NEXT} (opcode \$00).
 
 Literals and branch addresses should be placed in memory as follows. If a
 literal (see section~\ref{literals}) or branch address (see section~\ref{control})
@@ -724,14 +724,14 @@ native machine code.
 \subsection{Extra instructions}
 \label{extrainstructions}
 
-Instructions with opcodes from 80h to FEh inclusive may be implemented to provide system-dependent functionality, such as I/O.
+Instructions with opcodes from \$80 to \$FE inclusive may be implemented to provide system-dependent functionality, such as I/O.
 
 
 \subsection{Opcodes}
 \label{opcodes}
 
 In table~\ref{opcodetable} are listed the opcodes in numerical order. All
-undefined opcodes (61h--FEh) raise exception $-256$.
+undefined opcodes (\$61–\$FE) raise exception $-256$.
 
 \begin{table}[htb]
 \begin{center}
@@ -769,7 +769,7 @@ undefined opcodes (61h--FEh) raise exception $-256$.
 \opcodetbl{1C}{CELL}	{3D}{+!}        {5E}{THROW}
 \opcodetbl{1D}{-CELL}	{3E}{SP@}	{5F}{HALT}
 \opcodetbl{1E}{+}	{3F}{SP!}       {60}{LINK}
-\opcodetbl{1F}{-}	{40}{RP@}	{80h–FE}{\textrm{extra instructions}}
+\opcodetbl{1F}{-}	{40}{RP@}	{\$80–FE}{\textrm{extra instructions}}
 \opcodetbl{20}{>-<}	{41}{RP!}       {FF}{NEXT}
  \bottomrule
 \end{tabular}
@@ -791,7 +791,7 @@ and shared between systems. pForth is loaded from an object module.
 \label{object}
 
 The first six bytes of an object module should be the ASCII codes of the letters
-``BEETLE''; next should come an ASCII NUL (00h), then the one-byte contents of
+``BEETLE''; next should come an ASCII NUL (\$00), then the one-byte contents of
 the {\tt ENDISM} register of the Beetle which saved the module. The next four
 bytes should contain the number of cells the code occupies. The number must have
 the same endianness as that indicated in the previous byte. Then follows the
@@ -804,8 +804,8 @@ file is written).
 \begin{center}
 \begin{tabular}{cl} \toprule
 \bf Cell & \bf Contents \\ \midrule
-1 & 42h 45h 45h 54h \\
-2 & 4Ch 45h 00h {\tt ENDISM} \\
+1 & \$42 \$45 \$45 \$54 \\
+2 & \$4C \$45 \$00 {\tt ENDISM} \\
 3 & Length $l$\/ \\
 4 & 1st cell of code\dots \\
 $\vdots$ & \multicolumn{1}{c}{$\vdots$} \\
