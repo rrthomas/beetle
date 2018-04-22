@@ -74,7 +74,7 @@ int load_object(FILE *file, UCELL address);
 int init_beetle(CELL *c_array, size_t size);
 bool register_args(int argc, char *argv[]);
 
-#define B_TRUE ((CELL)0xFFFFFFFF)   // Beetle's TRUE flag
+#define B_TRUE CELL_MASK            // Beetle's TRUE flag
 #define B_FALSE ((CELL)0)           // Beetle's FALSE flag
 
 #define CELL_W 4    // the width of a cell in bytes
