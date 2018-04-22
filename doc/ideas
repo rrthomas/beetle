@@ -1,20 +1,4 @@
-Map Beetle registers into address space with himem (which should therefore
-be generalised; change spec to move the registers to high addresses).
-
-Native address size support (should be merged with CELL_pointer).
-
-Have stacks in separate address spaces with (potentially) the ability to grow
-and shrink on demand.
+Auto-realloc stacks when they run out of space.
 
 Compile at load time using ideas in DDJ article
 (~/notmine/Computer/Language/forth/LoadCompilation).
-
-Add startup scripts, or some other convenient way of setting S0/R0 for a
-particular system, to give more useful stack traces in pForth.
-
-Rewrite debugger in Forth.
-
-Add flag to CBeetle to cause unhandled exception to enter debugger even if
-object was given on command line.
-
-Add ASCII output to DUMP command.
