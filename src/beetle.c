@@ -699,15 +699,25 @@ static void usage(void)
 #define O(longname, shortname, arg, argstring, docstring)               \
     shortopt = xasprintf(", -%c", shortname);                           \
     buf = xasprintf("--%s%s %s", longname, shortname ? shortopt : "", argstring); \
-    printf("  %-24s%s\n", buf, docstring);
+    printf("  %-26s%s\n", buf, docstring);
 #define A(argstring, docstring)                 \
-    printf("  %-24s%s\n", argstring, docstring);
+    printf("  %-26s%s\n", argstring, docstring);
 #define D(text)                                 \
     printf(text "\n");
 #include "tbl_opts.h"
 #undef O
 #undef A
 #undef D
+}
+
+static CELL parse_memory_size(UCELL max)
+{
+    char *endptr;
+    errno = 0;
+    long size = (CELL)strtol(optarg, &endptr, 10);
+    if (*optarg == '\0' || *endptr != '\0' || size <= 0 || (UCELL)size > max)
+        die("memory size must be a positive number up to %"PRIu32, max);
+    return size;
 }
 
 int main(int argc, char *argv[])
@@ -735,21 +745,21 @@ int main(int argc, char *argv[])
 
         switch (longindex) {
             case 0:
-                {
-                    char *endptr;
-                    errno = 0;
-                    memory_size = strtol(optarg, &endptr, 10);
-                    if (*optarg == '\0' || *endptr != '\0' || memory_size <= 0 || memory_size > MAX_MEMORY)
-                        die("memory size must be a positive number up to %"PRIu32, (UCELL)MAX_MEMORY);
-                    break;
-                }
+                memory_size = parse_memory_size((UCELL)MAX_MEMORY);
+                break;
             case 1:
-                debug_on_error = true;
+                HASHS = parse_memory_size((UCELL)MAX_STACK_SIZE);
                 break;
             case 2:
+                HASHR = parse_memory_size((UCELL)MAX_STACK_SIZE);
+                break;
+            case 3:
+                debug_on_error = true;
+                break;
+            case 4:
                 usage();
                 exit(EXIT_SUCCESS);
-            case 3:
+            case 5:
                 printf(PACKAGE_NAME " " VERSION "\n"
                        BEETLE_COPYRIGHT_STRING "\n"
                        PACKAGE_NAME " comes with ABSOLUTELY NO WARRANTY.\n"
