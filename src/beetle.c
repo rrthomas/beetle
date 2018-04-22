@@ -516,7 +516,7 @@ static void do_command(int no)
 
             switch (ret) {
             case -1:
-                printf("Address out of range, or module too large\n");
+                printf("Address out of range or unaligned, or module too large\n");
                 break;
             case -2:
                 printf("Module header invalid\n");
