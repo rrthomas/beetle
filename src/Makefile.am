@@ -24,17 +24,13 @@ beetle.o: tbl_opts.h
 
 # Depend on beetle$(EXEEXT) rather than explicitly make-ing it, as otherwise
 # we break parallel builds, as libbeetle.la can be built twice in parallel,
-# which can fail.
-beetle.1: tbl_opts.h beetle$(EXEEXT)
+# which can fail. Set distcleancheck_listfiles below to fix distcheck.
+beetle.1: beetle$(EXEEXT)
 ## Exit gracefully if beetle.1 is not writeable, such as during distcheck!
-	@if ( touch $@.w && rm -f $@.w; ) >/dev/null 2>&1; then \
-	    case '$?' in \
-	      *tbl_opts.h*) $(AM_V_P) && set -x || echo "  HELP2MAN $@"; \
-		  $(top_srcdir)/build-aux/missing --run $(HELP2MAN) --no-info \
-		    --name="Forth virtual machine" \
-		    --output=$@ ./beetle$(EXEEXT);; \
-	      *) : ;; \
-	    esac; \
+	$(AM_V_GEN)if ( touch $@.w && rm -f $@.w; ) >/dev/null 2>&1; then \
+	  $(top_srcdir)/build-aux/missing --run $(HELP2MAN) --no-info \
+		--name="Forth virtual machine" \
+		--output=$@ ./beetle$(EXEEXT); \
 	fi
 
 do_subst = sed -e 's,[@]pkgdatadir[@],$(pkgdatadir),g' \
@@ -56,3 +52,8 @@ loc:
 EXTRA_DIST = ARMbeetle.bas beetlei.in beetlei.1 completions.h tbl_opts.h.in
 
 DISTCLEANFILES = beetlei beetle.1 completions tbl_opts.h
+# Ignore built files that are part of the distribution (specifically,
+# beetle.1)
+distcleancheck_listfiles = \
+       find . -type f -exec sh -c 'test -f $(srcdir)/$$1 || echo $$1' \
+	    sh '{}' ';'
