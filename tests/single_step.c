@@ -1,10 +1,7 @@
-/*
-    Test that single_step works, and that address alignment and bounds
-    checking is properly performed on EP.
-
-    (c) Reuben Thomas 1994-2018
-*/
-
+// Test that single_step works, and that address alignment and bounds
+// checking is properly performed on EP.
+//
+// (c) Reuben Thomas 1994-2018
 
 #include "btests.h"
 

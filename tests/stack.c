@@ -1,9 +1,6 @@
-/*
-    Test the stack operators. Also uses the 0 and NEXT instructions.
-
-    (c) Reuben Thomas 1994-2011
-*/
-
+// Test the stack operators. Also uses the 0 and NEXT instructions.
+//
+// (c) Reuben Thomas 1994-2011
 
 #include "btests.h"
 
@@ -22,7 +19,7 @@ int main(void)
     init_beetle((CELL *)malloc(1024), 256);
     here = EP;
 
-    PUSH(1); PUSH(2); PUSH(3);	/* initialise the stack */
+    PUSH(1); PUSH(2); PUSH(3);	// initialise the stack
 
     start_ass();
     ass(O_DUP); ass(O_DROP); ass(O_SWAP); ass(O_OVER);
@@ -32,7 +29,7 @@ int main(void)
     ass(O_RFROM); ass(O_QDUP); ass(O_ZERO); ass(O_QDUP);
     end_ass();
 
-    NEXT;   /* load first instruction word */
+    NEXT;   // load first instruction word
 
     int i;
     for (i = 0; i < 10; i++) {
@@ -46,8 +43,8 @@ int main(void)
         printf("I = %s\n", disass(I));
     }
 
-    SP = S0;	/* reset stack */
-    PUSH(2); PUSH(1); PUSH(0);	/* initialise the stack */
+    SP = S0;	// reset stack
+    PUSH(2); PUSH(1); PUSH(0);	// initialise the stack
     printf("Next stack is wrong!\n");
 
     int first = i;

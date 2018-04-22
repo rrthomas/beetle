@@ -1,10 +1,7 @@
-/*
-    Test the DO...LOOP support instructions. Also uses instructions with
-    lower opcodes.
-
-    (c) Reuben Thomas 1994-2018
-*/
-
+// Test the DO...LOOP support instructions. Also uses instructions with
+// lower opcodes.
+//
+// (c) Reuben Thomas 1994-2018
 
 #include "btests.h"
 

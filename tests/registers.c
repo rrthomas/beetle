@@ -1,10 +1,7 @@
-/*
-    Test the register instructions, except for those operating on RP and SP
-    (see memory.c). Also uses NEXT.
-
-    (c) Reuben Thomas 1994-2018
-*/
-
+// Test the register instructions, except for those operating on RP and SP
+// (see memory.c). Also uses NEXT.
+//
+// (c) Reuben Thomas 1994-2018
 
 #include "btests.h"
 
@@ -33,7 +30,7 @@ int main(void)
     ass(O_BADFETCH); ass(O_NOT_ADDRESSFETCH);
     end_ass();
 
-    NEXT;   /* load first instruction word */
+    NEXT;   // load first instruction word
 
     for (int i = 0; i <= instrs; i++) {
         show_data_stack();

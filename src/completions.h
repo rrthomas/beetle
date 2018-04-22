@@ -1,4 +1,4 @@
-/* Generate list of commands and registers for beetlei rlwrap completion */
+// Generate list of commands and registers for beetlei rlwrap completion
 
 #define C(cmd) cmd
 #define R(reg) reg

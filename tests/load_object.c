@@ -1,9 +1,6 @@
-/*
-    Test load_object().
-
-    (c) Reuben Thomas 1995-2018
-*/
-
+// Test load_object().
+//
+// (c) Reuben Thomas 1995-2018
 
 #include "btests.h"
 

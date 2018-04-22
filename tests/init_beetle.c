@@ -1,10 +1,7 @@
-/*
-    Test that the Beetle headers beetle.h compiles properly, and that the
-    storage allocation and register initialisation in storage.c works.
-
-    (c) Reuben Thomas 1994-2018
-*/
-
+// Test that the Beetle headers beetle.h compiles properly, and that the
+// storage allocation and register initialisation in storage.c works.
+//
+// (c) Reuben Thomas 1994-2018
 
 #include "btests.h"
 

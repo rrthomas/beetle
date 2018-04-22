@@ -1,11 +1,6 @@
-/* BEETLE.C
-
-    (c) Reuben Thomas 1995-2018
-
-    A user interface for Beetle.
-
-*/
-
+// A user interface for Beetle.
+//
+// (c) Reuben Thomas 1995-2018
 
 #include "config.h"
 
@@ -611,7 +606,7 @@ static void do_command(int no)
             }
         }
         break;
-    default: /* This cannot happen */
+    default: // This cannot happen
         break;
     }
 
@@ -677,7 +672,7 @@ static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void die(const char *format, ...)
     exit(1);
 }
 
-/* Options table */
+// Options table
 struct option longopts[] = {
 #define O(longname, shortname, arg, argstring, docstring) \
   {longname, arg, NULL, shortname},

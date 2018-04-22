@@ -1,18 +1,13 @@
-/* LOADOBJ.C
-
-    (c) Reuben Thomas 1995-2018
-
-    The interface call load_object(file, address) : integer.
-
-*/
-
+// The interface call load_object(file, address) : integer.
+//
+// (c) Reuben Thomas 1995-2018
 
 #include "config.h"
 
 #include <stdio.h>
 #include <string.h>
 
-#include "beetle.h"	/* main header */
+#include "beetle.h"
 #include "beetle_aux.h"
 
 

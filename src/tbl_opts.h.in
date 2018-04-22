@@ -1,17 +1,14 @@
-/* Table of command-line options
+// Table of command-line options
+//
+// Copyright (c) 2009-2018 Reuben Thomas
 
-   Copyright (c) 2009-2018 Reuben Thomas
- */
-
-/*
- * D: documentation line
- * O: Option
- * A: Action
- *
- * D(text)
- * O(long name, short name ('\0' for none), argument, argument docstring, docstring)
- * A(argument, docstring)
- */
+// D: documentation line
+// O: Option
+// A: Action
+//
+// D(text)
+// O(long name, short name ('\0' for none), argument, argument docstring, docstring)
+// A(argument, docstring)
 
 #include "stringify.h"
 

@@ -1,10 +1,7 @@
-/*
-    Test extra instructions. Also uses previously-tested instructions.
-    FIXME: test file routines.
-
-    (c) Reuben Thomas 1994-2018
-*/
-
+// Test extra instructions. Also uses previously-tested instructions.
+// FIXME: test file routines.
+//
+// (c) Reuben Thomas 1994-2018
 
 #include "btests.h"
 
@@ -14,7 +11,7 @@ int main(void)
     int exception = 0;
     CELL temp = 0;
 
-    /* Data for ARGC/ARG tests */
+    // Data for ARGC/ARG tests
     int argc = 3;
     char *argv[] = {strdup("foo"), strdup("bard"), strdup("basilisk")};
 
@@ -26,7 +23,7 @@ int main(void)
     ass(OX_ARGC); ass(O_ONE); ass(OX_ARG);
     end_ass();
 
-    NEXT;   /* load first instruction word */
+    NEXT;   // load first instruction word
 
     single_step();
     printf("argc is %"PRId32", and should be %d\n\n", LOAD_CELL(SP), argc);

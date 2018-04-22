@@ -1,12 +1,7 @@
-/* BEETLE_AUX.H
-
-    (c) Reuben Thomas 1994-2018
-
-    Header for C Beetle containing auxiliary public functions. These are undocumented,
-    and subject to change, and not strictly necessary, but helpful.
-
-*/
-
+// Header for C Beetle containing auxiliary public functions.
+// These are undocumented and subject to change.
+//
+// (c) Reuben Thomas 1994-2018
 
 #ifndef BEETLE_BEETLE_AUX
 #define BEETLE_BEETLE_AUX
@@ -14,7 +9,7 @@
 
 #include "config.h"
 
-#include <stdio.h>      /* for the FILE type */
+#include <stdio.h>      // for the FILE type
 #include <stdbool.h>
 #include <stdint.h>
 #include <limits.h>
@@ -23,10 +18,9 @@
 #define DATA_STACK_SEGMENT   0xfe000000
 #define RETURN_STACK_SEGMENT 0xff000000
 
-/* Memory access */
+// Memory access
 
-/* Return value is 0 if OK, or exception code for invalid or unaligned
-   address. */
+// Return value is 0 if OK, or exception code for invalid or unaligned address
 CELL beetle_reverse_cell(CELL value);
 int beetle_reverse(UCELL start, UCELL length);
 
@@ -59,14 +53,14 @@ int beetle_reverse(UCELL start, UCELL length);
 
 uint8_t *native_address_range_in_one_area(UCELL start, UCELL length, bool writable);
 
-/* Align a Beetle address */
+// Align a Beetle address
 #define ALIGNED(a) ((a + CELL_W - 1) & (-CELL_W))
 
-/* Check whether a Beetle address is aligned */
+// Check whether a Beetle address is aligned
 #define IS_ALIGNED(a)     (((a) & (CELL_W - 1)) == 0)
 
-/* Portable arithmetic right shift (the behaviour of >> on signed
-   quantities is implementation-defined in C99). */
+// Portable arithmetic right shift (the behaviour of >> on signed
+// quantities is implementation-defined in C99)
 #define ARSHIFT(n, p) ((n) = ((n) >> (p)) | (-((n) < 0) << (CELL_BIT - p)))
 
 #define NEXT (exception = (EP += CELL_W, beetle_load_cell(EP - CELL_W, &A)))

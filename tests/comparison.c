@@ -1,11 +1,8 @@
-/*
-    Test the comparison operators. Also uses the NEXT instruction. We
-    only test simple cases here, assuming that the C compiler's comparison
-    routines will work for other cases.
-
-    (c) Reuben Thomas 1994-2018
-*/
-
+// Test the comparison operators. Also uses the NEXT instruction. We
+// only test simple cases here, assuming that the C compiler's comparison
+// routines will work for other cases.
+//
+// (c) Reuben Thomas 1994-2018
 
 #include "btests.h"
 
@@ -19,7 +16,7 @@ CELL correct[] = { 0, -1, 0, -1, -1, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, 0,
 
 static void stack1(void)
 {
-    SP = S0;	/* empty the stack */
+    SP = S0;	// empty the stack
 
     PUSH(-4); PUSH(3);
     PUSH(2); PUSH(2);
@@ -29,7 +26,7 @@ static void stack1(void)
 
 static void stack2(void)
 {
-    SP = S0;	/* empty the stack */
+    SP = S0;	// empty the stack
 
     PUSH(1); PUSH(-1);
     PUSH(237); PUSH(237);
@@ -37,7 +34,7 @@ static void stack2(void)
 
 static void stack3(void)
 {
-    SP = S0;	/* empty the stack */
+    SP = S0;	// empty the stack
 
     PUSH(-1); PUSH(0); PUSH(237);
 }
@@ -54,7 +51,7 @@ static void step(int start, int end)
                 printf("Error in comparison tests: EP = %"PRIu32"\n", EP);
                 exit(1);
             }
-            (void)POP;	/* drop result of comparison */
+            (void)POP;	// drop result of comparison
         }
         else
           putchar('\n');
@@ -76,26 +73,26 @@ int main(void)
     ass(O_UGREATER); ass(O_UGREATER); ass(O_UGREATER); ass(O_UGREATER);
     end_ass();
 
-    NEXT;   /* load first instruction word */
+    NEXT;   // load first instruction word
 
-    stack1();       /* set up the stack with four standard pairs to compare */
-    step(0, 4);     /* do the < tests */
+    stack1();       // set up the stack with four standard pairs to compare
+    step(0, 4);     // do the < tests
     stack1();
-    step(5, 9);     /* do the > tests */
-    stack2();       /* set up the stack with two standard pairs to compare */
-    step(10, 11);   /* do the = tests */
+    step(5, 9);     // do the > tests
+    stack2();       // set up the stack with two standard pairs to compare
+    step(10, 11);   // do the = tests
     stack2();
-    step(12, 14);   /* do the <> tests */
-    stack3();       /* set up the stack with three standard values */
-    step(15, 17);   /* do the 0< tests */
+    step(12, 14);   // do the <> tests
+    stack3();       // set up the stack with three standard values
+    step(15, 17);   // do the 0< tests
     stack3();
-    step(18, 21);   /* do the 0> tests */
-    SP = S0;  PUSH(237); PUSH(0);	/* set up the stack with two values */
-    step(22, 24);   /* do the 0= tests */
-    stack1();       /* set up the stack with four standard pairs to compare */
-    step(25, 29);   /* do the U< tests */
+    step(18, 21);   // do the 0> tests
+    SP = S0;  PUSH(237); PUSH(0);	// set up the stack with two values
+    step(22, 24);   // do the 0= tests
+    stack1();       // set up the stack with four standard pairs to compare
+    step(25, 29);   // do the U< tests
     stack1();
-    step(30, 34);   /* do the U> tests */
+    step(30, 34);   // do the U> tests
 
     assert(exception == 0);
     printf("Comparison tests ran OK\n");

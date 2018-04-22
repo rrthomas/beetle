@@ -1,12 +1,9 @@
-/*
-    Test the memory operators. Also uses previously tested instructions.
-    See exceptions.c for address exception handling tests.
+// Test the memory operators. Also uses previously tested instructions.
+// See exceptions.c for address exception handling tests.
+//
+// (c) Reuben Thomas 1994-2018
 
-    (c) Reuben Thomas 1994-2018
-*/
-
-
-#include "btests.h"	/* Beetle tests header */
+#include "btests.h"	// Beetle tests header
 
 
 const char *correct[] = {
@@ -24,7 +21,7 @@ int main(void)
 {
     int exception = 0;
 
-    /* Data for extra memory area tests */
+    // Data for extra memory area tests
     char *onetwothreefour = strdup("\x01\x02\x03\x04"); // Hold on to this to prevent a memory leak
     char *item[] = {onetwothreefour, strdup("\x01"), strdup("\x02\x03"), strdup("basilisk")};
     unsigned nitems = sizeof(item) / sizeof(item[0]);
@@ -60,7 +57,7 @@ int main(void)
     ass(O_LITERAL); lit(size * CELL_W + 8); ass(O_DUP); ass(O_CSTORE);
     end_ass();
 
-    NEXT;   /* load first instruction word */
+    NEXT;   // load first instruction word
 
     for (int i = 0; i <= instrs; i++) {
         show_data_stack();

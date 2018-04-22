@@ -1,9 +1,6 @@
-/*
-    Test the Beetle-generated exceptions and HALT codes.
-
-    (c) Reuben Thomas 1995-2018
-*/
-
+// Test the Beetle-generated exceptions and HALT codes.
+//
+// (c) Reuben Thomas 1995-2018
 
 #include "btests.h"
 
@@ -21,7 +18,7 @@ int main(void)
     size_t size = 4096;
     init_beetle((CELL *)calloc(size, CELL_W), size);
 
-    here = EP;	/* start assembling at 0 */
+    here = EP;	// start assembling at 0
     start_ass();
     // test 1: DUP into non-existent memory
     ass(O_LITERAL); lit(0xfffffff0);
@@ -32,19 +29,19 @@ int main(void)
     // test 3: test arbitrary throw code
     ass(O_LITERALI); ilit(42);
     ass(O_HALT); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
-    ass(O_LITERALI); ilit(MEMORY);  /* test 4 */
+    ass(O_LITERALI); ilit(MEMORY);  // test 4
     ass(O_MINUSCELL); ass(O_SPSTORE); ass(O_TOR); ass(O_ZERO);
     ass(O_HALT); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
-    ass(O_ONE); ass(O_PLUSCELL); ass(O_SPSTORE); ass(O_NEXT00);	/* test 5 */
-    ass(O_ONE); ass(O_EXECUTE);	ass(O_NEXT00); ass(O_NEXT00);	/* test 6 */
-    ass(O_ONE); ass(O_ZERO); ass(O_SLASH); ass(O_NEXT00);   /* test 7 */
+    ass(O_ONE); ass(O_PLUSCELL); ass(O_SPSTORE); ass(O_NEXT00);	// test 5
+    ass(O_ONE); ass(O_EXECUTE);	ass(O_NEXT00); ass(O_NEXT00);	// test 6
+    ass(O_ONE); ass(O_ZERO); ass(O_SLASH); ass(O_NEXT00);   // test 7
     // test 8: allow execution to run off the end of a memory area
     ass(O_BRANCH); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     lit(MEMORY - CELL_W);
     // test 9: fetch from an invalid address
     ass(O_LITERAL); lit(0xffffffec);
     ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00);
-    ass(O_ONE); ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00); /* test 10 */
+    ass(O_ONE); ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00); // test 10
     // test 11: test invalid opcode
     ass(0x61);	ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     // test 12: test invalid 'THROW contents
@@ -52,20 +49,20 @@ int main(void)
     ass(O_DUP); ass(O_THROWSTORE); ass(O_THROW);
     end_ass();
 
-    here = 200;	/* start assembling at 200 */
+    here = 200;	// start assembling at 200
     start_ass();
     ass(O_HALT);
     end_ass();
 
-    THROW = 200;   /* set address of exception handler */
+    THROW = 200;   // set address of exception handler
 
     UCELL error = 0;
     for (size_t i = 0; i < sizeof(test) / sizeof(test[0]); i++) {
-        SP = S0;    /* reset stack pointer */
+        SP = S0;    // reset stack pointer
 
         printf("Test %zu\n", i + 1);
         EP = test[i];
-        NEXT;   /* load first instruction word */
+        NEXT;   // load first instruction word
         CELL res = run();
 
         if (result[i] != res || (result[i] != 0 && bad[i] != BAD) ||

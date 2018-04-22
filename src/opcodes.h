@@ -1,12 +1,7 @@
-/* OPCODES.H
-
-    (c) Reuben Thomas 1994-2018
-
-    enum type for the opcodes to make the interpreter more readable. Opcode
-    names which are not valid C identifiers have been altered.
-
-*/
-
+// enum type for the opcodes to make the interpreter more readable. Opcode
+// names which are not valid C identifiers have been altered.
+//
+// (c) Reuben Thomas 1994-2018
 
 #ifndef BEETLE_OPCODES
 #define BEETLE_OPCODES
