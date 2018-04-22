@@ -123,11 +123,10 @@ static long single_arg(const char *s)
 
     long n;
     char *endp;
-    if (s[len - 1] == 'H' || s[len - 1] == 'h') {
-        n = strtol(s, &endp, 16);
-        len -= 1;
-    }
-    else n = strtol(s, &endp, 10);
+    if (s[0] == '$')
+        n = strtol(s + 1, &endp, 16);
+    else
+        n = strtol(s, &endp, 10);
 
     if (endp != &s[len]) {
         printf("Invalid number\n");
@@ -261,7 +260,7 @@ static void do_ass(char *token)
         byte = true;
     } else {
         value = single_arg(number);
-        if (number[len - 1] == 'H' && len < 4)
+        if (number[0] == '$' && len < 4)
             byte = true;
         else {
             if ((unsigned long)value < 10)

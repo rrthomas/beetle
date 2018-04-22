@@ -44,7 +44,7 @@ Starting {\tt beetle} with no arguments enters the debugger; passing the {\tt -\
 \section{Initialisation}
 \label{uifaceinit}
 
-When the virtual machine is started, an embedded Beetle is created. The registers are initialised as described in~\cite[section~\ref{usingcalls}]{cbeetle}; additionally, {\tt 'THROW} is set to 0h, and {\tt I} is uninitialised. {\tt A} is set to zero: this has the effect that when a {\tt STEP} or {\tt RUN} command is given, a {\tt NEXT} instruction
+When the virtual machine is started, an embedded Beetle is created. The registers are initialised as described in~\cite[section~\ref{usingcalls}]{cbeetle}; additionally, {\tt 'THROW} is set to \$0, and {\tt I} is uninitialised. {\tt A} is set to zero: this has the effect that when a {\tt STEP} or {\tt RUN} command is given, a {\tt NEXT} instruction
 will be performed. Thus, when initialisation is performed by a {\tt LOAD}
 command (see section~\ref{uifaceload}), the Beetle may be started with {\tt
 RUN} or {\tt STEP} immediately after the {\tt LOAD} command, without the need
@@ -241,7 +241,7 @@ The command
 \begin{center}{\tt LOAD} \angb{file} [\angb{address}]\end{center}
 
 \noindent initialises Beetle as in section~\ref{uifaceinit}, then loads the object
-module in file \angb{file} into memory at address \angb{address} (or address 0h if the argument is omitted). The address
+module in file \angb{file} into memory at address \angb{address} (or address \$0 if the argument is omitted). The address
 must be cell-aligned; if it is not, or if the module would not fit in memory
 at the address given, or there is some filing error, an error message is
 displayed.
