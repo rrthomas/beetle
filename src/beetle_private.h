@@ -1,12 +1,7 @@
-/* BEETLE_PRIVATE.H
-
-    (c) Reuben Thomas 1994-2018
-
-    Header for C Beetle containing all the private implementation-specific
-    APIs that are shared between modules.
-
-*/
-
+// Header for C Beetle containing all the private implementation-specific
+// APIs that are shared between modules.
+//
+// (c) Reuben Thomas 1994-2018
 
 #ifndef BEETLE_BEETLE_PRIVATE
 #define BEETLE_BEETLE_PRIVATE
@@ -14,9 +9,9 @@
 
 #include "config.h"
 
-/* Memory access */
+// Memory access
 
-/* Address checking */
+// Address checking
 #define CHECK_ADDRESS(a, cond, code, label)     \
     if (!(cond)) {                              \
         NOT_ADDRESS = a;                        \

@@ -1,11 +1,6 @@
-/* STEP.C
-
-    (c) Reuben Thomas 1994-2018
-
-    The interface call single_step() : integer.
-
-*/
-
+// The interface call single_step() : integer.
+//
+// (c) Reuben Thomas 1994-2018
 
 #include "config.h"
 
@@ -19,17 +14,17 @@
 #include "minmax.h"
 #include "verify.h"
 
-#include "beetle.h"     /* main header */
+#include "beetle.h"
 #include "beetle_aux.h"
 #include "beetle_private.h"
-#include "opcodes.h"	/* opcode enumeration */
+#include "opcodes.h"
 
 
-/* Assumption for file functions */
+// Assumption for file functions
 verify(sizeof(int) <= sizeof(CELL));
 
 
-/* Check whether a Beetle address points to a native cell-aligned cell */
+// Check whether a Beetle address points to a native cell-aligned cell
 #define CELL_IN_ONE_AREA(a)                             \
     (native_address_range_in_one_area((a), CELL_W, false) != NULL)
 
@@ -38,9 +33,9 @@ verify(sizeof(int) <= sizeof(CELL));
     CHECK_ADDRESS(a, CELL_IN_ONE_AREA(a), -9, badadr)
 
 
-/* Division macros */
+// Division macros
 #define ABS(x) ((x) >= 0 ? (x) : -(x))
-#define SGN(x) ((x) > 0 ? 1 : -1)  /* not a proper sign function! */
+#define SGN(x) ((x) > 0 ? 1 : -1)  // not a proper sign function!
 
 #define FDIV(a, b) ((a) / (b) - ((((a) ^ (b)) < 0) && ((a) % (b)) != 0))
 #define FMOD(a, b, t) ((t = (a) % (b), (((a) ^ (b)) >= 0 || t == 0)) ? t : \
@@ -53,9 +48,9 @@ verify(sizeof(int) <= sizeof(CELL));
     }
 
 
-/* LIB support */
+// I/O support
 
-/* Copy a string from Beetle to C */
+// Copy a string from Beetle to C
 static int getstr(UCELL adr, UCELL len, char **res)
 {
     int exception = 0;
@@ -71,7 +66,7 @@ static int getstr(UCELL adr, UCELL len, char **res)
     return exception;
 }
 
-/* Convert portable open(2) flags bits to system flags */
+// Convert portable open(2) flags bits to system flags
 static int getflags(UCELL perm, bool *binary)
 {
     int flags = 0;
@@ -98,7 +93,7 @@ static int getflags(UCELL perm, bool *binary)
     return flags;
 }
 
-/* Register command-line args in Beetle memory */
+// Register command-line args in Beetle memory
 int main_argc = 0;
 UCELL *main_argv;
 UCELL *main_argv_len;
@@ -120,7 +115,7 @@ bool register_args(int argc, char *argv[])
 }
 
 
-/* Perform one pass of the execution cycle. */
+// Perform one pass of the execution cycle
 CELL single_step(void)
 {
     int exception = 0;
@@ -934,7 +929,7 @@ CELL single_step(void)
         goto throw;
     }
     if (exception == 0)
-        return -260; /* terminated OK */
+        return -260; // terminated OK
 
     // Deal with address exceptions during execution cycle.
     // Since we have already had an exception, and must return a different

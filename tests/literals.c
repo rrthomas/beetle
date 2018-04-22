@@ -1,9 +1,6 @@
-/*
-    Test the literal instructions. Also uses the NEXT instruction.
-
-    (c) Reuben Thomas 1994-2018
-*/
-
+// Test the literal instructions. Also uses the NEXT instruction.
+//
+// (c) Reuben Thomas 1994-2018
 
 #include "btests.h"
 
@@ -22,10 +19,10 @@ int main(void)
     ass(O_LITERAL); lit(-257); ass(O_LITERAL); lit(12345678);
     ass(O_LITERALI); ilit(-2);
     end_ass();
-    instrs++;	/* instrs is out by one when an immediate literal is the last
-                   thing assembled */
+    instrs++;	// instrs is out by one when an immediate literal is the last
+                // thing assembled
 
-    NEXT;   /* load first instruction word */
+    NEXT;   // load first instruction word
 
     for (int i = 0; i <= instrs; i++) {
         show_data_stack();

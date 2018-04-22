@@ -1,11 +1,6 @@
-/* DEBUG.C
-
-    (c) Reuben Thomas 1994-2018
-
-    Functions useful for debugging Beetle.
-
-*/
-
+// Functions useful for debugging Beetle.
+//
+// (c) Reuben Thomas 1994-2018
 
 #include "config.h"
 
@@ -15,17 +10,17 @@
 #include <inttypes.h>
 #include "xvasprintf.h"
 
-#include "beetle.h"	/* main header */
+#include "beetle.h"
 #include "beetle_aux.h"
-#include "opcodes.h"	/* opcode enumeration */
-#include "debug.h"	/* the header we're implementing */
+#include "opcodes.h"
+#include "debug.h"
 
 
-int instrs = 0; /* number of instructions assembled */
-int ibytes; /* number of opcodes assembled in current instruction word so far */
-static CELL icell;  /* accumulator for instructions being assembled */
-UCELL current;	/* where the current instruction word will be stored */
-UCELL here; /* where we assemble the next instruction word or literal */
+int instrs = 0; // number of instructions assembled
+int ibytes; // number of opcodes assembled in current instruction word so far
+static CELL icell;  // accumulator for instructions being assembled
+UCELL current;	// where the current instruction word will be stored
+UCELL here; // where we assemble the next instruction word or literal
 
 
 void ass(BYTE instr)

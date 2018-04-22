@@ -1,9 +1,6 @@
-/*
-    Test the LINK instruction.
-
-    (c) Reuben Thomas 1995-2018
-*/
-
+// Test the LINK instruction.
+//
+// (c) Reuben Thomas 1995-2018
 
 #include "btests.h"
 
@@ -20,13 +17,13 @@ static void test(void)
 int main(void)
 {
     init_beetle((CELL *)malloc(16384), 4096);
-    here = EP;	/* start assembling at 0 */
+    here = EP;	// start assembling at 0
 
     start_ass();
     plit(test); ass(O_LINK); ass(O_ZERO); ass(O_HALT);
     end_ass();
 
-    NEXT;   /* load first instruction word */
+    NEXT;   // load first instruction word
     CELL res = run();
     if (res != 0) {
         printf("Error in LINK tests: test aborted with return code %"PRId32"\n", res);

@@ -1,11 +1,6 @@
-/* STORAGE.C
-
-    (c) Reuben Thomas 1994-2018
-
-    Allocate storage for the registers and memory.
-
-*/
-
+// Allocate storage for the registers and memory.
+//
+// (c) Reuben Thomas 1994-2018
 
 #include "config.h"
 
@@ -14,12 +9,12 @@
 #include "gl_avltree_list.h"
 #include "gl_list.h"
 
-#include "beetle.h"	/* main header */
+#include "beetle.h"
 #include "beetle_aux.h"
 #include "beetle_private.h"
 
 
-/* Beetle's registers */
+// Beetle's registers
 
 UCELL EP;
 BYTE I;
@@ -34,7 +29,7 @@ UCELL BAD;
 UCELL NOT_ADDRESS;
 
 
-/* Memory allocation and mapping */
+// Memory allocation and mapping
 static gl_list_t mem_areas;
 static UCELL _mem_here;
 
@@ -70,11 +65,10 @@ _GL_ATTRIBUTE_PURE UCELL mem_here(void)
     return _mem_here;
 }
 
-/* Given a range of addresses, return Mem_area corresponding to some address
-   in that range.
-   This is used a) to find the area for a particular cell;
-                b) to test whether part of a range has already been allocated
-*/
+// Given a range of addresses, return Mem_area corresponding to some address
+// in that range.
+// This is used a) to find the area for a particular cell;
+//              b) to test whether part of a range has already been allocated
 static Mem_area *mem_range(UCELL start, UCELL length)
 {
     Mem_area a_addr = {start, length, NULL, true};
@@ -136,7 +130,7 @@ UCELL mem_align(void)
 }
 
 
-/* General memory access */
+// General memory access
 
 // Macro for byte addressing
 #ifdef WORDS_BIGENDIAN
@@ -273,7 +267,7 @@ int beetle_post_dma(UCELL from, UCELL to)
 }
 
 
-/* Initialise registers that are not fixed */
+// Initialise registers that are not fixed
 
 int init_beetle(CELL *memory, size_t size)
 {

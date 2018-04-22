@@ -1,9 +1,6 @@
-/*
-    Header for Beetle tests.
-
-    (c) Reuben Thomas 1995-2018
-*/
-
+// Header for Beetle tests.
+//
+// (c) Reuben Thomas 1995-2018
 
 #ifndef BEETLE_BTESTS
 #define BEETLE_BTESTS

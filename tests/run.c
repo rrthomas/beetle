@@ -1,10 +1,7 @@
-/*
-    Test that run works, and that the return value of the HALT instruction is
-    correctly returned.
-
-    (c) Reuben Thomas 1995-2018
-*/
-
+// Test that run works, and that the return value of the HALT instruction is
+// correctly returned.
+//
+// (c) Reuben Thomas 1995-2018
 
 #include "btests.h"
 
