@@ -15,8 +15,12 @@
 #include <limits.h>
 
 
+// Stacks location and size
 #define DATA_STACK_SEGMENT   0xfe000000
 #define RETURN_STACK_SEGMENT 0xff000000
+#define DEFAULT_STACK_SIZE   16384
+#define MAX_STACK_SIZE       67108864
+extern UCELL HASHS, HASHR;
 
 // Memory access
 
