@@ -169,7 +169,7 @@ static int load_op(BYTE o)
 
 static int imm_op(BYTE o)
 {
-    return load_op(o & 0xFE);
+    return load_op(o & 0xfe);
 }
 
 static void disassemble(UCELL start, UCELL end)

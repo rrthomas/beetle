@@ -21,7 +21,7 @@ int main(void)
     init_beetle((CELL *)malloc(1024), 256);
     here = EP;
 
-    PUSH(0xFF000000); PUSH(8); PUSH(0xFF); PUSH(8);
+    PUSH(0xff000000); PUSH(8); PUSH(0xff); PUSH(8);
 
     start_ass();
     ass(O_LSHIFT); ass(O_NROT); ass(O_RSHIFT); ass(O_OR);
