@@ -1,6 +1,6 @@
 // Test the arithmetic operators. Also uses the NEXT, SWAP, ROT,
 // DROP, and (LITERAL)I instructions. Since unsigned arithmetic
-// overflow behaviour is guaranteed by the ISO standard, we only test
+// overflow behaviour is guaranteed by the ISO C standard, we only test
 // the stack handling and basic correctness of the operators here,
 // assuming that if the arithmetic works in one case, it will work in
 // all. Note that the correct stack values are not quite independent
