@@ -32,7 +32,8 @@ RISK.
 
 Beetle should work on any POSIX-1.2001-compatible system.
 
-To build the documentation, a comprehensive TeX system such as TeXLive is required.
+Perl and help2man are required to build from source; to build the
+documentation, a comprehensive TeX system such as TeXLive is required.
 
 Beetle has been tested on x86_64 GNU/Linux with GNU C.
 
@@ -59,7 +60,8 @@ should be used.
 
 ## Use
 
-Run `beetle` (see `beetle --help` and `debugger.pdf` for documentation). If you have `rlwrap`, you can run `beetlei` instead to get readline support.
+Run `beetle` (see `beetle --help` and `debugger.pdf` for documentation). If
+you have `rlwrap`, you can run `beetlei` instead to get readline support.
 
 
 ## Documentation
@@ -116,5 +118,5 @@ can be linked in their place.
 
 ## Bugs and comments
 
-Please send bug reports (preferably as [GitHub issues](https://github.com/rrthomas/beetle/issues)) and
-comments. I‘m especially interested to know of portability bugs.
+Please send bug reports (preferably as [GitHub issues](https://github.com/rrthomas/beetle/issues))
+and comments. I‘m especially interested to know of portability bugs.
