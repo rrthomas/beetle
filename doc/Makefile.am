@@ -29,7 +29,9 @@ LATEX_PDFS = \
 	papers/litencode.pdf \
 	papers/tradeoffs.pdf
 
+if HAVE_LATEXMK
 dist_doc_DATA = $(LATEX_PDFS)
+endif
 
 
 all: pdf
