@@ -115,9 +115,7 @@ stated. Addresses are written in hexadecimal; hex numbers are prefixed with
 \section{Introduction}
 
 Beetle is a simple virtual machine designed to enable the easy implementation
-of ANS Forth compilers, such as pForth~\cite{beetledis}, on different systems.
-It has twelve registers, two stacks, and an instruction set, called bForth, of
-ninety-two instructions. The instruction set is based on the Core Word Set of
+of ANS Forth compilers, such as pForth~\cite{beetledis}, on different systems. It is a stack machine; the instruction set is based on the Core Word Set of
 ANS Forth~\cite{ANSIforth}. This paper gives a full description of Beetle, but
 certain implementation-dependent features, such as the size of the stacks, are
 purposely left unspecified, and the exact method of implementation is left to
