@@ -10,6 +10,7 @@ gl_EARLY
 AM_PROG_AR
 LT_INIT
 AC_PATH_PROG(LATEXMK, latexmk, true)
+AM_CONDITIONAL([HAVE_LATEXMK], [test "$ac_cv_path_LATEXMK" != "true"])
 
 dnl help2man
 dnl Set a value even if not found, so that an invocation via build-aux/missing works
