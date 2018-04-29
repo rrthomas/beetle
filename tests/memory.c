@@ -9,7 +9,7 @@
 // THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER‘S
 // RISK.
 
-#include "btests.h"	// Beetle tests header
+#include "btests.h"
 
 
 const char *correct[] = {
