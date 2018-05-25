@@ -74,7 +74,7 @@ A portable implementation of Beetle is described, with instructions for porting,
 * _[A simple debugger for the Beetle virtual machine](doc/debugger.pdf)_  
 The user guide for Beetle’s debugger.
 
-The following documents include extra material not covered in Beetle’s documentation:
+The following documents contain extra material on Beetle’s design, but many details are out of date:
 
 * _[An Introduction to the Beetle Forth Virtual Processor](doc/papers/intro.pdf)_  
 An introduction to the system; this is the best paper to read first. It was published in ACM SIGPLAN Notices February 1997.
