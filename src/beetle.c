@@ -745,7 +745,7 @@ int main(int argc, char *argv[])
             die("unrecognised option '%s'\nTry '%s --help' for more information.", argv[this_optind], program_name);
         else if (c == 'm')
             longindex = 0;
-        else if (c == 'd')
+        else if (c == 's')
             longindex = 1;
 
         switch (longindex) {
