@@ -12,7 +12,7 @@ up to half the speed of the corresponding native code compiler and generates
 more compact code. Beetle is designed to be embedded in other programs; a
 simple debugger has been written to demonstrate this ability. In the C
 implementation, all memory references are bounds checked. An I/O library is
-implemented; access to native code routines is also possible, allowing Forth
+implemented; access to native code routines is also possible, allowing Beetle
 and C programs to call each other.
 
 This package comprises the definition of the Beetle virtual machine, a
