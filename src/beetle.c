@@ -696,7 +696,7 @@ struct option longopts[] = {
 static void usage(void)
 {
     char *shortopt, *buf;
-    printf ("Usage: %s [OPTION...] [FILENAME ARGUMENT...]\n"
+    printf ("Usage: %s [OPTION...] [OBJECT-FILE ARGUMENT...]\n"
             "\n"
             "Run " PACKAGE_NAME ".\n"
             "\n",
