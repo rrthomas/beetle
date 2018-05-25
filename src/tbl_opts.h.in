@@ -27,7 +27,7 @@ O("return-stack", 'r', required_argument, "NUMBER", MEMORY_MESSAGE("return stack
 O("debug", 'd', no_argument, "", "enter debugger on exception")
 O("help", '\0', no_argument, "", "display this help message and exit")
 O("version", '\0', no_argument, "", "display version information and exit")
-A("FILE", "load and run object FILE")
+A("OBJECT-FILE", "load and run object OBJECT-FILE")
 D("")
 D("The ARGUMENTs are available to Beetle.")
 D("")
