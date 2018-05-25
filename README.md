@@ -119,4 +119,4 @@ can be linked in their place.
 ## Bugs and comments
 
 Please send bug reports (preferably as [GitHub issues](https://github.com/rrthomas/beetle/issues))
-and comments. I‘m especially interested to know of portability bugs.
+and comments. I’m especially interested to know of portability bugs.
