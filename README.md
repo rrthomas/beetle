@@ -7,19 +7,18 @@ Beetle is a virtual machine designed for the Forth language. It uses a
 byte-stream code designed for efficient execution which is binary portable
 between implementations. It has been implemented in C (for POSIX systems)
 and hand-optimised assembler (for ARM). The C implementation should run on
-any POSIX system; the assembler version runs the supplied Forth compiler at
-up to half the speed of the corresponding native code compiler and generates
-more compact code. Beetle is designed to be embedded in other programs; a
-simple debugger has been written to demonstrate this ability. In the C
+any POSIX system; the assembler version runs pForth (see below) at up to
+half the speed of the corresponding native code compiler and generates more
+compact code. Beetle is designed to be embedded in other programs; a simple
+debugger has been written to demonstrate this ability. In the C
 implementation, all memory references are bounds checked. An I/O library is
-implemented; access to native code routines is also possible, allowing Beetle
-and C programs to call each other.
+implemented; access to native code routines is also possible, allowing
+Beetle and C programs to call each other.
 
 This package comprises the definition of the Beetle virtual machine, a
-virtual machine specialised for the execution of Forth, an
-implementation in ISO C99 using POSIX APIs, and a full ANSI Forth
-compiler, pForth. Detailed documentation is in the doc directory;
-installation instructions follow.
+virtual machine specialised for the execution of Forth, and an
+implementation in ISO C99 using POSIX APIs. Detailed documentation is in the
+doc directory; installation instructions follow.
 
 The package is distributed under the GNU Public License version 3, or,
 at your option, any later version.
