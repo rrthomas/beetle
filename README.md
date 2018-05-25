@@ -29,10 +29,8 @@ RISK.
 
 ## Installation and compatibility
 
-Beetle should work on any POSIX-1.2001-compatible system.
-
-Perl and help2man are required to build from source; to build the
-documentation, a comprehensive TeX system such as TeXLive is required.
+Beetle should work on any POSIX-1.2001-compatible system. Perl and help2man
+are required to build from source.
 
 Beetle has been tested on x86_64 GNU/Linux with GNU C.
 
@@ -53,8 +51,10 @@ git submodule update --init --recursive
 ./bootstrap
 ```
 
-For the bibliographies in the documentation to be built correctly, GNU Make
-should be used.
+To build the PDF documentation, a comprehensive TeX system such as TeXLive
+is required. This is only necessary when building from Git, as pre-built
+PDFs are supplied in release archives. For the bibliographies in the
+documentation to be built correctly, GNU Make should be used.
 
 
 ## Use
