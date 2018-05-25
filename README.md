@@ -3,8 +3,8 @@
 by Reuben Thomas <rrt@sc3d.org>  
 https://github.com/rrthomas/beetle  
 
-Beetle is a virtual machine designed for the Forth language. It uses a
-byte-stream code designed for efficient execution which is binary portable
+Beetle is a simple virtual machine designed for the Forth language. It uses
+a byte-stream code designed for efficient execution which is binary portable
 between implementations. It has been implemented in C (for POSIX systems)
 and hand-optimised assembler (for ARM). The C implementation should run on
 any POSIX system; the assembler version runs pForth (see below) at up to
