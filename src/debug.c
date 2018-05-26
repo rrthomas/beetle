@@ -113,7 +113,7 @@ _GL_ATTRIBUTE_PURE BYTE toass(char *token)
 
     if (strcmp(token, mnemonic[0xff]) == 0) return 0xff;
 
-    return 0xfe;
+    return 0x7f;
 }
 
 char *val_data_stack(void)
