@@ -68,7 +68,7 @@ you have `rlwrap`, you can run `beetlei` instead to get readline support.
 The canonical documentation consists of:
 
 * _[The Beetle Forth Virtual Machine](doc/beetle.pdf)_  
-The design of the Beetle Forth virtual machine is described. This is an implementor's guide, but it's probably also useful to programmers.
+The design of the Beetle Forth virtual machine is described. Essential reading for those programming or implementing the VM.
 * _[An implementation of the Beetle virtual machine for POSIX](doc/cbeetle.pdf)_  
 A portable implementation of Beetle is described, with instructions for porting, compiling and running it.
 * _[A simple debugger for the Beetle virtual machine](doc/debugger.pdf)_  
