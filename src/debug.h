@@ -16,16 +16,13 @@
 
 
 extern int instrs;  // number of instructions assembled
-extern int ibytes;  // number of opcodes assembled in current instruction word
-extern UCELL current;	// where the current instruction word will be stored
-extern UCELL here;  // where we assemble the next instruction word or literal
 
 void ass(BYTE instr);	// assemble an instruction
 void lit(CELL literal);	// assemble a cell literal
 void ilit(CELL literal);    // assemble an immediate literal
 void plit(void (*literal)(void));  // assemble a machine-dependent function pointer literal,
                                    // including the relevant LITERAL instructions
-void start_ass(void);	// start assembly, initialising variables
+void start_ass(UCELL addr);	// start assembly, initialising variables
 const char *disass(BYTE opcode);  // disassemble an instruction
 BYTE toass(char *token);    // convert a instruction to its opcode
 

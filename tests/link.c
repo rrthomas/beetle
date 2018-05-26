@@ -23,9 +23,8 @@ static void test(void)
 int main(void)
 {
     init_beetle((CELL *)malloc(16384), 4096);
-    here = EP;	// start assembling at 0
 
-    start_ass();
+    start_ass(EP);
     plit(test); ass(O_LINK); ass(O_ZERO); ass(O_HALT);
 
     NEXT;   // load first instruction word

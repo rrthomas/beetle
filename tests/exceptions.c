@@ -24,8 +24,7 @@ int main(void)
     size_t size = 4096;
     init_beetle((CELL *)calloc(size, CELL_W), size);
 
-    here = EP;	// start assembling at 0
-    start_ass();
+    start_ass(0);
     // test 1: DUP into non-existent memory
     ass(O_LITERAL); lit(0xfffffff0);
     ass(O_SPSTORE); ass(O_DUP); ass(O_NEXT00);
@@ -54,8 +53,7 @@ int main(void)
     ass(O_LITERAL); lit(0xffffffec);
     ass(O_DUP); ass(O_THROWSTORE); ass(O_THROW);
 
-    here = 200;	// start assembling at 200
-    start_ass();
+    start_ass(200);
     ass(O_HALT);
 
     THROW = 200;   // set address of exception handler

@@ -23,9 +23,8 @@ int main(void)
 
     init_beetle((CELL *)malloc(4096), 1024);
     assert(register_args(argc, argv));
-    here = EP;
 
-    start_ass();
+    start_ass(EP);
     ass(OX_ARGC); ass(O_ONE); ass(OX_ARG);
 
     NEXT;   // load first instruction word
