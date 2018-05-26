@@ -22,10 +22,10 @@
 #include "debug.h"
 
 
-int ibytes; // number of opcodes assembled in current instruction word so far
+static int ibytes; // number of opcodes assembled in current instruction word so far
 static CELL icell;  // accumulator for instructions being assembled
-UCELL current;	// where the current instruction word will be stored
-UCELL here; // where we assemble the next instruction word or literal
+static UCELL current;	// where the current instruction word will be stored
+static UCELL here; // where we assemble the next instruction word or literal
 
 
 void ass(BYTE instr)
