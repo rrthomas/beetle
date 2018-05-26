@@ -243,7 +243,7 @@ static int save_object(FILE *file, UCELL address, UCELL length)
 }
 
 
-static void do_ass(char *token)
+static void do_assign(char *token)
 {
     char *number = strtok(NULL, " ");
     int len = strlen(number);
@@ -650,16 +650,16 @@ static void parse(char *input)
     for (i = strlen(token); input[i] == ' ' && i < strlen(input); i++)
         ;
 
-    bool ass = false;
+    bool assign = false;
     if (i < strlen(input))
-        ass = input[i] == '=';
+        assign = input[i] == '=';
 
     size_t no = search(token, command, commands);
     if (no != SIZE_MAX)
         do_command(no);
     else {
-        if (ass)
-            do_ass(token);
+        if (assign)
+            do_assign(token);
         else
             do_display(token, "%s\n");
     }
