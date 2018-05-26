@@ -21,23 +21,22 @@ int main(void)
     CELL temp = 0;
 
     init_beetle((CELL *)malloc(1024), 256);
-    here = EP;
 
-    start_ass();
-    // here = 0: 3 0 DO  R>  LOOP
+    start_ass(EP);
+    // Address 0: 3 0 DO  R>  LOOP
     ass(O_LITERALI); ilit(3);
     ass(O_ZERO); ass(O_DO); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_RFETCH); ass(O_LOOP); lit(8); ass(O_NEXT00); ass(O_NEXT00);
-    // here = 16: 0 3 DO  R>  -1 +LOOP
+    // Address 16: 0 3 DO  R>  -1 +LOOP
     ass(O_ZERO); ass(O_LITERAL); lit(3); ass(O_DO); ass(O_NEXT00);
     ass(O_RFETCH); ass(O_MONE); ass(O_PLOOPI); ilit(-1);
-    // here = 32: CELL 1 DO  R>  CELL +LOOP
+    // Address 32: CELL 1 DO  R>  CELL +LOOP
     ass(O_CELL); ass(O_ONE); ass(O_DO); ass(O_NEXT00);
     ass(O_RFETCH); ass(O_CELL); ass(O_PLOOP); lit(32); ass(O_NEXT00);
-    // here = 40: 1 1 DO  R>  LOOP  (infinite loop!)
+    // Address 40: 1 1 DO  R>  LOOP  (infinite loop!)
     ass(O_ONE); ass(O_ONE); ass(O_DO); ass(O_NEXT00);
     ass(O_RFETCH); ass(O_LOOPI); ilit(-1);
-    // here = 48: 1 >R CELL >R -1 >R J DUP UNLOOP
+    // Address 48: 1 >R CELL >R -1 >R J DUP UNLOOP
     ass(O_ONE); ass(O_TOR); ass(O_CELL); ass(O_TOR);
     ass(O_MONE); ass(O_TOR); ass(O_J); ass(O_NEXT00);
     ass(O_DUP); ass(O_UNLOOP);

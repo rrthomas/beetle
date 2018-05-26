@@ -67,9 +67,8 @@ static void step(int start, int end)
 int main(void)
 {
     init_beetle((CELL *)malloc(1024), 256);
-    here = EP;
 
-    start_ass();
+    start_ass(EP);
     ass(O_LESS); ass(O_LESS); ass(O_LESS); ass(O_LESS);
     ass(O_GREATER); ass(O_GREATER); ass(O_GREATER); ass(O_GREATER);
     ass(O_EQUAL); ass(O_EQUAL); ass(O_NEQUAL); ass(O_NEQUAL);

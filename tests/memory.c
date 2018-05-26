@@ -45,9 +45,8 @@ int main(void)
         if (i == 2)
             mem_align();
     }
-    here = EP;
 
-    start_ass();
+    start_ass(EP);
     ass(O_MEMORYFETCH); ass(O_MINUSCELL); ass(O_LITERAL); lit(513);
     ass(O_OVER); ass(O_STORE); ass(O_DUP); ass(O_FETCH);
     ass(O_DROP); ass(O_DUP); ass(O_CFETCH); ass(O_PLUS);

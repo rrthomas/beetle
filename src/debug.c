@@ -64,9 +64,9 @@ void plit(void (*literal)(void))
     }
 }
 
-void start_ass(void)
+void start_ass(UCELL addr)
 {
-    ibytes = 0;  icell = 0;  current = here;  here += CELL_W;
+    here = addr;  ibytes = 0;  icell = 0;  current = here;  here += CELL_W;
 }
 
 static const char *mnemonic[UINT8_MAX + 1] = { "NEXT00", "DUP", "DROP", "SWAP", "OVER",

@@ -22,8 +22,7 @@ int main(void)
         exit(1);
     }
 
-    here = 52;
-    start_ass();
+    start_ass(52);
     ass(O_LITERALI); ilit(37);
     ass(O_HALT);
 

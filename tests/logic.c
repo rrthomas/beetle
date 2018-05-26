@@ -25,11 +25,10 @@ int main(void)
     int exception = 0;
 
     init_beetle((CELL *)malloc(1024), 256);
-    here = EP;
 
     PUSH(0xff000000); PUSH(8); PUSH(0xff); PUSH(8);
 
-    start_ass();
+    start_ass(EP);
     ass(O_LSHIFT); ass(O_NROT); ass(O_RSHIFT); ass(O_OR);
     ass(O_LSHIFT1); ass(O_RSHIFT1); ass(O_INVERT); ass(O_ONE);
     ass(O_MONE); ass(O_XOR); ass(O_AND);

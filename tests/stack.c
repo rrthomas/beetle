@@ -23,11 +23,10 @@ int main(void)
     int exception = 0;
 
     init_beetle((CELL *)malloc(1024), 256);
-    here = EP;
 
     PUSH(1); PUSH(2); PUSH(3);	// initialise the stack
 
-    start_ass();
+    start_ass(EP);
     ass(O_DUP); ass(O_DROP); ass(O_SWAP); ass(O_OVER);
     ass(O_ROT); ass(O_NROT); ass(O_TUCK); ass(O_NIP);
     ass(O_PICK); ass(O_PICK); ass(O_DUP); ass(O_ROLL);

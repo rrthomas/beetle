@@ -33,9 +33,8 @@ int main(void)
     int exception = 0;
 
     init_beetle((CELL *)calloc(1024, 1), 256);
-    here = EP;
 
-    start_ass();
+    start_ass(EP);
     ass(O_ZERO); ass(O_ONE); ass(O_MONE); ass(O_CELL);
     ass(O_MCELL); ass(O_ROT); ass(O_PLUS); ass(O_PLUS);
     ass(O_MINUS); ass(O_PLUS1); ass(O_MINUS1); ass(O_SWAP);
