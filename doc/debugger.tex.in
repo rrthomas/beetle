@@ -117,7 +117,7 @@ moved, so the stack display commands will still work correctly.
 The command {\tt REGISTERS} displays the contents of {\tt EP}, {\tt I} and
 {\tt A}, useful when following the execution of a program.
 
-\subsection{The stacks}
+\subsection{Stacks}
 
 The stacks may be manipulated crudely using the registers {\tt SP} and {\tt
 RP} but it is usually more convenient to use the commands
