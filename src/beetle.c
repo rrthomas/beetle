@@ -253,7 +253,7 @@ static void do_assign(char *token)
     upper(number);
     if (number[0] == 'O') {
         value = toass(number + 1);
-        if (value == 0x7f) {
+        if (value == O_UNDEFINED) {
             printf("Invalid opcode\n");
             return;
         }
