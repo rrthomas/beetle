@@ -35,7 +35,7 @@ int main(void)
 
     NEXT;   // load first instruction word
 
-    int i;
+    size_t i;
     for (i = 0; i < 10; i++) {
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
@@ -51,8 +51,8 @@ int main(void)
     PUSH(2); PUSH(1); PUSH(0);	// initialise the stack
     printf("Next stack is wrong!\n");
 
-    int first = i;
-    for (; i <= instrs; i++) {
+    size_t first = i;
+    for (; i < sizeof(correct) / sizeof(correct[0]); i++) {
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack()) && i != first) {

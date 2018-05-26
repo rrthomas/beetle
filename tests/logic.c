@@ -35,7 +35,7 @@ int main(void)
 
     NEXT;   // load first instruction word
 
-    for (int i = 0; i <= instrs; i++) {
+    for (size_t i = 0; i < sizeof(correct) / sizeof(correct[0]); i++) {
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {

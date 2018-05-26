@@ -22,7 +22,6 @@
 #include "debug.h"
 
 
-int instrs = 0; // number of instructions assembled
 int ibytes; // number of opcodes assembled in current instruction word so far
 static CELL icell;  // accumulator for instructions being assembled
 UCELL current;	// where the current instruction word will be stored
@@ -33,7 +32,7 @@ void ass(BYTE instr)
 {
     icell |= instr << ibytes * 8;
     beetle_store_cell(current, icell);
-    instrs++;  ibytes++;
+    ibytes++;
     if (ibytes == CELL_W) {
         current = here;  here += CELL_W;
         icell = 0;  ibytes = 0;

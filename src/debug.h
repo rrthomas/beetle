@@ -15,8 +15,6 @@
 #include "beetle.h"     // main header
 
 
-extern int instrs;  // number of instructions assembled
-
 void ass(BYTE instr);	// assemble an instruction
 void lit(CELL literal);	// assemble a cell literal
 void ilit(CELL literal);    // assemble an immediate literal

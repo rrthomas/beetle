@@ -61,13 +61,8 @@ int main(void)
 
     NEXT;   // load first instruction word
 
-    if (instrs != sizeof(correct) / sizeof(correct[0]) - 1) {
-        printf("Error in branch tests: actual instrs: %d; expected: %lu\n",
-               instrs, sizeof(correct) / sizeof(correct[0]) - 1);
-        exit(1);
-    }
-    for (int i = 0; i <= instrs; i++) {
-        printf("Instruction %d: EP = %u; should be %u\n\n", i, EP, correct[i]);
+    for (size_t i = 0; i < sizeof(correct) / sizeof(correct[0]); i++) {
+        printf("Instruction %zu: EP = %u; should be %u\n\n", i, EP, correct[i]);
         if (correct[i] != EP) {
             printf("Error in branch tests: EP = %"PRIu32"\n", EP);
             exit(1);
