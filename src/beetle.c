@@ -113,6 +113,17 @@ static size_t search(const char *token, const char *list[], size_t entries)
     return SIZE_MAX;
 }
 
+static BYTE parse_instruction(const char *token)
+{
+    BYTE opcode = O_UNDEFINED;
+    if (token[0] == 'O') {
+        opcode = toass(token + 1);
+        if (opcode == O_UNDEFINED)
+            printf("Invalid opcode\n");
+    }
+    return opcode;
+}
+
 
 static long single_arg(const char *s)
 {
@@ -224,6 +235,7 @@ static void reinit(void)
 {
     memset(count, 0, 256 * sizeof(long));
     init_beetle(memory, memory_size);
+    start_ass(EP);
 }
 
 
@@ -252,14 +264,10 @@ static void do_assign(char *token)
     bool byte = false;
 
     upper(number);
-    if (number[0] == 'O') {
-        value = toass(number + 1);
-        if (value == O_UNDEFINED) {
-            printf("Invalid opcode\n");
-            return;
-        }
+    value = parse_instruction(number);
+    if (value != O_UNDEFINED)
         byte = true;
-    } else {
+    else {
         value = single_arg(number);
         if (number[0] == '$' && len < 4)
             byte = true;
@@ -291,6 +299,7 @@ static void do_assign(char *token)
             break;
         case r_EP:
             EP = value;
+            start_ass(EP);
             break;
         case r_I:
             if (value > 255) {
@@ -661,7 +670,11 @@ static void parse(char *input)
     else {
         if (assign)
             do_assign(token);
-        else
+        else if (token[0] == 'O') {
+            BYTE opcode = toass(token + 1);
+            if (opcode != O_UNDEFINED)
+                ass(opcode);
+        } else
             do_display(token, "%s\n");
     }
 }

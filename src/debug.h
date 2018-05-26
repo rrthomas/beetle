@@ -22,7 +22,7 @@ void plit(void (*literal)(void));  // assemble a machine-dependent function poin
                                    // including the relevant LITERAL instructions
 void start_ass(UCELL addr);	// start assembly, initialising variables
 const char *disass(BYTE opcode);  // disassemble an instruction
-BYTE toass(char *token);    // convert a instruction to its opcode
+BYTE toass(const char *token);    // convert a instruction to its opcode
 
 char *val_data_stack(void); // return the current data stack as a string
 void show_data_stack(void); // show the current contents of the data stack
