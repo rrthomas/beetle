@@ -17,6 +17,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <setjmp.h>
+#include <unistd.h>
 #include <getopt.h>
 #include <sys/wait.h>
 
@@ -677,6 +678,16 @@ static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void die(const char *format, ...)
     exit(1);
 }
 
+static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void interactive_printf(const char *format, ...)
+{
+    if (!isatty(fileno(stdin)))
+        return;
+
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+}
+
 // Options table
 struct option longopts[] = {
 #define O(longname, shortname, arg, argstring, docstring) \
@@ -798,14 +809,14 @@ int main(int argc, char *argv[])
             return res;
     }
 
-    printf("%s\n%s\n\n", BEETLE_VERSION_STRING, BEETLE_COPYRIGHT_STRING);
+    interactive_printf("%s\n%s\n\n", BEETLE_VERSION_STRING, BEETLE_COPYRIGHT_STRING);
 
     while (1) {
         if (setjmp(env) == 0) {
-            printf(">");
+            interactive_printf(">");
             if (fgets(input, MAXLEN, stdin) == NULL) {
                 if (feof(stdin)) {
-                    putchar('\n'); // Empty line after prompt
+                    interactive_printf("\n"); // Empty line after prompt
                     exit(EXIT_SUCCESS);
                 }
                 die("input error");
