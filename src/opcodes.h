@@ -111,6 +111,7 @@ enum {
     O_THROW,
     O_HALT,
     O_LINK,
+    O_UNDEFINED = 0x7f,
     OX_ARGC = 0x80,
     OX_ARG,
     OX_STDIN,

@@ -49,7 +49,7 @@ int main(void)
     ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_ONE); ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00); // test 10
     // test 11: test invalid opcode
-    ass(0x61);	ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
+    ass(O_UNDEFINED); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     // test 12: test invalid 'THROW contents
     ass(O_LITERAL); lit(0xffffffec);
     ass(O_DUP); ass(O_THROWSTORE); ass(O_THROW);
