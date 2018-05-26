@@ -24,9 +24,6 @@ int main(void)
     start_ass();
     ass(O_LITERAL); lit(-257); ass(O_LITERAL); lit(12345678);
     ass(O_LITERALI); ilit(-2);
-    end_ass();
-    instrs++;	// instrs is out by one when an immediate literal is the last
-                // thing assembled
 
     NEXT;   // load first instruction word
 

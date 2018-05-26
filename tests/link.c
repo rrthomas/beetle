@@ -27,7 +27,6 @@ int main(void)
 
     start_ass();
     plit(test); ass(O_LINK); ass(O_ZERO); ass(O_HALT);
-    end_ass();
 
     NEXT;   // load first instruction word
     CELL res = run();

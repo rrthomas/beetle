@@ -33,7 +33,6 @@ int main(void)
     ass(O_LSHIFT); ass(O_NROT); ass(O_RSHIFT); ass(O_OR);
     ass(O_LSHIFT1); ass(O_RSHIFT1); ass(O_INVERT); ass(O_ONE);
     ass(O_MONE); ass(O_XOR); ass(O_AND);
-    end_ass();
 
     NEXT;   // load first instruction word
 

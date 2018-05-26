@@ -32,10 +32,11 @@ UCELL here; // where we assemble the next instruction word or literal
 void ass(BYTE instr)
 {
     icell |= instr << ibytes * 8;
+    beetle_store_cell(current, icell);
     instrs++;  ibytes++;
     if (ibytes == CELL_W) {
-        beetle_store_cell(current, icell);  current = here;  here += CELL_W;
-        icell = 0;  ibytes = 0;  instrs++;
+        current = here;  here += CELL_W;
+        icell = 0;  ibytes = 0;
     }
 }
 
@@ -66,12 +67,6 @@ void plit(void (*literal)(void))
 void start_ass(void)
 {
     ibytes = 0;  icell = 0;  current = here;  here += CELL_W;
-}
-
-void end_ass(void)
-{
-    if (ibytes != 0) beetle_store_cell(current, icell);
-    else instrs--;
 }
 
 static const char *mnemonic[UINT8_MAX + 1] = { "NEXT00", "DUP", "DROP", "SWAP", "OVER",

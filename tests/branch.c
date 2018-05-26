@@ -29,37 +29,28 @@ int main(void)
     here = EP;	// start assembling at 0
     start_ass();
     ass(O_BRANCHI); ilit(23);
-    end_ass();
-    instrs++;	// correct instrs after final immediate literal
 
     here = 96;	// start assembling at 96
     start_ass();
     ass(O_BRANCHI); ilit(-13);
-    end_ass();
-    instrs++;	// correct instrs after final immediate literal
 
     here = 48;	// start assembling at 48
     start_ass();
     ass(O_BRANCH); lit(10000);
-    end_ass();
 
     here = 10000;    // start assembling at 10000
     start_ass();
     ass(O_ONE); ass(O_QBRANCHI); ilit(0);
     ass(O_ONE); ass(O_QBRANCH); lit(0); ass(O_ZERO); ass(O_QBRANCH); lit(11000);
-    end_ass();
 
     here = 11000;    // start assembling at 11000
     start_ass();
     ass(O_ZERO); ass(O_QBRANCHI); ilit(3);
-    end_ass();
-    instrs++;	// correct instrs after final immediate literal
 
     here = 11016;    // start assembling at 11016
     start_ass();
     ass(O_LITERALI); ilit(64);
     ass(O_EXECUTE);
-    end_ass();
 
     here = 64;	// start assembling at 64
     start_ass();
@@ -67,24 +58,24 @@ int main(void)
     ass(O_LITERALI); ilit(64);
     ass(O_LITERALI); ilit(20);
     ass(O_TUCK); ass(O_STORE); ass(O_FEXECUTE);
-    end_ass();
 
     here = 200;	// start assembling at 200
     start_ass();
-    ass(O_CALL); lit(300); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
+    ass(O_CALL); lit(300); ilit(0);
     ass(O_EXIT);
-    end_ass();
-    instrs -= 3; // correct instrs for NEXT00s
 
     here = 300;	// start assembling at 300
     start_ass();
     ass(O_EXIT);
-    end_ass();
 
     NEXT;   // load first instruction word
 
-    assert(instrs == sizeof(correct) / sizeof(correct[0]));
-    for (int i = 0; i < instrs; i++) {
+    if (instrs != sizeof(correct) / sizeof(correct[0]) - 1) {
+        printf("Error in branch tests: actual instrs: %d; expected: %lu\n",
+               instrs, sizeof(correct) / sizeof(correct[0]) - 1);
+        exit(1);
+    }
+    for (int i = 0; i <= instrs; i++) {
         printf("Instruction %d: EP = %u; should be %u\n\n", i, EP, correct[i]);
         if (correct[i] != EP) {
             printf("Error in branch tests: EP = %"PRIu32"\n", EP);

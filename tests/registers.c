@@ -34,7 +34,6 @@ int main(void)
     lit(168); // 42 CELLS
     ass(O_THROWFETCH); ass(O_DROP);  ass(O_MEMORYFETCH); ass(O_DROP);
     ass(O_BADFETCH); ass(O_NOT_ADDRESSFETCH);
-    end_ass();
 
     NEXT;   // load first instruction word
 
