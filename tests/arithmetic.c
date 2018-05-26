@@ -45,20 +45,18 @@ int main(void)
     ass(O_ABS); ass(O_ABS); ass(O_ONE); ass(O_MAX);
     ass(O_MCELL); ass(O_MIN); ass(O_LITERALI); ilit(3);
     ass(O_SSLASHREM); ass(O_DROP); ass(O_LITERALI); ilit(-2);
-    ass(O_USLASHMOD); ass(O_NEXTFF);
+    ass(O_USLASHMOD);
 
     NEXT;   // load first instruction word
 
-    for (int i = 0; i <= instrs - instrs / 5; i++) {
+    for (size_t i = 0; i < sizeof(correct) / sizeof(correct[0]); i++) {
         show_data_stack();
-        printf("Correct stack: %s\n\n", correct[i]);
-        if (strcmp(correct[i], val_data_stack())) {
+        printf("Correct stack: %s\n\n", correct[i - i / 5]);
+        if (strcmp(correct[i - i / 5], val_data_stack())) {
             printf("Error in arithmetic tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
         single_step();
-        if (I == O_NEXT00)
-            i--;
         printf("I = %s\n", disass(I));
     }
 
