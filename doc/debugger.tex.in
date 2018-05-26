@@ -229,7 +229,7 @@ the number of bytes must be a multiple of four. An error message is displayed
 if the start address is less than or equal to the end address, or if either
 the address or number of bytes is not aligned or is out of range.
 
-The command {\tt COUNTS} displays, if {\tt CHECKED} is 1, the number of times
+The command {\tt COUNTS} displays the number of times
 that each Beetle instruction has been executed during {\tt STEP} or {\tt TRACE} execution since the last initialisation
 (including loads).
 
