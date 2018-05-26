@@ -100,7 +100,7 @@ _GL_ATTRIBUTE_CONST const char *disass(BYTE opcode)
     return mnemonic[opcode];
 }
 
-_GL_ATTRIBUTE_PURE BYTE toass(char *token)
+_GL_ATTRIBUTE_PURE BYTE toass(const char *token)
 {
     for (int i = 0; i < 0x62; i++)
         if (strcmp(token, mnemonic[i]) == 0) return i;
