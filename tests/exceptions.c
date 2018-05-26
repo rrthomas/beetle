@@ -53,12 +53,10 @@ int main(void)
     // test 12: test invalid 'THROW contents
     ass(O_LITERAL); lit(0xffffffec);
     ass(O_DUP); ass(O_THROWSTORE); ass(O_THROW);
-    end_ass();
 
     here = 200;	// start assembling at 200
     start_ass();
     ass(O_HALT);
-    end_ass();
 
     THROW = 200;   // set address of exception handler
 

@@ -47,7 +47,6 @@ int main(void)
     ass(O_MCELL); ass(O_MIN); ass(O_LITERALI); ilit(3);
     ass(O_SSLASHREM); ass(O_DROP); ass(O_LITERALI); ilit(-2);
     ass(O_USLASHMOD); ass(O_NEXTFF);
-    end_ass();
 
     NEXT;   // load first instruction word
 

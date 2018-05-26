@@ -61,7 +61,6 @@ int main(void)
     ass(O_ONE); ass(O_LITERAL); lit(size * CELL_W + 1); ass(O_CSTORE);
     ass(O_LITERAL); lit(size * CELL_W + 1); ass(O_CFETCH); ass(O_DROP);
     ass(O_LITERAL); lit(size * CELL_W + 8); ass(O_DUP); ass(O_CSTORE);
-    end_ass();
 
     NEXT;   // load first instruction word
 

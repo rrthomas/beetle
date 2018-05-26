@@ -41,7 +41,6 @@ int main(void)
     ass(O_ONE); ass(O_TOR); ass(O_CELL); ass(O_TOR);
     ass(O_MONE); ass(O_TOR); ass(O_J); ass(O_NEXT00);
     ass(O_DUP); ass(O_UNLOOP);
-    end_ass();
 
     NEXT;
 

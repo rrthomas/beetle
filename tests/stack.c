@@ -33,7 +33,6 @@ int main(void)
     ass(O_PICK); ass(O_PICK); ass(O_DUP); ass(O_ROLL);
     ass(O_DUP); ass(O_ROLL); ass(O_TOR); ass(O_RFETCH);
     ass(O_RFROM); ass(O_QDUP); ass(O_ZERO); ass(O_QDUP);
-    end_ass();
 
     NEXT;   // load first instruction word
 

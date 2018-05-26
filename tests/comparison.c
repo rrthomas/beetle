@@ -77,7 +77,6 @@ int main(void)
     ass(O_GREATER0); ass(O_GREATER0); ass(O_EQUAL0); ass(O_EQUAL0);
     ass(O_ULESS); ass(O_ULESS); ass(O_ULESS); ass(O_ULESS);
     ass(O_UGREATER); ass(O_UGREATER); ass(O_UGREATER); ass(O_UGREATER);
-    end_ass();
 
     NEXT;   // load first instruction word
 

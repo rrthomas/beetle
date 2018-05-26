@@ -26,7 +26,6 @@ void ilit(CELL literal);    // assemble an immediate literal
 void plit(void (*literal)(void));  // assemble a machine-dependent function pointer literal,
                                    // including the relevant LITERAL instructions
 void start_ass(void);	// start assembly, initialising variables
-void end_ass(void);  // end assembly, storing any pending instructions
 const char *disass(BYTE opcode);  // disassemble an instruction
 BYTE toass(char *token);    // convert a instruction to its opcode
 

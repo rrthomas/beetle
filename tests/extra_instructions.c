@@ -27,7 +27,6 @@ int main(void)
 
     start_ass();
     ass(OX_ARGC); ass(O_ONE); ass(OX_ARG);
-    end_ass();
 
     NEXT;   // load first instruction word
 

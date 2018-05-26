@@ -26,7 +26,6 @@ int main(void)
     start_ass();
     ass(O_LITERALI); ilit(37);
     ass(O_HALT);
-    end_ass();
 
     NEXT;
     CELL ret = run();
