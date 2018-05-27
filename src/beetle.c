@@ -665,6 +665,7 @@ static void do_command(int no)
 
 static void parse(char *input)
 {
+    // Handle shell command
     if (input[0] == '!') {
         int result = system(input + 1);
         if (result == -1) {
