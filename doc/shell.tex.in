@@ -95,6 +95,10 @@ There are three types of numeric meta-parameter: \angb{number}, which is any
 number; \angb{address}, which is a valid address (see~\cite[section~\ref{exceptions}]{beetle});
 and \angb{value}, which is a number or an opcode.
 
+\subsection{Comments}
+
+The string {\tt //} starts a comment, which runs to the end of the input line, and is ignored.
+
 \subsection{Registers}
 
 Beetle's registers may be displayed by typing their name. The

@@ -676,6 +676,11 @@ static void parse(char *input)
         } return;
     }
 
+    // Hide any comment from the parser
+    char *comment = strstr(input, "//");
+    if (comment != NULL)
+        *comment = '\0';
+
     char copy[MAXLEN];
     strcpy(copy, input);
     char *token = strtok(copy, strchr(copy, '=') == NULL ? " " : "=");
