@@ -37,6 +37,7 @@ CELL *memory;
 
 #define MAXLEN 80   // Maximum input line length
 
+static bool interactive;
 static jmp_buf env;
 
 static bool debug_on_error = false;
@@ -712,7 +713,7 @@ static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void die(const char *format, ...)
 
 static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void interactive_printf(const char *format, ...)
 {
-    if (!isatty(fileno(stdin)))
+    if (interactive == false)
         return;
 
     va_list args;
@@ -773,6 +774,7 @@ int main(int argc, char *argv[])
     char input[MAXLEN], *nl;
 
     set_program_name(argv[0]);
+    interactive = isatty(fileno(stdin));
 
     // Options string starts with '+' to stop option processing at first non-option, then
     // leading ':' so as to return ':' for a missing arg, not '?'
@@ -844,7 +846,8 @@ int main(int argc, char *argv[])
     interactive_printf("%s\n%s\n\n", BEETLE_VERSION_STRING, BEETLE_COPYRIGHT_STRING);
 
     while (1) {
-        if (setjmp(env) == 0) {
+        int jmp_val = setjmp(env);
+        if (jmp_val == 0) {
             interactive_printf(">");
             if (fgets(input, MAXLEN, stdin) == NULL) {
                 if (feof(stdin)) {
@@ -856,6 +859,7 @@ int main(int argc, char *argv[])
             if ((nl = strrchr(input, '\n')))
                 *nl = '\0';
             parse(input);
-        }
+        } else if (interactive == false)
+            exit(jmp_val);
     }
 }
