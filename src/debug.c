@@ -68,31 +68,37 @@ void start_ass(UCELL addr)
     here = addr;  ibytes = 0;  icell = 0;  current = here;  here += CELL_W;
 }
 
-static const char *mnemonic[UINT8_MAX + 1] = { "NEXT00", "DUP", "DROP", "SWAP", "OVER",
-    "ROT", "-ROT", "TUCK", "NIP", "PICK", "ROLL", "?DUP", ">R", "R>", "R@", "<",
-    ">", "=", "<>", "0<", "0>", "0=", "0<>", "U<", "U>", "0", "1", "-1", "CELL",
-    "-CELL", "+", "-", ">-<", "1+", "1-", "CELL+", "CELL-", "*", "/", "MOD",
-    "/MOD", "U/MOD", "S/REM", "2/", "CELLS", "ABS", "NEGATE", "MAX", "MIN",
-    "INVERT", "AND", "OR", "XOR", "LSHIFT", "RSHIFT", "1LSHIFT", "1RSHIFT", "@",
-    "!", "C@", "C!", "+!", "SP@", "SP!", "RP@", "RP!", "EP@", "S0@", "#S", "R0@", "#R",
-    "'THROW@", "'THROW!", "MEMORY@", "'BAD@", "-ADDRESS@", "BRANCH", "BRANCHI",
-    "?BRANCH", "?BRANCHI", "EXECUTE", "@EXECUTE", "CALL", "CALLI", "EXIT",
-    "(DO)", "(LOOP)", "(LOOP)I", "(+LOOP)", "(+LOOP)I", "UNLOOP", "J",
-    "(LITERAL)", "(LITERAL)I", "THROW", "HALT", "LIB", "LINK",
-    NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "NEXTFF" };
+static const char *mnemonic[UINT8_MAX + 1] = {
+    "NEXT00", "DUP", "DROP", "SWAP", "OVER", "ROT", "-ROT", "TUCK",
+    "NIP", "PICK", "ROLL", "?DUP", ">R", "R>", "R@", "<",
+    ">", "=", "<>", "0<", "0>", "0=", "0<>", "U<",
+    "U>", "0", "1", "-1", "CELL", "-CELL", "+", "-",
+    ">-<", "1+", "1-", "CELL+", "CELL-", "*", "/", "MOD",
+    "/MOD", "U/MOD", "S/REM", "2/", "CELLS", "ABS", "NEGATE", "MAX",
+    "MIN", "INVERT", "AND", "OR", "XOR", "LSHIFT", "RSHIFT", "1LSHIFT",
+    "1RSHIFT", "@", "!", "C@", "C!", "+!", "SP@", "SP!",
+    "RP@", "RP!", "EP@", "S0@", "#S", "R0@", "#R", "'THROW@",
+    "'THROW!", "MEMORY@", "'BAD@", "-ADDRESS@", "BRANCH", "BRANCHI", "?BRANCH", "?BRANCHI",
+    "EXECUTE", "@EXECUTE", "CALL", "CALLI", "EXIT", "(DO)", "(LOOP)", "(LOOP)I",
+    "(+LOOP)", "(+LOOP)I", "UNLOOP", "J", "(LITERAL)", "(LITERAL)I", "THROW", "HALT",
+    "LINK", NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    "ARGC", "ARG", "STDIN_FILENO", "STDOUT_FILENO", "STDERR_FILENO", "OPEN-FILE", "CLOSE-FILE", "READ-FILE",
+    "WRITE-FILE", "FILE-POSITION", "REPOSITION-FILE", "FLUSH-FILE", "RENAME-FILE", "DELETE-FILE", "FILE-SIZE", "RESIZE-FILE",
+    "FILE-STATUS", NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, "NEXTFF" };
 
 _GL_ATTRIBUTE_CONST const char *disass(BYTE opcode)
 {
@@ -102,10 +108,8 @@ _GL_ATTRIBUTE_CONST const char *disass(BYTE opcode)
 
 _GL_ATTRIBUTE_PURE BYTE toass(const char *token)
 {
-    for (int i = 0; i < 0x62; i++)
-        if (strcmp(token, mnemonic[i]) == 0) return i;
-
-    if (strcmp(token, mnemonic[0xff]) == 0) return 0xff;
+    for (size_t i = 0; i < sizeof(mnemonic) / sizeof(mnemonic[0]); i++)
+        if (mnemonic[i] && strcmp(token, mnemonic[i]) == 0) return i;
 
     return O_UNDEFINED;
 }
