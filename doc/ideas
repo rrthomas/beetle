@@ -1,4 +1,0 @@
-Auto-realloc stacks when they run out of space.
-
-Compile at load time using ideas in DDJ article
-(~/notmine/Computer/Language/forth/LoadCompilation).
