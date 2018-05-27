@@ -12,7 +12,7 @@ SUBDIRS = lib src tests doc
 
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = m4/gnulib-cache.m4 README.md
+EXTRA_DIST = m4/gnulib-cache.m4 demo/hello.txt README.md
 
 release: distcheck
 	git diff --exit-code && \

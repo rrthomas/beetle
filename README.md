@@ -63,6 +63,16 @@ Run `beetle` (see `beetle --help` and `debugger.pdf` for documentation). If
 you have `rlwrap`, you can run `beetlei` instead to get readline support.
 
 
+### Demo: Hello, world!
+
+In `demo/hello.txt` is a command file for the debugger that demonstrates its use as a crude assembler. Run the following commands to see it in action:
+
+```
+beetle < demo/hello.txt
+beetle hello.obj
+```
+
+
 ## Documentation
 
 The canonical documentation consists of:
