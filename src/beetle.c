@@ -125,7 +125,7 @@ static BYTE parse_instruction(const char *token)
 }
 
 
-static long single_arg(const char *s, bool *byte)
+static long single_arg(const char *s, int *bytes)
 {
     if (s == NULL) {
         printf("Too few arguments\n");
@@ -145,18 +145,8 @@ static long single_arg(const char *s, bool *byte)
         longjmp(env, 1);
     }
 
-    if (byte != NULL) {
-        if (s[0] == '$' && len < 4)
-            *byte = true;
-        else {
-            if ((unsigned long)n < 10)
-                *byte = len == 1;
-            else if ((unsigned long)n < 100)
-                *byte = len == 2;
-            else if ((unsigned long)n < 255)
-                *byte = len == 3;
-        }
-    }
+    if (bytes != NULL)
+        *bytes = byte_size(n);
 
     return n;
 }
@@ -273,14 +263,14 @@ static void do_assign(char *token)
 {
     char *number = strtok(NULL, " ");
     long value;
-    bool byte = false;
+    int bytes = 4;
 
     upper(number);
     value = parse_instruction(number);
     if (value != O_UNDEFINED)
-        byte = true;
+        bytes = 1;
     else
-        value = single_arg(number, &byte);
+        value = single_arg(number, &bytes);
 
     int no = search(token, regist, registers);
     switch (no) {
@@ -303,8 +293,8 @@ static void do_assign(char *token)
             start_ass(EP);
             break;
         case r_I:
-            if (value > 255) {
-                printf("I must be assigned a byte\n");
+            if (bytes > 1) {
+                printf("Only one byte can be assigned to I\n");
                 break;
             }
             I = value;
@@ -328,12 +318,12 @@ static void do_assign(char *token)
                 CELL adr = (CELL)single_arg(token, NULL);
 
                 check_valid(adr, "Address");
-                if (!IS_ALIGNED(adr) && byte == false) {
+                if (!IS_ALIGNED(adr) && bytes > 1) {
                     printf("Only a byte can be assigned to an unaligned "
                         "address\n");
                     return;
                 }
-                if (byte == true)
+                if (bytes == 1)
                     beetle_store_byte(adr, value);
                 else
                     beetle_store_cell(adr, value);
@@ -626,19 +616,22 @@ static void do_command(int no)
     case c_ILITERAL:
     case c_LITERAL:
         {
-            bool byte;
-            CELL value = (CELL)single_arg(strtok(NULL, ""), &byte);
+            int bytes;
+            CELL value = (CELL)single_arg(strtok(NULL, ""), &bytes);
 
             switch (no) {
             case c_BLITERAL:
-                if (!byte) {
+                if (bytes > 1) {
                     printf("The argument to BLITERAL must fit in a byte\n");
                     return;
                 }
                 ass((BYTE)value);
                 break;
             case c_ILITERAL:
-                ilit(value); // FIXME: make ilit check its argument
+                if (ilit(value) == false) {
+                    printf("ILITERAL %"PRId32" does not fit in the current instruction word\n", value);
+                    return;
+                }
                 break;
             case c_LITERAL:
                 lit(value);

@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <inttypes.h>
+
+#include "verify.h"
 #include "xvasprintf.h"
 
 #include "beetle.h"
@@ -27,6 +29,28 @@ static CELL icell;  // accumulator for instructions being assembled
 static UCELL current;	// where the current instruction word will be stored
 static UCELL here; // where we assemble the next instruction word or literal
 
+
+// Return number of bytes required for a CELL-sized quantity
+// After https://stackoverflow.com/questions/2589096/find-most-significant-bit-left-most-that-is-set-in-a-bit-array
+verify(CELL_BIT == 32); // Code is hard-wired for 32 bits
+_GL_ATTRIBUTE_CONST int byte_size(CELL v)
+{
+    static const int pos[32] = {
+        0, 9, 1, 10, 13, 21, 2, 29, 11, 14, 16, 18, 22, 25, 3, 30,
+        8, 12, 20, 28, 15, 17, 24, 7, 19, 27, 23, 6, 26, 5, 4, 31
+    };
+
+    if (v < 0)
+        v = -v;
+
+    v |= v >> 1; // first round down to one less than a power of 2
+    v |= v >> 2;
+    v |= v >> 4;
+    v |= v >> 8;
+    v |= v >> 16;
+
+    return pos[(UCELL)(v * 0x07C4ACDDU) >> 27] / 8 + 1;
+}
 
 void ass(BYTE instr)
 {
@@ -45,11 +69,15 @@ void lit(CELL literal)
     else { beetle_store_cell(here, literal);  here += CELL_W; }
 }
 
-void ilit(CELL literal)
+bool ilit(CELL literal)
 {
+    if (byte_size(literal) > CELL_W - ibytes)
+        return false;
+
     icell |= literal << ibytes * 8;
     beetle_store_cell(current, icell);  current = here;  here += CELL_W;
     icell = 0;  ibytes = 0;
+    return true;
 }
 
 void plit(void (*literal)(void))

@@ -15,9 +15,11 @@
 #include "beetle.h"     // main header
 
 
+int byte_size(CELL v); // return number of significant bytes in a CELL quantity
+
 void ass(BYTE instr);	// assemble an instruction
 void lit(CELL literal);	// assemble a cell literal
-void ilit(CELL literal);    // assemble an immediate literal
+bool ilit(CELL literal);    // assemble an immediate literal, returning false if it doesn't fit
 void plit(void (*literal)(void));  // assemble a machine-dependent function pointer literal,
                                    // including the relevant LITERAL instructions
 void start_ass(UCELL addr);	// start assembly, initialising variables
