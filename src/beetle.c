@@ -72,7 +72,7 @@ static long count[256];
 static void check_valid(UCELL adr, const char *quantity)
 {
     if (native_address(adr, false) == NULL) {
-        printf("%s is invalid\n", quantity);
+        fprintf(stderr, "%s is invalid\n", quantity);
         longjmp(env, 1);
     }
 }
@@ -80,7 +80,7 @@ static void check_valid(UCELL adr, const char *quantity)
 static void check_aligned(UCELL adr, const char *quantity)
 {
     if (!IS_ALIGNED(adr)) {
-        printf("%s must be cell-aligned\n", quantity);
+        fprintf(stderr, "%s must be cell-aligned\n", quantity);
         longjmp(env, 1);
     }
 }
@@ -90,7 +90,7 @@ static void check_range(UCELL start, UCELL end, const char *quantity)
     check_valid(start, quantity);
     check_valid(end, quantity);
     if (start >= end) {
-        printf("Start address must be less than end address\n");
+        fprintf(stderr, "Start address must be less than end address\n");
         longjmp(env, 1);
     }
 }
@@ -120,7 +120,7 @@ static BYTE parse_instruction(const char *token)
     if (token[0] == 'O') {
         opcode = toass(token + 1);
         if (opcode == O_UNDEFINED)
-            printf("Invalid opcode\n");
+            fprintf(stderr, "Invalid opcode\n");
     }
     return opcode;
 }
@@ -129,7 +129,7 @@ static BYTE parse_instruction(const char *token)
 static long single_arg(const char *s, int *bytes)
 {
     if (s == NULL) {
-        printf("Too few arguments\n");
+        fprintf(stderr, "Too few arguments\n");
         longjmp(env, 1);
     }
     size_t len = strlen(s);
@@ -142,7 +142,7 @@ static long single_arg(const char *s, int *bytes)
         n = strtol(s, &endp, 10);
 
     if (endp != &s[len]) {
-        printf("Invalid number\n");
+        fprintf(stderr, "Invalid number\n");
         longjmp(env, 1);
     }
 
@@ -156,7 +156,7 @@ static void double_arg(char *s, long *start, long *end)
 {
     char *token, copy[MAXLEN];
     if (s == NULL || (token = strtok(strcpy(copy, s), " +")) == NULL) {
-        printf("Too few arguments\n");
+        fprintf(stderr, "Too few arguments\n");
         longjmp(env, 1);
     }
 
@@ -171,7 +171,7 @@ static void double_arg(char *s, long *start, long *end)
     *start = single_arg(token, NULL);
 
     if ((token = strtok(NULL, " +")) == NULL) {
-        printf("Too few arguments\n");
+        fprintf(stderr, "Too few arguments\n");
         longjmp(env, 1);
     }
 
@@ -287,7 +287,7 @@ static void do_assign(char *token)
         case r_CHECKED:
         case r_ENDISM:
         case r_MEMORY:
-            printf("Can't assign to %s\n", regist[no]);
+            fprintf(stderr, "Can't assign to %s\n", regist[no]);
             break;
         case r_EP:
             EP = value;
@@ -295,7 +295,7 @@ static void do_assign(char *token)
             break;
         case r_I:
             if (bytes > 1) {
-                printf("Only one byte can be assigned to I\n");
+                fprintf(stderr, "Only one byte can be assigned to I\n");
                 break;
             }
             I = value;
@@ -320,7 +320,7 @@ static void do_assign(char *token)
 
                 check_valid(adr, "Address");
                 if (!IS_ALIGNED(adr) && bytes > 1) {
-                    printf("Only a byte can be assigned to an unaligned "
+                    fprintf(stderr, "Only a byte can be assigned to an unaligned "
                         "address\n");
                     return;
                 }
@@ -509,7 +509,7 @@ static void do_command(int no)
 
             FILE *handle = fopen(file, "rb");
             if (handle == NULL) {
-                printf("Cannot open file %s\n", file);
+                fprintf(stderr, "Cannot open file %s\n", file);
                 longjmp(env, 1);
             }
             int ret = load_object(handle, adr);
@@ -517,13 +517,13 @@ static void do_command(int no)
 
             switch (ret) {
             case -1:
-                printf("Address out of range or unaligned, or module too large\n");
+                fprintf(stderr, "Address out of range or unaligned, or module too large\n");
                 break;
             case -2:
-                printf("Module header invalid\n");
+                fprintf(stderr, "Module header invalid\n");
                 break;
             case -3:
-                printf("Error while loading module\n");
+                fprintf(stderr, "Error while loading module\n");
                 break;
             default:
                 break;
@@ -597,7 +597,7 @@ static void do_command(int no)
 
             FILE *handle;
             if ((handle = fopen(file, "wb")) == NULL) {
-                printf("Cannot open file %s\n", file);
+                fprintf(stderr, "Cannot open file %s\n", file);
                 longjmp(env, 1);
             }
             int ret = save_object(handle, start, (UCELL)((end - start) / CELL_W));
@@ -605,10 +605,10 @@ static void do_command(int no)
 
             switch (ret) {
             case -1:
-                printf("Save area contains an invalid address\n");
+                fprintf(stderr, "Save area contains an invalid address\n");
                 break;
             case -3:
-                printf("Error while saving module\n");
+                fprintf(stderr, "Error while saving module\n");
                 break;
             default:
                 break;
@@ -627,14 +627,14 @@ static void do_command(int no)
             switch (no) {
             case c_BLITERAL:
                 if (bytes > 1) {
-                    printf("The argument to BLITERAL must fit in a byte\n");
+                    fprintf(stderr, "The argument to BLITERAL must fit in a byte\n");
                     longjmp(env, 1);
                 }
                 ass((BYTE)value);
                 break;
             case c_ILITERAL:
                 if (ilit(value) == false) {
-                    printf("ILITERAL %"PRId32" does not fit in the current instruction word\n", value);
+                    fprintf(stderr, "ILITERAL %"PRId32" does not fit in the current instruction word\n", value);
                     longjmp(env, 1);
                 }
                 break;
@@ -651,10 +651,10 @@ static void do_command(int no)
 
     switch (exception) {
     case -9:
-        printf("Invalid address\n");
+        fprintf(stderr, "Invalid address\n");
         longjmp(env, 1);
     case -23:
-        printf("Address alignment exception\n");
+        fprintf(stderr, "Address alignment exception\n");
         longjmp(env, 1);
     default:
     case 0:
@@ -668,10 +668,10 @@ static void parse(char *input)
     if (input[0] == '!') {
         int result = system(input + 1);
         if (result == -1) {
-            printf("Could not run command\n");
+            fprintf(stderr, "Could not run command\n");
             longjmp(env, 1);
         } else if (result != 0 && WIFEXITED(result)) {
-            printf("Command exited with value %d\n", WEXITSTATUS(result));
+            fprintf(stderr, "Command exited with value %d\n", WEXITSTATUS(result));
             longjmp(env, 1);
         } return;
     }
