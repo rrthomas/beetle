@@ -510,7 +510,7 @@ static void do_command(int no)
             FILE *handle = fopen(file, "rb");
             if (handle == NULL) {
                 printf("Cannot open file %s\n", file);
-                return;
+                longjmp(env, 1);
             }
             int ret = load_object(handle, adr);
             fclose(handle);
@@ -528,6 +528,8 @@ static void do_command(int no)
             default:
                 break;
             }
+            if (ret < 0)
+                longjmp(env, 1);
         }
         break;
     case c_QUIT:
@@ -596,7 +598,7 @@ static void do_command(int no)
             FILE *handle;
             if ((handle = fopen(file, "wb")) == NULL) {
                 printf("Cannot open file %s\n", file);
-                return;
+                longjmp(env, 1);
             }
             int ret = save_object(handle, start, (UCELL)((end - start) / CELL_W));
             fclose(handle);
@@ -611,6 +613,8 @@ static void do_command(int no)
             default:
                 break;
             }
+            if (ret < 0)
+                longjmp(env, 1);
         }
         break;
     case c_BLITERAL:
@@ -624,14 +628,14 @@ static void do_command(int no)
             case c_BLITERAL:
                 if (bytes > 1) {
                     printf("The argument to BLITERAL must fit in a byte\n");
-                    return;
+                    longjmp(env, 1);
                 }
                 ass((BYTE)value);
                 break;
             case c_ILITERAL:
                 if (ilit(value) == false) {
                     printf("ILITERAL %"PRId32" does not fit in the current instruction word\n", value);
-                    return;
+                    longjmp(env, 1);
                 }
                 break;
             case c_LITERAL:
@@ -648,10 +652,10 @@ static void do_command(int no)
     switch (exception) {
     case -9:
         printf("Invalid address\n");
-        break;
+        longjmp(env, 1);
     case -23:
         printf("Address alignment exception\n");
-        break;
+        longjmp(env, 1);
     default:
     case 0:
         break;
@@ -663,11 +667,13 @@ static void parse(char *input)
 {
     if (input[0] == '!') {
         int result = system(input + 1);
-        if (result == -1)
+        if (result == -1) {
             printf("Could not run command\n");
-        else if (result != 0 && WIFEXITED(result))
+            longjmp(env, 1);
+        } else if (result != 0 && WIFEXITED(result)) {
             printf("Command exited with value %d\n", WEXITSTATUS(result));
-        return;
+            longjmp(env, 1);
+        } return;
     }
 
     char copy[MAXLEN];
