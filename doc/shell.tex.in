@@ -57,8 +57,8 @@ for {\tt FROM}. The main memory is zeroed.
 The shell is command-driven. All commands and register names may be
 abbreviated to their first few letters; where ambiguities are resolved with a set order of precedence, aimed at giving the most
 commonly used commands the shortest minimum abbreviations, and commands
-take precedence over registers, which take precedence over instructions.
-Alternatively, if you have {\tt beetlei} (which uses {\tt rlwrap}), you can use Tab-completion (press the Tab key to show possible commands, instructions and registers starting with the letters you have typed so far).
+take precedence over registers.
+Alternatively, if you have {\tt beetlei} (which uses {\tt rlwrap}), you can use Tab-completion (press the Tab key to show possible commands and instructions starting with the letters you have typed so far).
 All commands are case-insensitive.
 
 The following registers are renamed for ease of typing:
