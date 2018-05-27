@@ -65,8 +65,9 @@ void ass(BYTE instr)
 
 void lit(CELL literal)
 {
-    if (ibytes == 0) { here -= CELL_W;  beetle_store_cell(here, literal);  here += CELL_W * 2; current += CELL_W; }
-    else { beetle_store_cell(here, literal);  here += CELL_W; }
+    if (ibytes == 0) { beetle_store_cell(here - CELL_W, literal);  current += CELL_W; }
+    else { beetle_store_cell(here, literal); }
+    here += CELL_W;
 }
 
 bool ilit(CELL literal)
