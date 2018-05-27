@@ -71,5 +71,5 @@ AC_C_BIGENDIAN
 
 dnl Generate output files
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile lib/Makefile src/Makefile tests/Makefile doc/Makefile doc/cbeetle.tex doc/debugger.tex])
+AC_CONFIG_FILES([Makefile lib/Makefile src/Makefile tests/Makefile doc/Makefile doc/cbeetle.tex doc/shell.tex])
 AC_OUTPUT

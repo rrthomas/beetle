@@ -24,7 +24,7 @@ LATEX_SRCS = \
 LATEX_PDFS = \
 	beetle.pdf \
 	cbeetle.pdf \
-	debugger.pdf \
+	shell.pdf \
 	papers/intro.pdf \
 	papers/litencode.pdf \
 	papers/tradeoffs.pdf
@@ -41,9 +41,9 @@ pdf-local: $(LATEX_PDFS)
 MAINTAINERCLEANFILES = $(LATEX_PDFS)
 
 clean-local:
-	$(LATEXMK) -r $(srcdir)/latexmkrc -C -f $(LATEX_SRCS) $(builddir)/cbeetle.tex $(builddir)/debugger.tex
+	$(LATEXMK) -r $(srcdir)/latexmkrc -C -f $(LATEX_SRCS) $(builddir)/cbeetle.tex $(builddir)/shell.tex
 
-EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS) cbeetle.tex.in debugger.tex.in latexmkrc
+EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS) cbeetle.tex.in shell.tex.in latexmkrc
 
 # TODO: mv works around a bug in latexmk < 4.54, which sets $out_dir when it
 # shouldn't. Remove when we can require latexmk >= 4.54.

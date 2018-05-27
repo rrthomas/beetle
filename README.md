@@ -10,10 +10,10 @@ and hand-optimised assembler (for ARM). The C implementation should run on
 any POSIX system; the assembler version runs pForth (see below) at up to
 half the speed of the corresponding native code compiler and generates more
 compact code. Beetle is designed to be embedded in other programs; a simple
-debugger has been written to demonstrate this ability. In the C
-implementation, all memory references are bounds checked. An I/O library is
-implemented; access to native code routines is also possible, allowing
-Beetle and C programs to call each other.
+shell has been written to demonstrate this ability. In the C implementation,
+all memory references are bounds checked. An I/O library is implemented;
+access to native code routines is also possible, allowing Beetle and C
+programs to call each other.
 
 This package comprises the definition of the Beetle virtual machine, a
 virtual machine specialised for the execution of Forth, and an
@@ -59,13 +59,13 @@ documentation to be built correctly, GNU Make should be used.
 
 ## Use
 
-Run `beetle` (see `beetle --help` and `debugger.pdf` for documentation). If
+Run `beetle` (see `beetle --help` and `shell.pdf` for documentation). If
 you have `rlwrap`, you can run `beetlei` instead to get readline support.
 
 
 ### Demo: Hello, world!
 
-In `demo/hello.txt` is a command file for the debugger that demonstrates its use as a crude assembler. Run the following commands to see it in action:
+In `demo/hello.txt` is a command file for the shell that demonstrates its use as a crude assembler. Run the following commands to see it in action:
 
 ```
 beetle < demo/hello.txt
@@ -81,8 +81,8 @@ The canonical documentation consists of:
 The design of the Beetle Forth virtual machine is described. Essential reading for those programming or implementing the VM.
 * _[An implementation of the Beetle virtual machine for POSIX](doc/cbeetle.pdf)_  
 A portable implementation of Beetle is described, with instructions for porting, compiling and running it.
-* _[A simple debugger for the Beetle virtual machine](doc/debugger.pdf)_  
-The user guide for Beetle’s debugger.
+* _[A simple shell for the Beetle virtual machine](doc/shell.pdf)_  
+The user guide for Beetle’s shell.
 
 The following documents contain extra material on Beetle’s design, but many details are out of date:
 

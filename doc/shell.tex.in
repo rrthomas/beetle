@@ -1,5 +1,5 @@
 %
-% Documentation for Beetle debugger
+% Documentation for Beetle shell
 %
 % Reuben Thomas
 %
@@ -26,7 +26,7 @@
 \newcommand{\angb}[1]{$\langle #1\rangle$}
 
 
-\title{A simple debugger for the\\Beetle virtual machine\\version @VERSION@}
+\title{A simple shell for the\\Beetle virtual machine\\version @VERSION@}
 \author{Reuben Thomas}
 \date{17th April 2018}
 
@@ -36,9 +36,9 @@
 
 \section{Introduction}
 
-This is the manual for the debugger for C Beetle~\cite{cbeetle}, which provides access to Beetle's registers, allows the stacks to be displayed, and provides disassembly and single-stepping.
+This is the manual for the shell for C Beetle~\cite{cbeetle}, which provides access to Beetle's registers, allows the stacks to be displayed, and provides disassembly and single-stepping.
 
-There are two main ways to access the debugger: either start {\tt beetle} with no arguments, or, when passing an object file on the command line, give the {\tt -\/-debug} option, which causes the debugger to be entered on exception (interpreted as a negative value being passed to {\tt HALT}). The debugger can also be used in batch mode, by supplying commands on standard input. Refer to the man page \textbf{beetle}(1) or {\tt beetle -\/-help} for more details and options.
+There are two main ways to access the shell: either start {\tt beetle} with no arguments, or, when passing an object file on the command line, give the {\tt -\/-debug} option, which causes the shell to be entered on exception (interpreted as a negative value being passed to {\tt HALT}). The shell can also be used in batch mode, by supplying commands on standard input. Refer to the man page \textbf{beetle}(1) or {\tt beetle -\/-help} for more details and options.
 
 
 \section{Initialisation}
@@ -54,7 +54,7 @@ for {\tt FROM}. The main memory is zeroed.
 \section{Commands}
 \label{commands}
 
-The debugger is command-driven. All commands and register names may be
+The shell is command-driven. All commands and register names may be
 abbreviated to their first few letters; where ambiguities are resolved with a set order of precedence, aimed at giving the most
 commonly used commands the shortest minimum abbreviations, and commands
 take precedence over registers, which take precedence over instructions.
@@ -66,7 +66,7 @@ The following registers are renamed for ease of typing:
 
 \begin{center}
 \begin{tabular}{cc} \toprule
-\bf Register & \bf Name in debugger \\ \midrule
+\bf Register & \bf Name in shell \\ \midrule
 {\tt 'THROW} & {\tt THROW} \\
 {\tt 'BAD} & {\tt BAD} \\
 {\tt -ADDRESS} & {\tt NOT\_ADDRESS} \\ \bottomrule
@@ -109,7 +109,7 @@ of range address to a register which must hold an aligned address, such as
 {\tt SP}. The {\tt FROM} command (see section~\ref{from}) should be used in
 preference to assigning to {\tt EP}.
 
-Two additional pseudo-registers are provided by the debugger: they are
+Two additional pseudo-registers are provided by the shell: they are
 called {\tt S0} and {\tt R0}, and are the address of the base of the data and
 return stacks respectively. They are set to the initial values of {\tt RP}
 and {\tt SP}, and are provided so that they can be changed if the stacks are
@@ -154,7 +154,7 @@ range or unaligned, an appropriate error message is displayed.
 {\tt ILITERAL} \angb{number}
 \end{center}
 
-Code and literal data values may be directly assembled into memory. Assembly starts at the last value explicitly assigned to {\tt EP} in the debugger, defaulting to \$0 whenever Beetle is initialised (see section~\ref{uifaceinit}). An opcode or byte literal ({\tt BLITERAL}) takes one byte, and a cell literal ({\tt LITERAL}) is stored in the next whole cell. an inline literal ({\tt ILITERAL}) is stored in the remainder of the current cell, if it fits; otherwise an error is given.
+Code and literal data values may be directly assembled into memory. Assembly starts at the last value explicitly assigned to {\tt EP} in the shell, defaulting to \$0 whenever Beetle is initialised (see section~\ref{uifaceinit}). An opcode or byte literal ({\tt BLITERAL}) takes one byte, and a cell literal ({\tt LITERAL}) is stored in the next whole cell. an inline literal ({\tt ILITERAL}) is stored in the remainder of the current cell, if it fits; otherwise an error is given.
 
 Each cell is always filled before moving on to the next available cell, so for example the sequence
 
