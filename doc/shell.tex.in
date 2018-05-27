@@ -79,7 +79,7 @@ containing extraneous characters after a valid command are generally
 accepted, and the extra characters ignored.
 
 Numbers are all integral, and may be given in either decimal or hexadecimal
-(which must be followed directly by ``h'' or ``H''), with an optional minus
+(which must be preceded by ``\$''), with an optional minus
 sign.
 
 For some arguments a machine instruction may also be used, preceded by ``{\tt
