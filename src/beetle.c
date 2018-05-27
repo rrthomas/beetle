@@ -38,9 +38,39 @@ CELL *memory;
 #define MAXLEN 80   // Maximum input line length
 
 static bool interactive;
+static unsigned long lineno;
 static jmp_buf env;
 
 static bool debug_on_error = false;
+
+static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 0) void verror(const char *format, va_list args)
+{
+    fprintf(stderr, "beetle:");
+    if (!interactive)
+        fprintf(stderr, "%lu:", lineno);
+    fprintf(stderr, " ");
+    vfprintf(stderr, format, args);
+    fprintf(stderr, "\n");
+    exit(1);
+}
+
+static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void fatal(const char *format, ...)
+{
+    va_list args;
+
+    va_start(args, format);
+    verror(format, args);
+    longjmp(env, 1);
+}
+
+static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void die(const char *format, ...)
+{
+    va_list args;
+
+    va_start(args, format);
+    verror(format, args);
+    exit(1);
+}
 
 static const char *command[] = {
 #define C(cmd) #cmd,
@@ -71,28 +101,25 @@ static long count[256];
 
 static void check_valid(UCELL adr, const char *quantity)
 {
-    if (native_address(adr, false) == NULL) {
-        fprintf(stderr, "%s is invalid\n", quantity);
-        longjmp(env, 1);
-    }
+    if (native_address(adr, false) == NULL)
+        fatal("%s is invalid", quantity);
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=pure"
 static void check_aligned(UCELL adr, const char *quantity)
 {
-    if (!IS_ALIGNED(adr)) {
-        fprintf(stderr, "%s must be cell-aligned\n", quantity);
-        longjmp(env, 1);
-    }
+    if (!IS_ALIGNED(adr))
+        fatal("%s must be cell-aligned", quantity);
 }
+#pragma GCC diagnostic pop
 
 static void check_range(UCELL start, UCELL end, const char *quantity)
 {
     check_valid(start, quantity);
     check_valid(end, quantity);
-    if (start >= end) {
-        fprintf(stderr, "Start address must be less than end address\n");
-        longjmp(env, 1);
-    }
+    if (start >= end)
+        fatal("start address must be less than end address");
 }
 
 static void upper(char *s)
@@ -120,7 +147,7 @@ static BYTE parse_instruction(const char *token)
     if (token[0] == 'O') {
         opcode = toass(token + 1);
         if (opcode == O_UNDEFINED)
-            fprintf(stderr, "Invalid opcode\n");
+            fatal("invalid opcode");
     }
     return opcode;
 }
@@ -128,10 +155,8 @@ static BYTE parse_instruction(const char *token)
 
 static long single_arg(const char *s, int *bytes)
 {
-    if (s == NULL) {
-        fprintf(stderr, "Too few arguments\n");
-        longjmp(env, 1);
-    }
+    if (s == NULL)
+        fatal("too few arguments");
     size_t len = strlen(s);
 
     long n;
@@ -141,10 +166,8 @@ static long single_arg(const char *s, int *bytes)
     else
         n = strtol(s, &endp, 10);
 
-    if (endp != &s[len]) {
-        fprintf(stderr, "Invalid number\n");
-        longjmp(env, 1);
-    }
+    if (endp != &s[len])
+        fatal("invalid number");
 
     if (bytes != NULL)
         *bytes = byte_size(n);
@@ -155,10 +178,8 @@ static long single_arg(const char *s, int *bytes)
 static void double_arg(char *s, long *start, long *end)
 {
     char *token, copy[MAXLEN];
-    if (s == NULL || (token = strtok(strcpy(copy, s), " +")) == NULL) {
-        fprintf(stderr, "Too few arguments\n");
-        longjmp(env, 1);
-    }
+    if (s == NULL || (token = strtok(strcpy(copy, s), " +")) == NULL)
+        fatal("too few arguments");
 
     size_t i;
     for (i = strlen(token); s[i] == ' ' && i < strlen(s); i++)
@@ -170,10 +191,8 @@ static void double_arg(char *s, long *start, long *end)
 
     *start = single_arg(token, NULL);
 
-    if ((token = strtok(NULL, " +")) == NULL) {
-        fprintf(stderr, "Too few arguments\n");
-        longjmp(env, 1);
-    }
+    if ((token = strtok(NULL, " +")) == NULL)
+        fatal("too few arguments");
 
     *end = single_arg(token, NULL);
 
@@ -287,17 +306,15 @@ static void do_assign(char *token)
         case r_CHECKED:
         case r_ENDISM:
         case r_MEMORY:
-            fprintf(stderr, "Can't assign to %s\n", regist[no]);
+            fatal("cannot assign to %s", regist[no]);
             break;
         case r_EP:
             EP = value;
             start_ass(EP);
             break;
         case r_I:
-            if (bytes > 1) {
-                fprintf(stderr, "Only one byte can be assigned to I\n");
-                break;
-            }
+            if (bytes > 1)
+                fatal("only one byte can be assigned to I");
             I = value;
             break;
         case r_RP:
@@ -319,11 +336,8 @@ static void do_assign(char *token)
                 CELL adr = (CELL)single_arg(token, NULL);
 
                 check_valid(adr, "Address");
-                if (!IS_ALIGNED(adr) && bytes > 1) {
-                    fprintf(stderr, "Only a byte can be assigned to an unaligned "
-                        "address\n");
-                    return;
-                }
+                if (!IS_ALIGNED(adr) && bytes > 1)
+                    fatal("only a byte can be assigned to an unaligned address");
                 if (bytes == 1)
                     beetle_store_byte(adr, value);
                 else
@@ -508,28 +522,24 @@ static void do_command(int no)
                 adr = single_arg(arg, NULL);
 
             FILE *handle = fopen(file, "rb");
-            if (handle == NULL) {
-                fprintf(stderr, "Cannot open file %s\n", file);
-                longjmp(env, 1);
-            }
+            if (handle == NULL)
+                fatal("cannot open file %s", file);
             int ret = load_object(handle, adr);
             fclose(handle);
 
             switch (ret) {
             case -1:
-                fprintf(stderr, "Address out of range or unaligned, or module too large\n");
+                fatal("address out of range or unaligned, or module too large");
                 break;
             case -2:
-                fprintf(stderr, "Module header invalid\n");
+                fatal("module header invalid");
                 break;
             case -3:
-                fprintf(stderr, "Error while loading module\n");
+                fatal("error while loading module");
                 break;
             default:
                 break;
             }
-            if (ret < 0)
-                longjmp(env, 1);
         }
         break;
     case c_QUIT:
@@ -596,25 +606,21 @@ static void do_command(int no)
             double_arg(strtok(NULL, ""), &start, &end);
 
             FILE *handle;
-            if ((handle = fopen(file, "wb")) == NULL) {
-                fprintf(stderr, "Cannot open file %s\n", file);
-                longjmp(env, 1);
-            }
+            if ((handle = fopen(file, "wb")) == NULL)
+                fatal("cannot open file %s", file);
             int ret = save_object(handle, start, (UCELL)((end - start) / CELL_W));
             fclose(handle);
 
             switch (ret) {
             case -1:
-                fprintf(stderr, "Save area contains an invalid address\n");
+                fatal("save area contains an invalid address");
                 break;
             case -3:
-                fprintf(stderr, "Error while saving module\n");
+                fatal("error while saving module");
                 break;
             default:
                 break;
             }
-            if (ret < 0)
-                longjmp(env, 1);
         }
         break;
     case c_BLITERAL:
@@ -626,17 +632,13 @@ static void do_command(int no)
 
             switch (no) {
             case c_BLITERAL:
-                if (bytes > 1) {
-                    fprintf(stderr, "The argument to BLITERAL must fit in a byte\n");
-                    longjmp(env, 1);
-                }
+                if (bytes > 1)
+                    fatal("the argument to BLITERAL must fit in a byte");
                 ass((BYTE)value);
                 break;
             case c_ILITERAL:
-                if (ilit(value) == false) {
-                    fprintf(stderr, "ILITERAL %"PRId32" does not fit in the current instruction word\n", value);
-                    longjmp(env, 1);
-                }
+                if (ilit(value) == false)
+                    fatal("ILITERAL %"PRId32" does not fit in the current instruction word", value);
                 break;
             case c_LITERAL:
                 lit(value);
@@ -651,11 +653,11 @@ static void do_command(int no)
 
     switch (exception) {
     case -9:
-        fprintf(stderr, "Invalid address\n");
-        longjmp(env, 1);
+        fatal("invalid address");
+        break;
     case -23:
-        fprintf(stderr, "Address alignment exception\n");
-        longjmp(env, 1);
+        fatal("address alignment exception");
+        break;
     default:
     case 0:
         break;
@@ -668,13 +670,11 @@ static void parse(char *input)
     // Handle shell command
     if (input[0] == '!') {
         int result = system(input + 1);
-        if (result == -1) {
-            fprintf(stderr, "Could not run command\n");
-            longjmp(env, 1);
-        } else if (result != 0 && WIFEXITED(result)) {
-            fprintf(stderr, "Command exited with value %d\n", WEXITSTATUS(result));
-            longjmp(env, 1);
-        } return;
+        if (result == -1)
+            fatal("could not run command");
+        else if (result != 0 && WIFEXITED(result))
+            fatal("command exited with value %d", WEXITSTATUS(result));
+        return;
     }
 
     // Hide any comment from the parser
@@ -712,17 +712,6 @@ static void parse(char *input)
 }
 
 
-static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void die(const char *format, ...)
-{
-    va_list args;
-
-    va_start(args, format);
-    fprintf(stderr, "beetle: ");
-    vfprintf(stderr, format, args);
-    fprintf(stderr, "\n");
-    exit(1);
-}
-
 static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void interactive_printf(const char *format, ...)
 {
     if (interactive == false)
@@ -731,6 +720,7 @@ static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void interactive_printf(const char *for
     va_list args;
     va_start(args, format);
     vprintf(format, args);
+    va_end(args);
 }
 
 // Options table
@@ -868,6 +858,7 @@ int main(int argc, char *argv[])
                 }
                 die("input error");
             }
+            lineno++;
             if ((nl = strrchr(input, '\n')))
                 *nl = '\0';
             parse(input);
