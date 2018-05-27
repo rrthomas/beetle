@@ -57,11 +57,12 @@ for {\tt FROM}. The main memory is zeroed.
 The debugger is command-driven. All commands and register names may be
 abbreviated to their first few letters; where ambiguities are resolved with a set order of precedence, aimed at giving the most
 commonly used commands the shortest minimum abbreviations, and commands
-take precedence over registers.
-Alternatively, if you have {\tt beetlei} (which uses {\tt rlwrap}), you can use Tab-completion (press the Tab key to show possible commands and registers starting with the letters you have typed so far).
+take precedence over registers, which take precedence over instructions.
+Alternatively, if you have {\tt beetlei} (which uses {\tt rlwrap}), you can use Tab-completion (press the Tab key to show possible commands, instructions and registers starting with the letters you have typed so far).
 All commands are case-insensitive.
 
 The following registers are renamed for ease of typing:
+% FIXME: Accept original names too
 
 \begin{center}
 \begin{tabular}{cc} \toprule
@@ -142,6 +143,26 @@ RETURN} the contents of the return stack. {\tt STACKS} displays both stacks.
 
 If a stack underflows, or the base pointer or top of stack pointer is out of
 range or unaligned, an appropriate error message is displayed.
+
+\subsection{Code and data}
+\label{codeanddata}
+
+\begin{center}
+\angb{opcode}
+{\tt LITERAL} \angb{number}
+{\tt BLITERAL} \angb{number}
+{\tt ILITERAL} \angb{number}
+\end{center}
+
+Code and literal data values may be directly assembled into memory. Assembly starts at the last value explicitly assigned to {\tt EP} in the debugger, defaulting to \$0 whenever Beetle is initialised (see section~\ref{uifaceinit}). An opcode or byte literal ({\tt BLITERAL}) takes one byte, and a cell literal ({\tt LITERAL}) is stored in the next whole cell. an inline literal ({\tt ILITERAL}) is stored in the remainder of the current cell, if it fits; otherwise an error is given.
+
+Each cell is always filled before moving on to the next available cell, so for example the sequence
+
+\begin{center}
+{\tt (LITERAL)} {\tt ,} {\tt \$12345678} {\tt +}
+\end{center}
+
+\noindent assembles the two instructions {\tt (LITERAL)} and {\tt +} in consecutive bytes, and then the cell \$12345678.
 
 \subsection{Memory}
 
