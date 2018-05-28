@@ -65,7 +65,8 @@ you have `rlwrap`, you can run `beetlei` instead to get readline support.
 
 ### Demo: Hello, world!
 
-In `demo/hello.txt` is a command file for the shell that demonstrates its use as a crude assembler. Run the following commands to see it in action:
+In `demo/hello.txt` is a command file for the shell that demonstrates its
+use as a crude assembler. Run the following commands to see it in action:
 
 ```
 beetle < demo/hello.txt
@@ -78,20 +79,28 @@ beetle hello.obj
 The canonical documentation consists of:
 
 * _[The Beetle Forth Virtual Machine](doc/beetle.pdf)_  
-The design of the Beetle Forth virtual machine is described. Essential reading for those programming or implementing the VM.
+The design of the Beetle Forth virtual machine is described. Essential
+reading for those programming or implementing the VM.
 * _[An implementation of the Beetle virtual machine for POSIX](doc/cbeetle.pdf)_  
-A portable implementation of Beetle is described, with instructions for porting, compiling and running it.
+A portable implementation of Beetle is described, with instructions for
+porting, compiling and running it.
 * _[A simple shell for the Beetle virtual machine](doc/shell.pdf)_  
 The user guide for Beetle’s shell.
 
-The following documents contain extra material on Beetle’s design, but many details are out of date:
+The following documents contain extra material on Beetle’s design, but many
+details are out of date:
 
 * _[An Introduction to the Beetle Forth Virtual Processor](doc/papers/intro.pdf)_  
-An introduction to the system; this is the best paper to read first. It was published in ACM SIGPLAN Notices February 1997.
+An introduction to the system; this is the best paper to read first. It was
+published in ACM SIGPLAN Notices February 1997.
 * _[Beetle and pForth: a Forth virtual machine and compiler](https://rrt.sc3d.org/Software/Beetle/dissertation/report/badiss.pdf)_  
-I developed Beetle for my BA dissertation project. _(I used to refer to it as a “virtual processor”; I now use the now-standard term “virtual machine”.)_ My BA dissertation contains older versions of all the papers mentioned above, as well as a description of the project that produced them.
+I developed Beetle for my BA dissertation project. _(I used to refer to it
+as a “virtual processor”; I now use the now-standard term “virtual
+machine”.)_ My BA dissertation contains older versions of all the papers
+mentioned above, as well as a description of the project that produced them.
 * _[Tradeoffs in the implementation of the Beetle virtual machine](doc/papers/tradeoffs.pdf)_  
-A hand-coded implementation of Beetle is described, and compared to the C version.
+A hand-coded implementation of Beetle is described, and compared to the C
+version.
 * _[Encoding literals in a portable byte-stream interpreter](doc/papers/litencode.pdf)_  
 Various methods of encoding literal numbers in a byte stream are compared.
 
