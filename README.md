@@ -29,10 +29,8 @@ RISK.
 
 ## Installation and compatibility
 
-Beetle should work on any POSIX-1.2001-compatible system. Perl and help2man
-are required to build from source.
-
-Beetle has been tested on x86_64 GNU/Linux with GNU C.
+Beetle should work on any POSIX-1.2001-compatible system. Beetle has been
+tested on x86_64 GNU/Linux with GNU C.
 
 Previous releases were known to work on Acorn RISC OS 3, Digital UNIX
 V3.2, UNIX System V Release 4.0, ULTRIX 4.3, NetBSD 1.2, MSDOS 6, and
@@ -40,9 +38,25 @@ Atari TOS 1.4.
 
 Reports on compatibility, whether positive or negative, are welcomed.
 
+
+### Building from source
+
+Perl and help2man are required to build from source. For building from git,
+see below.
+
 To build Beetle from a release tarball, run
 
 `./configure && make && make check`
+
+For the bibliographies in the documentation to be built correctly, GNU Make
+should be used.
+
+
+### Building Beetle from git
+
+The GNU autotools are required: automake, autoconf and libtool.
+[Gnulib](https://www.gnu.org/software/gnulib/) is also used, with a
+third-party `bootstrap` module; these are installed automatically.
 
 To build from a Git repository, first run
 
@@ -51,10 +65,11 @@ git submodule update --init --recursive
 ./bootstrap
 ```
 
+Then see "Building from source" above.
+
 To build the PDF documentation, a comprehensive TeX system such as TeXLive
 is required. This is only necessary when building from Git, as pre-built
-PDFs are supplied in release archives. For the bibliographies in the
-documentation to be built correctly, GNU Make should be used.
+PDFs are supplied in release archives. 
 
 
 ## Use
