@@ -1,5 +1,5 @@
 #!/bin/sh
-# Run Beetle with command-line completion and history
+# Run @PACKAGE_NAME@ with command-line completion and history
 # (c) Reuben Thomas 2018
 
-@RLWRAP@ --complete-filenames --case-insensitive --file @pkgdatadir@/completions --history-filename $HOME/.beetle_history beetle "$@"
+@RLWRAP@ --complete-filenames --case-insensitive --file @pkgdatadir@/completions --history-filename $HOME/.@PACKAGE@_history @PACKAGE@ "$@"

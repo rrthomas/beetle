@@ -1,4 +1,4 @@
-// A user interface for Beetle.
+// Beetle front-end and shell.
 //
 // (c) Reuben Thomas 1995-2018
 //
@@ -30,9 +30,9 @@
 #include "debug.h"
 
 
-#define DEFAULT_MEMORY 1048576 // Default size of Beetle's memory in cells (4Mb)
+#define DEFAULT_MEMORY 1048576 // Default size of VM memory in cells (4Mb)
 #define MAX_MEMORY 536870912 // Maximum size of memory in cells (2Gb)
-static UCELL memory_size = DEFAULT_MEMORY; // Size of Beetle's memory in cells
+static UCELL memory_size = DEFAULT_MEMORY; // Size of VM memory in cells
 CELL *memory;
 
 #define MAXLEN 80   // Maximum input line length
@@ -45,7 +45,7 @@ static bool debug_on_error = false;
 
 static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 0) void verror(const char *format, va_list args)
 {
-    fprintf(stderr, "beetle:");
+    fprintf(stderr, PACKAGE ":");
     if (!interactive)
         fprintf(stderr, "%lu:", lineno);
     fprintf(stderr, " ");
@@ -736,8 +736,8 @@ struct option longopts[] = {
   {0, 0, 0, 0}
 };
 
-#define BEETLE_VERSION_STRING "Beetle shell (C Beetle release "PACKAGE_VERSION")"
-#define BEETLE_COPYRIGHT_STRING "(c) Reuben Thomas 1995-2018"
+#define VERSION_STRING PACKAGE_NAME" shell (C "PACKAGE_NAME" release "PACKAGE_VERSION")"
+#define COPYRIGHT_STRING "(c) Reuben Thomas 1995-2018"
 
 static void usage(void)
 {
@@ -813,7 +813,7 @@ int main(int argc, char *argv[])
                 exit(EXIT_SUCCESS);
             case 5:
                 printf(PACKAGE_NAME " " VERSION "\n"
-                       BEETLE_COPYRIGHT_STRING "\n"
+                       COPYRIGHT_STRING "\n"
                        PACKAGE_NAME " comes with ABSOLUTELY NO WARRANTY.\n"
                        "You may redistribute copies of " PACKAGE_NAME "\n"
                        "under the terms of the GNU General Public License.\n"
@@ -845,7 +845,7 @@ int main(int argc, char *argv[])
             return res;
     }
 
-    interactive_printf("%s\n%s\n\n", BEETLE_VERSION_STRING, BEETLE_COPYRIGHT_STRING);
+    interactive_printf("%s\n%s\n\n", VERSION_STRING, COPYRIGHT_STRING);
 
     while (1) {
         int jmp_val = setjmp(env);

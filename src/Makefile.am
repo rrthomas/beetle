@@ -22,13 +22,13 @@ endif
 man_MANS = beetle.1 beetlei.1
 pkgdata_DATA = completions
 beetle_LDADD = libbeetle.la $(top_builddir)/lib/libgnu.la
-beetle_SOURCES = beetle.c tbl_opts.h tbl_commands.h tbl_registers.h
+beetle_SOURCES = main.c tbl_opts.h tbl_commands.h tbl_registers.h
 include_HEADERS = beetle.h beetle_aux.h
 
 completions: tbl_registers.h tbl_commands.h
 	$(CPP) -I$(srcdir) $(srcdir)/completions.h | grep -v "^#" > $@
 
-beetle.o: tbl_opts.h
+main.o: tbl_opts.h
 
 # Depend on beetle$(EXEEXT) rather than explicitly make-ing it, as otherwise
 # we break parallel builds, as libbeetle.la can be built twice in parallel,
@@ -43,6 +43,8 @@ beetle.1: beetle$(EXEEXT)
 
 do_subst = sed -e 's,[@]pkgdatadir[@],$(pkgdatadir),g' \
 	-e 's,[@]docdir[@],$(docdir),g' \
+	-e 's,[@]PACKAGE[@],$(PACKAGE),g' \
+	-e 's,[@]PACKAGE_NAME[@],$(PACKAGE_NAME),g' \
 	-e 's,[@]RLWRAP[@],$(RLWRAP),g'
 
 tbl_opts.h: tbl_opts.h.in Makefile
