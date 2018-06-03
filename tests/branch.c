@@ -24,7 +24,7 @@ int main(void)
     int exception = 0;
 
     size_t size = 4096;
-    init_beetle((CELL *)calloc(size, CELL_W), size);
+    init((CELL *)calloc(size, CELL_W), size);
 
     start_ass(EP);
     ass(O_BRANCHI); ilit(23);

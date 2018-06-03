@@ -32,7 +32,7 @@ int main(void)
 {
     int exception = 0;
 
-    init_beetle((CELL *)calloc(1024, 1), 256);
+    init((CELL *)calloc(1024, 1), 256);
 
     start_ass(EP);
     ass(O_ZERO); ass(O_ONE); ass(O_MONE); ass(O_CELL);

@@ -66,7 +66,7 @@ static int getstr(UCELL adr, UCELL len, char **res)
         exception = -511;
     else
         for (size_t i = 0; exception == 0 && i < len; i++, adr++) {
-            exception = beetle_load_byte(adr, (BYTE *)((*res) + i));
+            exception = load_byte(adr, (BYTE *)((*res) + i));
         }
 
     return exception;
@@ -824,10 +824,10 @@ CELL single_step(void)
 
             ssize_t res = 0;
             if (exception == 0) {
-                exception = beetle_pre_dma(buf, buf + nbytes, true);
+                exception = pre_dma(buf, buf + nbytes, true);
                 if (exception == 0) {
                     res = read(fd, native_address(buf, true), nbytes);
-                    exception = beetle_post_dma(buf, buf + nbytes);
+                    exception = post_dma(buf, buf + nbytes);
                 }
             }
 
@@ -843,10 +843,10 @@ CELL single_step(void)
 
             ssize_t res = 0;
             if (exception == 0) {
-                exception = beetle_pre_dma(buf, buf + nbytes, false);
+                exception = pre_dma(buf, buf + nbytes, false);
                 if (exception == 0) {
                     res = write(fd, native_address(buf, false), nbytes);
-                    exception = beetle_post_dma(buf, buf + nbytes);
+                    exception = post_dma(buf, buf + nbytes);
                 }
             }
 
@@ -945,6 +945,6 @@ CELL single_step(void)
     SP += CELL_W * STACK_DIRECTION;
     if (!CELL_IN_ONE_AREA(SP) || !IS_ALIGNED(SP))
       return -257;
-    beetle_store_cell(SP, exception);
+    store_cell(SP, exception);
     goto throw;
 }

@@ -217,7 +217,7 @@ static void disassemble(UCELL start, UCELL end)
     for (UCELL p = start; p < end; ) {
         printf("%08"PRIX32"h: ", p);
         CELL a;
-        beetle_load_cell(p, &a);
+        load_cell(p, &a);
         p += CELL_W;
 
         do {
@@ -231,7 +231,7 @@ static void disassemble(UCELL start, UCELL end)
 
             if (load_op(i)) {
                 CELL lit;
-                beetle_load_cell(p, &lit);
+                load_cell(p, &lit);
                 if (i != O_LITERAL)
                     printf(" %"PRIX32"h", (UCELL)lit);
                 else
@@ -257,7 +257,7 @@ static void disassemble(UCELL start, UCELL end)
 static void reinit(void)
 {
     memset(count, 0, 256 * sizeof(long));
-    init_beetle(memory, memory_size);
+    init(memory, memory_size);
     start_ass(EP);
 }
 
@@ -339,9 +339,9 @@ static void do_assign(char *token)
                 if (!IS_ALIGNED(adr) && bytes > 1)
                     fatal("only a byte can be assigned to an unaligned address");
                 if (bytes == 1)
-                    beetle_store_byte(adr, value);
+                    store_byte(adr, value);
                 else
-                    beetle_store_cell(adr, value);
+                    store_cell(adr, value);
             }
     }
 }
@@ -398,12 +398,12 @@ static void do_display(const char *token, const char *format)
                 check_valid(adr, "Address");
                 if (!IS_ALIGNED(adr)) {
                     BYTE b;
-                    beetle_load_byte(adr, &b);
+                    load_byte(adr, &b);
                     display = xasprintf("%"PRIX32"h: %Xh (%d) (byte)", (UCELL)adr,
                                         b, b);
                 } else {
                     CELL c;
-                    beetle_load_cell(adr, &c);
+                    load_cell(adr, &c);
                     display = xasprintf("%"PRIX32"h: %"PRIX32"h (%"PRId32") (cell)", (UCELL)adr,
                                         (UCELL)c, c);
                 }
@@ -487,7 +487,7 @@ static void do_command(int no)
                 char ascii[chunk];
                 for (int i = 0; i < chunk && start < end; i++) {
                     BYTE byte;
-                    beetle_load_byte(start + i, &byte);
+                    load_byte(start + i, &byte);
                     if (i % 8 == 0)
                         putchar(' ');
                     printf("%02X ", byte);

@@ -33,7 +33,7 @@ int main(void)
     unsigned nitems = sizeof(item) / sizeof(item[0]);
 
     size_t size = 4096;
-    init_beetle((CELL *)calloc(size, CELL_W), size);
+    init((CELL *)calloc(size, CELL_W), size);
     for (unsigned i = 0; i < nitems; i++) {
         UCELL addr = mem_allot(item[i], strlen(item[i]), i < 3);
         printf("Extra memory area %u allocated at address %"PRIX32" (should be %"PRIX32")\n",

@@ -57,13 +57,13 @@ extern UCELL NOT_ADDRESS;
 // Memory access
 
 // Return value is 0 if OK, or exception code for invalid or unaligned address
-int beetle_load_cell(UCELL addr, CELL *value);
-int beetle_store_cell(UCELL addr, CELL value);
-int beetle_load_byte(UCELL addr, BYTE *value);
-int beetle_store_byte(UCELL addr, BYTE value);
+int load_cell(UCELL addr, CELL *value);
+int store_cell(UCELL addr, CELL value);
+int load_byte(UCELL addr, BYTE *value);
+int store_byte(UCELL addr, BYTE value);
 
-int beetle_pre_dma(UCELL from, UCELL to, bool write);
-int beetle_post_dma(UCELL from, UCELL to);
+int pre_dma(UCELL from, UCELL to, bool write);
+int post_dma(UCELL from, UCELL to);
 
 // Memory mapping
 UCELL mem_here(void);
@@ -77,7 +77,7 @@ CELL single_step(void);
 int load_object(FILE *file, UCELL address);
 
 // Additional routines, macros, types and quantities provided by C Beetle
-int init_beetle(CELL *c_array, size_t size);
+int init(CELL *c_array, size_t size);
 bool register_args(int argc, char *argv[]);
 
 #define B_TRUE CELL_MASK            // Beetle's TRUE flag

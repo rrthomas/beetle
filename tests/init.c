@@ -14,10 +14,10 @@
 
 int main(void)
 {
-    int i = init_beetle((CELL *)NULL, 4);
-    printf("init_beetle((CELL *)NULL, 4) should return -1; returns: %d\n", i);
+    int i = init((CELL *)NULL, 4);
+    printf("init((CELL *)NULL, 4) should return -1; returns: %d\n", i);
     if (i != -1) {
-        printf("Error in init_beetle() tests: init_beetle with invalid parameters "
+        printf("Error in init() tests: init with invalid parameters "
             "succeeded\n");
         exit(1);
     }
@@ -25,12 +25,12 @@ int main(void)
     size_t size = 1024;
     CELL *ptr = (CELL *)malloc(size);
     assert(ptr);
-    i = init_beetle(ptr, size / CELL_W);
+    i = init(ptr, size / CELL_W);
     if (i != 0) {
-        printf("Error in init_beetle() tests: init_beetle with valid parameters failed\n");
+        printf("Error in init() tests: init with valid parameters failed\n");
         exit(1);
     }
 
-    printf("init_beetle() tests ran OK\n");
+    printf("init() tests ran OK\n");
     return 0;
 }

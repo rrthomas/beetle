@@ -24,7 +24,7 @@ int main(void)
 {
     int exception = 0;
 
-    init_beetle((CELL *)malloc(1024), 256);
+    init((CELL *)malloc(1024), 256);
 
     PUSH(0xff000000); PUSH(8); PUSH(0xff); PUSH(8);
 

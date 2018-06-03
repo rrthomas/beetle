@@ -21,7 +21,7 @@ int main(void)
     int argc = 3;
     char *argv[] = {strdup("foo"), strdup("bard"), strdup("basilisk")};
 
-    init_beetle((CELL *)malloc(4096), 1024);
+    init((CELL *)malloc(4096), 1024);
     assert(register_args(argc, argv));
 
     start_ass(EP);

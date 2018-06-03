@@ -31,19 +31,19 @@ extern UCELL HASHS, HASHR;
 // Memory access
 
 // Return value is 0 if OK, or exception code for invalid or unaligned address
-CELL beetle_reverse_cell(CELL value);
-int beetle_reverse(UCELL start, UCELL length);
+CELL reverse_cell(CELL value);
+int reverse(UCELL start, UCELL length);
 
 #define STACK_DIRECTION 1
 #define _LOAD_CELL(a, temp)                                             \
-    ((exception = exception ? exception : beetle_load_cell((a), &temp)), temp)
+    ((exception = exception ? exception : load_cell((a), &temp)), temp)
 #define LOAD_CELL(a) _LOAD_CELL(a, temp)
 #define STORE_CELL(a, v)                                                \
-    (exception = exception ? exception : beetle_store_cell((a), (v)))
+    (exception = exception ? exception : store_cell((a), (v)))
 #define LOAD_BYTE(a)                                                    \
-    ((exception = exception ? exception : beetle_load_byte((a), &byte)), byte)
+    ((exception = exception ? exception : load_byte((a), &byte)), byte)
 #define STORE_BYTE(a, v)                                                \
-    (exception = exception ? exception : beetle_store_byte((a), (v)))
+    (exception = exception ? exception : store_byte((a), (v)))
 #define PUSH(v)                                 \
     (SP += CELL_W * STACK_DIRECTION, STORE_CELL(SP, (v)))
 #define POP                                     \
@@ -73,7 +73,7 @@ uint8_t *native_address_range_in_one_area(UCELL start, UCELL length, bool writab
 // quantities is implementation-defined in C99)
 #define ARSHIFT(n, p) ((n) = ((n) >> (p)) | (-((n) < 0) << (CELL_BIT - p)))
 
-#define NEXT (exception = (EP += CELL_W, beetle_load_cell(EP - CELL_W, &A)))
+#define NEXT (exception = (EP += CELL_W, load_cell(EP - CELL_W, &A)))
 
 
 #endif
