@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    init_beetle((CELL *)calloc(1024, 1), 256);
+    init((CELL *)calloc(1024, 1), 256);
 
     for (i = 0; i < 4; i++) {
         char *s = obj_name(prefix, files[i]);
@@ -66,8 +66,8 @@ int main(int argc, char *argv[])
         res = try(s, 0);
         free(s);
         printf(" should be %d\n", correct[i]);
-        printf("Word 0 of memory is %"PRIX32"; should be 1020304\n", (UCELL)(beetle_load_cell(0, &c), c));
-        if ((beetle_load_cell(0, &c), c) != 0x1020304) {
+        printf("Word 0 of memory is %"PRIX32"; should be 1020304\n", (UCELL)(load_cell(0, &c), c));
+        if ((load_cell(0, &c), c) != 0x1020304) {
             printf("Error in load_object() tests: file %s\n", files[i]);
             exit(1);
         }

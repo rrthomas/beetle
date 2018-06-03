@@ -16,7 +16,7 @@ int main(void)
 {
     int exception = 0;
 
-    init_beetle((CELL *)calloc(1024, 1), 256);
+    init((CELL *)calloc(1024, 1), 256);
 
     NEXT;
 

@@ -18,7 +18,7 @@ int main(void)
 {
     int exception = 0;
 
-    init_beetle((CELL *)calloc(1024, 1), 256);
+    init((CELL *)calloc(1024, 1), 256);
 
     start_ass(EP);
     ass(O_LITERAL); lit(-257); ass(O_LITERAL); lit(12345678);

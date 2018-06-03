@@ -20,7 +20,7 @@ int main(void)
     int exception = 0;
     CELL temp = 0;
 
-    init_beetle((CELL *)malloc(1024), 256);
+    init((CELL *)malloc(1024), 256);
 
     start_ass(EP);
     // Address 0: 3 0 DO  R>  LOOP

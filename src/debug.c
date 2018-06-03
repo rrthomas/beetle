@@ -55,7 +55,7 @@ _GL_ATTRIBUTE_CONST int byte_size(CELL v)
 void ass(BYTE instr)
 {
     icell |= instr << ibytes * 8;
-    beetle_store_cell(current, icell);
+    store_cell(current, icell);
     ibytes++;
     if (ibytes == CELL_W) {
         current = here;  here += CELL_W;
@@ -65,8 +65,8 @@ void ass(BYTE instr)
 
 void lit(CELL literal)
 {
-    if (ibytes == 0) { beetle_store_cell(here - CELL_W, literal);  current += CELL_W; }
-    else { beetle_store_cell(here, literal); }
+    if (ibytes == 0) { store_cell(here - CELL_W, literal);  current += CELL_W; }
+    else { store_cell(here, literal); }
     here += CELL_W;
 }
 
@@ -76,7 +76,7 @@ bool ilit(CELL literal)
         return false;
 
     icell |= literal << ibytes * 8;
-    beetle_store_cell(current, icell);  current = here;  here += CELL_W;
+    store_cell(current, icell);  current = here;  here += CELL_W;
     icell = 0;  ibytes = 0;
     return true;
 }
@@ -154,7 +154,7 @@ char *val_data_stack(void)
         CELL c;
         char *ptr;
         i += CELL_W * STACK_DIRECTION;
-        int exception = beetle_load_cell(i, &c);
+        int exception = load_cell(i, &c);
         if (exception != 0) {
             ptr = xasprintf("%sinvalid address!", picture);
             free(picture);
@@ -197,7 +197,7 @@ void show_return_stack(void)
         for (UCELL i = R0; i != RP;) {
             CELL c;
             i += CELL_W * STACK_DIRECTION;
-            int exception = beetle_load_cell(i, &c);
+            int exception = load_cell(i, &c);
             if (exception != 0) {
                 printf("invalid address!\n");
                 break;

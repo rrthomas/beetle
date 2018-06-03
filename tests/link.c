@@ -22,7 +22,7 @@ static void test(void)
 
 int main(void)
 {
-    init_beetle((CELL *)malloc(16384), 4096);
+    init((CELL *)malloc(16384), 4096);
 
     start_ass(EP);
     plit(test); ass(O_LINK); ass(O_ZERO); ass(O_HALT);

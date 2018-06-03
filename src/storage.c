@@ -145,7 +145,7 @@ UCELL mem_align(void)
 #define FLIP(addr) (addr)
 #endif
 
-int beetle_load_cell(UCELL addr, CELL *value)
+int load_cell(UCELL addr, CELL *value)
 {
     if (!IS_ALIGNED(addr)) {
         NOT_ADDRESS = addr;
@@ -175,7 +175,7 @@ int beetle_load_cell(UCELL addr, CELL *value)
     return 0;
 }
 
-int beetle_load_byte(UCELL addr, BYTE *value)
+int load_byte(UCELL addr, BYTE *value)
 {
     uint8_t *ptr = native_address(FLIP(addr), false);
     if (ptr == NULL)
@@ -184,7 +184,7 @@ int beetle_load_byte(UCELL addr, BYTE *value)
     return 0;
 }
 
-int beetle_store_cell(UCELL addr, CELL value)
+int store_cell(UCELL addr, CELL value)
 {
     if (!IS_ALIGNED(addr)) {
         NOT_ADDRESS = addr;
@@ -204,11 +204,11 @@ int beetle_store_cell(UCELL addr, CELL value)
     // Awkward access
     int exception = 0;
     for (unsigned i = 0; exception == 0 && i < CELL_W; i++)
-        exception = beetle_store_byte(addr + i, value >> ((ENDISM ? CELL_W - i : i) * CHAR_BIT));
+        exception = store_byte(addr + i, value >> ((ENDISM ? CELL_W - i : i) * CHAR_BIT));
     return exception;
 }
 
-int beetle_store_byte(UCELL addr, BYTE value)
+int store_byte(UCELL addr, BYTE value)
 {
     Mem_area *a = mem_range(FLIP(addr), 1);
     if (a == NULL) {
@@ -223,7 +223,7 @@ int beetle_store_byte(UCELL addr, BYTE value)
 }
 
 
-_GL_ATTRIBUTE_CONST CELL beetle_reverse_cell(CELL value)
+_GL_ATTRIBUTE_CONST CELL reverse_cell(CELL value)
 {
     CELL res = 0;
     for (unsigned i = 0; i < CELL_W / 2; i++) {
@@ -236,20 +236,20 @@ _GL_ATTRIBUTE_CONST CELL beetle_reverse_cell(CELL value)
     return res;
 }
 
-int beetle_reverse(UCELL start, UCELL length)
+int reverse(UCELL start, UCELL length)
 {
     int ret = 0;
     for (UCELL i = start; ret == 0 && i < start + length * CELL_W; i += CELL_W) {
         CELL c;
-        ret = beetle_load_cell(i, &c)
-            || beetle_store_cell(i, beetle_reverse_cell(c));
+        ret = load_cell(i, &c)
+            || store_cell(i, reverse_cell(c));
     }
     return ret;
 }
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsuggest-attribute=const"
-int beetle_pre_dma(UCELL from, UCELL to, bool write)
+int pre_dma(UCELL from, UCELL to, bool write)
 {
     int exception = 0;
 
@@ -260,22 +260,22 @@ int beetle_pre_dma(UCELL from, UCELL to, bool write)
     CHECK_ALIGNED(from);
     CHECK_ALIGNED(to);
     if (exception == 0 && ENDISM)
-        exception = beetle_reverse(from, to - from);
+        exception = reverse(from, to - from);
 
  badadr:
     return exception;
 }
 #pragma GCC diagnostic pop
 
-int beetle_post_dma(UCELL from, UCELL to)
+int post_dma(UCELL from, UCELL to)
 {
-    return beetle_pre_dma(from, to, false);
+    return pre_dma(from, to, false);
 }
 
 
 // Initialise registers that are not fixed
 
-int init_beetle(CELL *memory, size_t size)
+int init(CELL *memory, size_t size)
 {
     if (memory == NULL)
         return -1;

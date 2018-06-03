@@ -16,9 +16,9 @@ int main(void)
 {
     int exception = 0;
 
-    int i = init_beetle((CELL *)calloc(1024, 1), 256);
+    int i = init((CELL *)calloc(1024, 1), 256);
     if (i != 0) {
-        printf("Error in run() tests: init_beetle with valid parameters failed\n");
+        printf("Error in run() tests: init with valid parameters failed\n");
         exit(1);
     }
 

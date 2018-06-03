@@ -22,7 +22,7 @@ int main(void)
 {
     int exception = 0;
 
-    init_beetle((CELL *)malloc(1024), 256);
+    init((CELL *)malloc(1024), 256);
 
     PUSH(1); PUSH(2); PUSH(3);	// initialise the stack
 
