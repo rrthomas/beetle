@@ -63,7 +63,7 @@ int reverse(UCELL start, UCELL length);
 uint8_t *native_address_range_in_one_area(UCELL start, UCELL length, bool writable);
 
 // Align a Beetle address
-#define ALIGNED(a) ((a + CELL_W - 1) & (-CELL_W))
+#define ALIGN(a) ((a + CELL_W - 1) & (-CELL_W))
 
 // Check whether a Beetle address is aligned
 #define IS_ALIGNED(a)     (((a) & (CELL_W - 1)) == 0)

@@ -132,7 +132,7 @@ UCELL mem_allot(void *p, size_t n, bool writable)
 
 UCELL mem_align(void)
 {
-    return _mem_here = ALIGNED(_mem_here);
+    return _mem_here = ALIGN(_mem_here);
 }
 
 
@@ -254,7 +254,7 @@ int pre_dma(UCELL from, UCELL to, bool write)
     int exception = 0;
 
     from &= -CELL_W;
-    to = ALIGNED(to);
+    to = ALIGN(to);
     if (to < from || native_address_range_in_one_area(from, to - from, write) == NULL)
         exception = -1;
     CHECK_ALIGNED(from);
