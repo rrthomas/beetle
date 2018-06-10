@@ -12,7 +12,7 @@ AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib $(WARN_CFLAGS)
 
 lib_LTLIBRARIES = libbeetle.la
 libbeetle_la_SOURCES = storage.c step.c run.c debug.c loadobj.c \
-	beetle_private.h debug.h opcodes.h stringify.h
+	beetle_private.h opcodes.h stringify.h
 libbeetle_la_LIBADD = $(top_builddir)/lib/libgnu.la
 
 bin_PROGRAMS = beetle
@@ -23,7 +23,7 @@ man_MANS = beetle.1 beetlei.1
 pkgdata_DATA = completions
 beetle_LDADD = libbeetle.la $(top_builddir)/lib/libgnu.la
 beetle_SOURCES = main.c tbl_opts.h tbl_commands.h tbl_registers.h
-include_HEADERS = beetle.h beetle_aux.h
+include_HEADERS = beetle.h beetle_aux.h beetle_debug.h
 
 completions: tbl_registers.h tbl_commands.h
 	$(CPP) -I$(srcdir) $(srcdir)/completions.h | grep -v "^#" > $@

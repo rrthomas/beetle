@@ -226,7 +226,7 @@ The following routine allows the calling program to register command-line argume
 Programs which use C Beetle's interface must {\tt \#include} the header file
 {\tt beetle.h} and be linked with the Beetle library. {\tt
 opcodes.h}, which contains an enumeration type of Beetle's instruction set,
-and {\tt debug.h}, which contains useful debugging functions such as
+and {\tt beetle\_debug.h}, which contains useful debugging functions such as
 disassembly, may also be useful; they are not documented here.
 
 

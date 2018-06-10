@@ -87,10 +87,10 @@ bool register_args(int argc, char *argv[]);
 #define POINTER_W (sizeof(void *) / CELL_W)   // the width of a machine pointer in cells
 
 // A union to allow storage of machine pointers in Beetle's memory
-typedef union {
+union _CELL_pointer {
     CELL cells[POINTER_W];
     void (*pointer)(void);
-} CELL_pointer;
-
+};
+typedef union _CELL_pointer CELL_pointer;
 
 #endif
