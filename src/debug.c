@@ -21,7 +21,7 @@
 #include "beetle.h"
 #include "beetle_aux.h"
 #include "beetle_debug.h"
-#include "opcodes.h"
+#include "beetle_opcodes.h"
 
 
 static int ibytes; // number of opcodes assembled in current instruction word so far

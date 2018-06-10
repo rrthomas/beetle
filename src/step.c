@@ -23,7 +23,7 @@
 #include "beetle.h"
 #include "beetle_aux.h"
 #include "beetle_private.h"
-#include "opcodes.h"
+#include "beetle_opcodes.h"
 
 
 // Assumption for file functions
