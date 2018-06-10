@@ -100,9 +100,9 @@ static int getflags(UCELL perm, bool *binary)
 }
 
 // Register command-line args in Beetle memory
-int main_argc = 0;
-UCELL *main_argv;
-UCELL *main_argv_len;
+static int main_argc = 0;
+static UCELL *main_argv;
+static UCELL *main_argv_len;
 bool register_args(int argc, char *argv[])
 {
     main_argc = argc;

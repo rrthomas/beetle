@@ -19,7 +19,7 @@
 
 #include "beetle.h"
 #include "beetle_aux.h"
-#include "debug.h"
+#include "beetle_debug.h"
 #include "opcodes.h"
 #include "stringify.h"
 

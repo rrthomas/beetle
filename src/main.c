@@ -26,8 +26,8 @@
 
 #include "beetle.h"
 #include "beetle_aux.h"
+#include "beetle_debug.h"
 #include "opcodes.h"
-#include "debug.h"
 
 
 #define DEFAULT_MEMORY 1048576 // Default size of VM memory in cells (4Mb)

@@ -1,4 +1,5 @@
-// Header for debug.c.
+// Header for C Beetle containing debugging functions
+// These are undocumented and subject to change.
 //
 // (c) Reuben Thomas 1994-2018
 //
