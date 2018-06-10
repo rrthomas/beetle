@@ -8,7 +8,7 @@
 // THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER‘S
 // RISK.
 
-#include "btests.h"
+#include "tests.h"
 
 
 const char *correct[] = {

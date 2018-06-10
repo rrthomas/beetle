@@ -8,7 +8,7 @@
 // THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER‘S
 // RISK.
 
-#include "btests.h"
+#include "tests.h"
 
 
 static int correct[] = { -2, -2, -1, -3, 0, 0 };
