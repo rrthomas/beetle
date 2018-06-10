@@ -9,7 +9,7 @@
 // THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER‘S
 // RISK.
 
-#include "btests.h"
+#include "tests.h"
 
 
 const char *correct[] = { "0 1 2", "3 2 1 0", "1", "1 2 3 4", "1 1" };

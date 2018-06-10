@@ -27,4 +27,4 @@ do_load_object: load_object
 
 check-local: do_load_object
 
-EXTRA_DIST = run-test btests.h badobj1 badobj2 badobj3 badobj4 testobj1 testobj2
+EXTRA_DIST = run-test tests.h badobj1 badobj2 badobj3 badobj4 testobj1 testobj2

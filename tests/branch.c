@@ -12,7 +12,7 @@
 // THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER‘S
 // RISK.
 
-#include "btests.h"
+#include "tests.h"
 
 
 unsigned correct[] = { 4, 100, 52, 10004, 10004, 10008, 10008, 10012, 10012, 11004,
