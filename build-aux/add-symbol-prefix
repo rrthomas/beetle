@@ -1,0 +1,9 @@
+#!/bin/sh
+# Rename symbols with PACKAGE_ prefix
+# Takes list of symbols one per line on stdin
+
+file=$1
+
+while read -r symbol; do
+    sed -i "s/\\b$symbol\\b/beetle_$symbol/g" $file;
+done

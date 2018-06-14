@@ -1,6 +1,5 @@
-// Header for C Beetle containing all the data structures and interface
-// calls specified in the definition of Beetle. This is the header file to
-// include in programs using an embedded Beetle.
+// Public data structures and interface calls specified in the VM definition.
+// This is the header file to include in programs using an embedded VM.
 //
 // (c) Reuben Thomas 1994-2018
 //
@@ -10,8 +9,8 @@
 // THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER‘S
 // RISK.
 
-#ifndef BEETLE_BEETLE
-#define BEETLE_BEETLE
+#ifndef @PACKAGE_UPPER@_@PACKAGE_UPPER@
+#define @PACKAGE_UPPER@_@PACKAGE_UPPER@
 
 
 #include "config.h"
@@ -32,7 +31,7 @@ typedef uint64_t DUCELL;
 #define CELL_MAX (UINT32_MAX)
 #define CELL_MASK CELL_MAX
 
-// Beetle's registers
+// VM registers
 
 // ENDISM is fixed at compile-time, which seems reasonable, as
 // machines rarely change endianness while switched on!
@@ -52,7 +51,7 @@ extern UCELL HASHS, HASHR;
 extern UCELL THROW;
 extern UCELL BAD;
 extern UCELL NOT_ADDRESS;
-#define CHECKED 1       // C Beetle makes address checking mandatory
+#define CHECKED 1       // address checking is mandatory in this implementation
 
 // Memory access
 
@@ -76,17 +75,17 @@ CELL run(void);
 CELL single_step(void);
 int load_object(FILE *file, UCELL address);
 
-// Additional routines, macros, types and quantities provided by C Beetle
+// Additional implementation-specific routines, macros, types and quantities
 int init(CELL *c_array, size_t size);
 bool register_args(int argc, char *argv[]);
 
-#define B_TRUE CELL_MASK            // Beetle's TRUE flag
-#define B_FALSE ((CELL)0)           // Beetle's FALSE flag
+#define B_TRUE CELL_MASK            // VM TRUE flag
+#define B_FALSE ((CELL)0)           // VM FALSE flag
 
 #define CELL_W 4    // the width of a cell in bytes
 #define POINTER_W (sizeof(void *) / CELL_W)   // the width of a machine pointer in cells
 
-// A union to allow storage of machine pointers in Beetle's memory
+// A union to allow storage of machine pointers in VM memory
 union _CELL_pointer {
     CELL cells[POINTER_W];
     void (*pointer)(void);

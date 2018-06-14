@@ -1,4 +1,4 @@
-// Header for Beetle tests.
+// Header for VM tests.
 //
 // (c) Reuben Thomas 1995-2018
 //
@@ -8,19 +8,23 @@
 // THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER‘S
 // RISK.
 
-#ifndef BEETLE_BTESTS
-#define BEETLE_BTESTS
+#ifndef @PACKAGE@_TESTS
+#define @PACKAGE@_TESTS
 
+
+#include "config.h"
+
+#include "external_syms.h"
 
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <inttypes.h>
 
-#include "beetle.h"
-#include "beetle_aux.h"
-#include "beetle_debug.h"
-#include "beetle_opcodes.h"
+#include "public.h"
+#include "aux.h"
+#include "debug.h"
+#include "opcodes.h"
 #include "stringify.h"
 
 

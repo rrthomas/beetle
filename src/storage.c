@@ -10,17 +10,19 @@
 
 #include "config.h"
 
+#include "external_syms.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include "gl_avltree_list.h"
 #include "gl_list.h"
 
-#include "beetle.h"
-#include "beetle_aux.h"
-#include "beetle_private.h"
+#include "public.h"
+#include "aux.h"
+#include "private.h"
 
 
-// Beetle's registers
+// VM registers
 
 UCELL EP;
 BYTE I;
@@ -101,7 +103,7 @@ uint8_t *native_address_range_in_one_area(UCELL start, UCELL length, bool write)
     return addr_in_area(a, start);
 }
 
-// Map the given native block of memory to Beetle address addr
+// Map the given native block of memory to VM address addr
 static bool mem_map(UCELL addr, void *p, size_t n, bool writable)
 {
     // Return false if area is too big, or covers already-allocated addresses

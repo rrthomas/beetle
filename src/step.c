@@ -10,6 +10,8 @@
 
 #include "config.h"
 
+#include "external_syms.h"
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -20,17 +22,17 @@
 #include "minmax.h"
 #include "verify.h"
 
-#include "beetle.h"
-#include "beetle_aux.h"
-#include "beetle_private.h"
-#include "beetle_opcodes.h"
+#include "public.h"
+#include "aux.h"
+#include "private.h"
+#include "opcodes.h"
 
 
 // Assumption for file functions
 verify(sizeof(int) <= sizeof(CELL));
 
 
-// Check whether a Beetle address points to a native cell-aligned cell
+// Check whether a VM address points to a native cell-aligned cell
 #define CELL_IN_ONE_AREA(a)                             \
     (native_address_range_in_one_area((a), CELL_W, false) != NULL)
 
@@ -56,7 +58,7 @@ verify(sizeof(int) <= sizeof(CELL));
 
 // I/O support
 
-// Copy a string from Beetle to C
+// Copy a string from VM to native memory
 static int getstr(UCELL adr, UCELL len, char **res)
 {
     int exception = 0;
@@ -99,7 +101,7 @@ static int getflags(UCELL perm, bool *binary)
     return flags;
 }
 
-// Register command-line args in Beetle memory
+// Register command-line args in VM memory
 static int main_argc = 0;
 static UCELL *main_argv;
 static UCELL *main_argv_len;

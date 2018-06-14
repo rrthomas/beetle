@@ -10,6 +10,8 @@
 
 #include "config.h"
 
+#include "external_syms.h"
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <inttypes.h>
@@ -24,10 +26,10 @@
 #include "progname.h"
 #include "xvasprintf.h"
 
-#include "beetle.h"
-#include "beetle_aux.h"
-#include "beetle_debug.h"
-#include "beetle_opcodes.h"
+#include "public.h"
+#include "aux.h"
+#include "debug.h"
+#include "opcodes.h"
 
 
 #define DEFAULT_MEMORY 1048576 // Default size of VM memory in cells (4Mb)
@@ -725,14 +727,14 @@ static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void interactive_printf(const char *for
 
 // Options table
 struct option longopts[] = {
-#define O(longname, shortname, arg, argstring, docstring) \
+#define OPT(longname, shortname, arg, argstring, docstring) \
   {longname, arg, NULL, shortname},
-#define A(argstring, docstring)
-#define D(docstring)
+#define ARG(argstring, docstring)
+#define DOC(docstring)
 #include "tbl_opts.h"
-#undef O
-#undef A
-#undef D
+#undef OPT
+#undef ARG
+#undef DOC
   {0, 0, 0, 0}
 };
 
@@ -747,18 +749,18 @@ static void usage(void)
             "Run " PACKAGE_NAME ".\n"
             "\n",
             program_name);
-#define O(longname, shortname, arg, argstring, docstring)               \
+#define OPT(longname, shortname, arg, argstring, docstring)               \
     shortopt = xasprintf(", -%c", shortname);                           \
     buf = xasprintf("--%s%s %s", longname, shortname ? shortopt : "", argstring); \
     printf("  %-26s%s\n", buf, docstring);
-#define A(argstring, docstring)                 \
+#define ARG(argstring, docstring)                 \
     printf("  %-26s%s\n", argstring, docstring);
-#define D(text)                                 \
+#define DOC(text)                                 \
     printf(text "\n");
 #include "tbl_opts.h"
-#undef O
-#undef A
-#undef D
+#undef OPT
+#undef ARG
+#undef DOC
 }
 
 static CELL parse_memory_size(UCELL max)
