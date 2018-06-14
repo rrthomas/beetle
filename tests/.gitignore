@@ -2,6 +2,7 @@
 *.trs
 /.deps
 /.libs
+/tests.h
 /arithmetic
 /branch
 /comparison

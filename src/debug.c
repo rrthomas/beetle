@@ -1,4 +1,4 @@
-// Functions useful for debugging Beetle.
+// Functions useful for VM debugging.
 //
 // (c) Reuben Thomas 1994-2018
 //
@@ -10,6 +10,8 @@
 
 #include "config.h"
 
+#include "external_syms.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,10 +20,10 @@
 #include "verify.h"
 #include "xvasprintf.h"
 
-#include "beetle.h"
-#include "beetle_aux.h"
-#include "beetle_debug.h"
-#include "beetle_opcodes.h"
+#include "public.h"
+#include "aux.h"
+#include "debug.h"
+#include "opcodes.h"
 
 
 static int ibytes; // number of opcodes assembled in current instruction word so far

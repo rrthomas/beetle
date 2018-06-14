@@ -10,7 +10,9 @@
 
 #include "config.h"
 
-#include "beetle.h"
+#include "external_syms.h"
+
+#include "public.h"
 
 
 CELL run(void)

@@ -1,4 +1,4 @@
-// List of Beetle register names.
+// List of VM register names.
 //
 // (c) Reuben Thomas 2018
 //

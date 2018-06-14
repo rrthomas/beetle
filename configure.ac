@@ -3,6 +3,9 @@ dnl Process this file with autoconf to produce a configure script
 AC_INIT(Beetle, 1.0rc3, rrt@sc3d.org)
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+package_upper=`echo ${PACKAGE} | tr '[[:lower:]]' '[[:upper:]]'`
+AC_SUBST([PACKAGE_UPPER], [$package_upper])
+AC_DEFINE_UNQUOTED([PACKAGE_UPPER], ["$package_upper"], [PACKAGE upper-cased])
 
 dnl Check for programs
 AC_PROG_CC_C99
@@ -71,5 +74,20 @@ AC_C_BIGENDIAN
 
 dnl Generate output files
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile lib/Makefile src/Makefile tests/Makefile doc/Makefile doc/cbeetle.tex doc/shell.tex])
+AC_CONFIG_FILES([
+        Makefile
+        lib/Makefile
+        src/Makefile
+        src/aux.h
+        src/debug.h
+        src/opcodes.h
+        src/private.h
+        src/public.h
+        tests/Makefile
+        tests/tests.h
+        doc/Makefile
+        doc/cbeetle.tex
+        doc/shell.tex
+])
+AC_CONFIG_FILES([build-aux/find-external-defines ], [chmod +x build-aux/find-external-defines])
 AC_OUTPUT

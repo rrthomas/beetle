@@ -88,7 +88,7 @@ Beetle's registers are declared in {\tt beetle.h}. Their names correspond to
 those given in~\cite[section~2.1]{beetle}, although some have been changed
 to meet the rules for C identifiers. C Beetle does not allocate any
 memory for Beetle, nor does it initialise any of the registers. C Beetle
-provides the interface call {\bf init\_beetle()} to do this (see
+provides the interface call {\bf beetle\_init()} to do this (see
 section~\ref{usingcalls}).
 
 The variables {\tt EP}, {\tt I}, {\tt A}, {\tt MEMORY}, {\tt SP}, {\tt RP}, {\tt THROW}, {\tt BAD} and {\tt ADDRESS}
@@ -185,10 +185,10 @@ is a Beetle cell.}
 occurs, the return code is -3.}
 \end{description}
 
-In addition to the required interface calls C Beetle provides an initialisation routine {\bf init\_beetle()} which, given a cell array and its size, initialises Beetle:
+In addition to the required interface calls C Beetle provides an initialisation routine {\bf beetle\_init()} which, given a cell array and its size, initialises Beetle:
 
 \begin{description}
-\ifacec{int init\_beetle(CELL *b\_array, long size)}{{\tt size} is
+\ifacec{int beetle\_init(CELL *b\_array, size\_t size)}{{\tt size} is
 the size of {\tt b\_array} in {\em cells} (not bytes). The return value is $-1$ if {\tt b\_array} is {\tt NULL}, and $0$ otherwise.
 All the registers are initialised as per~\cite{beetle}.}
 \end{description}

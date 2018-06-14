@@ -1,4 +1,4 @@
-// Header for C Beetle containing debugging functions
+// VM debugging functions
 // These are undocumented and subject to change.
 //
 // (c) Reuben Thomas 1994-2018
@@ -9,11 +9,8 @@
 // THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER‘S
 // RISK.
 
-#ifndef BEETLE_DEBUG
-#define BEETLE_DEBUG
-
-
-#include "beetle.h"     // main header
+#ifndef @PACKAGE_UPPER@_DEBUG
+#define @PACKAGE_UPPER@_DEBUG
 
 
 int byte_size(CELL v); // return number of significant bytes in a CELL quantity

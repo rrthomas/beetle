@@ -1,4 +1,4 @@
-// Generate list of commands and registers for beetlei rlwrap completion
+// Generate list of commands and registers for rlwrap completion
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.

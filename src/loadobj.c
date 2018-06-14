@@ -10,11 +10,13 @@
 
 #include "config.h"
 
+#include "external_syms.h"
+
 #include <stdio.h>
 #include <string.h>
 
-#include "beetle.h"
-#include "beetle_aux.h"
+#include "public.h"
+#include "aux.h"
 
 
 int load_object(FILE *file, UCELL address)
@@ -22,11 +24,12 @@ int load_object(FILE *file, UCELL address)
     if (!IS_ALIGNED(address))
         return -1;
 
-    char magic[8];
-    if (fread(&magic[0], 1, 7, file) != 7)
+    size_t len = strlen(PACKAGE_UPPER);
+    char magic[len + 2];
+    if (fread(&magic[0], 1, len + 1, file) != len + 1)
         return -3;
-    magic[7] = '\0';
-    if (strcmp(magic, "BEETLE"))
+    magic[len + 1] = '\0';
+    if (strcmp(magic, PACKAGE_UPPER))
         return -2;
 
     uint8_t endism;

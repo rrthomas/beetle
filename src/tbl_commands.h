@@ -1,4 +1,4 @@
-// List of Beetle debugger commands.
+// List of debugger commands.
 //
 // (c) Reuben Thomas 2018
 //
