@@ -78,6 +78,7 @@ AC_CONFIG_FILES([
         Makefile
         lib/Makefile
         src/Makefile
+        src/beetlei.1
         src/aux.h
         src/debug.h
         src/opcodes.h
