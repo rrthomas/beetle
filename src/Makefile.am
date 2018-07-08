@@ -68,12 +68,13 @@ tbl_opts.h: tbl_opts.h.in Makefile
 	cat external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $@
 
 external-defines.txt: $(internal_HDRS)
-	$(top_srcdir)/build-aux/find-external-defines > $@
+	$(top_builddir)/build-aux/find-external-defines > $@
 
 # Actually needs .o files, but since find-external-syms requires GNU tools,
 # don't force remaking external-syms.txt; instead, add it to EXTRA_DIST.
 # find-external-syms takes care of remaking the executable.
-external-syms.txt: $(lib@PACKAGE@_la_SOURCES)
+# (Dependency is libbeetle_la_SOURCES, but with .h.in's instead of .h's)
+$(srcdir)/external-syms.txt: storage.c step.c run.c debug.c loadobj.c private.h.in stringify.h
 	$(top_srcdir)/build-aux/find-external-syms $(PACKAGE) > $@
 
 external_syms.h: external-syms.txt
@@ -88,7 +89,7 @@ CLOC = cloc --force-lang="C",h
 loc:
 	$(CLOC) $(lib@PACKAGE@_la_SOURCES) $(@PACKAGE@_SOURCES) $(include_HEADERS)
 
-EXTRA_DIST = ARMbeetle.bas @PACKAGE@i.in @PACKAGE@i.1 completions.h tbl_opts.h.in external-syms.txt
+EXTRA_DIST = ARMbeetle.bas @PACKAGE@i.in @PACKAGE@i.1 completions.h tbl_opts.h.in external-syms.txt external_syms.h
 
 DISTCLEANFILES = @PACKAGE@i @PACKAGE@.1 @PACKAGE@i.1 completions tbl_opts.h $(include_HEADERS) external-defines.txt external-syms.txt
 # Ignore built files that are part of the distribution (specifically,
