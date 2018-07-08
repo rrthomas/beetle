@@ -1,5 +1,5 @@
 %
-% Documentation for C Beetle
+% Documentation for C @PACKAGE_NAME@
 %
 % Reuben Thomas
 %
@@ -9,7 +9,7 @@
 \documentclass{article}
 \usepackage[british]{babel}
 \usepackage[utf8x]{inputenc}
-\usepackage{a4wide,newpxtext,booktabs,url,siunitx}
+\usepackage{a4wide,newpxtext,booktabs,hyperref,siunitx}
 
 % Alter some default parameters for general typesetting
 
@@ -30,7 +30,7 @@
 \newcommand{\spic}[1]{{\spfont\setlength{\baselineskip}{\normalbaselineskip}#1\/}}
 
 
-\title{An implementation of the Beetle virtual machine\\for POSIX\\version @VERSION@}
+\title{An implementation of the @PACKAGE_NAME@ virtual machine\\for POSIX\\version @VERSION@}
 \author{Reuben Thomas}
 \date{27th May 2018}
 
@@ -40,72 +40,72 @@
 
 \section{Introduction}
 
-The Beetle virtual machine~\cite{beetle} provides a portable environment
-for the pForth Forth compiler~\cite{beetledis}, a compiler for ANSI Standard
-Forth~\cite{ANSIforth}. To port pForth to a new CPU architecture or operating system, only Beetle need be rewritten. However, even this can be
-avoided if Beetle is itself written in ISO C, since almost all systems have
+The @PACKAGE_NAME@ virtual machine~\cite{@PACKAGE@} provides a portable environment
+for the \href{https://github.com/rrthomas/pforth}{pForth} Forth compiler, a compiler for ANSI Standard
+Forth~\cite{ANSIforth}. To port pForth to a new CPU architecture or operating system, only @PACKAGE_NAME@ need be rewritten. However, even this can be
+avoided if @PACKAGE_NAME@ is itself written in ISO C, since almost all systems have
 an ISO C compiler available for them.
 
-Writing Beetle in C necessarily leads to a loss of performance for a system
+Writing @PACKAGE_NAME@ in C necessarily leads to a loss of performance for a system
 which is already relatively slow by virtue of using a virtual machine
 rather than compiling native code. However, pForth is intended mainly as a
 didactic tool, offering a concrete Forth environment which may be used to
 explore the language, and particularly the implementation of the compiler, on
 a simple architecture designed to support Forth. Thus speed is not crucial,
-and on modern systems even a C implementation of Beetle can be expected to
+and on modern systems even a C implementation of @PACKAGE_NAME@ can be expected to
 run at an acceptable speed.
 
-As well as the virtual machine, C Beetle provides a debugger, which is described in~\cite{beetleuiface}.
+As well as the virtual machine, C @PACKAGE_NAME@ provides a debugger, which is described in~\cite{@PACKAGE@uiface}.
 
-The Beetle virtual machine is described in~\cite{beetle}. This paper only
+The @PACKAGE_NAME@ virtual machine is described in~\cite{@PACKAGE@}. This paper only
 describes the features specific to this implementation.
 
 
-\section{Using C Beetle}
+\section{Using C @PACKAGE_NAME@}
 
-This section describes how to compile C Beetle, and the exact manner in which
-the interface calls and Beetle's memory and registers should be accessed.
+This section describes how to compile C @PACKAGE_NAME@, and the exact manner in which
+the interface calls and @PACKAGE_NAME@'s memory and registers should be accessed.
 
 
 \subsection{Configuration}
 \label{configuration}
 
-Beetle is written in ISO C99 using POSIX-1.2001 APIs.
+@PACKAGE_NAME@ is written in ISO C99 using POSIX-1.2001 APIs.
 
-The Beetle virtual machine is inherently 32-bit, but will run happily on systems with larger (or smaller) addresses.
+The @PACKAGE_NAME@ virtual machine is inherently 32-bit, but will run happily on systems with larger (or smaller) addresses.
 
 
 \subsection{Compilation}
 
-Beetle's build system is written with GNU autotools, and the user
+@PACKAGE_NAME@'s build system is written with GNU autotools, and the user
 needs only standard POSIX utilities to run it. Installation
 instructions are provided in the top-level file {\tt README.md}.
 
 
 \subsection{Registers and memory}
 
-Beetle's registers are declared in {\tt beetle.h}. Their names correspond to
-those given in~\cite[section~2.1]{beetle}, although some have been changed
-to meet the rules for C identifiers. C Beetle does not allocate any
-memory for Beetle, nor does it initialise any of the registers. C Beetle
-provides the interface call {\bf beetle\_init()} to do this (see
+@PACKAGE_NAME@'s registers are declared in {\tt @PACKAGE@.h}. Their names correspond to
+those given in~\cite[section~2.1]{@PACKAGE@}, although some have been changed
+to meet the rules for C identifiers. C @PACKAGE_NAME@ does not allocate any
+memory for @PACKAGE_NAME@, nor does it initialise any of the registers. C @PACKAGE_NAME@
+provides the interface call {\bf @PACKAGE@\_init()} to do this (see
 section~\ref{usingcalls}).
 
 The variables {\tt EP}, {\tt I}, {\tt A}, {\tt MEMORY}, {\tt SP}, {\tt RP}, {\tt THROW}, {\tt BAD} and {\tt ADDRESS}
-correspond exactly with the Beetle registers they represent, and may be read
+correspond exactly with the @PACKAGE_NAME@ registers they represent, and may be read
 and assigned to accordingly, bearing in mind the restrictions on their use
-given in~\cite{beetle}. {\tt THROW}, {\tt BAD} and {\tt ADDRESS} are mapped into Beetle's memory, so they are automatically updated when the corresponding memory locations are written to, and vice versa. {\tt CHECKED} is the constant $1$; it may be read but not assigned to.
+given in~\cite{@PACKAGE@}. {\tt THROW}, {\tt BAD} and {\tt ADDRESS} are mapped into @PACKAGE_NAME@'s memory, so they are automatically updated when the corresponding memory locations are written to, and vice versa. {\tt CHECKED} is the constant $1$; it may be read but not assigned to.
 
-C Beetle provides the ability to map native memory blocks into Beetle’s address space; see below.
+C @PACKAGE_NAME@ provides the ability to map native memory blocks into @PACKAGE_NAME@’s address space; see below.
 
 
 \subsection{Extra instructions}
 
-C Beetle provides the following extra instruction.
+C @PACKAGE_NAME@ provides the following extra instruction.
 
 \subsubsection{Command-line arguments}
 
-Two calls are provided to access command-line arguments passed to C Beetle (excluding any that it interprets itself). They are copied from Gforth.
+Two calls are provided to access command-line arguments passed to C @PACKAGE_NAME@ (excluding any that it interprets itself). They are copied from Gforth.
 
 \begin{center}
 \begin{tabular}{S[table-format=2.0]lll} \toprule
@@ -170,81 +170,81 @@ To create a file, set both read and write bits to zero when calling {\tt OPEN-FI
 \subsection{Using the interface calls}
 \label{usingcalls}
 
-The operation of the specified interface calls is given in~\cite{beetle}. Here, the C prototypes corresponding to the idealised prototypes used in~\cite{beetle} are given.
+The operation of the specified interface calls is given in~\cite{@PACKAGE@}. Here, the C prototypes corresponding to the idealised prototypes used in~\cite{@PACKAGE@} are given. The names are prefixed with {\bf @PACKAGE@\_}.
 
 Files to be loaded and saved are passed as C file descriptors. Thus, the
 calling program must itself open and close the files.
 
 \begin{description}
-\ifacec{uint8\_t *native\_address(UCELL address, bool writable)}{Returns {\tt NULL} when the address is invalid, or the writable flag is true and the address is read-only.}
-\ifacec{CELL run(void)}{The reason code returned by {\bf run()} is a Beetle
+\ifacec{uint8\_t *native\_address(@PACKAGE@\_UCELL address, bool writable)}{Returns {\tt NULL} when the address is invalid, or the writable flag is true and the address is read-only.}
+\ifacec{@PACKAGE@\_CELL run(void)}{The reason code returned by {\bf @PACKAGE@\_run()} is a @PACKAGE_NAME@
 cell.}
-\ifacec{CELL single\_step(void)}{The reason code returned by {\bf single\_step()}
-is a Beetle cell.}
-\ifacec{int load\_object(FILE *file, UCELL address)}{If a file system error
+\ifacec{@PACKAGE@\_CELL @PACKAGE@\_single\_step(void)}{The reason code returned by {\bf @PACKAGE@\_single\_step()}
+is a @PACKAGE_NAME@ cell.}
+\ifacec{int @PACKAGE@\_load\_object(FILE *file, @PACKAGE@\_UCELL address)}{If a file system error
 occurs, the return code is -3.}
 \end{description}
 
-In addition to the required interface calls C Beetle provides an initialisation routine {\bf beetle\_init()} which, given a cell array and its size, initialises Beetle:
+In addition to the required interface calls C @PACKAGE_NAME@ provides an initialisation routine {\bf @PACKAGE@\_init()} which, given a cell array and its size, initialises @PACKAGE_NAME@:
 
 \begin{description}
-\ifacec{int beetle\_init(CELL *b\_array, size\_t size)}{{\tt size} is
+\ifacec{int @PACKAGE@\_init(@PACKAGE@\_CELL *b\_array, size\_t size)}{{\tt size} is
 the size of {\tt b\_array} in {\em cells} (not bytes). The return value is $-1$ if {\tt b\_array} is {\tt NULL}, and $0$ otherwise.
-All the registers are initialised as per~\cite{beetle}.}
+All the registers are initialised as per~\cite{@PACKAGE@}.}
 \end{description}
 
-The following routines give easier access to Beetle’s address space at the byte and cell level. On success, they return $0$, and on failure, the relevant exception code.
+The following routines give easier access to @PACKAGE_NAME@’s address space at the byte and cell level. On success, they return $0$, and on failure, the relevant exception code.
 
 \begin{description}
-\ifacec{int beetle\_load\_cell(UCELL address, CELL *value)}{Load the cell at the given address into the given {\tt CELL *}.}
-\ifacec{int beetle\_store\_cell(UCELL address, CELL value)}{Store the given {\tt CELL} value at the given address.}
-\ifacec{int beetle\_load\_byte(UCELL address, BYTE *value)}{Load the byte at the given address into the given {\tt BYTE *}.}
-\ifacec{int beetle\_store\_byte(UCELL address, BYTE value)}{Store the given {\tt BYTE} value at the given address.}
+\ifacec{int @PACKAGE@\_load\_cell(@PACKAGE@\_UCELL address, @PACKAGE@\_CELL *value)}{Load the cell at the given address into the given {\tt @PACKAGE@\_CELL *}.}
+\ifacec{int @PACKAGE@\_store\_cell(@PACKAGE@\_UCELL address, @PACKAGE@\_CELL value)}{Store the given {\tt CELL} value at the given address.}
+\ifacec{int @PACKAGE@\_load\_byte(@PACKAGE@\_UCELL address, @PACKAGE@\_BYTE *value)}{Load the byte at the given address into the given {\tt @PACKAGE@\_BYTE *}.}
+\ifacec{int @PACKAGE@\_store\_byte(@PACKAGE@\_UCELL address, @PACKAGE@\_BYTE value)}{Store the given {\tt @PACKAGE@\_BYTE} value at the given address.}
 \end{description}
 
-The following routines give easier access to contiguous areas of Beetle’s address space. On success, $0$ is returned; if {\tt to} if not less than {\tt from}, or the addresses are not contained in the same area, or not writable if desired, $-1$ is returned; if either address is unaligned, or some other error occurs, a memory exception code is returned.
+The following routines give easier access to contiguous areas of @PACKAGE_NAME@’s address space. On success, $0$ is returned; if {\tt to} if not less than {\tt from}, or the addresses are not contained in the same area, or not writable if desired, $-1$ is returned; if either address is unaligned, or some other error occurs, a memory exception code is returned.
 
 \begin{description}
-\ifacec{int beetle\_pre\_dma(UCELL from, UCELL to, bool write)}{Convert the given range to native byte order, so that it can be read (or written) directly.}
-\ifacec{int beetle\_post\_dma(UCELL from, UCELL to)}{Convert the given range to Beetle byte order, so that it can be used by Beetle after a direct access.}
+\ifacec{int @PACKAGE@\_pre\_dma(@PACKAGE@\_UCELL from, @PACKAGE@\_UCELL to, bool write)}{Convert the given range to native byte order, so that it can be read (or written) directly.}
+\ifacec{int @PACKAGE@\_post\_dma(@PACKAGE@\_UCELL from, @PACKAGE@\_UCELL to)}{Convert the given range to @PACKAGE_NAME@ byte order, so that it can be used by @PACKAGE_NAME@ after a direct access.}
 \end{description}
 
-The following routines are provided to map system memory to Beetle’s address space and vice versa:
+The following routines are provided to map system memory to @PACKAGE_NAME@’s address space and vice versa:
 
 \begin{description}
-\ifacec{UCELL mem\_here()}{Returns the Beetle address at which the next mapping will be made.}
-\ifacec{UCELL mem\_allot(void *p, size\_t n)}{Map {\tt n} bytes pointed to by {\tt p} into Beetle’s address space, and return the address mapped. Addresses are mapped sequentially.}
-\ifacec{UCELL mem\_align(void)}{Like Forth’s {\tt ALIGN}, rounds up the address at which the next memory allocation will occur to the next cell.}
+\ifacec{@PACKAGE@\_UCELL @PACKAGE@\_mem\_here()}{Returns the @PACKAGE_NAME@ address at which the next mapping will be made.}
+\ifacec{@PACKAGE@\_UCELL @PACKAGE@\_mem\_allot(void *p, size\_t n)}{Map {\tt n} bytes pointed to by {\tt p} into @PACKAGE_NAME@’s address space, and return the address mapped. Addresses are mapped sequentially.}
+\ifacec{@PACKAGE@\_UCELL @PACKAGE@\_mem\_align(void)}{Like Forth’s {\tt ALIGN}, rounds up the address at which the next memory allocation will occur to the next cell.}
 \end{description}
 
 The following routine allows the calling program to register command-line arguments that can be retrieved by the {\tt ARG} and {\tt ARGC} extra instructions.
 
 \begin{description}
-\ifacec{bool register\_args(int argc, char *argv[])}{Maps the given arguments register, which has the same format as that supplied to {\bf main()}, into Beetle’s memory. Returns {\tt true} on success and {\tt false} on failure (either because memory could not be allocated, or could not be mapped to Beetle’s address space).}
+\ifacec{bool @PACKAGE@\_register\_args(int argc, char *argv[])}{Maps the given arguments register, which has the same format as that supplied to {\bf main()}, into @PACKAGE_NAME@’s memory. Returns {\tt true} on success and {\tt false} on failure (either because memory could not be allocated, or could not be mapped to @PACKAGE_NAME@’s address space).}
 \end{description}
 
-Programs which use C Beetle's interface must {\tt \#include} the header file
-{\tt beetle.h} and be linked with the Beetle library. {\tt
-beetle\_opcodes.h}, which contains an enumeration type of Beetle's instruction set,
-and {\tt beetle\_debug.h}, which contains useful debugging functions such as
+Programs which use C @PACKAGE_NAME@'s interface must {\tt \#include} the header file
+{\tt @PACKAGE@.h} and be linked with the @PACKAGE_NAME@ library. {\tt
+@PACKAGE@\_opcodes.h}, which contains an enumeration type of @PACKAGE_NAME@'s instruction set,
+and {\tt @PACKAGE@\_debug.h}, which contains useful debugging functions such as
 disassembly, may also be useful; they are not documented here.
 
 
-\subsection{Other extras provided by C Beetle}
+\subsection{Other extras provided by C @PACKAGE_NAME@}
 
-C Beetle provides the following extra quantities and macro in {\tt beetle.h}
-which are useful for programming with Beetle:
+C @PACKAGE_NAME@ provides the following extra quantities and macro in {\tt @PACKAGE@.h}
+which are useful for programming with @PACKAGE_NAME@:
 
 \begin{description}
-\item[{\tt B\_TRUE}:] a cell with all bits set, which Beetle uses as a true
+\item[{\tt @PACKAGE@\_B\_TRUE}:] a cell with all bits set, which @PACKAGE_NAME@ uses as a true
 flag.
-\item[{\tt B\_FALSE}:] a cell with all bits clear, which Beetle uses as a
+\item[{\tt @PACKAGE@\_B\_FALSE}:] a cell with all bits clear, which @PACKAGE_NAME@ uses as a
 false flag.
-\item[{\tt CELL\_W}:] the width of a cell in bytes (4).
-\item[{\tt POINTER\_W}:] the width of a machine pointer in cells.
-\item[{\tt NEXT}:] a macro which performs the action of the {\tt NEXT}
+\item[{\tt @PACKAGE@\_CELL\_W}:] the width of a cell in bytes (4).
+\item[{\tt @PACKAGE@\_POINTER\_W}:] the width of a machine pointer in cells.
+\item[{\tt @PACKAGE@\_NEXT}:] a macro which performs the action of the {\tt NEXT}
 instruction.
-\item[{\tt CELL\_pointer}:] a union with members {\tt CELL cells[POINTER\_W]} and {\tt void (*pointer)(void)}, which allow a function pointer suitable for the {\tt LINK} instruction to be easily stored and retrieved. It is assumed that the pointer is pushed on to the stack starting with {\tt cells[0]} and ending with {\tt cells[POINTER\_W~$-$~1]}.
+\item[{\tt @PACKAGE@\_CELL\_pointer}:] a union with members {\tt @PACKAGE@\_CELL cells[@PACKAGE@\_POINTER\_W]} and {\tt void (*pointer)(void)}, which allow a function pointer suitable for the {\tt LINK} instruction to be easily stored and retrieved. It is assumed that the pointer is pushed on to the stack starting with {\tt cells[0]} and ending with {\tt cells[@PACKAGE@\_POINTER\_W~$-$~1]}.
 \end{description}
 
 

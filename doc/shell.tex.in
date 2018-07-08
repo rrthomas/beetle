@@ -1,5 +1,5 @@
 %
-% Documentation for Beetle shell
+% Documentation for @PACKAGE_NAME@ shell
 %
 % Reuben Thomas
 %
@@ -16,8 +16,8 @@
 \frenchspacing
 
 % Allow external cross-references
-\externaldocument{beetle}
-\externaldocument{cbeetle}
+\externaldocument{@PACKAGE@}
+\externaldocument{c@PACKAGE@}
 
 % Macros
 
@@ -26,7 +26,7 @@
 \newcommand{\angb}[1]{$\langle #1\rangle$}
 
 
-\title{A simple shell for the\\Beetle virtual machine\\version @VERSION@}
+\title{A simple shell for the\\@PACKAGE_NAME@ virtual machine\\version @VERSION@}
 \author{Reuben Thomas}
 \date{17th April 2018}
 
@@ -36,17 +36,17 @@
 
 \section{Introduction}
 
-This is the manual for the shell for C Beetle~\cite{cbeetle}, which provides access to Beetle's registers, allows the stacks to be displayed, and provides assembly, disassembly and single-stepping.
+This is the manual for the shell for C @PACKAGE_NAME@~\cite{c@PACKAGE@}, which provides access to @PACKAGE_NAME@'s registers, allows the stacks to be displayed, and provides assembly, disassembly and single-stepping.
 
-There are two main ways to access the shell: either start {\tt beetle} with no arguments, or, when passing an object file on the command line, give the {\tt -\/-debug} option, which causes the shell to be entered on exception (interpreted as a negative value being passed to {\tt HALT}). The shell can also be used in batch mode, by supplying commands on standard input. Refer to the man page \textbf{beetle}(1) or {\tt beetle -\/-help} for more details and options.
+There are two main ways to access the shell: either start {\tt @PACKAGE@} with no arguments, or, when passing an object file on the command line, give the {\tt -\/-debug} option, which causes the shell to be entered on exception (interpreted as a negative value being passed to {\tt HALT}). The shell can also be used in batch mode, by supplying commands on standard input. Refer to the man page \textbf{@PACKAGE@}(1) or {\tt @PACKAGE@ -\/-help} for more details and options.
 
 
 \section{Initialisation}
 \label{uifaceinit}
 
-When the virtual machine is started, an embedded Beetle is created. The registers are initialised as described in~\cite[section~\ref{usingcalls}]{cbeetle}; additionally, {\tt 'THROW} is set to \$0, and {\tt I} is uninitialised. {\tt A} is set to zero: this has the effect that when a {\tt STEP} or {\tt RUN} command is given, a {\tt NEXT} instruction
+When the virtual machine is started, an embedded @PACKAGE_NAME@ is created. The registers are initialised as described in~\cite[section~\ref{usingcalls}]{c@PACKAGE@}; additionally, {\tt 'THROW} is set to \$0, and {\tt I} is uninitialised. {\tt A} is set to zero: this has the effect that when a {\tt STEP} or {\tt RUN} command is given, a {\tt NEXT} instruction
 will be performed. Thus, when initialisation is performed by a {\tt LOAD}
-command (see section~\ref{uifaceload}), the Beetle may be started with {\tt
+command (see section~\ref{uifaceload}), the @PACKAGE_NAME@ may be started with {\tt
 RUN} or {\tt STEP} immediately after the {\tt LOAD} command, without the need
 for {\tt FROM}. The main memory is zeroed.
 
@@ -58,7 +58,7 @@ The shell is command-driven. All commands and register names may be
 abbreviated to their first few letters; where ambiguities are resolved with a set order of precedence, aimed at giving the most
 commonly used commands the shortest minimum abbreviations, and commands
 take precedence over registers.
-Alternatively, if you have {\tt beetlei} (which uses {\tt rlwrap}), you can use Tab-completion (press the Tab key to show possible commands and instructions starting with the letters you have typed so far).
+Alternatively, if you have {\tt @PACKAGE@i} (which uses {\tt rlwrap}), you can use Tab-completion (press the Tab key to show possible commands and instructions starting with the letters you have typed so far).
 All commands are case-insensitive.
 
 The following registers are renamed for ease of typing:
@@ -92,7 +92,7 @@ and other characters are shown in {\tt Typewriter font}; meta-parameters such
 as numbers are shown in angle brackets, thus: \angb{number}. Square brackets enclose optional tokens.
 
 There are three types of numeric meta-parameter: \angb{number}, which is any
-number; \angb{address}, which is a valid address (see~\cite[section~\ref{exceptions}]{beetle});
+number; \angb{address}, which is a valid address (see~\cite[section~\ref{exceptions}]{@PACKAGE@});
 and \angb{value}, which is a number or an opcode.
 
 \subsection{Comments}
@@ -101,7 +101,7 @@ The string {\tt //} starts a comment, which runs to the end of the input line, a
 
 \subsection{Registers}
 
-Beetle's registers may be displayed by typing their name. The
+@PACKAGE_NAME@'s registers may be displayed by typing their name. The
 registers may also (where appropriate) be assigned to using the syntax
 
 \begin{center}\angb{register} $=$ \angb{value}\end{center}
@@ -158,7 +158,7 @@ range or unaligned, an appropriate error message is displayed.
 {\tt ILITERAL} \angb{number}
 \end{center}
 
-Code and literal data values may be directly assembled into memory. Assembly starts at the last value explicitly assigned to {\tt EP} in the shell, defaulting to \$0 whenever Beetle is initialised (see section~\ref{uifaceinit}). An opcode or byte literal ({\tt BLITERAL}) takes one byte, and a cell literal ({\tt LITERAL}) is stored in the next whole cell. an inline literal ({\tt ILITERAL}) is stored in the remainder of the current cell, if it fits; otherwise an error is given.
+Code and literal data values may be directly assembled into memory. Assembly starts at the last value explicitly assigned to {\tt EP} in the shell, defaulting to \$0 whenever @PACKAGE_NAME@ is initialised (see section~\ref{uifaceinit}). An opcode or byte literal ({\tt BLITERAL}) takes one byte, and a cell literal ({\tt LITERAL}) is stored in the next whole cell. an inline literal ({\tt ILITERAL}) is stored in the remainder of the current cell, if it fits; otherwise an error is given.
 
 Each cell is always filled before moving on to the next available cell, so for example the sequence
 
@@ -202,7 +202,7 @@ leading zero.
 
 \subsection{Execution}
 
-The command {\tt INITIALISE} initialises Beetle as in section
+The command {\tt INITIALISE} initialises @PACKAGE_NAME@ as in section
 \ref{uifaceinit}.
 
 The command {\tt STEP} may be used to single-step through a program. It has
@@ -221,7 +221,7 @@ The command {\tt TRACE}, has the same syntax as {\tt STEP}, and performs the
 same function; in addition, it performs the action of the {\tt REGISTERS}
 command after each bForth instruction is executed.
 
-The command {\tt RUN} allows Beetle to execute until it reaches a {\tt HALT}
+The command {\tt RUN} allows @PACKAGE_NAME@ to execute until it reaches a {\tt HALT}
 instruction, if ever. The code passed to {\tt HALT} is then displayed. The
 code is also displayed if a {\tt HALT} instruction is ever executed during a
 {\tt STEP} command.
@@ -233,7 +233,7 @@ The command {\tt FROM} sets the point of execution:
 {\tt FROM} [\angb{address}]
 \end{center}
 
-With no argument, {\tt FROM} performs the function of Beetle's {\tt NEXT}
+With no argument, {\tt FROM} performs the function of @PACKAGE_NAME@'s {\tt NEXT}
 instruction, that is, it loads {\tt A} from the cell pointed to by {\tt EP},
 and adds four to {\tt EP}. With an argument, {\tt FROM} sets {\tt EP} to
 \angb{address}, and then performs the function of {\tt NEXT}. {\tt FROM}
@@ -255,7 +255,7 @@ if the start address is less than or equal to the end address, or if either
 the address or number of bytes is not aligned or is out of range.
 
 The command {\tt COUNTS} displays the number of times
-that each Beetle instruction has been executed during {\tt STEP} or {\tt TRACE} execution since the last initialisation
+that each @PACKAGE_NAME@ instruction has been executed during {\tt STEP} or {\tt TRACE} execution since the last initialisation
 (including loads).
 
 \subsection{Object modules}
@@ -265,7 +265,7 @@ The command
 \label{uifaceload}
 \begin{center}{\tt LOAD} \angb{file} [\angb{address}]\end{center}
 
-\noindent initialises Beetle as in section~\ref{uifaceinit}, then loads the object
+\noindent initialises @PACKAGE_NAME@ as in section~\ref{uifaceinit}, then loads the object
 module in file \angb{file} into memory at address \angb{address} (or address \$0 if the argument is omitted). The address
 must be cell-aligned; if it is not, or if the module would not fit in memory
 at the address given, or there is some filing error, an error message is
@@ -291,7 +291,7 @@ already exists; it is overwritten.
 
 \subsection{Exiting}
 
-The command {\tt QUIT} exits Beetle. No warning is given.
+The command {\tt QUIT} exits @PACKAGE_NAME@. No warning is given.
 
 
 \bibliographystyle{plain}

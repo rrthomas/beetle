@@ -86,6 +86,7 @@ AC_CONFIG_FILES([
         tests/Makefile
         tests/tests.h
         doc/Makefile
+        doc/beetle.tex
         doc/cbeetle.tex
         doc/shell.tex
 ])
