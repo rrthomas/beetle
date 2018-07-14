@@ -788,30 +788,12 @@ and shared between systems. pForth is loaded from an object module.
 \subsection{Object module format}
 \label{object}
 
-The first six bytes of an object module should be the ASCII codes of the letters
-``@PACKAGE@''; next should come an ASCII NUL (\$00), then the one-byte contents of
-the {\tt ENDISM} register of the @PACKAGE_NAME@ which saved the module. The next four
+The first seven bytes of an object module should be the ASCII codes of the letters
+``@PACKAGE@'' padded with ASCII NULs (\$00), then the one-byte contents of
+the {\tt ENDISM} register of the system which saved the module. The next four
 bytes should contain the number of cells the code occupies. The number must have
 the same endianness as that indicated in the previous byte. Then follows the
-code, which must fill a whole number of cells. The format is summarised in table~\ref{objecttable}
-(the bytes in each cell are shown in the order in which they
-are stored in the file, regardless of the endianness of the machine on which the
-file is written).
-
-\begin{table}[htbp]
-\begin{center}
-\begin{tabular}{cl} \toprule
-\bf Cell & \bf Contents \\ \midrule
-1 & \$42 \$45 \$45 \$54 \\
-2 & \$4C \$45 \$00 {\tt ENDISM} \\
-3 & Length $l$\/ \\
-4 & 1st cell of code\dots \\
-$\vdots$ & \multicolumn{1}{c}{$\vdots$} \\
-$l+3$\/ & \dots$l$\/th cell of code \\ \bottomrule
-\end{tabular}
-\caption{\label{objecttable}Object module format}
-\end{center}
-\end{table}
+code, which must fill a whole number of cells.
 
 Object modules have a simple structure, as they are only intended for loading an
 initial memory image into @PACKAGE_NAME@, such as the pForth compiler. Forth does not
