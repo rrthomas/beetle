@@ -236,9 +236,9 @@ C @PACKAGE_NAME@ provides the following extra quantities and macro in {\tt @PACK
 which are useful for programming with @PACKAGE_NAME@:
 
 \begin{description}
-\item[{\tt @PACKAGE@\_B\_TRUE}:] a cell with all bits set, which @PACKAGE_NAME@ uses as a true
+\item[{\tt @PACKAGE_UPPER@\_TRUE}:] a cell with all bits set, which @PACKAGE_NAME@ uses as a true
 flag.
-\item[{\tt @PACKAGE@\_B\_FALSE}:] a cell with all bits clear, which @PACKAGE_NAME@ uses as a
+\item[{\tt @PACKAGE_UPPER@\_FALSE}:] a cell with all bits clear, which @PACKAGE_NAME@ uses as a
 false flag.
 \item[{\tt @PACKAGE@\_CELL\_W}:] the width of a cell in bytes (4).
 \item[{\tt @PACKAGE@\_POINTER\_W}:] the width of a machine pointer in cells.

@@ -242,66 +242,66 @@ CELL single_step(void)
         {
             CELL a = POP;
             CELL b = POP;
-            PUSH(b < a ? B_TRUE : B_FALSE);
+            PUSH(b < a ? BEETLE_TRUE : BEETLE_FALSE);
         }
         break;
     case O_GREATER:
         {
             CELL a = POP;
             CELL b = POP;
-            PUSH(b > a ? B_TRUE : B_FALSE);
+            PUSH(b > a ? BEETLE_TRUE : BEETLE_FALSE);
         }
         break;
     case O_EQUAL:
         {
             CELL a = POP;
             CELL b = POP;
-            PUSH(a == b ? B_TRUE : B_FALSE);
+            PUSH(a == b ? BEETLE_TRUE : BEETLE_FALSE);
         }
         break;
     case O_NEQUAL:
         {
             CELL a = POP;
             CELL b = POP;
-            PUSH(a != b ? B_TRUE : B_FALSE);
+            PUSH(a != b ? BEETLE_TRUE : BEETLE_FALSE);
         }
         break;
     case O_LESS0:
         {
             CELL a = POP;
-            PUSH(a < 0 ? B_TRUE : B_FALSE);
+            PUSH(a < 0 ? BEETLE_TRUE : BEETLE_FALSE);
         }
         break;
     case O_GREATER0:
         {
             CELL a = POP;
-            PUSH(a > 0 ? B_TRUE : B_FALSE);
+            PUSH(a > 0 ? BEETLE_TRUE : BEETLE_FALSE);
         }
         break;
     case O_EQUAL0:
         {
             CELL a = POP;
-            PUSH(a == 0 ? B_TRUE : B_FALSE);
+            PUSH(a == 0 ? BEETLE_TRUE : BEETLE_FALSE);
         }
         break;
     case O_NEQUAL0:
         {
             CELL a = POP;
-            PUSH(a != 0 ? B_TRUE : B_FALSE);
+            PUSH(a != 0 ? BEETLE_TRUE : BEETLE_FALSE);
         }
         break;
     case O_ULESS:
         {
             UCELL a = POP;
             UCELL b = POP;
-            PUSH(b < a ? B_TRUE : B_FALSE);
+            PUSH(b < a ? BEETLE_TRUE : BEETLE_FALSE);
         }
         break;
     case O_UGREATER:
         {
             UCELL a = POP;
             UCELL b = POP;
-            PUSH(b > a ? B_TRUE : B_FALSE);
+            PUSH(b > a ? BEETLE_TRUE : BEETLE_FALSE);
         }
         break;
     case O_ZERO:
@@ -577,7 +577,7 @@ CELL single_step(void)
         NEXT;
         break;
     case O_QBRANCH:
-        if (POP == B_FALSE) {
+        if (POP == BEETLE_FALSE) {
             CELL addr = LOAD_CELL(EP);
             CHECK_ALIGNED_WHOLE_CELL(addr);
             EP = addr;
@@ -586,7 +586,7 @@ CELL single_step(void)
             EP += CELL_W;
         break;
     case O_QBRANCHI:
-        if (POP == B_FALSE)
+        if (POP == BEETLE_FALSE)
             EP += A * CELL_W;
         NEXT;
         break;
