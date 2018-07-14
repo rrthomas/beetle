@@ -7,7 +7,6 @@ Makefile.in
 TAGS
 /dissertation
 /INSTALL
-/README.dg
 /aclocal.m4
 /ar-lib
 /autom4te.cache
