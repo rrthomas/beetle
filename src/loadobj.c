@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #include "public.h"
 #include "aux.h"
@@ -25,11 +26,12 @@ int load_object(FILE *file, UCELL address)
         return -1;
 
     size_t len = strlen(PACKAGE_UPPER);
-    char magic[len + 2];
-    if (fread(&magic[0], 1, len + 1, file) != len + 1)
+    char magic[7];
+    assert(len + 1 <= sizeof(magic));
+    memset(&magic[0], 0, sizeof(magic));
+    if (fread(&magic[0], 1, sizeof(magic), file) != sizeof(magic))
         return -3;
-    magic[len + 1] = '\0';
-    if (strcmp(magic, PACKAGE_UPPER))
+    if (strncmp(magic, PACKAGE_UPPER, sizeof(magic)))
         return -2;
 
     uint8_t endism;
