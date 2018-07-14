@@ -71,7 +71,7 @@ external-defines.txt: $(internal_HDRS)
 # don't force remaking external-syms.txt; instead, add it to EXTRA_DIST.
 # find-external-syms takes care of remaking the executable.
 # (Dependency is libbeetle_la_SOURCES, but with .h.in's instead of .h's)
-$(srcdir)/external-syms.txt: storage.c step.c run.c debug.c loadobj.c private.h.in stringify.h
+$(srcdir)/external-syms.txt: storage.c step.c.in run.c debug.c loadobj.c private.h.in stringify.h
 	$(top_srcdir)/build-aux/find-external-syms $(PACKAGE) > $@
 
 external_syms.h: external-syms.txt
@@ -86,7 +86,7 @@ CLOC = cloc --force-lang="C",h
 loc:
 	$(CLOC) $(lib@PACKAGE@_la_SOURCES) $(@PACKAGE@_SOURCES) $(include_HEADERS)
 
-EXTRA_DIST = ARMbeetle.bas @PACKAGE@i.in @PACKAGE@i.1 completions.h tbl_opts.h.in external-syms.txt external_syms.h
+EXTRA_DIST = ARMbeetle.bas @PACKAGE@i.in @PACKAGE@i.1 completions.h tbl_opts.h.in step.c.in external-syms.txt external_syms.h
 
 DISTCLEANFILES = @PACKAGE@i @PACKAGE@.1 @PACKAGE@i.1 completions tbl_opts.h $(include_HEADERS) external-defines.txt external-syms.txt
 # Ignore built files that are part of the distribution (specifically,
