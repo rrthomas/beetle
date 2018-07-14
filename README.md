@@ -18,7 +18,7 @@ programs to call each other.
 This package comprises the definition of the Beetle virtual machine, a
 virtual machine specialised for the execution of Forth, and an
 implementation in ISO C99 using POSIX APIs. Detailed documentation is in the
-doc directory; installation instructions follow.
+`doc` directory; installation instructions follow.
 
 The package is distributed under the GNU Public License version 3, or,
 at your option, any later version.
