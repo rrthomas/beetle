@@ -22,7 +22,7 @@ int main(void)
     char *argv[] = {strdup("foo"), strdup("bard"), strdup("basilisk")};
 
     init((CELL *)malloc(4096), 1024);
-    assert(register_args(argc, argv));
+    assert(register_args(argc, argv) == 0);
 
     start_ass(EP);
     ass(OX_ARGC); ass(O_ONE); ass(OX_ARG);
