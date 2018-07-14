@@ -1,4 +1,4 @@
-// Beetle front-end and shell.
+// Front-end and shell.
 //
 // (c) Reuben Thomas 1995-2018
 //
@@ -270,7 +270,7 @@ static int save_object(FILE *file, UCELL address, UCELL length)
     if (!IS_ALIGNED(address) || ptr == NULL)
         return -1;
 
-    if (fputs("BEETLE", file) == EOF ||
+    if (fputs(PACKAGE_UPPER, file) == EOF ||
         putc('\0', file) == EOF ||
         putc((char)ENDISM, file) == EOF ||
         fwrite(&length, CELL_W, 1, file) != 1 ||

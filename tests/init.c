@@ -1,4 +1,4 @@
-// Test that the Beetle header beetle.h compiles properly, and that the
+// Test that the VM headers compile properly, and that the
 // storage allocation and register initialisation in storage.c works.
 //
 // (c) Reuben Thomas 1994-2018
