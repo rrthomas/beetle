@@ -53,7 +53,6 @@ static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 0) void verror(const char *format, va_list
     fprintf(stderr, " ");
     vfprintf(stderr, format, args);
     fprintf(stderr, "\n");
-    exit(1);
 }
 
 static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void fatal(const char *format, ...)
