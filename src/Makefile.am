@@ -56,16 +56,13 @@ tbl_opts.h: tbl_opts.h.in Makefile
 	cp $< $@
 
 @PACKAGE@.h: public.h external-syms.txt external-defines.txt
-	cp $< $@
-	cat external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $@
+	cat external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $< $@
 
 @PACKAGE@_aux.h: aux.h external-syms.txt external-defines.txt
-	cp $< $@
-	cat external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $@
+	cat external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $< $@
 
 @PACKAGE@_debug.h: debug.h external-syms.txt external-defines.txt
-	cp $< $@
-	cat external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $@
+	cat external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $< $@
 
 external-defines.txt: $(internal_HDRS)
 	$(top_builddir)/build-aux/find-external-defines > $@
