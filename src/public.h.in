@@ -77,7 +77,7 @@ int load_object(FILE *file, UCELL address);
 
 // Additional implementation-specific routines, macros, types and quantities
 int init(CELL *c_array, size_t size);
-bool register_args(int argc, char *argv[]);
+int register_args(int argc, char *argv[]);
 
 #define BEETLE_TRUE CELL_MASK            // VM TRUE flag
 #define BEETLE_FALSE ((CELL)0)           // VM FALSE flag

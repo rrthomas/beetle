@@ -105,21 +105,21 @@ static int getflags(UCELL perm, bool *binary)
 static int main_argc = 0;
 static UCELL *main_argv;
 static UCELL *main_argv_len;
-bool register_args(int argc, char *argv[])
+int register_args(int argc, char *argv[])
 {
     main_argc = argc;
     if ((main_argv = calloc(argc, sizeof(UCELL))) == NULL ||
         (main_argv_len = calloc(argc, sizeof(UCELL))) == NULL)
-        return false;
+        return -1;
 
     for (int i = 0; i < argc; i++) {
         size_t len = strlen(argv[i]);
         main_argv[i] = mem_allot(argv[i], len, true);
         if (main_argv[i] == 0)
-            return false;
+            return -2;
         main_argv_len[i] = len;
     }
-    return true;
+    return 0;
 }
 
 

@@ -220,7 +220,7 @@ The following routines are provided to map system memory to @PACKAGE_NAME@’s a
 The following routine allows the calling program to register command-line arguments that can be retrieved by the {\tt ARG} and {\tt ARGC} extra instructions.
 
 \begin{description}
-\ifacec{bool @PACKAGE@\_register\_args(int argc, char *argv[])}{Maps the given arguments register, which has the same format as that supplied to {\bf main()}, into @PACKAGE_NAME@’s memory. Returns {\tt true} on success and {\tt false} on failure (either because memory could not be allocated, or could not be mapped to @PACKAGE_NAME@’s address space).}
+\ifacec{int @PACKAGE@\_register\_args(int argc, char *argv[])}{Maps the given arguments register, which has the same format as that supplied to {\bf main()}, into @PACKAGE_NAME@’s memory. Returns $0$ on success and $-1$ if memory could not be allocated, or $-2$ if an argument could not be mapped to @PACKAGE_NAME@’s address space.}
 \end{description}
 
 Programs which use C @PACKAGE_NAME@'s interface must {\tt \#include} the header file
