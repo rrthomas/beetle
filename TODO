@@ -1,6 +1,6 @@
 Add instructions to completion (use --break-chars to rlwrap).
 
-Reorganize C Beetle documentation into user’s guide and programmer’s guide.
+Reorganize C implementation documentation into user’s guide and programmer’s guide.
 
 Run demo as test.
 

@@ -7,5 +7,5 @@ outfile=$2
 
 # FIXME: Horribly inefficient: rewrites file once per symbol
 while read -r symbol; do
-    sed "s/\\b$symbol\\b/beetle_$symbol/g" $infile > $outfile;
+    sed "s/\\b$symbol\\b/@PACKAGE@_$symbol/g" $infile > $outfile;
 done

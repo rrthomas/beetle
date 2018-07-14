@@ -1,4 +1,4 @@
-// Test the Beetle-generated exceptions and HALT codes.
+// Test the VM-generated exceptions and HALT codes.
 //
 // (c) Reuben Thomas 1995-2018
 //

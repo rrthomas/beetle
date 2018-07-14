@@ -12,7 +12,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/lib -I$(top_srcdir)/lib $(WA
 
 LOG_COMPILER = $(srcdir)/run-test
 
-LDADD = $(top_builddir)/src/libbeetle.la
+LDADD = $(top_builddir)/src/lib@PACKAGE@.la
 
 check_PROGRAMS = $(TESTS) load_object
 
