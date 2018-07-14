@@ -84,6 +84,7 @@ AC_CONFIG_FILES([
         src/opcodes.h
         src/private.h
         src/public.h
+        src/step.c
         tests/Makefile
         tests/tests.h
         doc/Makefile

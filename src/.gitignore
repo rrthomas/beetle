@@ -18,6 +18,7 @@
 /beetle_opcodes.h
 /completions
 /debug.h
+/step.c
 /external-defines.txt
 /external-syms.txt
 /external_syms.h
