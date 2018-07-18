@@ -214,7 +214,7 @@ static int imm_op(BYTE o)
 static void disassemble(UCELL start, UCELL end)
 {
     for (UCELL p = start; p < end; ) {
-        printf("%08"PRIX32"h: ", p);
+        printf("$%08"PRIX32": ", p);
         CELL a;
         load_cell(p, &a);
         p += CELL_W;
@@ -232,16 +232,16 @@ static void disassemble(UCELL start, UCELL end)
                 CELL lit;
                 load_cell(p, &lit);
                 if (i != O_LITERAL)
-                    printf(" %"PRIX32"h", (UCELL)lit);
+                    printf(" $%"PRIX32, (UCELL)lit);
                 else
-                    printf(" %"PRId32" (%"PRIX32"h)", lit, (UCELL)lit);
+                    printf(" %"PRId32" ($%"PRIX32")", lit, (UCELL)lit);
                 p += CELL_W;
             } else {
                 if (imm_op(i)) {
                     if (i != O_LITERALI)
-                        printf(" %"PRIX32"h", p + a * CELL_W);
+                        printf(" $%"PRIX32, p + a * CELL_W);
                     else
-                        printf(" %"PRId32" (%"PRIX32"h)", a, (UCELL)a);
+                        printf(" %"PRId32" ($%"PRIX32")", a, (UCELL)a);
                     a = 0;
                 }
             }
@@ -352,13 +352,13 @@ static void do_display(const char *token, const char *format)
 
     switch (no) {
         case r_A:
-            display = xasprintf("A = %"PRIX32"h", (UCELL)A);
+            display = xasprintf("A = $%"PRIX32, (UCELL)A);
             break;
         case r_NOT_ADDRESS:
-            display = xasprintf("-ADDRESS = %"PRIX32"h (%"PRIu32")", NOT_ADDRESS, NOT_ADDRESS);
+            display = xasprintf("-ADDRESS = $%"PRIX32" (%"PRIu32")", NOT_ADDRESS, NOT_ADDRESS);
             break;
         case r_BAD:
-            display = xasprintf("'BAD = %"PRIX32"h (%"PRIu32")", BAD, BAD);
+            display = xasprintf("'BAD = $%"PRIX32" (%"PRIu32")", BAD, BAD);
             break;
         case r_CHECKED:
             display = xasprintf("CHECKED = %d", CHECKED);
@@ -367,28 +367,28 @@ static void do_display(const char *token, const char *format)
             display = xasprintf("ENDISM = %d", ENDISM);
             break;
         case r_EP:
-            display = xasprintf("EP = %05"PRIX32"h (%"PRIu32")", EP, EP);
+            display = xasprintf("EP = $%05"PRIX32" (%"PRIu32")", EP, EP);
             break;
         case r_I:
-            display = xasprintf("I = %-10s (%02Xh)", disass(I), I);
+            display = xasprintf("I = %-10s ($%02X)", disass(I), I);
             break;
         case r_MEMORY:
-            display = xasprintf("MEMORY = %"PRIX32"h (%"PRIu32")", MEMORY, MEMORY);
+            display = xasprintf("MEMORY = $%"PRIX32" (%"PRIu32")", MEMORY, MEMORY);
             break;
         case r_RP:
-            display = xasprintf("RP = %"PRIX32"h (%"PRIu32")", RP, RP);
+            display = xasprintf("RP = $%"PRIX32" (%"PRIu32")", RP, RP);
             break;
         case r_R0:
-            display = xasprintf("R0 = %"PRIX32"h (%"PRIu32")", R0, R0);
+            display = xasprintf("R0 = $%"PRIX32" (%"PRIu32")", R0, R0);
             break;
         case r_SP:
-            display = xasprintf("SP = %"PRIX32"h (%"PRIu32")", SP, SP);
+            display = xasprintf("SP = $%"PRIX32" (%"PRIu32")", SP, SP);
             break;
         case r_S0:
-            display = xasprintf("S0 = %"PRIX32"h (%"PRIu32")", S0, S0);
+            display = xasprintf("S0 = $%"PRIX32" (%"PRIu32")", S0, S0);
             break;
         case r_THROW:
-            display = xasprintf("'THROW = %"PRIX32"h (%"PRIu32")", THROW, THROW);
+            display = xasprintf("'THROW = $%"PRIX32" (%"PRIu32")", THROW, THROW);
             break;
         default:
             {
@@ -398,12 +398,12 @@ static void do_display(const char *token, const char *format)
                 if (!IS_ALIGNED(adr)) {
                     BYTE b;
                     load_byte(adr, &b);
-                    display = xasprintf("%"PRIX32"h: %Xh (%d) (byte)", (UCELL)adr,
+                    display = xasprintf("$%"PRIX32": $%X (%d) (byte)", (UCELL)adr,
                                         b, b);
                 } else {
                     CELL c;
                     load_cell(adr, &c);
-                    display = xasprintf("%"PRIX32"h: %"PRIX32"h (%"PRId32") (cell)", (UCELL)adr,
+                    display = xasprintf("$%"PRIX32": $%"PRIX32" (%"PRId32") (cell)", (UCELL)adr,
                                         (UCELL)c, c);
                 }
             }
@@ -466,7 +466,7 @@ static void do_command(int no)
     case c_DFROM:
         {
             CELL value = POP;
-            printf("%"PRId32" (%"PRIX32"h)\n", value, (UCELL)value);
+            printf("%"PRId32" ($%"PRIX32")\n", value, (UCELL)value);
         }
         break;
     case c_DATA:
@@ -481,7 +481,7 @@ static void do_command(int no)
             double_arg(strtok(NULL, ""), &start, &end);
             check_range(start, end, "Address");
             while (start < end) {
-                printf("%08lXh ", (unsigned long)start);
+                printf("$%08lX ", (unsigned long)start);
                 const int chunk = 16;
                 char ascii[chunk];
                 for (int i = 0; i < chunk && start < end; i++) {
@@ -549,7 +549,7 @@ static void do_command(int no)
     case c_RFROM:
         {
             CELL value = POP_RETURN;
-            printf("%"PRIX32"h (%"PRId32")\n", (UCELL)value, value);
+            printf("$%"PRIX32" (%"PRId32")\n", (UCELL)value, value);
         }
         break;
     c_ret:
@@ -582,7 +582,7 @@ static void do_command(int no)
                         count[I]++;
                     }
                     if (ret != 0)
-                        printf("HALT code %"PRId32" was returned at EP = %Xh\n",
+                        printf("HALT code %"PRId32" was returned at EP = $%X\n",
                                ret, EP);
                 } else {
                     unsigned long limit = single_arg(arg, NULL), i;
