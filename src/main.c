@@ -783,7 +783,7 @@ int main(int argc, char *argv[])
     // leading ':' so as to return ':' for a missing arg, not '?'
     for (;;) {
         int this_optind = optind ? optind : 1, longindex = -1;
-        int c = getopt_long(argc, argv, "+:dm:", longopts, &longindex);
+        int c = getopt_long(argc, argv, "+:dm:r:s:", longopts, &longindex);
 
         if (c == -1)
             break;
@@ -791,8 +791,12 @@ int main(int argc, char *argv[])
             die("option '%s' requires an argument", argv[this_optind]);
         else if (c == '?')
             die("unrecognised option '%s'\nTry '%s --help' for more information.", argv[this_optind], program_name);
+        else if (c == 'd')
+            longindex = 3;
         else if (c == 'm')
             longindex = 0;
+        else if (c == 'r')
+            longindex = 2;
         else if (c == 's')
             longindex = 1;
 
@@ -835,11 +839,11 @@ int main(int argc, char *argv[])
             die("could not map command-line arguments");
         FILE *handle = fopen(argv[optind], "rb");
         if (handle == NULL)
-            die("cannot not open file %s", argv[1]);
+            die("cannot not open file %s", argv[optind]);
         int ret = load_object(handle, 0);
         fclose(handle);
         if (ret != 0)
-            die("could not read file %s", argv[1]);
+            die("could not read file %s, or file is invalid", argv[optind]);
 
         int res = run();
         if (!debug_on_error || res >= 0)
