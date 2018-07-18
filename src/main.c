@@ -47,10 +47,8 @@ static bool debug_on_error = false;
 
 static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 0) void verror(const char *format, va_list args)
 {
-    fprintf(stderr, PACKAGE ":");
     if (!interactive)
-        fprintf(stderr, "%lu:", lineno);
-    fprintf(stderr, " ");
+        fprintf(stderr, PACKAGE ":%lu: ", lineno);
     vfprintf(stderr, format, args);
     fprintf(stderr, "\n");
 }
