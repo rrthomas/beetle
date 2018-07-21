@@ -1,3 +1,7 @@
+Completion of filenames containing - (currently does “-BAD”)
+
+Filenames containing ~ complete nicely but do not work: use wordexp(3).
+
 Add instructions to completion (use --break-chars to rlwrap).
 
 Reorganize C implementation documentation into user’s guide and programmer’s guide.
