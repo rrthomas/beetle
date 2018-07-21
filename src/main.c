@@ -246,9 +246,11 @@ static void disassemble(UCELL start, UCELL end)
                 }
             }
 
-            printf("\n           ");
-        } while (a != 0 && a != -1);
-        putchar('\r');
+            printf("\n");
+            if (a == 0 || a == -1)
+                break;
+            printf("           ");
+        } while (1);
     }
 }
 
