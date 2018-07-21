@@ -99,6 +99,11 @@ void start_ass(UCELL addr)
     here = addr;  ibytes = 0;  icell = 0;  current = here;  here += CELL_W;
 }
 
+_GL_ATTRIBUTE_PURE UCELL ass_current(void)
+{
+    return current;
+}
+
 static const char *mnemonic[UINT8_MAX + 1] = {
     "NEXT00", "DUP", "DROP", "SWAP", "OVER", "ROT", "-ROT", "TUCK",
     "NIP", "PICK", "ROLL", "?DUP", ">R", "R>", "R@", "<",
