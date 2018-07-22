@@ -209,7 +209,7 @@ void show_return_stack(void)
                 printf("invalid address!\n");
                 break;
             }
-            printf("%"PRIX32"h ", (UCELL)c);
+            printf("$%"PRIX32" ", (UCELL)c);
             if (i == 0)
                 break;
         }
