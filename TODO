@@ -1,3 +1,7 @@
+Bug: “I” as a command should display I register, but gives error “too few arguments”. Presumably interpreted as “ILITERAL”. Sort combined register names and commands and search the result.
+
+Add default lengths to DISASSEMBLE (64) and DUMP (256)
+
 Completion of filenames containing - (currently does “-BAD”)
 
 Filenames containing ~ complete nicely but do not work: use wordexp(3).
