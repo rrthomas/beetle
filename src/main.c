@@ -178,26 +178,29 @@ static long single_arg(const char *s, int *bytes)
     return n;
 }
 
-static void double_arg(char *s, long *start, long *end)
+static void double_arg(char *s, long *start, long *end, bool default_args)
 {
+    bool plus = default_args;
+
     char *token, copy[MAXLEN];
-    if (s == NULL || (token = strtok(strcpy(copy, s), " +")) == NULL)
-        fatal("too few arguments");
+    if (s == NULL || (token = strtok(strcpy(copy, s), " +")) == NULL) {
+        if (!default_args)
+            fatal("too few arguments");
+    } else {
+        size_t i;
+        for (i = strlen(token); s[i] == ' ' && i < strlen(s); i++)
+            ;
 
-    size_t i;
-    for (i = strlen(token); s[i] == ' ' && i < strlen(s); i++)
-        ;
+        plus = plus || (i < strlen(s) && s[i] == '+');
 
-    bool plus = false;
-    if (i < strlen(s))
-        plus = s[i] == '+';
+        *start = single_arg(token, NULL);
 
-    *start = single_arg(token, NULL);
-
-    if ((token = strtok(NULL, " +")) == NULL)
-        fatal("too few arguments");
-
-    *end = single_arg(token, NULL);
+        if ((token = strtok(NULL, " +")) == NULL) {
+            if (!default_args)
+                fatal("too few arguments");
+        } else
+            *end = single_arg(token, NULL);
+    }
 
     if (plus)
         *end += *start;
@@ -444,9 +447,9 @@ static void do_command(int no)
         break;
     case c_DISASSEMBLE:
         {
-            long start, end;
+            long start = EP - 16, end = 64;
 
-            double_arg(strtok(NULL, ""), &start, &end);
+            double_arg(strtok(NULL, ""), &start, &end, true);
             check_aligned(start, "Address");
             check_aligned(end, "Address");
             check_range(start, end, "Address");
@@ -467,8 +470,8 @@ static void do_command(int no)
         break;
     case c_DUMP:
         {
-            long start, end;
-            double_arg(strtok(NULL, ""), &start, &end);
+            long start = EP - 64, end = 256;
+            double_arg(strtok(NULL, ""), &start, &end, true);
             check_range(start, end, "Address");
             while (start < end) {
                 printf("$%08lX ", (unsigned long)start);
@@ -592,7 +595,7 @@ static void do_command(int no)
         {
             const char *file = strtok(NULL, " ");
             long start, end;
-            double_arg(strtok(NULL, ""), &start, &end);
+            double_arg(strtok(NULL, ""), &start, &end, false);
 
             FILE *handle;
             if ((handle = fopen(file, "wb")) == NULL)
