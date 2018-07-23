@@ -28,7 +28,7 @@
 
 \title{A simple shell for the\\@PACKAGE_NAME@ virtual machine\\version @VERSION@}
 \author{Reuben Thomas}
-\date{17th April 2018}
+\date{23rd July 2018}
 
 \begin{document}
 \maketitle
@@ -178,12 +178,12 @@ A larger section of memory may be displayed with the command {\tt DUMP},
 which may be used in the two forms
 
 \begin{center}
-{\tt DUMP} \angb{address} {\tt +} \angb{number}\\
-{\tt DUMP} \angb{address_1} \angb{address_2}
+{\tt DUMP} [\angb{address} [{\tt +} \angb{number}]]\\
+{\tt DUMP} \angb{address_1} [\angb{address_2}]
 \end{center}
 
-\noindent where the first displays \angb{number} bytes starting at address
-\angb{address}, and the second displays memory from address \angb{address_1}
+\noindent where the first displays \angb{number} bytes (or $256$ if the number is omitted) starting at address
+\angb{address} (or $64$ bytes before {\tt EP} if the address is omitted), and the second displays memory from address \angb{address_1}
 up to, but not including, address \angb{address_2}. An error message is
 displayed if the start address is less than or equal to the end address or if
 either address is out of range.
@@ -243,12 +243,12 @@ The command {\tt DISASSEMBLE} disassembles bForth code. It may be used in the
 two forms
 
 \begin{center}
-{\tt DISASSEMBLE} \angb{address} {\tt +} \angb{number}\\
+{\tt DISASSEMBLE} [\angb{address} [{\tt +} \angb{number}]]\\
 {\tt DISASSEMBLE} \angb{address_1} \angb{address_2}
 \end{center}
 
-\noindent where the first disassembles \angb{number} bytes starting at address
-\angb{address}, and the second from address \angb{address_1} up to, but not
+\noindent where the first disassembles \angb{number} bytes (or $64$ if the number is omitted) starting at address
+\angb{address} (or $16$ bytes before {\tt EP} if the address is omitted), and the second from address \angb{address_1} up to, but not
 including, address \angb{address_2}. The addresses must be cell-aligned, and
 the number of bytes must be a multiple of four. An error message is displayed
 if the start address is less than or equal to the end address, or if either
