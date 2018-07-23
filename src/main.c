@@ -155,21 +155,21 @@ static BYTE parse_instruction(const char *token)
     return opcode;
 }
 
+static long parse_number(const char *s, char **endp)
+{
+    return s[0] == '$' ? strtol(s + 1, endp, 16) :
+        strtol(s, endp, 10);
+}
 
 static long single_arg(const char *s, int *bytes)
 {
     if (s == NULL)
         fatal("too few arguments");
-    size_t len = strlen(s);
 
-    long n;
     char *endp;
-    if (s[0] == '$')
-        n = strtol(s + 1, &endp, 16);
-    else
-        n = strtol(s, &endp, 10);
+    long n = parse_number(s, &endp);
 
-    if (endp != &s[len])
+    if (endp != &s[strlen(s)])
         fatal("invalid number");
 
     if (bytes != NULL)
@@ -351,10 +351,9 @@ static void do_assign(char *token)
     }
 }
 
-static void do_display(const char *token, const char *format)
+static void do_display(size_t no, const char *format)
 {
     char *display;
-    int no = search(token, regist, registers);
 
     switch (no) {
         case r_A:
@@ -397,22 +396,7 @@ static void do_display(const char *token, const char *format)
             display = xasprintf("'THROW = $%"PRIX32" (%"PRIu32")", THROW, THROW);
             break;
         default:
-            {
-                CELL adr = (CELL)single_arg(token, NULL);
-
-                check_valid(adr, "Address");
-                if (!IS_ALIGNED(adr)) {
-                    BYTE b;
-                    load_byte(adr, &b);
-                    display = xasprintf("$%"PRIX32": $%X (%d) (byte)", (UCELL)adr,
-                                        b, b);
-                } else {
-                    CELL c;
-                    load_cell(adr, &c);
-                    display = xasprintf("$%"PRIX32": $%"PRIX32" (%"PRId32") (cell)", (UCELL)adr,
-                                        (UCELL)c, c);
-                }
-            }
+            break;
     }
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
@@ -423,9 +407,9 @@ static void do_display(const char *token, const char *format)
 
 static void do_registers(void)
 {
-    do_display("EP", "%-25s");
-    do_display("I", "%-22s");
-    do_display("A", "%-16s\n");
+    do_display(r_EP, "%-25s");
+    do_display(r_I, "%-22s");
+    do_display(r_A, "%-16s\n");
 }
 
 static void do_command(int no)
@@ -711,8 +695,32 @@ static void parse(char *input)
             BYTE opcode = toass(token + 1);
             if (opcode != O_UNDEFINED)
                 ass(opcode);
-        } else
-            do_display(token, "%s\n");
+        } else {
+            no = search(token, regist, registers);
+            if (no == SIZE_MAX) {
+                char *endp, *display;
+                CELL adr = (CELL)parse_number(token, &endp);
+
+                if (endp != &token[strlen(token)])
+                    fatal("unknown command or register '%s'", token);
+
+                check_valid(adr, "Address");
+                if (!IS_ALIGNED(adr)) {
+                    BYTE b;
+                    load_byte(adr, &b);
+                    display = xasprintf("$%"PRIX32": $%X (%d) (byte)", (UCELL)adr,
+                                        b, b);
+                } else {
+                    CELL c;
+                    load_cell(adr, &c);
+                    display = xasprintf("$%"PRIX32": $%"PRIX32" (%"PRId32") (cell)", (UCELL)adr,
+                                        (UCELL)c, c);
+                }
+                printf("%s\n", display);
+                free(display);
+            } else
+                do_display(no, "%s\n");
+        }
     }
 }
 
