@@ -150,7 +150,7 @@ _GL_ATTRIBUTE_PURE BYTE toass(const char *token)
     return O_UNDEFINED;
 }
 
-char *val_data_stack(void)
+static char *_val_data_stack(bool with_hex)
 {
     static char *picture = NULL;
 
@@ -171,6 +171,11 @@ char *val_data_stack(void)
         ptr = xasprintf("%s%"PRId32, picture, c);
         free(picture);
         picture = ptr;
+        if (with_hex) {
+            ptr = xasprintf("%s ($%"PRIX32")", picture, (UCELL)c);
+            free(picture);
+            picture = ptr;
+        }
         if (i != SP) {
             ptr = xasprintf("%s ", picture);
             free(picture);
@@ -183,6 +188,11 @@ char *val_data_stack(void)
     return picture;
 }
 
+char *val_data_stack(void)
+{
+    return _val_data_stack(false);
+}
+
 void show_data_stack(void)
 {
     if (SP == S0)
@@ -190,7 +200,7 @@ void show_data_stack(void)
     else if (STACK_UNDERFLOW(SP, S0))
         printf("Data stack underflow\n");
     else
-        printf("Data stack: %s\n", val_data_stack());
+        printf("Data stack: %s\n", _val_data_stack(true));
 }
 
 void show_return_stack(void)
