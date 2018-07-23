@@ -133,9 +133,13 @@ static size_t search(const char *token, const char *list[], size_t entries)
 {
     size_t len = strlen(token);
 
-    for (size_t i = 0; i < entries; i++)
+    for (size_t i = 0; i < entries; i++) {
+        size_t entry_len = strlen(list[i]);
+        if (entry_len > 1 && len == 1)
+            continue;
         if (strncmp(token, list[i], len) == 0)
             return i;
+    }
 
     return SIZE_MAX;
 }
