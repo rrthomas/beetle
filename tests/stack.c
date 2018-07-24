@@ -52,7 +52,7 @@ int main(void)
     printf("Next stack is wrong!\n");
 
     size_t first = i;
-    for (; i < sizeof(correct) / sizeof(correct[0]); i++) {
+    for (; i - i / 5 < sizeof(correct) / sizeof(correct[0]); i++) {
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack()) && i != first) {
