@@ -1,5 +1,3 @@
-Filenames containing ~ complete nicely but do not work: use wordexp(3).
-
 Reorganize C implementation documentation into user’s guide and programmer’s guide.
 
 Run demo as test.
