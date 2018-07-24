@@ -22,8 +22,11 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <sys/wait.h>
+#include <libgen.h>
+#include <glob.h>
 
 #include "progname.h"
+#include "xalloc.h"
 #include "xvasprintf.h"
 
 #include "public.h"
@@ -97,6 +100,40 @@ static int registers = sizeof(regist) / sizeof(*regist);
 
 static long count[256];
 
+
+static const char *globfile(const char *file)
+{
+    static glob_t globbuf;
+    static bool first_time = true;
+    if (!first_time)
+        globfree(&globbuf);
+    first_time = false;
+
+    if (glob(file, GLOB_TILDE_CHECK, NULL, &globbuf) != 0)
+        fatal("cannot find file '%s'", file);
+    else if (globbuf.gl_pathc != 1)
+        fatal("'%s' matches more than one file", file);
+    return globbuf.gl_pathv[0];
+}
+
+static const char *globdirname(const char *file)
+{
+    static char *globbed_file = NULL;
+    free(globbed_file);
+
+    if (strchr(file, '/') == NULL)
+        return file;
+
+    char *filecopy = xstrdup(file);
+    const char *dir = globfile(dirname(filecopy));
+    free(filecopy);
+    filecopy = xstrdup(file);
+    char *base = basename(filecopy);
+    globbed_file = xasprintf("%s/%s", dir, base);
+    free(filecopy);
+
+    return globbed_file;
+}
 
 static void check_valid(UCELL adr, const char *quantity)
 {
@@ -514,9 +551,9 @@ static void do_command(int no)
             if (arg != NULL)
                 adr = single_arg(arg, NULL);
 
-            FILE *handle = fopen(file, "rb");
+            FILE *handle = fopen(globfile(file), "rb");
             if (handle == NULL)
-                fatal("cannot open file %s", file);
+                fatal("cannot open file '%s'", file);
             int ret = load_object(handle, adr);
             fclose(handle);
 
@@ -599,7 +636,7 @@ static void do_command(int no)
             double_arg(strtok(NULL, ""), &start, &end, false);
 
             FILE *handle;
-            if ((handle = fopen(file, "wb")) == NULL)
+            if ((handle = fopen(globdirname(file), "wb")) == NULL)
                 fatal("cannot open file %s", file);
             int ret = save_object(handle, start, (UCELL)((end - start) / CELL_W));
             fclose(handle);
