@@ -1,0 +1,21 @@
+.TH @PACKAGE@-dump "1" "July 2018" "@PACKAGE_NAME@" "User Commands"
+.SH NAME
+@PACKAGE@-dump \- Dump @PACKAGE_NAME@ object files as hex and disassembly
+.SH SYNOPSIS
+.B @PACKAGE@-dump
+OBJECT\-FILE
+.SH DESCRIPTION
+Dump the given file, typically \fIfoo.obj\fR, as hex (\fIfoo.hex\fR) and disassembly (\fIfoo.asm\fR).
+.SH "SEE ALSO"
+.BR @PACKAGE@ (1)
+.SH "REPORTING BUGS"
+Report bugs to rrt@sc3d.org.
+.PP
+\(co Reuben Thomas 1995\-2018
+.br
+@PACKAGE_NAME@ comes with ABSOLUTELY NO WARRANTY.
+.br
+You may redistribute copies of @PACKAGE_NAME@
+under the terms of the GNU General Public License.
+.br
+For more information about these matters, see the file named COPYING.

@@ -16,10 +16,11 @@ libbeetle_la_SOURCES = storage.c step.c run.c debug.c loadobj.c \
 libbeetle_la_LIBADD = $(top_builddir)/lib/libgnu.la
 
 bin_PROGRAMS = beetle
+bin_SCRIPTS = @PACKAGE@-dump
 if HAVE_RLWRAP
-bin_SCRIPTS = @PACKAGE@i
+bin_SCRIPTS += @PACKAGE@i
 endif
-man_MANS = @PACKAGE@.1 @PACKAGE@i.1
+man_MANS = @PACKAGE@.1 @PACKAGE@i.1 @PACKAGE@-dump.1
 pkgdata_DATA = completions
 beetle_LDADD = lib@PACKAGE@.la $(top_builddir)/lib/libgnu.la
 beetle_SOURCES = main.c tbl_opts.h tbl_commands.h tbl_registers.h $(internal_HDRS)
@@ -78,17 +79,21 @@ external_syms.h: external-syms.txt
 	sed -e 's/\(.*\)/#define \1 $(PACKAGE)_\1/' < $^ > $@
 
 @PACKAGE@i: @PACKAGE@i.in Makefile
-	$(do_subst) < $(srcdir)/@PACKAGE@i.in > @PACKAGE@i
-	chmod +x @PACKAGE@i
+	$(do_subst) < $(srcdir)/@PACKAGE@i.in > $@
+	chmod +x $@
+
+@PACKAGE@-dump: @PACKAGE@-dump.in Makefile
+	$(do_subst) < $(srcdir)/@PACKAGE@-dump.in > $@
+	chmod +x $@
 
 CLOC = cloc --force-lang="C",h
 
 loc:
 	$(CLOC) $(lib@PACKAGE@_la_SOURCES) $(@PACKAGE@_SOURCES) $(include_HEADERS)
 
-EXTRA_DIST = ARMbeetle.bas @PACKAGE@i.in @PACKAGE@i.1 completions.h tbl_opts.h.in step.c.in external-syms.txt external_syms.h
+EXTRA_DIST = ARMbeetle.bas @PACKAGE@i.in @PACKAGE@i.1 @PACKAGE@-dump.in @PACKAGE@-dump.1 completions.h tbl_opts.h.in step.c.in external-syms.txt external_syms.h
 
-DISTCLEANFILES = @PACKAGE@i @PACKAGE@.1 @PACKAGE@i.1 completions tbl_opts.h $(include_HEADERS) external-defines.txt external-syms.txt
+DISTCLEANFILES = @PACKAGE@i @PACKAGE@-dump @PACKAGE@.1 @PACKAGE@i.1 @PACKAGE-dump.1 completions tbl_opts.h $(include_HEADERS) external-defines.txt external-syms.txt
 # Ignore built files that are part of the distribution (specifically,
 # @PACKAGE@.1)
 distcleancheck_listfiles = \
