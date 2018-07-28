@@ -56,6 +56,14 @@ static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 0) void verror(const char *format, va_list
     fprintf(stderr, "\n");
 }
 
+static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void warn(const char *format, ...)
+{
+    va_list args;
+
+    va_start(args, format);
+    verror(format, args);
+}
+
 static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void fatal(const char *format, ...)
 {
     va_list args;
@@ -901,9 +909,9 @@ int main(int argc, char *argv[])
         int res = run();
         if (!debug_on_error || res >= 0)
             return res;
-    }
-
-    interactive_printf("%s\n%s\n\n", VERSION_STRING, COPYRIGHT_STRING);
+        warn("exception %d raised", res);
+    } else
+        interactive_printf("%s\n%s\n\n", VERSION_STRING, COPYRIGHT_STRING);
 
     while (1) {
         int jmp_val = setjmp(env);
