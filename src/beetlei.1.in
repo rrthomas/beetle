@@ -1,6 +1,6 @@
-.TH @PACKAGE@I "1" "March 2018" "@PACKAGE_NAME@" "User Commands"
+.TH @PACKAGE@I "1" "July 2018" "@PACKAGE_NAME@" "User Commands"
 .SH NAME
-@PACKAGE_NAME@ \- Forth virtual machine interactive wrapper
+@PACKAGE@i \- @PACKAGE_NAME@ Forth virtual machine interactive wrapper
 .SH SYNOPSIS
 .B @PACKAGE@i
 [\fI\,OPTION\/\fR...] [\fI\,OBJECT\-FILE ARGUMENT\/\fR...]
@@ -16,7 +16,7 @@ File in which the command-line history is saved.
 .SH "REPORTING BUGS"
 Report bugs to rrt@sc3d.org.
 .PP
-(c) Reuben Thomas 1995\-2018
+\(co Reuben Thomas 1995\-2018
 .br
 @PACKAGE_NAME@ comes with ABSOLUTELY NO WARRANTY.
 .br
