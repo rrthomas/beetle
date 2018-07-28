@@ -412,7 +412,7 @@ static void do_display(size_t no, const char *format)
             display = xasprintf("ENDISM = %d", ENDISM);
             break;
         case r_EP:
-            display = xasprintf("EP = $%05"PRIX32" (%"PRIu32")", EP, EP);
+            display = xasprintf("EP = $%"PRIX32" (%"PRIu32")", EP, EP);
             break;
         case r_I:
             display = xasprintf("I = %-10s ($%02X)", disass(I), I);
