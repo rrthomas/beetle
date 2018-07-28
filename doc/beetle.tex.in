@@ -287,7 +287,7 @@ When a {\tt THROW} instruction (see section~\ref{exceptinst}) is executed, an
 {\bf exception} is said to have been {\bf raised}. Some exceptions are raised by
 other instructions, for example by {\tt /} when division by zero is attempted;
 these also execute a {\tt THROW}. The exception code is the number on top of the
-stack at the time the exception is raised.
+stack at the time the exception is raised. When an exception is raised by @PACKAGE@, it pushes the exception code on to the stack.
 
 Exception codes are signed numbers. $-1$ to $-255$ are reserved for ANS Forth
 exception codes, and $-256$ to $-511$ for @PACKAGE_NAME@'s own exception codes; the meanings
