@@ -937,7 +937,7 @@ CELL single_step(void)
         goto throw;
     }
     if (exception == 0)
-        return -260; // terminated OK
+        return -259; // terminated OK
 
     // Deal with address exceptions during execution cycle.
     // Since we have already had an exception, and must return a different

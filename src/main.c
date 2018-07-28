@@ -594,7 +594,7 @@ static void do_command(int no)
     case c_TRACE:
         {
             char *arg = strtok(NULL, " ");
-            CELL ret = -260;
+            CELL ret = -259;
 
             if (arg == NULL) {
                 if ((ret = single_step()))
@@ -607,7 +607,7 @@ static void do_command(int no)
                     unsigned long limit = single_arg(strtok(NULL, ""), NULL);
                     check_valid(limit, "Address");
                     check_aligned(limit, "Address");
-                    while ((unsigned long)EP != limit && ret == -260) {
+                    while ((unsigned long)EP != limit && ret == -259) {
                         ret = single_step();
                         if (no == c_TRACE) do_registers();
                         count[I]++;
@@ -617,7 +617,7 @@ static void do_command(int no)
                                ret, EP);
                 } else {
                     unsigned long limit = single_arg(arg, NULL), i;
-                    for (i = 0; i < limit && ret == -260; i++) {
+                    for (i = 0; i < limit && ret == -259; i++) {
                         ret = single_step();
                         if (no == c_TRACE) do_registers();
                         count[I]++;
