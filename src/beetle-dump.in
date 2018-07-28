@@ -1,0 +1,15 @@
+#!/bin/sh
+# Dump @PACKAGE_NAME@ object file as hex and disassembly
+# (c) Reuben Thomas 2018
+
+if [ $# -lt 1 ]; then
+    echo Usage: @PACKAGE@-dump OBJECT-FILE
+    exit 1
+fi
+
+file=$1
+base=${file%.*}
+size=$((`wc -c < $1` - 12))
+
+echo "load $file\ndump 0+$size\nquit" | @PACKAGE@ > $base.hex
+echo "load $file\ndisassemble 0+$size\nquit" | @PACKAGE@ > $base.asm
