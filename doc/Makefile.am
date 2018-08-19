@@ -8,11 +8,6 @@
 # THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER‘S
 # RISK.
 
-if GNU_MAKE
-BIBINPUTS = $(abs_srcdir)/bibtex/bib
-export BIBINPUTS
-endif
-
 LATEX_SRCS = \
 	$(srcdir)/papers/intro.tex \
 	$(srcdir)/papers/litencode.tex \
@@ -48,7 +43,7 @@ EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS) @PACKAGE@.tex.in c@PACKAGE@.tex.in shel
 # TODO: mv works around a bug in latexmk < 4.54, which sets $out_dir when it
 # shouldn't. Remove when we can require latexmk >= 4.54 (Ubuntu 20.04).
 .tex.pdf:
-	$(LATEXMK) -r $(abs_srcdir)/latexmkrc -cd -f $< && \
+	env BIBINPUTS=$(abs_srcdir)/bibtex/bib $(LATEXMK) -r $(abs_srcdir)/latexmkrc -cd -f $< && \
 	if test -e `basename $@` -a ! `basename $@` -ef $@; then \
 	    mv `basename $@` $@; \
 	fi
