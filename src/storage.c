@@ -241,10 +241,10 @@ _GL_ATTRIBUTE_CONST CELL reverse_cell(CELL value)
 int reverse(UCELL start, UCELL length)
 {
     int ret = 0;
-    for (UCELL i = start; ret == 0 && i < start + length * CELL_W; i += CELL_W) {
+    for (UCELL i = 0; ret == 0 && i < length; i ++) {
         CELL c;
-        ret = load_cell(i, &c)
-            || store_cell(i, reverse_cell(c));
+        ret = load_cell(start + i * CELL_W, &c)
+            || store_cell(start + i, reverse_cell(c));
     }
     return ret;
 }

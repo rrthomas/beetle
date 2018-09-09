@@ -384,6 +384,7 @@ static void do_assign(char *token)
             break;
         case r_THROW:
             THROW = value;
+            break;
         default:
             {
                 CELL adr = (CELL)single_arg(token, NULL);

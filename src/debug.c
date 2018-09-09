@@ -156,34 +156,32 @@ static char *_val_data_stack(bool with_hex)
 
     free(picture);
     picture = xasprintf("%s", "");
-
-    for (UCELL i = S0; i != SP;) {
-        CELL c;
-        char *ptr;
-        i += CELL_W * STACK_DIRECTION;
-        int exception = load_cell(i, &c);
-        if (exception != 0) {
-            ptr = xasprintf("%sinvalid address!", picture);
+    if (!STACK_UNDERFLOW(SP, S0))
+        for (UCELL i = S0; i != SP;) {
+            CELL c;
+            char *ptr;
+            i += CELL_W * STACK_DIRECTION;
+            int exception = load_cell(i, &c);
+            if (exception != 0) {
+                ptr = xasprintf("%sinvalid address!", picture);
+                free(picture);
+                picture = ptr;
+                break;
+            }
+            ptr = xasprintf("%s%"PRId32, picture, c);
             free(picture);
             picture = ptr;
-            break;
+            if (with_hex) {
+                ptr = xasprintf("%s ($%"PRIX32") ", picture, (UCELL)c);
+                free(picture);
+                picture = ptr;
+            }
+            if (i != SP) {
+                ptr = xasprintf("%s ", picture);
+                free(picture);
+                picture = ptr;
+            }
         }
-        ptr = xasprintf("%s%"PRId32, picture, c);
-        free(picture);
-        picture = ptr;
-        if (with_hex) {
-            ptr = xasprintf("%s ($%"PRIX32") ", picture, (UCELL)c);
-            free(picture);
-            picture = ptr;
-        }
-        if (i != SP) {
-            ptr = xasprintf("%s ", picture);
-            free(picture);
-            picture = ptr;
-        }
-        if (i == 0)
-            break;
-    }
 
     return picture;
 }
@@ -220,8 +218,6 @@ void show_return_stack(void)
                 break;
             }
             printf("$%"PRIX32" ", (UCELL)c);
-            if (i == 0)
-                break;
         }
         putchar('\n');
     }
