@@ -45,23 +45,24 @@ static void stack3(void)
     PUSH(-1); PUSH(0); PUSH(237);
 }
 
-static void step(int start, int end)
+static void step(unsigned start, unsigned end)
 {
-    for (int i = start; i <= end; i++) {
-        single_step();
-        printf("I = %s\n", disass(I));
-        if (I != O_NEXT00) {
-            printf("Result: %d; correct result: %d\n\n", LOAD_CELL(SP),
-                correct[i - i / 5]);
-            if (correct[i - i / 5] != LOAD_CELL(SP)) {
-                printf("Error in comparison tests: EP = %"PRIu32"\n", EP);
-                exit(1);
+    if (end > start)
+        for (unsigned i = start; i < end; i++) {
+            single_step();
+            printf("I = %s\n", disass(I));
+            if (I != O_NEXT00) {
+                printf("Result: %d; correct result: %d\n\n", LOAD_CELL(SP),
+                       correct[i - i / 5]);
+                if (correct[i - i / 5] != LOAD_CELL(SP)) {
+                    printf("Error in comparison tests: EP = %"PRIu32"\n", EP);
+                    exit(1);
+                }
+                (void)POP;	// drop result of comparison
             }
-            (void)POP;	// drop result of comparison
+            else
+                putchar('\n');
         }
-        else
-          putchar('\n');
-    }
 }
 
 int main(void)
@@ -80,23 +81,23 @@ int main(void)
     NEXT;   // load first instruction word
 
     stack1();       // set up the stack with four standard pairs to compare
-    step(0, 4);     // do the < tests
+    step(0, 5);     // do the < tests
     stack1();
-    step(5, 9);     // do the > tests
+    step(5, 10);     // do the > tests
     stack2();       // set up the stack with two standard pairs to compare
-    step(10, 11);   // do the = tests
+    step(10, 12);   // do the = tests
     stack2();
-    step(12, 14);   // do the <> tests
+    step(12, 15);   // do the <> tests
     stack3();       // set up the stack with three standard values
-    step(15, 17);   // do the 0< tests
+    step(15, 18);   // do the 0< tests
     stack3();
-    step(18, 21);   // do the 0> tests
+    step(18, 22);   // do the 0> tests
     SP = S0;  PUSH(237); PUSH(0);	// set up the stack with two values
-    step(22, 24);   // do the 0= tests
+    step(22, 25);   // do the 0= tests
     stack1();       // set up the stack with four standard pairs to compare
-    step(25, 29);   // do the U< tests
+    step(25, 30);   // do the U< tests
     stack1();
-    step(30, 34);   // do the U> tests
+    step(30, 35);   // do the U> tests
 
     assert(exception == 0);
     printf("Comparison tests ran OK\n");
