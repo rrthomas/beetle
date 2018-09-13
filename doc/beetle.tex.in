@@ -123,7 +123,7 @@ the implementor in many particulars.
 
 @PACKAGE_NAME@ is self-contained. I/O can be implemented via extra instructions (see~\ref{extrainstructions}). Machine
 code routines on the host computer may be accessed using the {\tt LINK}
-instruction. @PACKAGE_NAME@ supports the saving and loading of simple object modules.
+instruction. @PACKAGE_NAME@ supports a simple object module format.
 
 @PACKAGE_NAME@ is conceptually (and usually in fact) a library, embedded in other programs.
 A small interface is provided for other programs to control @PACKAGE_NAME@.
