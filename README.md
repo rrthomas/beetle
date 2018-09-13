@@ -15,8 +15,7 @@ all memory references are bounds checked. An I/O library is implemented;
 access to native code routines is also possible, allowing Beetle and C
 programs to call each other.
 
-This package comprises the definition of the Beetle virtual machine, a
-virtual machine specialised for the execution of Forth, and an
+This package comprises the definition of the Beetle virtual machine and an
 implementation in ISO C99 using POSIX APIs. Detailed documentation is in the
 `doc` directory; installation instructions follow.
 
