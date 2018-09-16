@@ -849,7 +849,7 @@ enthusiasm for a mysterious language into actual knowledge and appreciation.
 
 I have taken or extrapolated the pronunciations of Forth words from~\cite{ANSIforth}.
 
-Martin Richards's demonstration of his BCPL-oriented Cintcode virtual machine
+Martin Richards's demonstration of his BCPL-oriented Cintcode virtual machine~\cite{cintweb}
 convinced me that this project was worth attempting. He also gave valuable
 advice on Beetle's design and proof-read this paper.
 
