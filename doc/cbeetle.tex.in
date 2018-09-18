@@ -101,7 +101,7 @@ C @PACKAGE_NAME@ provides the ability to map native memory blocks into @PACKAGE_
 
 \subsection{Extra instructions}
 
-C @PACKAGE_NAME@ provides the following extra instruction.
+C @PACKAGE_NAME@ provides the following extra instructions.
 
 \subsubsection{Command-line arguments}
 
