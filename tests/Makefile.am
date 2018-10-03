@@ -22,9 +22,16 @@ TESTS_ENVIRONMENT = \
 	if test -n "$(VALGRIND)"; then export VALGRIND='$(VALGRIND)'; fi; \
 	export LIBTOOL=$(top_builddir)/libtool;
 
-do_load_object: load_object
+test-parser:
+	$(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(top_builddir)/src/@PACKAGE@$(EXEEXT) < $(srcdir)/hello.txt && \
+	$(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(top_builddir)/src/@PACKAGE@$(EXEEXT) ./hello.obj > hello.output && \
+	diff hello.output $(srcdir)/hello.correct
+
+do_load_object: load_object test-parser
 	$(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(builddir)/load_object $(srcdir)
 
-check-local: do_load_object
+check-local: do_load_object test-parser
 
-EXTRA_DIST = run-test tests.h badobj1 badobj2 badobj3 badobj4 testobj1 testobj2
+EXTRA_DIST = run-test tests.h badobj1 badobj2 badobj3 badobj4 testobj1 testobj2 hello.txt hello.correct
+
+DISTCLEANFILES = hello.obj hello.output

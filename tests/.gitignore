@@ -3,6 +3,8 @@
 /.deps
 /.libs
 /tests.h
+/hello.obj
+/hello.output
 /arithmetic
 /branch
 /comparison

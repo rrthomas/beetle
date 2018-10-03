@@ -1,7 +1,5 @@
 Reorganize C implementation documentation into user’s guide and programmer’s guide.
 
-Run demo as test.
-
 Turn tests into debugger scripts.
 
 Auto-realloc stacks when they run out of space.

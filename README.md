@@ -79,11 +79,12 @@ you have `rlwrap`, you can run `beetlei` instead to get readline support.
 
 ### Demo: Hello, world!
 
-In `demo/hello.txt` is a command file for the shell that demonstrates its
+In `tests/hello.txt` is a command file for the shell that demonstrates its
 use as a crude assembler. Run the following commands to see it in action:
 
 ```
-beetle < demo/hello.txt
+cd tests
+beetle < ./hello.txt
 beetle hello.obj
 ```
 
