@@ -613,7 +613,7 @@ static void do_command(int no)
             } else {
                 upper(arg);
                 if (strcmp(arg, "TO") == 0) {
-                    unsigned long limit = single_arg(strtok(NULL, ""), NULL);
+                    unsigned long limit = single_arg(strtok(NULL, " "), NULL);
                     check_valid(limit, "Address");
                     check_aligned(limit, "Address");
                     while ((unsigned long)EP != limit && ret == -259) {
@@ -667,7 +667,7 @@ static void do_command(int no)
     case c_LITERAL:
         {
             int bytes;
-            CELL value = (CELL)single_arg(strtok(NULL, ""), &bytes);
+            CELL value = (CELL)single_arg(strtok(NULL, " "), &bytes);
 
             switch (no) {
             case c_BLITERAL:
