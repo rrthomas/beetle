@@ -38,7 +38,7 @@ Atari TOS 1.4.
 Reports on compatibility, whether positive or negative, are welcomed.
 
 
-### Building from source
+### Building from a release tarball
 
 Perl and help2man are required to build from source. For building from git,
 see below.
