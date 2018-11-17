@@ -41,7 +41,7 @@ int main(void)
     ass(O_MONE); ass(O_TOR); ass(O_J); ass(O_NEXT00);
     ass(O_DUP); ass(O_UNLOOP);
 
-    NEXT;
+    assert(single_step() == -259);
 
     while (EP < 20) single_step();
     show_data_stack();
@@ -80,7 +80,7 @@ int main(void)
     SP = S0;
 
     assert(EP == 48);
-    NEXT;  I = 0; // Exit infinite loop
+    A = 0; I = 0; // Exit infinite loop
     while (EP < 60) single_step();
     CELL ret3 = LOAD_CELL(RP - 2 * CELL_W * STACK_DIRECTION);
     printf("3rd item on return stack is %"PRId32" (should be %"PRId32")\n", ret3, LOAD_CELL(SP));

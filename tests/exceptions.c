@@ -64,7 +64,7 @@ int main(void)
 
         printf("Test %zu\n", i + 1);
         EP = test[i];
-        NEXT;   // load first instruction word
+        assert(single_step() == -259);   // load first instruction word
         CELL res = run();
 
         if (result[i] != res || (result[i] != 0 && bad[i] != BAD) ||

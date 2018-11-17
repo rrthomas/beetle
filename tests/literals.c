@@ -24,7 +24,7 @@ int main(void)
     ass(O_LITERAL); lit(-257); ass(O_LITERAL); lit(12345678);
     ass(O_LITERALI); ilit(-2);
 
-    NEXT;   // load first instruction word
+    assert(single_step() == -259);   // load first instruction word
 
     for (size_t i = 0; i + i / 5 < sizeof(correct) / sizeof(correct[0]); i++) {
         show_data_stack();

@@ -61,7 +61,7 @@ int main(void)
     ass(O_LITERAL); lit(size * CELL_W + 1); ass(O_CFETCH); ass(O_DROP);
     ass(O_LITERAL); lit(size * CELL_W + 8); ass(O_DUP); ass(O_CSTORE);
 
-    NEXT;   // load first instruction word
+    assert(single_step() == -259);   // load first instruction word
 
     for (size_t i = 0; i < sizeof(correct) / sizeof(correct[0]); i++) {
         show_data_stack();

@@ -47,7 +47,7 @@ int main(void)
     ass(O_SSLASHREM); ass(O_DROP); ass(O_LITERALI); ilit(-2);
     ass(O_USLASHMOD);
 
-    NEXT;   // load first instruction word
+    assert(single_step() == -259);   // load first instruction word
 
     for (size_t i = 0; i < sizeof(correct) / sizeof(correct[0]); i++) {
         show_data_stack();

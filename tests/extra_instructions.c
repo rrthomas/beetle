@@ -27,7 +27,7 @@ int main(void)
     start_ass(EP);
     ass(OX_ARGC); ass(O_ONE); ass(OX_ARG);
 
-    NEXT;   // load first instruction word
+    assert(single_step() == -259);   // load first instruction word
 
     single_step();
     printf("argc is %"PRId32", and should be %d\n\n", LOAD_CELL(SP), argc);

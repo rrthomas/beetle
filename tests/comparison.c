@@ -78,7 +78,7 @@ int main(void)
     ass(O_ULESS); ass(O_ULESS); ass(O_ULESS); ass(O_ULESS);
     ass(O_UGREATER); ass(O_UGREATER); ass(O_UGREATER); ass(O_UGREATER);
 
-    NEXT;   // load first instruction word
+    assert(single_step() == -259);   // load first instruction word
 
     stack1();       // set up the stack with four standard pairs to compare
     step(0, 5);     // do the < tests

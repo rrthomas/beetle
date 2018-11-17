@@ -18,7 +18,7 @@ int main(void)
 
     init((CELL *)calloc(1024, 1), 256);
 
-    NEXT;
+    assert(single_step() == -259);
 
     for (int i = 0; i < 10; i++) {
         printf("EP = %u\n", EP);

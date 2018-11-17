@@ -72,7 +72,5 @@ uint8_t *native_address_range_in_one_area(UCELL start, UCELL length, bool writab
 // quantities is implementation-defined in C99)
 #define ARSHIFT(n, p) ((n) = ((n) >> (p)) | (-((n) < 0) << (CELL_BIT - p)))
 
-#define NEXT (exception = (EP += CELL_W, load_cell(EP - CELL_W, &A)))
-
 
 #endif

@@ -59,7 +59,7 @@ int main(void)
     start_ass(300);
     ass(O_EXIT);
 
-    NEXT;   // load first instruction word
+    assert(single_step() == -259);   // load first instruction word
 
     for (size_t i = 0; i < sizeof(correct) / sizeof(correct[0]); i++) {
         printf("Instruction %zu: EP = %u; should be %u\n\n", i, EP, correct[i]);

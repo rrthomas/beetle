@@ -544,7 +544,9 @@ static void do_command(int no)
                 long adr = single_arg(arg, NULL);
                 EP = adr;
             }
-            NEXT;
+            CELL ret = single_step();
+            if (ret)
+                printf("HALT code %"PRId32" was returned\n", ret);
         }
         break;
     case c_INITIALISE:

@@ -135,7 +135,9 @@ CELL single_step(void)
     switch (I) {
     case O_NEXT00:
     case O_NEXTFF:
-        NEXT;
+ next:
+        EP += CELL_W;
+        exception = load_cell(EP - CELL_W, &A);
         break;
     case O_DUP:
         {
@@ -569,26 +571,26 @@ CELL single_step(void)
             CELL addr = LOAD_CELL(EP);
             CHECK_ALIGNED_WHOLE_CELL(addr);
             EP = addr;
-            NEXT;
+            goto next;
         }
         break;
     case O_BRANCHI:
         EP += A * CELL_W;
-        NEXT;
+        goto next;
         break;
     case O_QBRANCH:
         if (POP == @PACKAGE_UPPER@_FALSE) {
             CELL addr = LOAD_CELL(EP);
             CHECK_ALIGNED_WHOLE_CELL(addr);
             EP = addr;
-            NEXT;
+            goto next;
         } else
             EP += CELL_W;
         break;
     case O_QBRANCHI:
         if (POP == @PACKAGE_UPPER@_FALSE)
             EP += A * CELL_W;
-        NEXT;
+        goto next;
         break;
     case O_EXECUTE:
         {
@@ -596,7 +598,7 @@ CELL single_step(void)
             CHECK_ALIGNED_WHOLE_CELL(addr);
             PUSH_RETURN(EP);
             EP = addr;
-            NEXT;
+            goto next;
         }
         break;
     case O_FEXECUTE:
@@ -607,7 +609,7 @@ CELL single_step(void)
             addr = LOAD_CELL(addr);
             CHECK_ALIGNED_WHOLE_CELL(addr);
             EP = addr;
-            NEXT;
+            goto next;
         }
         break;
     case O_CALL:
@@ -616,20 +618,20 @@ CELL single_step(void)
             CELL addr = LOAD_CELL(EP);
             CHECK_ALIGNED_WHOLE_CELL(addr);
             EP = addr;
-            NEXT;
+            goto next;
         }
         break;
     case O_CALLI:
         PUSH_RETURN(EP);
         EP += A * CELL_W;
-        NEXT;
+        goto next;
         break;
     case O_EXIT:
         {
             CELL addr = POP_RETURN;
             CHECK_ALIGNED_WHOLE_CELL(addr);
             EP = addr;
-            NEXT;
+            goto next;
         }
         break;
     case O_DO:
@@ -653,7 +655,7 @@ CELL single_step(void)
                 CELL addr = LOAD_CELL(EP);
                 CHECK_ALIGNED_WHOLE_CELL(addr);
                 EP = addr;
-                NEXT;
+                goto next;
             }
         }
         break;
@@ -667,7 +669,7 @@ CELL single_step(void)
                 (void)POP_RETURN;
             } else
                 EP += A * CELL_W;
-            NEXT;
+            goto next;
         }
         break;
     case O_PLOOP:
@@ -685,7 +687,7 @@ CELL single_step(void)
                 CELL addr = LOAD_CELL(EP);
                 CHECK_ALIGNED_WHOLE_CELL(addr);
                 EP = addr;
-                NEXT;
+                goto next;
             }
         }
         break;
@@ -701,7 +703,7 @@ CELL single_step(void)
                 (void)POP_RETURN;
             } else
                 EP += A * CELL_W;
-            NEXT;
+            goto next;
         }
         break;
     case O_UNLOOP:
@@ -717,7 +719,7 @@ CELL single_step(void)
         break;
     case O_LITERALI:
         PUSH(A);
-        NEXT;
+        goto next;
         break;
  throw:
     case O_THROW:
@@ -726,8 +728,8 @@ CELL single_step(void)
         if (!CELL_IN_ONE_AREA(THROW) || !IS_ALIGNED(THROW))
             return -258;
         EP = THROW;
-        NEXT;
         exception = 0; // Any exception has now been dealt with
+        goto next;
         break;
     case O_HALT:
         return POP;
