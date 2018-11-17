@@ -205,8 +205,7 @@ The data and return stacks are cell-aligned LIFO stacks of cells. The stack
 pointers point to the top stack item on each stack. To {\bf push} an item on to
 a stack means to store the item in the cell beyond the stack pointer and then
 adjust the pointer to point to it; to {\bf pop} an item means to make the
-pointer point to the second item on the stack. The stacks grow downwards in
-memory as new items are added. Instructions that change the number of items on a
+pointer point to the second item on the stack. Instructions that change the number of items on a
 stack implicitly pop their arguments and push their results.
 
 The data stack is used for passing values to instructions and routines and the
