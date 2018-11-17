@@ -239,9 +239,7 @@ Before @PACKAGE_NAME@ is started, {\tt ENDISM} should be set to $0$ or $1$ accor
 \end{center}
 \end{table}
 
-{\tt MEMORY}, {\tt ENDISM} and {\tt CHECKED} must not change while @PACKAGE_NAME@ is executing. Next, the action of
-{\tt NEXT} should be performed (see section~\ref{execinst}): {\tt A} is loaded
-from the cell to which {\tt EP} points, and four is added to {\tt EP}.
+{\tt MEMORY}, {\tt ENDISM} and {\tt CHECKED} must not change while @PACKAGE_NAME@ is executing.
 
 @PACKAGE_NAME@ is started by a call to the interface calls {\bf run()} or {\bf
 single\_step()} (see section~\ref{calls}). In the former case, the execution
