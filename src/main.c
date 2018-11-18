@@ -743,11 +743,13 @@ static void parse(char *input)
     else {
         if (assign)
             do_assign(token);
-        else if (token[0] == 'O') {
-            BYTE opcode = toass(token + 1);
-            if (opcode != O_UNDEFINED)
+        else {
+            BYTE opcode = parse_instruction(token);
+            if (opcode != O_UNDEFINED) {
                 ass(opcode);
-        } else {
+                return;
+            }
+
             no = search(token, regist, registers);
             if (no == SIZE_MAX) {
                 char *endp, *display;
