@@ -40,8 +40,6 @@
 static UCELL memory_size = DEFAULT_MEMORY; // Size of VM memory in cells
 CELL *memory;
 
-#define MAXLEN 80   // Maximum input line length
-
 static bool interactive;
 static unsigned long lineno;
 static jmp_buf env;
@@ -227,8 +225,11 @@ static void double_arg(char *s, long *start, long *end, bool default_args)
 {
     bool plus = default_args;
 
-    char *token, copy[MAXLEN];
-    if (s == NULL || (token = strtok(strcpy(copy, s), " +")) == NULL) {
+    char *token;
+    static char *copy = NULL;
+    free(copy);
+    copy = xstrdup(s);
+    if (s == NULL || (token = strtok(copy, " +")) == NULL) {
         if (!default_args)
             fatal("too few arguments");
     } else {
@@ -723,8 +724,9 @@ static void parse(char *input)
     if (comment != NULL)
         *comment = '\0';
 
-    char copy[MAXLEN];
-    strcpy(copy, input);
+    static char *copy = NULL;
+    free(copy);
+    copy = xstrdup(input);
     char *token = strtok(copy, strchr(copy, '=') == NULL ? " " : "=");
     if (token == NULL || strlen(token) == 0) return;
     upper(token);
@@ -840,8 +842,6 @@ static CELL parse_memory_size(UCELL max)
 
 int main(int argc, char *argv[])
 {
-    char input[MAXLEN], *nl;
-
     set_program_name(argv[0]);
     interactive = isatty(fileno(stdin));
 
@@ -921,8 +921,10 @@ int main(int argc, char *argv[])
     while (1) {
         int jmp_val = setjmp(env);
         if (jmp_val == 0) {
+            static char *input = NULL;
+            static size_t len = 0;
             interactive_printf(">");
-            if (fgets(input, MAXLEN, stdin) == NULL) {
+            if (getline(&input, &len, stdin) == -1) {
                 if (feof(stdin)) {
                     interactive_printf("\n"); // Empty line after prompt
                     exit(EXIT_SUCCESS);
@@ -930,6 +932,7 @@ int main(int argc, char *argv[])
                 die("input error");
             }
             lineno++;
+            char *nl;
             if ((nl = strrchr(input, '\n')))
                 *nl = '\0';
             parse(input);
