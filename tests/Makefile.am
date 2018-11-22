@@ -23,8 +23,8 @@ TESTS_ENVIRONMENT = \
 	export LIBTOOL=$(top_builddir)/libtool;
 
 test-parser:
-	$(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(top_builddir)/src/@PACKAGE@$(EXEEXT) < $(srcdir)/hello.txt && \
-	$(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(top_builddir)/src/@PACKAGE@$(EXEEXT) ./hello.obj > hello.output && \
+	( $(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(top_builddir)/src/@PACKAGE@$(EXEEXT) < $(srcdir)/hello.txt ) && \
+	( $(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(top_builddir)/src/@PACKAGE@$(EXEEXT) ./hello.obj > hello.output ) && \
 	diff hello.output $(srcdir)/hello.correct
 
 do_load_object: load_object test-parser
