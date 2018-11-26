@@ -460,7 +460,8 @@ static void do_registers(void)
 {
     do_display(r_EP, "%-25s");
     do_display(r_I, "%-22s");
-    do_display(r_A, "%-16s\n");
+    do_display(r_A, "%-16s");
+    putchar('\n');
 }
 
 static void do_command(int no)
