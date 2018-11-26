@@ -228,8 +228,7 @@ static void double_arg(char *s, long *start, long *end, bool default_args)
     char *token;
     static char *copy = NULL;
     free(copy);
-    copy = xstrdup(s);
-    if (s == NULL || (token = strtok(copy, " +")) == NULL) {
+    if (s == NULL || (token = strtok((copy = xstrdup(s)), " +")) == NULL) {
         if (!default_args)
             fatal("too few arguments");
     } else {
