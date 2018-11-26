@@ -34,7 +34,8 @@ int main(void)
     // test 3: test arbitrary throw code
     ass(O_LITERALI); ilit(42);
     ass(O_HALT); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
-    ass(O_LITERALI); ilit(MEMORY);  // test 4
+    // test 4: test SP can point to just after a memory area
+    ass(O_LITERALI); ilit(MEMORY);
     ass(O_MINUSCELL); ass(O_SPSTORE); ass(O_TOR); ass(O_ZERO);
     ass(O_HALT); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     ass(O_ONE); ass(O_PLUSCELL); ass(O_SPSTORE); ass(O_NEXT00);	// test 5
