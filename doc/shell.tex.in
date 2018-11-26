@@ -183,7 +183,7 @@ which may be used in the two forms
 \end{center}
 
 \noindent where the first displays \angb{number} bytes (or $256$ if the number is omitted) starting at address
-\angb{address} (or $64$ bytes before {\tt EP} if the address is omitted), and the second displays memory from address \angb{address_1}
+\angb{address} (or $64$ bytes before {\tt EP} if the address is omitted, or $0$ if that would be negative), and the second displays memory from address \angb{address_1}
 up to, but not including, address \angb{address_2}. An error message is
 displayed if the start address is less than or equal to the end address or if
 either address is out of range.
@@ -248,7 +248,7 @@ two forms
 \end{center}
 
 \noindent where the first disassembles \angb{number} bytes (or $64$ if the number is omitted) starting at address
-\angb{address} (or $16$ bytes before {\tt EP} if the address is omitted), and the second from address \angb{address_1} up to, but not
+\angb{address} (or $16$ bytes before {\tt EP}, or $0$ if that would be negative, if the address is omitted), and the second from address \angb{address_1} up to, but not
 including, address \angb{address_2}. The addresses must be cell-aligned, and
 the number of bytes must be a multiple of four. An error message is displayed
 if the start address is less than or equal to the end address, or if either

@@ -495,8 +495,7 @@ static void do_command(int no)
         break;
     case c_DISASSEMBLE:
         {
-            long start = EP - 16, end = 64;
-
+            long start = (EP <= 16 ? 0 : EP - 16), end = 64;
             double_arg(strtok(NULL, ""), &start, &end, true);
             check_aligned(start, "Address");
             check_aligned(end, "Address");
@@ -518,7 +517,7 @@ static void do_command(int no)
         break;
     case c_DUMP:
         {
-            long start = EP - 64, end = 256;
+            long start = (EP <= 64 ? 0 : EP - 64), end = 256;
             double_arg(strtok(NULL, ""), &start, &end, true);
             check_range(start, end, "Address");
             while (start < end) {
