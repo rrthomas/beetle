@@ -1,7 +1,5 @@
 language: c
 
-dist: trusty
-
 addons:
   apt:
     sources:
