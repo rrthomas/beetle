@@ -13,7 +13,6 @@ addons:
       - latexmk
       - hevea
       - valgrind
-      - gcc-5
 
 # env:
 #   global:
@@ -22,19 +21,17 @@ addons:
 matrix:
   include:
     - os: linux
-      env:
-        - COMPILER=gcc-5
     - os: osx
     - compiler: gcc
       env:
-        - COMPILER=gcc-6
+        - COMPILER=gcc-7
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
             - *default_deps
-            - [gcc-6]
+            - [gcc-7]
 
 script:
   - ./bootstrap && ./configure --enable-silent-rules
