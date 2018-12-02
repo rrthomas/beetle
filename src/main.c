@@ -198,19 +198,19 @@ static BYTE parse_instruction(const char *token)
     return opcode;
 }
 
-static long parse_number(const char *s, char **endp)
+static long long parse_number(const char *s, char **endp)
 {
-    return s[0] == '$' ? strtol(s + 1, endp, 16) :
-        strtol(s, endp, 10);
+    return s[0] == '$' ? strtoll(s + 1, endp, 16) :
+        strtoll(s, endp, 10);
 }
 
-static long single_arg(const char *s, int *bytes)
+static long long single_arg(const char *s, int *bytes)
 {
     if (s == NULL)
         fatal("too few arguments");
 
     char *endp;
-    long n = parse_number(s, &endp);
+    long long n = parse_number(s, &endp);
 
     if (endp != &s[strlen(s)])
         fatal("invalid number");
@@ -221,7 +221,7 @@ static long single_arg(const char *s, int *bytes)
     return n;
 }
 
-static void double_arg(char *s, long *start, long *end, bool default_args)
+static void double_arg(char *s, long long *start, long long *end, bool default_args)
 {
     bool plus = default_args;
 
@@ -335,7 +335,7 @@ static int save_object(FILE *file, UCELL address, UCELL length)
 static void do_assign(char *token)
 {
     char *number = strtok(NULL, " ");
-    long value;
+    long long value;
     int bytes = 4;
 
     upper(number);
@@ -471,13 +471,13 @@ static void do_command(int no)
     switch (no) {
     case c_TOD:
         {
-            long value = single_arg(strtok(NULL, " "), NULL);
+            long long value = single_arg(strtok(NULL, " "), NULL);
             PUSH(value);
         }
         break;
     case c_TOR:
         {
-            long value = single_arg(strtok(NULL, " "), NULL);
+            long long value = single_arg(strtok(NULL, " "), NULL);
             PUSH_RETURN(value);
         }
         break;
@@ -495,7 +495,7 @@ static void do_command(int no)
         break;
     case c_DISASSEMBLE:
         {
-            long start = (EP <= 16 ? 0 : EP - 16), end = 64;
+            long long start = (EP <= 16 ? 0 : EP - 16), end = 64;
             double_arg(strtok(NULL, ""), &start, &end, true);
             check_aligned(start, "Address");
             check_aligned(end, "Address");
@@ -517,7 +517,7 @@ static void do_command(int no)
         break;
     case c_DUMP:
         {
-            long start = (EP <= 64 ? 0 : EP - 64), end = 256;
+            long long start = (EP <= 64 ? 0 : EP - 64), end = 256;
             double_arg(strtok(NULL, ""), &start, &end, true);
             check_range(start, end, "Address");
             while (start < end) {
@@ -557,7 +557,7 @@ static void do_command(int no)
             reinit();
 
             const char *file = strtok(NULL, " ");
-            long adr = 0;
+            UCELL adr = 0;
             char *arg = strtok(NULL, " ");
             if (arg != NULL)
                 adr = single_arg(arg, NULL);
@@ -615,7 +615,7 @@ static void do_command(int no)
             } else {
                 upper(arg);
                 if (strcmp(arg, "TO") == 0) {
-                    unsigned long limit = single_arg(strtok(NULL, " "), NULL);
+                    unsigned long long limit = single_arg(strtok(NULL, " "), NULL);
                     check_valid(limit, "Address");
                     check_aligned(limit, "Address");
                     while ((unsigned long)EP != limit && ret == -259) {
@@ -627,14 +627,14 @@ static void do_command(int no)
                         printf("HALT code %"PRId32" was returned at EP = $%X\n",
                                ret, EP);
                 } else {
-                    unsigned long limit = single_arg(arg, NULL), i;
+                    unsigned long long limit = single_arg(arg, NULL), i;
                     for (i = 0; i < limit && ret == -259; i++) {
                         ret = single_step();
                         if (no == c_TRACE) do_registers();
                         count[I]++;
                     }
                     if (ret != 0)
-                        printf("HALT code %"PRId32" was returned after %lu "
+                        printf("HALT code %"PRId32" was returned after %llu "
                                "steps\n", ret, i);
                 }
             }
@@ -643,7 +643,7 @@ static void do_command(int no)
     case c_SAVE:
         {
             const char *file = strtok(NULL, " ");
-            long start, end;
+            long long start, end;
             double_arg(strtok(NULL, ""), &start, &end, false);
 
             FILE *handle;
@@ -667,9 +667,10 @@ static void do_command(int no)
     case c_BLITERAL:
     case c_ILITERAL:
     case c_LITERAL:
+    case c_PLITERAL:
         {
             int bytes;
-            CELL value = (CELL)single_arg(strtok(NULL, " "), &bytes);
+            long long value = single_arg(strtok(NULL, " "), &bytes);
 
             switch (no) {
             case c_BLITERAL:
@@ -679,10 +680,15 @@ static void do_command(int no)
                 break;
             case c_ILITERAL:
                 if (ilit(value) == false)
-                    fatal("ILITERAL %"PRId32" does not fit in the current instruction word", value);
+                    fatal("ILITERAL %lld does not fit in the current instruction word", value);
                 break;
             case c_LITERAL:
+                if (bytes > CELL_W)
+                    fatal("the argument to LITERAL must fit in a cell");
                 lit(value);
+                break;
+            case c_PLITERAL:
+                plit((void *)value);
                 break;
             default: // This cannot happen
                 break;
@@ -754,7 +760,7 @@ static void parse(char *input)
             no = search(token, regist, registers);
             if (no == SIZE_MAX) {
                 char *endp, *display;
-                CELL adr = (CELL)parse_number(token, &endp);
+                UCELL adr = (UCELL)parse_number(token, &endp);
 
                 if (endp != &token[strlen(token)])
                     fatal("unknown command or register '%s'", token);

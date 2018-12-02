@@ -156,9 +156,10 @@ range or unaligned, an appropriate error message is displayed.
 {\tt LITERAL} \angb{number}
 {\tt BLITERAL} \angb{number}
 {\tt ILITERAL} \angb{number}
+{\tt PLITERAL} \angb{number}
 \end{center}
 
-Code and literal data values may be directly assembled into memory. Assembly starts at the last value explicitly assigned to {\tt EP} in the shell, defaulting to \$0 whenever @PACKAGE_NAME@ is initialised (see section~\ref{uifaceinit}). An opcode or byte literal ({\tt BLITERAL}) takes one byte, and a cell literal ({\tt LITERAL}) is stored in the next whole cell. an inline literal ({\tt ILITERAL}) is stored in the remainder of the current cell, if it fits; otherwise an error is given.
+Code and literal data values may be directly assembled into memory. Assembly starts at the last value explicitly assigned to {\tt EP} in the shell, defaulting to \$0 whenever @PACKAGE_NAME@ is initialised (see section~\ref{uifaceinit}). An opcode or byte literal ({\tt BLITERAL}) takes one byte, and a cell literal ({\tt LITERAL}) is stored in the next whole cell. An inline literal ({\tt ILITERAL}) is stored in the remainder of the current cell, if it fits; otherwise an error is given. {\tt PLITERAL} assembles the instructions required to push the given native pointer on to the stack in the form required for the {\tt LINK} instruction.
 
 Each cell is always filled before moving on to the next available cell, so for example the sequence
 
