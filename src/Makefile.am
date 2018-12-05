@@ -80,6 +80,7 @@ external-defines.txt: $(internal_HDRS)
 # Actually needs .o files, but since find-external-syms requires GNU tools,
 # don't force remaking external-syms.txt; instead, add it to EXTRA_DIST.
 # find-external-syms takes care of remaking the executable.
+# N.B. find-external-syms runs make! This can cause duplicate compilation.
 $(srcdir)/external-syms.txt: $(lib@PACKAGE@_la_sources)
 	$(top_srcdir)/build-aux/find-external-syms $(PACKAGE) > $@
 
