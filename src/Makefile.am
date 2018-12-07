@@ -66,7 +66,7 @@ tbl_opts.h: tbl_opts.h.in Makefile
 	cat $(srcdir)/external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix debug.h $@
 
 external-defines.txt: $(internal_HDRS)
-	$(top_builddir)/build-aux/find-external-defines > $@
+	$(top_srcdir)/build-aux/find-external-defines > $@
 
 # Actually needs .o files, but since find-external-syms requires GNU tools,
 # don't force remaking external-syms.txt; instead, add it to EXTRA_DIST.

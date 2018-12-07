@@ -93,6 +93,5 @@ AC_CONFIG_FILES([
         doc/cbeetle.tex
         doc/shell.tex
 ])
-AC_CONFIG_FILES([build-aux/find-external-defines], [chmod +x build-aux/find-external-defines])
 AC_CONFIG_FILES([build-aux/add-symbol-prefix], [chmod +x build-aux/add-symbol-prefix])
 AC_OUTPUT
