@@ -8,8 +8,8 @@
 // THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER‘S
 // RISK.
 
-#ifndef @PACKAGE@_TESTS
-#define @PACKAGE@_TESTS
+#ifndef BEETLE_TESTS
+#define BEETLE_TESTS
 
 
 #include "config.h"

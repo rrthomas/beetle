@@ -80,14 +80,7 @@ AC_CONFIG_FILES([
         src/Makefile
         src/beetlei.1
         src/beetle-dump.1
-        src/aux.h
-        src/debug.h
-        src/opcodes.h
-        src/private.h
-        src/public.h
-        src/step.c
         tests/Makefile
-        tests/tests.h
         doc/Makefile
         doc/beetle.tex
         doc/cbeetle.tex

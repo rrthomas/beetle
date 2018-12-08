@@ -44,35 +44,43 @@ main.o: tbl_opts.h
 		--output=$@ ./@PACKAGE@$(EXEEXT); \
 	fi
 
+# N.B. PACKAGE_UPPER is not enclosed in @, so it can be used in C
+# identifiers.
 do_subst = sed -e 's,[@]pkgdatadir[@],$(pkgdatadir),g' \
 	-e 's,[@]docdir[@],$(docdir),g' \
 	-e 's,[@]PACKAGE[@],$(PACKAGE),g' \
 	-e 's,[@]PACKAGE_NAME[@],$(PACKAGE_NAME),g' \
+	-e 's,PACKAGE_UPPER,$(PACKAGE_UPPER),g' \
 	-e 's,[@]RLWRAP[@],$(RLWRAP),g'
 
 tbl_opts.h: tbl_opts.h.in Makefile
 	$(do_subst) < $(srcdir)/tbl_opts.h.in > tbl_opts.h
 
-@PACKAGE@_opcodes.h: opcodes.h
-	cp opcodes.h $@
+@PACKAGE@_opcodes.h: opcodes.h Makefile
+	$(do_subst) < $(srcdir)/opcodes.h > $@
 
-@PACKAGE@.h: public.h external-syms.txt external-defines.txt
-	cat $(srcdir)/external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix public.h $@
+@PACKAGE@.h: public.h external-syms.txt external-defines.txt Makefile
+	$(do_subst) < $(srcdir)/public.h > $@.tmp
+	cat $(srcdir)/external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $@.tmp > $@
+	rm $@.tmp
 
-@PACKAGE@_aux.h: aux.h external-syms.txt external-defines.txt
-	cat $(srcdir)/external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix aux.h $@
+@PACKAGE@_aux.h: aux.h external-syms.txt external-defines.txt Makefile
+	$(do_subst) < $(srcdir)/aux.h > $@.tmp
+	cat $(srcdir)/external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $@.tmp > $@
+	rm $@.tmp
 
-@PACKAGE@_debug.h: debug.h external-syms.txt external-defines.txt
-	cat $(srcdir)/external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix debug.h $@
+@PACKAGE@_debug.h: debug.h external-syms.txt external-defines.txt Makefile
+	$(do_subst) < $(srcdir)/debug.h > $@.tmp
+	cat $(srcdir)/external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $@.tmp > $@
+	rm $@.tmp
 
 external-defines.txt: $(internal_HDRS)
-	$(top_srcdir)/build-aux/find-external-defines > $@
+	$(top_srcdir)/build-aux/find-external-defines $(srcdir) > $@
 
 # Actually needs .o files, but since find-external-syms requires GNU tools,
 # don't force remaking external-syms.txt; instead, add it to EXTRA_DIST.
 # find-external-syms takes care of remaking the executable.
-# (Dependency is libbeetle_la_SOURCES, but with .h.in's instead of .h's)
-$(srcdir)/external-syms.txt: storage.c step.c.in run.c debug.c loadobj.c private.h.in stringify.h
+$(srcdir)/external-syms.txt: $(lib@PACKAGE@_la_sources)
 	$(top_srcdir)/build-aux/find-external-syms $(PACKAGE) > $@
 
 external_syms.h: external-syms.txt
@@ -91,7 +99,7 @@ CLOC = cloc --force-lang="C",h
 loc:
 	$(CLOC) $(lib@PACKAGE@_la_SOURCES) $(@PACKAGE@_SOURCES) $(include_HEADERS)
 
-EXTRA_DIST = ARMbeetle.bas @PACKAGE@i.in @PACKAGE@i.1 @PACKAGE@-dump.in @PACKAGE@-dump.1 completions.h tbl_opts.h.in step.c.in external-syms.txt external_syms.h
+EXTRA_DIST = ARMbeetle.bas @PACKAGE@i.in @PACKAGE@i.1 @PACKAGE@-dump.in @PACKAGE@-dump.1 completions.h tbl_opts.h.in step.c external-syms.txt external_syms.h
 
 DISTCLEANFILES = @PACKAGE@i @PACKAGE@-dump @PACKAGE@.1 @PACKAGE@i.1 @PACKAGE-dump.1 completions tbl_opts.h $(include_HEADERS) external-defines.txt external-syms.txt
 # Ignore built files that are part of the distribution (specifically,
