@@ -244,66 +244,66 @@ CELL single_step(void)
         {
             CELL a = POP;
             CELL b = POP;
-            PUSH(b < a ? @PACKAGE_UPPER@_TRUE : @PACKAGE_UPPER@_FALSE);
+            PUSH(b < a ? PACKAGE_UPPER_TRUE : PACKAGE_UPPER_FALSE);
         }
         break;
     case O_GREATER:
         {
             CELL a = POP;
             CELL b = POP;
-            PUSH(b > a ? @PACKAGE_UPPER@_TRUE : @PACKAGE_UPPER@_FALSE);
+            PUSH(b > a ? PACKAGE_UPPER_TRUE : PACKAGE_UPPER_FALSE);
         }
         break;
     case O_EQUAL:
         {
             CELL a = POP;
             CELL b = POP;
-            PUSH(a == b ? @PACKAGE_UPPER@_TRUE : @PACKAGE_UPPER@_FALSE);
+            PUSH(a == b ? PACKAGE_UPPER_TRUE : PACKAGE_UPPER_FALSE);
         }
         break;
     case O_NEQUAL:
         {
             CELL a = POP;
             CELL b = POP;
-            PUSH(a != b ? @PACKAGE_UPPER@_TRUE : @PACKAGE_UPPER@_FALSE);
+            PUSH(a != b ? PACKAGE_UPPER_TRUE : PACKAGE_UPPER_FALSE);
         }
         break;
     case O_LESS0:
         {
             CELL a = POP;
-            PUSH(a < 0 ? @PACKAGE_UPPER@_TRUE : @PACKAGE_UPPER@_FALSE);
+            PUSH(a < 0 ? PACKAGE_UPPER_TRUE : PACKAGE_UPPER_FALSE);
         }
         break;
     case O_GREATER0:
         {
             CELL a = POP;
-            PUSH(a > 0 ? @PACKAGE_UPPER@_TRUE : @PACKAGE_UPPER@_FALSE);
+            PUSH(a > 0 ? PACKAGE_UPPER_TRUE : PACKAGE_UPPER_FALSE);
         }
         break;
     case O_EQUAL0:
         {
             CELL a = POP;
-            PUSH(a == 0 ? @PACKAGE_UPPER@_TRUE : @PACKAGE_UPPER@_FALSE);
+            PUSH(a == 0 ? PACKAGE_UPPER_TRUE : PACKAGE_UPPER_FALSE);
         }
         break;
     case O_NEQUAL0:
         {
             CELL a = POP;
-            PUSH(a != 0 ? @PACKAGE_UPPER@_TRUE : @PACKAGE_UPPER@_FALSE);
+            PUSH(a != 0 ? PACKAGE_UPPER_TRUE : PACKAGE_UPPER_FALSE);
         }
         break;
     case O_ULESS:
         {
             UCELL a = POP;
             UCELL b = POP;
-            PUSH(b < a ? @PACKAGE_UPPER@_TRUE : @PACKAGE_UPPER@_FALSE);
+            PUSH(b < a ? PACKAGE_UPPER_TRUE : PACKAGE_UPPER_FALSE);
         }
         break;
     case O_UGREATER:
         {
             UCELL a = POP;
             UCELL b = POP;
-            PUSH(b > a ? @PACKAGE_UPPER@_TRUE : @PACKAGE_UPPER@_FALSE);
+            PUSH(b > a ? PACKAGE_UPPER_TRUE : PACKAGE_UPPER_FALSE);
         }
         break;
     case O_ZERO:
@@ -579,7 +579,7 @@ CELL single_step(void)
         goto next;
         break;
     case O_QBRANCH:
-        if (POP == @PACKAGE_UPPER@_FALSE) {
+        if (POP == PACKAGE_UPPER_FALSE) {
             CELL addr = LOAD_CELL(EP);
             CHECK_ALIGNED_WHOLE_CELL(addr);
             EP = addr;
@@ -588,7 +588,7 @@ CELL single_step(void)
             EP += CELL_W;
         break;
     case O_QBRANCHI:
-        if (POP == @PACKAGE_UPPER@_FALSE)
+        if (POP == PACKAGE_UPPER_FALSE)
             EP += A * CELL_W;
         goto next;
         break;
