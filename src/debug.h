@@ -9,8 +9,8 @@
 // THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER‘S
 // RISK.
 
-#ifndef @PACKAGE_UPPER@_DEBUG
-#define @PACKAGE_UPPER@_DEBUG
+#ifndef PACKAGE_UPPER_DEBUG
+#define PACKAGE_UPPER_DEBUG
 
 
 int byte_size(CELL v); // return number of significant bytes in a CELL quantity

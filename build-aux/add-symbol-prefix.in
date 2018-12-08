@@ -3,9 +3,15 @@
 # Takes list of symbols one per line on stdin
 
 infile=$1
-outfile=$2
+temp_in=$infile.in
+temp_out=$infile.out
 
 # FIXME: Horribly inefficient: rewrites file once per symbol
+cp $infile $temp_in
 while read -r symbol; do
-    sed "s/\\b$symbol\\b/@PACKAGE@_$symbol/g" $infile > $outfile;
+    sed -e "s/\\b$symbol\\b/@PACKAGE@_$symbol/g" < $temp_in > $temp_out
+    mv $temp_out $temp_in
 done
+
+cat $temp_in
+rm $temp_in

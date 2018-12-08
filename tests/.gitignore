@@ -2,7 +2,6 @@
 *.trs
 /.deps
 /.libs
-/tests.h
 /hello.obj
 /hello.output
 /arithmetic
