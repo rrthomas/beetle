@@ -182,7 +182,7 @@ cell.}
 \ifacec{@PACKAGE@\_CELL @PACKAGE@\_single\_step(void)}{The reason code returned by {\bf @PACKAGE@\_single\_step()}
 is a @PACKAGE_NAME@ cell.}
 \ifacec{int @PACKAGE@\_load\_object(FILE *file, @PACKAGE@\_UCELL address)}{If a file system error
-occurs, the return code is -3.}
+occurs, the return code is -3. As an extension to the specification, if an object file starts with the bytes $35$, $33$ (\texttt{\#!}), then it is assumed to be the start of a UNIX-style “hash bang” line, and the file contents up to and including the first newline character ($10$) is ignored.}
 \end{description}
 
 In addition to the required interface calls C @PACKAGE_NAME@ provides an initialisation routine {\bf @PACKAGE@\_init()} which, given a cell array and its size, initialises @PACKAGE_NAME@:
