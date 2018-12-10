@@ -4,4 +4,5 @@
 # https://github.com/rrthomas/beetle/
 
 # Beetle object module
-0	string		BEETLE\000	Beetle VM object file
+0	search/64	BEETLE\000	Beetle VM object file
+!:strength + 50

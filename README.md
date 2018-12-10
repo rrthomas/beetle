@@ -126,15 +126,12 @@ Various methods of encoding literal numbers in a byte stream are compared.
 targets Beetle.
 
 
-## Running Beetle images
+## Running Beetle object files
 
-On Linux systems with binfmt_misc, it is possible to make Beetle object
-modules directly runnable.
-
-For example, on Debian or Ubuntu, run the command:
+The C implementation of Beetle allows a hash-bang line to be prepended to an object file, so that they can be run directly. A suggested line is:
 
 ```
-sudo update-binfmts --install beetle `which beetle` --magic "\x42\x45\x45\x54\x4c\x45\x00"
+#!/usr/bin/env beetle
 ```
 
 A magic file for the file(1) command is also provided: beetle.magic.

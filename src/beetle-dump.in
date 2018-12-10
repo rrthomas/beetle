@@ -9,7 +9,16 @@ fi
 
 file=$1
 base=${file%.*}
-size=$((`wc -c < $1` - 12))
+
+# Check whether file starts with a hash-bang line
+size_file=$file
+head -n 1 $file > $base.tmp
+if grep '^#!' $base.tmp >/dev/null; then
+    tail -n +2 $file > $base.tmp
+    size_file=$base.tmp
+fi
+size=$((`wc -c < $size_file` - 12))
+rm -f $base.tmp
 
 echo "load $file\ndump 0+$size\nquit" | @PACKAGE@ > $base.hex
 echo "load $file\ndisassemble 0+$size\nquit" | @PACKAGE@ > $base.asm
