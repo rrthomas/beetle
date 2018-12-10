@@ -28,8 +28,18 @@ int load_object(FILE *file, UCELL address)
     size_t len = strlen(PACKAGE_UPPER);
     char magic[7];
     assert(len + 1 <= sizeof(magic));
-    memset(&magic[0], 0, sizeof(magic));
-    if (fread(&magic[0], 1, sizeof(magic), file) != sizeof(magic))
+
+    // Skip any #! header
+    if (fread(&magic[0], 1, 2, file) != 2)
+        return -3;
+    size_t read = 2;
+    if (magic[0] == '#' && magic[1] == '!') {
+        while (getc(file) != '\n')
+            ;
+        read = 0;
+    }
+
+    if (fread(&magic[read], 1, sizeof(magic) - read, file) != sizeof(magic) - read)
         return -3;
     if (strncmp(magic, PACKAGE_UPPER, sizeof(magic)))
         return -2;

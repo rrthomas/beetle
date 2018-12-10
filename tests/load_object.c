@@ -11,7 +11,7 @@
 #include "tests.h"
 
 
-static int correct[] = { -2, -2, -1, -3, 0, 0 };
+static int correct[] = { -2, -2, -1, -3, 0, 0, 0 };
 
 
 static int try(char *file, UCELL address)
@@ -38,9 +38,9 @@ static char *obj_name(const char *prefix, const char *file)
 int main(int argc, char *argv[])
 {
     const char *files[] = {
-        "badobj1", "badobj2", "badobj3", "badobj4", "testobj1", "testobj2" };
+        "badobj1", "badobj2", "badobj3", "badobj4", "testobj1", "testobj2", "testobj3" };
     char *prefix = argv[1];
-    int i, res;
+    int res;
 
     if (argc != 2) {
         printf("Usage: load_object DIRECTORY\n");
@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 
     init((CELL *)calloc(1024, 1), 256);
 
+    size_t i;
     for (i = 0; i < 4; i++) {
         char *s = obj_name(prefix, files[i]);
         res = try(s, 0);
@@ -60,7 +61,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    for (; i < 6; i++) {
+    for (; i < sizeof(files) / sizeof(files[0]); i++) {
         char *s = obj_name(prefix, files[i]);
         CELL c;
         res = try(s, 0);
