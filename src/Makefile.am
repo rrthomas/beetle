@@ -98,7 +98,7 @@ external_syms.h: external-syms.txt
 CLOC = cloc --force-lang="C",h
 
 loc:
-	$(CLOC) $(lib@PACKAGE@_la_SOURCES) $(@PACKAGE@_SOURCES) $(include_HEADERS)
+	$(CLOC) $(lib@PACKAGE@_la_SOURCES) $(@PACKAGE@_SOURCES)
 
 EXTRA_DIST = ARMbeetle.bas @PACKAGE@i.in @PACKAGE@i.1 @PACKAGE@-dump.in @PACKAGE@-dump.1 completions.h tbl_opts.h.in step.c external-syms.txt external_syms.h
 
