@@ -93,7 +93,7 @@ static int getflags(UCELL perm, bool *binary)
         break;
     }
     if (perm & 4)
-        flags |= O_CREAT;
+        flags |= O_CREAT | O_TRUNC;
 
     if (perm & 8)
         *binary = true;
