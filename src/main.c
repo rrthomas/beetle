@@ -811,7 +811,7 @@ struct option longopts[] = {
 };
 
 #define VERSION_STRING PACKAGE_NAME" shell (C "PACKAGE_NAME" release "PACKAGE_VERSION")"
-#define COPYRIGHT_STRING "(c) Reuben Thomas 1995-2018"
+#define COPYRIGHT_STRING "(c) Reuben Thomas 1994-2018"
 
 static void usage(void)
 {
