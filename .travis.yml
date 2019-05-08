@@ -23,8 +23,7 @@ matrix:
     - os: linux
     - os: osx
     - compiler: gcc
-      env:
-        - COMPILER=gcc-7
+      env: CC=gcc-7
       addons:
         apt:
           sources:
