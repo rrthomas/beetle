@@ -449,7 +449,6 @@ the most significant end of the instruction cell.
 
 
 \subsection{Execution cycle}
-\label{execinst}
 
 {\tt NEXT} performs an instruction fetch when @PACKAGE_NAME@ runs out of
 instructions in the {\tt A} register.
