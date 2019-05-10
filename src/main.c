@@ -1,6 +1,6 @@
 // Front-end and shell.
 //
-// (c) Reuben Thomas 1995-2018
+// (c) Reuben Thomas 1995-2019
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -812,7 +812,7 @@ struct option longopts[] = {
 };
 
 #define VERSION_STRING PACKAGE_NAME" shell (C "PACKAGE_NAME" release "PACKAGE_VERSION")"
-#define COPYRIGHT_STRING "(c) Reuben Thomas 1994-2018"
+#define COPYRIGHT_STRING "(c) Reuben Thomas 1994-2019"
 
 static void usage(void)
 {
