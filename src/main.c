@@ -141,12 +141,6 @@ static const char *globdirname(const char *file)
     return globbed_file;
 }
 
-static void check_valid(UCELL adr, const char *quantity)
-{
-    if (native_address_of_range(adr, 0) == NULL)
-        fatal("%s is invalid", quantity);
-}
-
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsuggest-attribute=pure"
 static void check_aligned(UCELL adr, const char *quantity)
@@ -158,10 +152,10 @@ static void check_aligned(UCELL adr, const char *quantity)
 
 static void check_range(UCELL start, UCELL end, const char *quantity)
 {
-    check_valid(start, quantity);
-    check_valid(end, quantity);
-    if (start >= end)
-        fatal("start address must be less than end address");
+    if (start > end)
+        fatal("start address cannot be greater than end address");
+    if (native_address_of_range(start, end - start) == NULL)
+        fatal("%s is invalid", quantity);
 }
 
 static void upper(char *s)
@@ -390,13 +384,15 @@ static void do_assign(char *token)
             {
                 CELL adr = (CELL)single_arg(token, NULL);
 
-                check_valid(adr, "Address");
                 if (!IS_ALIGNED(adr) && bytes > 1)
                     fatal("only a byte can be assigned to an unaligned address");
-                if (bytes == 1)
+                if (bytes == 1) {
+                    check_range(adr, adr + 1, "Address");
                     store_byte(adr, value);
-                else
+                } else {
+                    check_range(adr, adr + CELL_W, "Address");
                     store_cell(adr, value);
+                }
             }
     }
 }
@@ -620,7 +616,7 @@ static void do_command(int no)
                 upper(arg);
                 if (strcmp(arg, "TO") == 0) {
                     unsigned long long limit = single_arg(strtok(NULL, " "), NULL);
-                    check_valid(limit, "Address");
+                    check_range(limit, limit, "Address");
                     check_aligned(limit, "Address");
                     while ((unsigned long)EP != limit && ret == -259) {
                         ret = single_step();
@@ -769,13 +765,14 @@ static void parse(char *input)
                 if (endp != &token[strlen(token)])
                     fatal("unknown command or register '%s'", token);
 
-                check_valid(adr, "Address");
                 if (!IS_ALIGNED(adr)) {
+                    check_range(adr, adr + 1, "Address");
                     BYTE b;
                     load_byte(adr, &b);
                     display = xasprintf("$%"PRIX32": $%X (%d) (byte)", (UCELL)adr,
                                         b, b);
                 } else {
+                    check_range(adr, adr + CELL_W, "Address");
                     CELL c;
                     load_cell(adr, &c);
                     display = xasprintf("$%"PRIX32": $%"PRIX32" (%"PRId32") (cell)", (UCELL)adr,
