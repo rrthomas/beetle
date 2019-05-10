@@ -15,8 +15,8 @@
 #define SIZE 1024
 
 const char *correct[] = {
-    "", str(CELL_W), "", "-33554432", "", "16384", "", "-16777216", "",
-    "16384", "", "168", "", "168", "", str(SIZE), "", "-1", "-1 -1",
+    "", str(CELL_W), "", "768", "", str(SIZE), "",
+    "168", "", "168", "", str(SIZE), "", "-1", "-1 -1",
 };
 
 
@@ -28,8 +28,7 @@ int main(void)
 
     start_ass(EP);
     ass(O_EPFETCH); ass(O_DROP);  ass(O_S0FETCH); ass(O_DROP);
-    ass(O_HASHS); ass(O_DROP);    ass(O_R0FETCH); ass(O_DROP);
-    ass(O_HASHR); ass(O_DROP);    ass(O_LITERAL); ass(O_THROWSTORE);
+    ass(O_R0FETCH); ass(O_DROP);  ass(O_LITERAL); ass(O_THROWSTORE);
     lit(168); // 42 CELLS
     ass(O_THROWFETCH); ass(O_DROP);  ass(O_MEMORYFETCH); ass(O_DROP);
     ass(O_BADFETCH); ass(O_NOT_ADDRESSFETCH);

@@ -57,7 +57,7 @@ int load_object(FILE *file, UCELL address)
     if (reversed)
         length = (UCELL)reverse_cell((CELL)length);
 
-    uint8_t *ptr = native_address_range_in_one_area(address, length * CELL_W, true);
+    uint8_t *ptr = native_address_of_range(address, length * CELL_W);
     if (ptr == NULL)
         return -1;
 

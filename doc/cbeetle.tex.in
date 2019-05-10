@@ -91,12 +91,10 @@ memory for @PACKAGE_NAME@, nor does it initialise any of the registers. C @PACKA
 provides the interface call {\bf @PACKAGE@\_init()} to do this (see
 section~\ref{usingcalls}).
 
-The variables {\tt EP}, {\tt I}, {\tt A}, {\tt MEMORY}, {\tt SP}, {\tt RP}, {\tt THROW}, {\tt BAD} and {\tt ADDRESS}
+The variables {\tt EP}, {\tt I}, {\tt A}, {\tt M0}, {\tt MEMORY}, {\tt SP}, {\tt RP}, {\tt THROW}, {\tt BAD} and {\tt ADDRESS}
 correspond exactly with the @PACKAGE_NAME@ registers they represent, and may be read
 and assigned to accordingly, bearing in mind the restrictions on their use
 given in~\cite{@PACKAGE@}. {\tt THROW}, {\tt BAD} and {\tt ADDRESS} are mapped into @PACKAGE_NAME@'s memory, so they are automatically updated when the corresponding memory locations are written to, and vice versa. {\tt CHECKED} is the constant $1$; it may be read but not assigned to.
-
-C @PACKAGE_NAME@ provides the ability to map native memory blocks into @PACKAGE_NAME@’s address space; see below.
 
 
 \subsection{Extra instructions}
@@ -202,25 +200,17 @@ The following routines give easier access to @PACKAGE_NAME@’s address space at
 \ifacec{int @PACKAGE@\_store\_byte(@PACKAGE@\_UCELL address, @PACKAGE@\_BYTE value)}{Store the given {\tt @PACKAGE@\_BYTE} value at the given address.}
 \end{description}
 
-The following routines give easier access to contiguous areas of @PACKAGE_NAME@’s address space. On success, $0$ is returned; if {\tt to} if not less than {\tt from}, or the addresses are not contained in the same area, or not writable if desired, $-1$ is returned; if either address is unaligned, or some other error occurs, a memory exception code is returned.
+The following routines allow direct native access to @PACKAGE_NAME@’s memory. On success, $0$ is returned; if {\tt to} if not less than {\tt from}, or the addresses are not valid, $-1$ is returned; if either address is unaligned, or some other error occurs, a memory exception code is returned.
 
 \begin{description}
-\ifacec{int @PACKAGE@\_pre\_dma(@PACKAGE@\_UCELL from, @PACKAGE@\_UCELL to, bool write)}{Convert the given range to native byte order, so that it can be read (or written) directly.}
+\ifacec{int @PACKAGE@\_pre\_dma(@PACKAGE@\_UCELL from, @PACKAGE@\_UCELL to)}{Convert the given range to native byte order, so that it can be read and written directly.}
 \ifacec{int @PACKAGE@\_post\_dma(@PACKAGE@\_UCELL from, @PACKAGE@\_UCELL to)}{Convert the given range to @PACKAGE_NAME@ byte order, so that it can be used by @PACKAGE_NAME@ after a direct access.}
-\end{description}
-
-The following routines are provided to map system memory to @PACKAGE_NAME@’s address space and vice versa:
-
-\begin{description}
-\ifacec{@PACKAGE@\_UCELL @PACKAGE@\_mem\_here()}{Returns the @PACKAGE_NAME@ address at which the next mapping will be made.}
-\ifacec{@PACKAGE@\_UCELL @PACKAGE@\_mem\_allot(void *p, size\_t n)}{Map {\tt n} bytes pointed to by {\tt p} into @PACKAGE_NAME@’s address space, and return the address mapped. Addresses are mapped sequentially.}
-\ifacec{@PACKAGE@\_UCELL @PACKAGE@\_mem\_align(void)}{Like Forth’s {\tt ALIGN}, rounds up the address at which the next memory allocation will occur to the next cell.}
 \end{description}
 
 The following routine allows the calling program to register command-line arguments that can be retrieved by the {\tt ARG} and {\tt ARGC} extra instructions.
 
 \begin{description}
-\ifacec{int @PACKAGE@\_register\_args(int argc, char *argv[])}{Maps the given arguments register, which has the same format as that supplied to {\bf main()}, into @PACKAGE_NAME@’s memory. Returns $0$ on success and $-1$ if memory could not be allocated, or $-2$ if an argument could not be mapped to @PACKAGE_NAME@’s address space.}
+\ifacec{int @PACKAGE@\_register\_args(int argc, char *argv[])}{Registers the given argument list, which has the same format as that supplied to {\bf main()}. Returns $0$ on success and $-1$ if memory could not be allocated.}
 \end{description}
 
 Programs which use C @PACKAGE_NAME@'s interface must {\tt \#include} the header file

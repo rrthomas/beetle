@@ -143,7 +143,7 @@ static const char *globdirname(const char *file)
 
 static void check_valid(UCELL adr, const char *quantity)
 {
-    if (native_address(adr, false) == NULL)
+    if (native_address_of_range(adr, 0) == NULL)
         fatal("%s is invalid", quantity);
 }
 
@@ -317,7 +317,7 @@ static void reinit(void)
 
 static int save_object(FILE *file, UCELL address, UCELL length)
 {
-    uint8_t *ptr = native_address_range_in_one_area(address, length, false);
+    uint8_t *ptr = native_address_of_range(address, length);
     if (!IS_ALIGNED(address) || ptr == NULL)
         return -1;
 
@@ -358,6 +358,7 @@ static void do_assign(char *token)
             break;
         case r_CHECKED:
         case r_ENDISM:
+        case r_M0:
         case r_MEMORY:
             fatal("cannot assign to %s", regist[no]);
             break;
@@ -425,6 +426,9 @@ static void do_display(size_t no, const char *format)
             break;
         case r_I:
             display = xasprintf("I = %-10s ($%02X)", disass(I), I);
+            break;
+        case r_M0:
+            display = xasprintf("M0 = %p", M0);
             break;
         case r_MEMORY:
             display = xasprintf("MEMORY = $%"PRIX32" (%"PRIu32")", MEMORY, MEMORY);
@@ -854,7 +858,7 @@ int main(int argc, char *argv[])
     // leading ':' so as to return ':' for a missing arg, not '?'
     for (;;) {
         int this_optind = optind ? optind : 1, longindex = -1;
-        int c = getopt_long(argc, argv, "+:dm:r:s:", longopts, &longindex);
+        int c = getopt_long(argc, argv, "+:dm:", longopts, &longindex);
 
         if (c == -1)
             break;
@@ -863,31 +867,21 @@ int main(int argc, char *argv[])
         else if (c == '?')
             die("unrecognised option '%s'\nTry '%s --help' for more information.", argv[this_optind], program_name);
         else if (c == 'd')
-            longindex = 3;
+            longindex = 1;
         else if (c == 'm')
             longindex = 0;
-        else if (c == 'r')
-            longindex = 2;
-        else if (c == 's')
-            longindex = 1;
 
         switch (longindex) {
             case 0:
                 memory_size = parse_memory_size((UCELL)MAX_MEMORY);
                 break;
             case 1:
-                HASHS = parse_memory_size((UCELL)MAX_STACK_SIZE);
-                break;
-            case 2:
-                HASHR = parse_memory_size((UCELL)MAX_STACK_SIZE);
-                break;
-            case 3:
                 debug_on_error = true;
                 break;
-            case 4:
+            case 2:
                 usage();
                 exit(EXIT_SUCCESS);
-            case 5:
+            case 3:
                 printf(PACKAGE_NAME " " VERSION "\n"
                        COPYRIGHT_STRING "\n"
                        PACKAGE_NAME " comes with ABSOLUTELY NO WARRANTY.\n"
@@ -907,7 +901,7 @@ int main(int argc, char *argv[])
     argc -= optind;
     if (argc >= 1) {
         if (register_args(argc, argv + optind) != 0)
-            die("could not map command-line arguments");
+            die("could not register command-line arguments");
         FILE *handle = fopen(argv[optind], "rb");
         if (handle == NULL)
             die("cannot not open file %s", argv[optind]);

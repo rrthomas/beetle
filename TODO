@@ -1,8 +1,8 @@
+Revert commit 35292e9 (restore M0).
+
 Reorganize C implementation documentation into user’s guide and programmer’s guide.
 
 Turn tests into debugger scripts.
-
-Auto-realloc stacks when they run out of space.
 
 Compile at load time using ideas in DDJ article
 (~/notmine/Computer/Language/forth/LoadCompilation).

@@ -44,10 +44,10 @@ typedef uint64_t DUCELL;
 extern UCELL EP;
 extern BYTE I;
 extern CELL A;
+extern CELL *M0;
 extern UCELL MEMORY;
 extern UCELL SP, RP;
 extern UCELL S0, R0;
-extern UCELL HASHS, HASHR;
 extern UCELL THROW;
 extern UCELL BAD;
 extern UCELL NOT_ADDRESS;
@@ -61,16 +61,11 @@ int store_cell(UCELL addr, CELL value);
 int load_byte(UCELL addr, BYTE *value);
 int store_byte(UCELL addr, BYTE value);
 
-int pre_dma(UCELL from, UCELL to, bool write);
+int pre_dma(UCELL from, UCELL to);
 int post_dma(UCELL from, UCELL to);
 
-// Memory mapping
-UCELL mem_here(void);
-UCELL mem_allot(void *p, size_t n, bool writable);
-UCELL mem_align(void);
-
 // Interface calls
-uint8_t *native_address(UCELL addr, bool writable);
+uint8_t *native_address_of_range(UCELL addr, UCELL length);
 CELL run(void);
 CELL single_step(void);
 int load_object(FILE *file, UCELL address);

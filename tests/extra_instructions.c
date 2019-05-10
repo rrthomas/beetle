@@ -17,15 +17,17 @@ int main(void)
     int exception = 0;
     CELL temp = 0;
 
-    // Data for ARGC/ARG tests
+    // Data for ARGC/ARGLEN/ARGCOPY tests
     int argc = 3;
-    char *argv[] = {strdup("foo"), strdup("bard"), strdup("basilisk")};
+    UCELL buf = 16;
+    char *argv[] = {"foo", "bard", "basilisk"};
 
     init((CELL *)malloc(4096), 1024);
     assert(register_args(argc, argv) == 0);
 
     start_ass(EP);
-    ass(OX_ARGC); ass(O_ONE); ass(OX_ARG);
+    ass(OX_ARGC); ass(O_ONE); ass(OX_ARGLEN);
+    ass(O_ONE); ass(O_LITERAL); lit(buf); ass(OX_ARGCOPY);
 
     assert(single_step() == -259);   // load first instruction word
 
@@ -40,6 +42,16 @@ int main(void)
     single_step();
     printf("arg 1's length is %"PRId32", and should be %zu\n", LOAD_CELL(SP), strlen(argv[1]));
     if ((UCELL)POP != strlen(argv[1])) {
+        printf("Error in extra instructions tests: EP = %"PRIu32"\n", EP);
+        exit(1);
+    }
+
+    single_step();
+    single_step();
+    single_step();
+    single_step();
+    printf("arg is %s, and should be %s\n", native_address_of_range(buf, 0), argv[1]);
+    if (strcmp((char *)native_address_of_range(buf, 0), argv[1]) != 0) {
         printf("Error in extra instructions tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }

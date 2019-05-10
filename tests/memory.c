@@ -16,8 +16,7 @@ const char *correct[] = {
     "", "16384", "16380", "16380 513", "16380 513 16380", "16380",
     "16380 16380", "16380 513", "16380",
     "16380 16380", "16380 1", "16381", "2", "2 16383", "", "16380", "33554945",
-    "", "-33554432", "", "-16777216", "", "0", "", "0", "", "16384", "67305985",
-    "", "16389", "2", "", "1", "1 16385", "", "16385", "1", "", "16392", "16392 16392", "-20",
+    "", "16128", "", "16384", "", "0", "", "0",
 };
 
 const unsigned area[] = {0x4000, 0x4004, 0x4005, 0x4008};
@@ -27,24 +26,8 @@ int main(void)
 {
     int exception = 0;
 
-    // Data for extra memory area tests
-    char *onetwothreefour = strdup("\x01\x02\x03\x04"); // Hold on to this to prevent a memory leak
-    char *item[] = {onetwothreefour, strdup("\x01"), strdup("\x02\x03"), strdup("basilisk")};
-    unsigned nitems = sizeof(item) / sizeof(item[0]);
-
     size_t size = 4096;
     init((CELL *)calloc(size, CELL_W), size);
-    for (unsigned i = 0; i < nitems; i++) {
-        UCELL addr = mem_allot(item[i], strlen(item[i]), i < 3);
-        printf("Extra memory area %u allocated at address %"PRIX32" (should be %"PRIX32")\n",
-               i, addr, area[i]);
-        if (addr != area[i]) {
-            printf("Error in memory tests: incorrect address for memory allocation\n");
-            exit(1);
-        }
-        if (i == 2)
-            mem_align();
-    }
 
     start_ass(EP);
     ass(O_MEMORYFETCH); ass(O_MINUSCELL); ass(O_LITERAL); lit(513);
@@ -54,12 +37,7 @@ int main(void)
         lit(16380);
     ass(O_FETCH); ass(O_DROP); ass(O_SPFETCH); ass(O_SPSTORE);
     ass(O_RPFETCH); ass(O_DROP); ass(O_ZERO); ass(O_RPSTORE);
-    ass(O_RPFETCH); ass(O_DROP);
-    ass(O_LITERAL); lit(size * CELL_W); ass(O_FETCH); ass(O_DROP);
-    ass(O_LITERAL); lit(size * CELL_W + 5); ass(O_CFETCH); ass(O_DROP);
-    ass(O_ONE); ass(O_LITERAL); lit(size * CELL_W + 1); ass(O_CSTORE);
-    ass(O_LITERAL); lit(size * CELL_W + 1); ass(O_CFETCH); ass(O_DROP);
-    ass(O_LITERAL); lit(size * CELL_W + 8); ass(O_DUP); ass(O_CSTORE);
+    ass(O_RPFETCH);
 
     assert(single_step() == -259);   // load first instruction word
 

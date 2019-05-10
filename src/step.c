@@ -33,12 +33,12 @@ verify(sizeof(int) <= sizeof(CELL));
 
 
 // Check whether a VM address points to a native cell-aligned cell
-#define CELL_IN_ONE_AREA(a)                             \
-    (native_address_range_in_one_area((a), CELL_W, false) != NULL)
+#define IS_VALID(a)                                     \
+    (native_address_of_range((a), CELL_W) != NULL)
 
-#define CHECK_ALIGNED_WHOLE_CELL(a)                     \
+#define CHECK_VALID_CELL(a)                     \
     CHECK_ADDRESS(a, IS_ALIGNED(a), -23, badadr)        \
-    CHECK_ADDRESS(a, CELL_IN_ONE_AREA(a), -9, badadr)
+    CHECK_ADDRESS(a, IS_VALID(a), -9, badadr)
 
 
 // Division macros
@@ -101,21 +101,20 @@ static int getflags(UCELL perm, bool *binary)
     return flags;
 }
 
-// Register command-line args in VM memory
+// Register command-line args
 static int main_argc = 0;
-static UCELL *main_argv;
+static char **main_argv;
 static UCELL *main_argv_len;
 int register_args(int argc, char *argv[])
 {
     main_argc = argc;
-    if ((main_argv = calloc(argc, sizeof(UCELL))) == NULL ||
-        (main_argv_len = calloc(argc, sizeof(UCELL))) == NULL)
+    main_argv = argv;
+    if ((main_argv_len = calloc(argc, sizeof(UCELL))) == NULL)
         return -1;
 
     for (int i = 0; i < argc; i++) {
         size_t len = strlen(argv[i]);
-        main_argv[i] = mem_allot(argv[i], len, true);
-        if (main_argv[i] == 0)
+        if (len > CELL_MAX)
             return -2;
         main_argv_len[i] = len;
     }
@@ -569,7 +568,7 @@ CELL single_step(void)
     case O_BRANCH:
         {
             CELL addr = LOAD_CELL(EP);
-            CHECK_ALIGNED_WHOLE_CELL(addr);
+            CHECK_VALID_CELL(addr);
             EP = addr;
             goto next;
         }
@@ -581,7 +580,7 @@ CELL single_step(void)
     case O_QBRANCH:
         if (POP == PACKAGE_UPPER_FALSE) {
             CELL addr = LOAD_CELL(EP);
-            CHECK_ALIGNED_WHOLE_CELL(addr);
+            CHECK_VALID_CELL(addr);
             EP = addr;
             goto next;
         } else
@@ -595,7 +594,7 @@ CELL single_step(void)
     case O_EXECUTE:
         {
             CELL addr = POP;
-            CHECK_ALIGNED_WHOLE_CELL(addr);
+            CHECK_VALID_CELL(addr);
             PUSH_RETURN(EP);
             EP = addr;
             goto next;
@@ -604,10 +603,10 @@ CELL single_step(void)
     case O_FEXECUTE:
         {
             CELL addr = POP;
-            CHECK_ALIGNED_WHOLE_CELL(addr);
+            CHECK_VALID_CELL(addr);
             PUSH_RETURN(EP);
             addr = LOAD_CELL(addr);
-            CHECK_ALIGNED_WHOLE_CELL(addr);
+            CHECK_VALID_CELL(addr);
             EP = addr;
             goto next;
         }
@@ -616,7 +615,7 @@ CELL single_step(void)
         {
             PUSH_RETURN(EP + CELL_W);
             CELL addr = LOAD_CELL(EP);
-            CHECK_ALIGNED_WHOLE_CELL(addr);
+            CHECK_VALID_CELL(addr);
             EP = addr;
             goto next;
         }
@@ -629,7 +628,7 @@ CELL single_step(void)
     case O_EXIT:
         {
             CELL addr = POP_RETURN;
-            CHECK_ALIGNED_WHOLE_CELL(addr);
+            CHECK_VALID_CELL(addr);
             EP = addr;
             goto next;
         }
@@ -653,7 +652,7 @@ CELL single_step(void)
                 EP += CELL_W;
             } else {
                 CELL addr = LOAD_CELL(EP);
-                CHECK_ALIGNED_WHOLE_CELL(addr);
+                CHECK_VALID_CELL(addr);
                 EP = addr;
                 goto next;
             }
@@ -685,7 +684,7 @@ CELL single_step(void)
                 EP += CELL_W;
             } else {
                 CELL addr = LOAD_CELL(EP);
-                CHECK_ALIGNED_WHOLE_CELL(addr);
+                CHECK_VALID_CELL(addr);
                 EP = addr;
                 goto next;
             }
@@ -725,7 +724,7 @@ CELL single_step(void)
     case O_THROW:
         // exception may already be set, so CELL_STORE may have no effect here.
         BAD = EP;
-        if (!CELL_IN_ONE_AREA(THROW) || !IS_ALIGNED(THROW))
+        if (!IS_VALID(THROW) || !IS_ALIGNED(THROW))
             return -258;
         EP = THROW;
         exception = 0; // Any exception has now been dealt with
@@ -739,14 +738,22 @@ CELL single_step(void)
     case O_S0FETCH:
         PUSH(S0);
         break;
-    case O_HASHS:
-        PUSH(HASHS);
+    case O_S0STORE:
+        {
+            CELL value = POP;
+            CHECK_ALIGNED(value);
+            S0 = value;
+        }
         break;
     case O_R0FETCH:
         PUSH(R0);
         break;
-    case O_HASHR:
-        PUSH(HASHR);
+    case O_R0STORE:
+        {
+            CELL value = POP;
+            CHECK_ALIGNED(value);
+            R0 = value;
+        }
         break;
     case O_THROWFETCH:
         PUSH(THROW);
@@ -779,15 +786,28 @@ CELL single_step(void)
     case OX_ARGC: // ( -- u )
         PUSH(main_argc);
         break;
-    case OX_ARG: // ( u1 -- c-addr u2 )
+    case OX_ARGLEN: // ( u1 -- u2 )
         {
             UCELL narg = POP;
-            if (narg >= (UCELL)main_argc) {
+            if (narg >= (UCELL)main_argc)
                 PUSH(0);
-                PUSH(0);
-            } else {
-                PUSH(main_argv[narg]);
+            else
                 PUSH(main_argv_len[narg]);
+        }
+        break;
+    case OX_ARGCOPY: // ( u1 addr -- )
+        {
+            UCELL addr = POP;
+            UCELL narg = POP;
+            if (narg < (UCELL)main_argc) {
+                UCELL len = (UCELL)main_argv_len[narg];
+                char *ptr = (char *)native_address_of_range(addr, len);
+                if (ptr != NULL) {
+                    UCELL end = ALIGN(addr + len);
+                    pre_dma(addr, end);
+                    strncpy(ptr, main_argv[narg], len);
+                    post_dma(addr, end);
+                }
             }
         }
         break;
@@ -828,9 +848,9 @@ CELL single_step(void)
 
             ssize_t res = 0;
             if (exception == 0) {
-                exception = pre_dma(buf, buf + nbytes, true);
+                exception = pre_dma(buf, buf + nbytes);
                 if (exception == 0) {
-                    res = read(fd, native_address(buf, true), nbytes);
+                    res = read(fd, native_address_of_range(buf, 0), nbytes);
                     exception = post_dma(buf, buf + nbytes);
                 }
             }
@@ -847,9 +867,9 @@ CELL single_step(void)
 
             ssize_t res = 0;
             if (exception == 0) {
-                exception = pre_dma(buf, buf + nbytes, false);
+                exception = pre_dma(buf, buf + nbytes);
                 if (exception == 0) {
-                    res = write(fd, native_address(buf, false), nbytes);
+                    res = write(fd, native_address_of_range(buf, 0), nbytes);
                     exception = post_dma(buf, buf + nbytes);
                 }
             }
@@ -947,7 +967,7 @@ CELL single_step(void)
     // "manually".
  badadr:
     SP += CELL_W * STACK_DIRECTION;
-    if (!CELL_IN_ONE_AREA(SP) || !IS_ALIGNED(SP))
+    if (!IS_VALID(SP) || !IS_ALIGNED(SP))
       return -257;
     store_cell(SP, exception);
     goto throw;

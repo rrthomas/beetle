@@ -21,11 +21,8 @@
 #include <limits.h>
 
 
-// Stacks location and size
-#define DATA_STACK_SEGMENT   0xfe000000
-#define RETURN_STACK_SEGMENT 0xff000000
+// Stacks size
 #define DEFAULT_STACK_SIZE   16384
-#define MAX_STACK_SIZE       67108864
 
 // Memory access
 
@@ -33,7 +30,7 @@
 CELL reverse_cell(CELL value);
 int reverse(UCELL start, UCELL length);
 
-#define STACK_DIRECTION 1
+#define STACK_DIRECTION -1
 #define _LOAD_CELL(a, temp)                                             \
     ((exception = exception ? exception : load_cell((a), &temp)), temp)
 #define LOAD_CELL(a) _LOAD_CELL(a, temp)
@@ -60,7 +57,7 @@ int reverse(UCELL start, UCELL length);
 #define STACK_UNDERFLOW(ptr, base)              \
     (ptr - base == 0 ? false : (STACK_DIRECTION > 0 ? ptr < base : ptr > base))
 
-uint8_t *native_address_range_in_one_area(UCELL start, UCELL length, bool writable);
+uint8_t *native_address_of_range(UCELL start, UCELL length);
 
 // Align a VM address
 #define ALIGN(a) ((a + CELL_W - 1) & (-CELL_W))
