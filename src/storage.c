@@ -146,7 +146,7 @@ int reverse(UCELL start, UCELL length)
 }
 
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wsuggest-attribute=const"
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=pure"
 int pre_dma(UCELL from, UCELL to)
 {
     int exception = 0;
