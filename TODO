@@ -1,6 +1,5 @@
-Revert commit 35292e9 (restore M0).
-
-Reorganize C implementation documentation into user’s guide and programmer’s guide.
+Reorganize C implementation documentation into user’s guide and programmer’s
+guide.
 
 Turn tests into debugger scripts.
 
