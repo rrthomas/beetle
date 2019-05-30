@@ -897,7 +897,7 @@ int main(int argc, char *argv[])
 
     argc -= optind;
     if (argc >= 1) {
-        if (register_args(argc, argv + optind) != 0)
+        if (register_args(argc, (const char **)(argv + optind)) != 0)
             die("could not register command-line arguments");
         FILE *handle = fopen(argv[optind], "rb");
         if (handle == NULL)

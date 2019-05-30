@@ -20,7 +20,7 @@ int main(void)
     // Data for ARGC/ARGLEN/ARGCOPY tests
     int argc = 3;
     UCELL buf = 16;
-    char *argv[] = {"foo", "bard", "basilisk"};
+    const char *argv[] = {"foo", "bard", "basilisk"};
 
     init((CELL *)malloc(4096), 1024);
     assert(register_args(argc, argv) == 0);

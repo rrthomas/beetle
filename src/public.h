@@ -72,7 +72,7 @@ int load_object(FILE *file, UCELL address);
 
 // Additional implementation-specific routines, macros, types and quantities
 int init(CELL *c_array, size_t size);
-int register_args(int argc, char *argv[]);
+int register_args(int argc, const char *argv[]);
 
 #define PACKAGE_UPPER_TRUE CELL_MASK            // VM TRUE flag
 #define PACKAGE_UPPER_FALSE ((CELL)0)           // VM FALSE flag

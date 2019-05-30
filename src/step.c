@@ -103,9 +103,9 @@ static int getflags(UCELL perm, bool *binary)
 
 // Register command-line args
 static int main_argc = 0;
-static char **main_argv;
+static const char **main_argv;
 static UCELL *main_argv_len;
-int register_args(int argc, char *argv[])
+int register_args(int argc, const char *argv[])
 {
     main_argc = argc;
     main_argv = argv;
