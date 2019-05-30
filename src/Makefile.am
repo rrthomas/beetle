@@ -11,7 +11,7 @@
 AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib $(WARN_CFLAGS)
 
 lib_LTLIBRARIES = libbeetle.la
-libbeetle_la_SOURCES = storage.c step.c run.c debug.c loadobj.c \
+libbeetle_la_SOURCES = storage.c step.c debug.c loadobj.c \
 	private.h stringify.h
 libbeetle_la_LIBADD = $(top_builddir)/lib/libgnu.la
 
@@ -30,7 +30,7 @@ include_HEADERS = @PACKAGE@.h @PACKAGE@_aux.h @PACKAGE@_debug.h @PACKAGE@_opcode
 completions: tbl_registers.h tbl_commands.h
 	$(CPP) -I$(srcdir) $(srcdir)/completions.h | grep -v "^#" > $@
 
-debug.lo loadobj.lo run.lo step.lo storage.lo main.o: external_syms.h
+debug.lo loadobj.lo step.lo storage.lo main.o: external_syms.h
 main.o: tbl_opts.h
 
 # Depend on @PACKAGE@$(EXEEXT) rather than explicitly make-ing it, as otherwise
