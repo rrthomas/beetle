@@ -62,12 +62,6 @@ else
 fi
 AC_SUBST([ISYSTEM])
 
-dnl Valgrind
-AC_PATH_PROG(VALGRIND, valgrind)
-if test -n "$VALGRIND"; then
-  VALGRIND="$VALGRIND -q --error-exitcode=1 --leak-check=full"
-fi
-
 dnl Check for header files
 AC_HEADER_STDC
 gl_INIT

@@ -20,3 +20,8 @@
 /run
 /single_step
 /stack
+/_Noreturn.h
+/arg-nonnull.h
+/c++defs.h
+/dummy.c
+/warn-on-use.h

@@ -125,3 +125,4 @@
 /glob_h.m4
 /getdelim.m4
 /getline.m4
+/valgrind-tests.m4
