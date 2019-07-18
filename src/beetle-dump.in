@@ -1,8 +1,14 @@
 #!/bin/sh
 # Dump @PACKAGE_NAME@ object file as hex and disassembly
 # (c) Reuben Thomas 2018
+#
+# The package is distributed under the GNU Public License version 3, or,
+# at your option, any later version.
+#
+# THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER‘S
+# RISK.
 
-if [ $# -lt 1 ]; then
+if [ $# -ne 1 ]; then
     echo Usage: @PACKAGE@-dump OBJECT-FILE
     exit 1
 fi
