@@ -49,7 +49,7 @@ static bool debug_on_error = false;
 static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 0) void verror(const char *format, va_list args)
 {
     if (!interactive)
-        fprintf(stderr, PACKAGE ":%lu: ", lineno);
+        fprintf(stderr, "Beetle:%lu: ", lineno);
     vfprintf(stderr, format, args);
     fprintf(stderr, "\n");
 }
@@ -315,7 +315,7 @@ static int save_object(FILE *file, UCELL address, UCELL length)
     if (!IS_ALIGNED(address) || ptr == NULL)
         return -1;
 
-    if (fputs(PACKAGE_UPPER, file) == EOF ||
+    if (fputs("BEETLE", file) == EOF ||
         putc('\0', file) == EOF ||
         putc((char)ENDISM, file) == EOF ||
         fwrite(&length, CELL_W, 1, file) != 1 ||
@@ -811,7 +811,7 @@ struct option longopts[] = {
   {0, 0, 0, 0}
 };
 
-#define VERSION_STRING PACKAGE_NAME" shell (C "PACKAGE_NAME" release "PACKAGE_VERSION")"
+#define VERSION_STRING "Beetle shell (C Beetle release "PACKAGE_VERSION")"
 #define COPYRIGHT_STRING "(c) Reuben Thomas 1994-2019"
 
 static void usage(void)
@@ -819,7 +819,7 @@ static void usage(void)
     char *shortopt, *buf;
     printf ("Usage: %s [OPTION...] [OBJECT-FILE ARGUMENT...]\n"
             "\n"
-            "Run " PACKAGE_NAME ".\n"
+            "Run Beetle.\n"
             "\n",
             program_name);
 #define OPT(longname, shortname, arg, argstring, docstring)               \
@@ -879,10 +879,10 @@ int main(int argc, char *argv[])
                 usage();
                 exit(EXIT_SUCCESS);
             case 3:
-                printf(PACKAGE_NAME " " VERSION "\n"
+                printf("Beetle " VERSION "\n"
                        COPYRIGHT_STRING "\n"
-                       PACKAGE_NAME " comes with ABSOLUTELY NO WARRANTY.\n"
-                       "You may redistribute copies of " PACKAGE_NAME "\n"
+                       "Beetle comes with ABSOLUTELY NO WARRANTY.\n"
+                       "You may redistribute copies of Beetle\n"
                        "under the terms of the GNU General Public License.\n"
                        "For more information about these matters, see the file named COPYING.\n");
                 exit(EXIT_SUCCESS);

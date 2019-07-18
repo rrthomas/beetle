@@ -16,16 +16,16 @@ libbeetle_la_SOURCES = storage.c step.c debug.c loadobj.c \
 libbeetle_la_LIBADD = $(top_builddir)/lib/libgnu.la
 
 bin_PROGRAMS = beetle
-bin_SCRIPTS = @PACKAGE@-dump
+bin_SCRIPTS = beetle-dump
 if HAVE_RLWRAP
-bin_SCRIPTS += @PACKAGE@i
+bin_SCRIPTS += beetlei
 endif
-man_MANS = @PACKAGE@.1 @PACKAGE@i.1 @PACKAGE@-dump.1
+man_MANS = beetle.1 beetlei.1 beetle-dump.1
 pkgdata_DATA = completions
-beetle_LDADD = lib@PACKAGE@.la $(top_builddir)/lib/libgnu.la
+beetle_LDADD = libbeetle.la $(top_builddir)/lib/libgnu.la
 beetle_SOURCES = main.c tbl_opts.h tbl_commands.h tbl_registers.h $(internal_HDRS)
 internal_HDRS = public.h aux.h debug.h opcodes.h
-include_HEADERS = @PACKAGE@.h @PACKAGE@_aux.h @PACKAGE@_debug.h @PACKAGE@_opcodes.h
+include_HEADERS = beetle.h beetle_aux.h beetle_debug.h beetle_opcodes.h
 
 completions: tbl_registers.h tbl_commands.h
 	$(CPP) -I$(srcdir) $(srcdir)/completions.h | grep -v "^#" > $@
@@ -33,43 +33,38 @@ completions: tbl_registers.h tbl_commands.h
 debug.lo loadobj.lo step.lo storage.lo main.o: external_syms.h
 main.o: tbl_opts.h
 
-# Depend on @PACKAGE@$(EXEEXT) rather than explicitly make-ing it, as otherwise
-# we break parallel builds, as lib@PACKAGE@.la can be built twice in parallel,
+# Depend on beetle$(EXEEXT) rather than explicitly make-ing it, as otherwise
+# we break parallel builds, as libbeetle.la can be built twice in parallel,
 # which can fail. Set distcleancheck_listfiles below to fix distcheck.
-@PACKAGE@.1: @PACKAGE@$(EXEEXT)
-## Exit gracefully if @PACKAGE@.1 is not writeable, such as during distcheck!
+beetle.1: beetle$(EXEEXT)
+## Exit gracefully if beetle.1 is not writeable, such as during distcheck!
 	$(AM_V_GEN)if ( touch $@.w && rm -f $@.w; ) >/dev/null 2>&1; then \
 	  $(top_srcdir)/build-aux/missing --run $(HELP2MAN) --no-info \
 		--name="Forth virtual machine" \
-		--output=$@ ./@PACKAGE@$(EXEEXT); \
+		--output=$@ ./beetle$(EXEEXT); \
 	fi
 
-# N.B. PACKAGE_UPPER is not enclosed in @, so it can be used in C
-# identifiers.
 do_subst = sed -e 's,[@]pkgdatadir[@],$(pkgdatadir),g' \
 	-e 's,[@]docdir[@],$(docdir),g' \
-	-e 's,[@]PACKAGE[@],$(PACKAGE),g' \
-	-e 's,[@]PACKAGE_NAME[@],$(PACKAGE_NAME),g' \
-	-e 's,PACKAGE_UPPER,$(PACKAGE_UPPER),g' \
 	-e 's,[@]RLWRAP[@],$(RLWRAP),g'
 
 tbl_opts.h: tbl_opts.h.in Makefile
 	$(do_subst) < $(srcdir)/tbl_opts.h.in > tbl_opts.h
 
-@PACKAGE@_opcodes.h: opcodes.h Makefile
+beetle_opcodes.h: opcodes.h Makefile
 	$(do_subst) < $(srcdir)/opcodes.h > $@
 
-@PACKAGE@.h: public.h external-syms.txt external-defines.txt Makefile
+beetle.h: public.h external-syms.txt external-defines.txt Makefile
 	$(do_subst) < $(srcdir)/public.h > $@.tmp
 	cat $(srcdir)/external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $@.tmp > $@
 	rm $@.tmp
 
-@PACKAGE@_aux.h: aux.h external-syms.txt external-defines.txt Makefile
+beetle_aux.h: aux.h external-syms.txt external-defines.txt Makefile
 	$(do_subst) < $(srcdir)/aux.h > $@.tmp
 	cat $(srcdir)/external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $@.tmp > $@
 	rm $@.tmp
 
-@PACKAGE@_debug.h: debug.h external-syms.txt external-defines.txt Makefile
+beetle_debug.h: debug.h external-syms.txt external-defines.txt Makefile
 	$(do_subst) < $(srcdir)/debug.h > $@.tmp
 	cat $(srcdir)/external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $@.tmp > $@
 	rm $@.tmp
@@ -81,30 +76,26 @@ external-defines.txt: $(internal_HDRS)
 # don't force remaking external-syms.txt; instead, add it to EXTRA_DIST.
 # find-external-syms takes care of remaking the executable.
 # N.B. find-external-syms runs make! This can cause duplicate compilation.
-$(srcdir)/external-syms.txt: $(lib@PACKAGE@_la_sources)
-	$(top_srcdir)/build-aux/find-external-syms $(PACKAGE) > $@
+$(srcdir)/external-syms.txt: $(libbeetle_la_sources)
+	$(top_srcdir)/build-aux/find-external-syms beetle > $@
 
 external_syms.h: external-syms.txt
-	sed -e 's/\(.*\)/#define \1 $(PACKAGE)_\1/' < $^ > $@
+	sed -e 's/\(.*\)/#define \1 beetle_\1/' < $^ > $@
 
-@PACKAGE@i: @PACKAGE@i.in Makefile
-	$(do_subst) < $(srcdir)/@PACKAGE@i.in > $@
-	chmod +x $@
-
-@PACKAGE@-dump: @PACKAGE@-dump.in Makefile
-	$(do_subst) < $(srcdir)/@PACKAGE@-dump.in > $@
+beetlei: beetlei.in Makefile
+	$(do_subst) < $(srcdir)/beetlei.in > $@
 	chmod +x $@
 
 CLOC = cloc --force-lang="C",h
 
 loc:
-	$(CLOC) $(lib@PACKAGE@_la_SOURCES) $(@PACKAGE@_SOURCES)
+	$(CLOC) $(libbeetle_la_SOURCES) $(beetle_SOURCES)
 
-EXTRA_DIST = ARMbeetle.bas @PACKAGE@i.in @PACKAGE@i.1 @PACKAGE@-dump.in @PACKAGE@-dump.1 completions.h tbl_opts.h.in step.c external-syms.txt external_syms.h
+EXTRA_DIST = ARMbeetle.bas beetlei.in beetlei.1 beetle-dump beetle-dump.1 completions.h tbl_opts.h.in step.c external-syms.txt external_syms.h
 
-DISTCLEANFILES = @PACKAGE@i @PACKAGE@-dump @PACKAGE@.1 @PACKAGE@i.1 @PACKAGE-dump.1 completions tbl_opts.h $(include_HEADERS) external-defines.txt external-syms.txt
+DISTCLEANFILES = beetlei beetle.1 completions tbl_opts.h $(include_HEADERS) external-defines.txt external-syms.txt
 # Ignore built files that are part of the distribution (specifically,
-# @PACKAGE@.1)
+# beetle.1)
 distcleancheck_listfiles = \
        find . -type f -exec sh -c 'test -f $(srcdir)/$$1 || echo $$1' \
 	    sh '{}' ';'

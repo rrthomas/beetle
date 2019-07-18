@@ -9,7 +9,7 @@ temp_out=$infile.out
 # FIXME: Horribly inefficient: rewrites file once per symbol
 cp $infile $temp_in
 while read -r symbol; do
-    sed -e "s/\\b$symbol\\b/@PACKAGE@_$symbol/g" < $temp_in > $temp_out
+    sed -e "s/\\b$symbol\\b/beetle_$symbol/g" < $temp_in > $temp_out
     mv $temp_out $temp_in
 done
 

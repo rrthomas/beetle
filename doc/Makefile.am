@@ -16,8 +16,8 @@ LATEX_SRCS = \
 	$(srcdir)/bibtex/bib/vm.bib
 
 LATEX_PDFS = \
-	@PACKAGE@.pdf \
-	c@PACKAGE@.pdf \
+	beetle.pdf \
+	cbeetle.pdf \
 	shell.pdf \
 	papers/intro.pdf \
 	papers/litencode.pdf \
@@ -36,9 +36,9 @@ MAINTAINERCLEANFILES = $(LATEX_PDFS)
 
 clean-local:
 	$(LATEXMK) -r $(srcdir)/latexmkrc -C -f $(LATEX_SRCS) \
-		$(builddir)/@PACKAGE@.tex $(builddir)/c@PACKAGE@.tex $(builddir)/shell.tex
+		$(builddir)/beetle.tex $(builddir)/cbeetle.tex $(builddir)/shell.tex
 
-EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS) @PACKAGE@.tex.in c@PACKAGE@.tex.in shell.tex.in latexmkrc
+EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS) cbeetle.tex.in shell.tex.in latexmkrc
 
 # TODO: mv works around a bug in latexmk < 4.54, which sets $out_dir when it
 # shouldn't. Remove when we can require latexmk >= 4.54 (Ubuntu 20.04).

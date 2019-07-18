@@ -1,5 +1,5 @@
 %
-% The definition of @PACKAGE_NAME@ (self-contained paper)
+% The definition of Beetle (self-contained paper)
 %
 % Reuben Thomas
 %
@@ -82,7 +82,7 @@
 \newcommand{\opcodetbltwo}[4]{\$#1 & {\tt #2} & \$#3 & {\tt #4} \\}
 
 
-\title{The @PACKAGE_NAME@ Forth Virtual Machine}
+\title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
 \date{29th October 1993; revised 8th May 2019}
 
@@ -90,10 +90,10 @@
 \maketitle
 
 \begin{abstract}
-\noindent The design of the @PACKAGE_NAME@ Forth virtual machine is described.
-@PACKAGE_NAME@'s purpose is to provide an easily portable environment for ANS Forth
-compilers: to move a compiler from one system to another only @PACKAGE_NAME@ and the I/O
-libraries need be rewritten. Like most interpreters, @PACKAGE_NAME@ gains portability
+\noindent The design of the Beetle Forth virtual machine is described.
+Beetle's purpose is to provide an easily portable environment for ANS Forth
+compilers: to move a compiler from one system to another only Beetle and the I/O
+libraries need be rewritten. Like most interpreters, Beetle gains portability
 and compactness at the expense of speed, but it retains flexibility by providing
 instructions to call machine code and access the operating system.
 \end{abstract}
@@ -101,49 +101,49 @@ instructions to call machine code and access the operating system.
 
 \subsection*{Typographical notes}
 
-bForth instructions and @PACKAGE_NAME@'s registers are shown in {\tt Typewriter} font;
+bForth instructions and Beetle's registers are shown in {\tt Typewriter} font;
 interface calls are shown in {\bf Bold} type, and followed by empty parentheses.
 Quoted pronunciations of instructions and registers are given with components
 separated by dashes; single letters should be pronounced as the name of the
 letter.
 
-Addresses are given in bytes and refer to @PACKAGE_NAME@'s address space except where
+Addresses are given in bytes and refer to Beetle's address space except where
 stated. Addresses are written in hexadecimal; hex numbers are prefixed with
 “\$”.
 
 
 \section{Introduction}
 
-@PACKAGE_NAME@ is a simple virtual machine designed to enable the easy implementation
+Beetle is a simple virtual machine designed to enable the easy implementation
 of ANS Forth compilers, such as \href{https://github.com/rrthomas/pforth}{pForth}, on different systems. It is a stack machine; the instruction set is based on the Core Word Set of
-ANS Forth~\cite{ANSIforth}. This paper gives a full description of @PACKAGE_NAME@, but
+ANS Forth~\cite{ANSIforth}. This paper gives a full description of Beetle, but
 certain implementation-dependent features, such as the size of the stacks, are
 purposely left unspecified, and the exact method of implementation is left to
 the implementor in many particulars.
 
-@PACKAGE_NAME@ is self-contained. I/O can be implemented via extra instructions (see~\ref{extrainstructions}). Machine
+Beetle is self-contained. I/O can be implemented via extra instructions (see~\ref{extrainstructions}). Machine
 code routines on the host computer may be accessed using the {\tt LINK}
-instruction. @PACKAGE_NAME@ supports a simple object module format.
+instruction. Beetle supports a simple object module format.
 
-@PACKAGE_NAME@ is conceptually (and usually in fact) a library, embedded in other programs.
-A small interface is provided for other programs to control @PACKAGE_NAME@.
+Beetle is conceptually (and usually in fact) a library, embedded in other programs.
+A small interface is provided for other programs to control Beetle.
 
-Since @PACKAGE_NAME@ is heavily oriented towards supporting Forth compilers, it is
-useful to understand how Forth compilers operate in order to understand @PACKAGE_NAME@
+Since Beetle is heavily oriented towards supporting Forth compilers, it is
+useful to understand how Forth compilers operate in order to understand Beetle
 and to use it properly. An excellent introduction to Forth and Forth compilers
 is~\cite{starting4th}. An overview of the language and its compilers is also
-provided in~\cite{ANSIforth}. For an implementation of @PACKAGE_NAME@, see~\cite{c@PACKAGE@}.
+provided in~\cite{ANSIforth}. For an implementation of Beetle, see~\cite{cbeetle}.
 
 
 \section{Architecture}
 
-@PACKAGE_NAME@'s address unit is the byte, which is eight bits wide. Characters are one
+Beetle's address unit is the byte, which is eight bits wide. Characters are one
 byte wide, and cells are four bytes wide. The cell is the size of the numbers
-and addresses on which @PACKAGE_NAME@ operates, and of the items placed on the stacks.
+and addresses on which Beetle operates, and of the items placed on the stacks.
 The cell size is fixed to ensure compatibility of object code between
 implementations on different machines; the size of the address unit, character
 and cell has been chosen with a view to making efficient implementation of
-@PACKAGE_NAME@ possible on the vast majority of current machine architectures.
+Beetle possible on the vast majority of current machine architectures.
 
 Cells may have the bytes stored in big-endian or little-endian order. The
 address of a cell is that of the byte in it with the lowest address.
@@ -167,7 +167,7 @@ The registers, each with its function and pronunciation, are set out in table~\r
     instructions to be executed, and immediate operands. \\
 {\tt M0} & ``m-zero'' & The address of Beetle's memory on the host
     system, which must be aligned on a four-byte boundary. \\
-{\tt MEMORY} & ``memory'' & The size in bytes of @PACKAGE_NAME@'s memory,
+{\tt MEMORY} & ``memory'' & The size in bytes of Beetle's memory,
     which must be a multiple of four. \\
 {\tt SP} & ``s-p'' & The data {\tt S}tack {\tt P}ointer. \\
 {\tt RP} & ``r-p'' & The {\tt R}eturn stack {\tt P}ointer. \\
@@ -175,7 +175,7 @@ The registers, each with its function and pronunciation, are set out in table~\r
 {\tt R0} & ``r-nought'' & The {\tt R}eturn stack base. \\
 {\tt 'THROW} & ``tick-throw'' & The address placed in {\tt EP} by a {\tt THROW}
     instruction. \\
-{\tt ENDISM} & ``endism'' & The endianness of @PACKAGE_NAME@: 0 = Little-endian,
+{\tt ENDISM} & ``endism'' & The endianness of Beetle: 0 = Little-endian,
     1 = Big-endian. \\
 {\tt CHECKED} & ``checked'' & 0 = address checking off, 1 = address checking
     on. \\
@@ -184,7 +184,7 @@ The registers, each with its function and pronunciation, are set out in table~\r
 {\tt -ADDRESS} & ``not-address'' & The last address which caused an address
     exception. \\ \bottomrule
 \end{tabular}
-\caption{\label{regtable}@PACKAGE_NAME@'s registers}
+\caption{\label{regtable}Beetle's registers}
 \end{center}
 \end{table}
 
@@ -197,7 +197,7 @@ by bForth instructions (see section~\ref{registerinst}); not all registers are a
 
 \subsection{Memory}
 
-@PACKAGE_NAME@'s memory is a contiguous sequence of bytes with addresses in the range $0$ to {\tt MEMORY}~$-$~1.
+Beetle's memory is a contiguous sequence of bytes with addresses in the range $0$ to {\tt MEMORY}~$-$~1.
 
 \subsection{Stacks}
 
@@ -223,7 +223,7 @@ always mentioned explicitly.
 \subsection{Operation}
 \label{operation}
 
-Before @PACKAGE_NAME@ is started, {\tt M0} and {\tt MEMORY} should be set to implementation-dependent values; {\tt ENDISM} should be set to $0$ or $1$ according to the implementation; and {\tt CHECKED} should be set to $0$ or $1$ as desired. The other registers should be initialised as shown in table~\ref{inittable}, except for {\tt I}, which need not be initialised.
+Before Beetle is started, {\tt M0} and {\tt MEMORY} should be set to implementation-dependent values; {\tt ENDISM} should be set to $0$ or $1$ according to the implementation; and {\tt CHECKED} should be set to $0$ or $1$ as desired. The other registers should be initialised as shown in table~\ref{inittable}, except for {\tt I}, which need not be initialised.
 
 \begin{table}[htbp]
 \begin{center}
@@ -239,9 +239,9 @@ Before @PACKAGE_NAME@ is started, {\tt M0} and {\tt MEMORY} should be set to imp
 \end{center}
 \end{table}
 
-{\tt MEMORY}, {\tt ENDISM} and {\tt CHECKED} must not change while @PACKAGE_NAME@ is executing.
+{\tt MEMORY}, {\tt ENDISM} and {\tt CHECKED} must not change while Beetle is executing.
 
-@PACKAGE_NAME@ is started by a call to the interface calls {\bf run()} or {\bf
+Beetle is started by a call to the interface calls {\bf run()} or {\bf
 single\_step()} (see section~\ref{calls}). In the former case, the execution
 cycle is entered:
 
@@ -266,7 +266,7 @@ initialisation specified above; that must be performed before calling them.
 
 \subsection{Termination}
 
-When @PACKAGE_NAME@ encounters a {\tt HALT} instruction (see section~\ref{exceptinst}),
+When Beetle encounters a {\tt HALT} instruction (see section~\ref{exceptinst}),
 it returns the top data stack item as the reason code, unless {\tt SP} does not
 point to a valid cell, in which case reason code $-257$ is returned (see section~\ref{exceptions}).
 
@@ -287,8 +287,8 @@ other instructions, for example by {\tt /} when division by zero is attempted;
 these push the exception code on to the stack and then execute a {\tt THROW}.
 
 Exception codes are signed numbers. $-1$ to $-255$ are reserved for ANS Forth
-exception codes, and $-256$ to $-511$ for @PACKAGE_NAME@'s own exception codes; the meanings
-of those that may be raised by @PACKAGE_NAME@ are shown in table~\ref{excepttable}. ANS
+exception codes, and $-256$ to $-511$ for Beetle's own exception codes; the meanings
+of those that may be raised by Beetle are shown in table~\ref{excepttable}. ANS
 Forth compilers may raise other exceptions in the range $-1$ to $-255$ and
 additionally reserve exceptions $-512$ to $-4095$ for their own exceptions
 (see~\cite[section 9.3.1]{ANSIforth}).
@@ -303,7 +303,7 @@ $-20$ & Attempt to write to a read-only memory location. \\
 $-23$ & Address alignment exception (see below). \\
 $-256$ & Illegal opcode (see section~\ref{opcodes}). \\ \bottomrule
 \end{tabular}
-\caption{\label{excepttable}Exceptions raised by @PACKAGE_NAME@}
+\caption{\label{excepttable}Exceptions raised by Beetle}
 \end{center}
 \end{table}
 
@@ -312,7 +312,7 @@ address, either by an
 instruction, or during an instruction fetch (because {\tt EP} contains an
 invalid address). Exception $-23$ is raised when a bForth instruction expecting
 an address of type \spic{a-addr} (cell-aligned) is given a non-aligned address.
-When @PACKAGE_NAME@ raises an address exception ($-9$ or $-23$), the offending address
+When Beetle raises an address exception ($-9$ or $-23$), the offending address
 is placed in {\tt -ADDRESS}.
 
 The initial values of {\tt 'BAD} and {\tt -ADDRESS} are unlikely to be generated
@@ -320,7 +320,7 @@ by an exception, so it may be assumed that if the initial values still hold no
 exception has yet occurred.
 
 Address and alignment exceptions are only raised if {\tt CHECKED} is 1. When
-{\tt CHECKED} is 0, a faster implementation of @PACKAGE_NAME@ may be used.
+{\tt CHECKED} is 0, a faster implementation of Beetle may be used.
 
 If {\tt SP} is unaligned when an exception is raised, or putting the code on the
 stack would cause {\tt SP} to be out of range, the effect of a {\tt HALT} with
@@ -383,7 +383,7 @@ different types of stack item are shown in table~\ref{typetable}.
 \end{table}
 
 Types are only used to indicate how instructions treat their arguments and
-results; @PACKAGE_NAME@ does not distinguish between stack items of different types. In
+results; Beetle does not distinguish between stack items of different types. In
 stack pictures the most general argument types with which each instruction can
 be supplied are given; subtypes may be substituted. Using the phrase ``$i
 \Rightarrow j$'' to denote ``$i$\/ is a subtype of $j$\/'', table~\ref{reltable}
@@ -450,7 +450,7 @@ the most significant end of the instruction cell.
 
 \subsection{Execution cycle}
 
-{\tt NEXT} performs an instruction fetch when @PACKAGE_NAME@ runs out of
+{\tt NEXT} performs an instruction fetch when Beetle runs out of
 instructions in the {\tt A} register.
 
 \begin{description}
@@ -696,18 +696,18 @@ These instructions encode literal values which are placed on the stack.
 \subsection{Exceptions}
 \label{exceptinst}
 
-These instructions give access to @PACKAGE_NAME@'s exception mechanisms.
+These instructions give access to Beetle's exception mechanisms.
 
 \begin{description}
-\instp{THROW}{throw}{--}{Put the contents of {\tt EP} into {\tt 'BAD}, then load {\tt EP} from {\tt 'THROW}. Perform the action of {\tt NEXT}. If {\tt 'THROW} contains an out of range or unaligned address stop @PACKAGE_NAME@, returning reason code $-258$ to the calling program (see section~\ref{calls}).}
-\inst{HALT}{x --}{Stop @PACKAGE_NAME@, returning reason code \spic{x} to the calling program (see section~\ref{calls}). If {\tt SP} is out of range or unaligned, $-257$ is returned as the reason code.}
+\instp{THROW}{throw}{--}{Put the contents of {\tt EP} into {\tt 'BAD}, then load {\tt EP} from {\tt 'THROW}. Perform the action of {\tt NEXT}. If {\tt 'THROW} contains an out of range or unaligned address stop Beetle, returning reason code $-258$ to the calling program (see section~\ref{calls}).}
+\inst{HALT}{x --}{Stop Beetle, returning reason code \spic{x} to the calling program (see section~\ref{calls}). If {\tt SP} is out of range or unaligned, $-257$ is returned as the reason code.}
 \end{description}
 
 
 \subsection{External access}
 \label{accessinst}
 
-These instructions allow access to @PACKAGE_NAME@'s libraries, the operating system and
+These instructions allow access to Beetle's libraries, the operating system and
 native machine code.
 
 \begin{description}
@@ -767,15 +767,15 @@ undefined opcodes (\$61–\$FE) raise exception $-256$.
 \opcodetbl{20}{>-<}	{41}{RP!}       {FF}{NEXT}
  \bottomrule
 \end{tabular}
-\caption{\label{opcodetable}@PACKAGE_NAME@'s opcodes}
+\caption{\label{opcodetable}Beetle's opcodes}
 \end{center}
 \end{table}
 
 
 \section{External interface}
 
-@PACKAGE_NAME@'s external interface comes in three parts. The calling interface allows
-@PACKAGE_NAME@ to be controlled by other programs. The {\tt LINK} instruction and extra instructions mechanism allow implementations to provide access to system facilities, previously written code,
+Beetle's external interface comes in three parts. The calling interface allows
+Beetle to be controlled by other programs. The {\tt LINK} instruction and extra instructions mechanism allow implementations to provide access to system facilities, previously written code,
 code written in other languages, and the speed of machine code in time-critical
 situations. The object module format allows compiled code to be saved, reloaded
 and shared between systems. pForth is loaded from an object module.
@@ -785,14 +785,14 @@ and shared between systems. pForth is loaded from an object module.
 \label{object}
 
 The first seven bytes of an object module should be the ASCII codes of the letters
-``@PACKAGE@'' padded with ASCII NULs (\$00), then the one-byte contents of
+``BEETLE'' padded with ASCII NULs (\$00), then the one-byte contents of
 the {\tt ENDISM} register of the system which saved the module. The next four
 bytes should contain the number of cells the code occupies. The number must have
 the same endianness as that indicated in the previous byte. Then follows the
 code, which must fill a whole number of cells.
 
 Object modules have a simple structure, as they are only intended for loading an
-initial memory image into @PACKAGE_NAME@, such as the pForth compiler. Forth does not
+initial memory image into Beetle, such as the pForth compiler. Forth does not
 typically support the loading of compiled code into the compiler, nor there is
 any need, as compilers are fast, and an incremental style of program
 development, with only a little source code being recompiled at a time, is
@@ -803,17 +803,17 @@ typically used.
 \label{calls}
 
 The calling interface is difficult to specify with the same precision as the
-rest of @PACKAGE_NAME@, as it may be implemented in any language. However, since only
+rest of Beetle, as it may be implemented in any language. However, since only
 basic types are used, and the semantics are simple, it is expected that
 implementations in different language producing the same result will be easy to
 program. A Modula-like syntax is used to give the definitions here.
 Implementation-defined error codes must be documented, but are optional. All
-addresses passed as parameters must be cell-aligned. A @PACKAGE_NAME@ must provide the
+addresses passed as parameters must be cell-aligned. A Beetle must provide the
 following calls:
 
 \begin{description}
-\iface{run}{}{integer}{Start @PACKAGE_NAME@ by entering the execution cycle as
-    described in section~\ref{operation}. If @PACKAGE_NAME@ ever executes a {\tt
+\iface{run}{}{integer}{Start Beetle by entering the execution cycle as
+    described in section~\ref{operation}. If Beetle ever executes a {\tt
     HALT} instruction (see section~\ref{exceptinst}), the reason code is
     returned as the result.}
 \iface{single\_step}{}{integer}{Execute a single pass of the execution
@@ -822,7 +822,7 @@ following calls:
     passed to it is returned.}
 \iface{load\_object}{file, address}{integer}{Load the object module
     specified by \textit{file}, which may be a filename or some other
-    specifier, to the @PACKAGE_NAME@ address \textit{address}. First the module's
+    specifier, to the Beetle address \textit{address}. First the module's
     header is checked; if the first seven bytes are not as specified above
     in section~\ref{object}, or the endianness value is not 0 or 1, then
     return $-2$. If the code will not fit into memory at the address given, or
@@ -832,7 +832,7 @@ following calls:
     implementation-defined value if there is a filing system or other error.}
 \end{description}
 
-@PACKAGE_NAME@ must also provide access to its registers and address space through
+Beetle must also provide access to its registers and address space through
 appropriate data objects.
 
 

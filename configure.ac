@@ -3,9 +3,6 @@ dnl Process this file with autoconf to produce a configure script
 AC_INIT(Beetle, 2.0.1, rrt@sc3d.org)
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
-package_upper=`echo ${PACKAGE} | tr '[[:lower:]]' '[[:upper:]]'`
-AC_SUBST([PACKAGE_UPPER], [$package_upper])
-AC_DEFINE_UNQUOTED([PACKAGE_UPPER], ["$package_upper"], [PACKAGE upper-cased])
 
 dnl Check for programs
 AC_PROG_CC_C99
@@ -75,13 +72,9 @@ AC_CONFIG_FILES([
         Makefile
         lib/Makefile
         src/Makefile
-        src/beetlei.1
-        src/beetle-dump.1
         tests/Makefile
         doc/Makefile
-        doc/beetle.tex
         doc/cbeetle.tex
         doc/shell.tex
 ])
-AC_CONFIG_FILES([build-aux/add-symbol-prefix], [chmod +x build-aux/add-symbol-prefix])
 AC_OUTPUT

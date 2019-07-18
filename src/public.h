@@ -9,8 +9,8 @@
 // THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER‘S
 // RISK.
 
-#ifndef PACKAGE_UPPER_PACKAGE_UPPER
-#define PACKAGE_UPPER_PACKAGE_UPPER
+#ifndef BEETLE_BEETLE
+#define BEETLE_BEETLE
 
 
 #include "config.h"
@@ -74,8 +74,8 @@ int load_object(FILE *file, UCELL address);
 int init(CELL *c_array, size_t size);
 int register_args(int argc, const char *argv[]);
 
-#define PACKAGE_UPPER_TRUE CELL_MASK            // VM TRUE flag
-#define PACKAGE_UPPER_FALSE ((CELL)0)           // VM FALSE flag
+#define BEETLE_TRUE CELL_MASK            // VM TRUE flag
+#define BEETLE_FALSE ((CELL)0)           // VM FALSE flag
 
 #define CELL_W 4    // the width of a cell in bytes
 #define POINTER_W (sizeof(void *) / CELL_W)   // the width of a machine pointer in cells

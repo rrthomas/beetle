@@ -25,7 +25,7 @@ int load_object(FILE *file, UCELL address)
     if (!IS_ALIGNED(address))
         return -1;
 
-    size_t len = strlen(PACKAGE_UPPER);
+    size_t len = strlen("BEETLE");
     char magic[7];
     assert(len + 1 <= sizeof(magic));
 
@@ -41,7 +41,7 @@ int load_object(FILE *file, UCELL address)
 
     if (fread(&magic[read], 1, sizeof(magic) - read, file) != sizeof(magic) - read)
         return -3;
-    if (strncmp(magic, PACKAGE_UPPER, sizeof(magic)))
+    if (strncmp(magic, "BEETLE", sizeof(magic)))
         return -2;
 
     uint8_t endism;

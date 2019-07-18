@@ -1,5 +1,5 @@
 #!/bin/sh
-# Dump @PACKAGE_NAME@ object file as hex and disassembly
+# Dump Beetle object file as hex and disassembly
 # (c) Reuben Thomas 2018
 #
 # The package is distributed under the GNU Public License version 3, or,
@@ -9,7 +9,7 @@
 # RISK.
 
 if [ $# -ne 1 ]; then
-    echo Usage: @PACKAGE@-dump OBJECT-FILE
+    echo Usage: beetle-dump OBJECT-FILE
     exit 1
 fi
 
@@ -26,5 +26,5 @@ fi
 size=$((`wc -c < $size_file` - 12))
 rm -f $base.tmp
 
-echo "load $file\ndump 0+$size\nquit" | @PACKAGE@ > $base.hex
-echo "load $file\ndisassemble 0+$size\nquit" | @PACKAGE@ > $base.asm
+echo "load $file\ndump 0+$size\nquit" | beetle > $base.hex
+echo "load $file\ndisassemble 0+$size\nquit" | beetle > $base.asm

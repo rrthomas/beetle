@@ -12,7 +12,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/lib -I$(top_srcdir)/lib $(WA
 
 LOG_COMPILER = $(srcdir)/run-test
 
-LDADD = $(top_builddir)/src/lib@PACKAGE@.la
+LDADD = $(top_builddir)/src/libbeetle.la
 
 check_PROGRAMS = $(TESTS) load_object
 
@@ -23,8 +23,8 @@ TESTS_ENVIRONMENT = \
 	export LIBTOOL=$(top_builddir)/libtool;
 
 test-parser:
-	( $(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(top_builddir)/src/@PACKAGE@$(EXEEXT) < $(srcdir)/hello.txt ) && \
-	( $(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(top_builddir)/src/@PACKAGE@$(EXEEXT) ./hello.obj > hello.output ) && \
+	( $(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(top_builddir)/src/beetle$(EXEEXT) < $(srcdir)/hello.txt ) && \
+	( $(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(top_builddir)/src/beetle$(EXEEXT) ./hello.obj > hello.output ) && \
 	diff hello.output $(srcdir)/hello.correct
 
 do_load_object: load_object test-parser
