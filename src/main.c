@@ -557,6 +557,8 @@ static void do_command(int no)
             reinit();
 
             const char *file = strtok(NULL, " ");
+            if (file == NULL)
+                fatal("LOAD requires a file name");
             UCELL adr = 0;
             char *arg = strtok(NULL, " ");
             if (arg != NULL)
