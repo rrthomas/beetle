@@ -301,14 +301,6 @@ static void disassemble(UCELL start, UCELL end)
 }
 
 
-static void reinit(void)
-{
-    memset(count, 0, 256 * sizeof(long));
-    init(memory, memory_size);
-    start_ass(EP);
-}
-
-
 static int save_object(FILE *file, UCELL address, UCELL length)
 {
     uint8_t *ptr = native_address_of_range(address, length);
@@ -549,13 +541,8 @@ static void do_command(int no)
                 printf("HALT code %"PRId32" was returned\n", ret);
         }
         break;
-    case c_INITIALISE:
-        reinit();
-        break;
     case c_LOAD:
         {
-            reinit();
-
             const char *file = strtok(NULL, " ");
             if (file == NULL)
                 fatal("LOAD requires a file name");
@@ -895,7 +882,9 @@ int main(int argc, char *argv[])
 
     if ((memory = (CELL *)calloc(memory_size, CELL_W)) == NULL)
         die("could not allocate %"PRIu32" cells of memory", memory_size);
-    reinit();
+    memset(count, 0, 256 * sizeof(long));
+    init(memory, memory_size);
+    start_ass(EP);
 
     argc -= optind;
     if (argc >= 1) {
