@@ -455,6 +455,13 @@ static void do_registers(void)
     putchar('\n');
 }
 
+static void do_info(void)
+{
+    do_registers();
+    show_data_stack();
+    show_return_stack();
+}
+
 static void do_command(int no)
 {
     int exception = 0;
@@ -501,12 +508,6 @@ static void do_command(int no)
             printf("%"PRId32" ($%"PRIX32")\n", value, (UCELL)value);
         }
         break;
-    case c_DATA:
-    case c_STACKS:
-        show_data_stack();
-        if (no == c_STACKS)
-            goto c_ret;
-        break;
     case c_DUMP:
         {
             long long start = (EP <= 64 ? 0 : EP - 64), end = 256;
@@ -541,6 +542,9 @@ static void do_command(int no)
                 printf("HALT code %"PRId32" was returned\n", ret);
         }
         break;
+    case c_INFO:
+        do_info();
+        break;
     case c_LOAD:
         {
             const char *file = strtok(NULL, " ");
@@ -574,18 +578,11 @@ static void do_command(int no)
         break;
     case c_QUIT:
         exit(0);
-    case c_REGISTERS:
-        do_registers();
-        break;
     case c_RFROM:
         {
             CELL value = POP_RETURN;
             printf("$%"PRIX32" (%"PRId32")\n", (UCELL)value, value);
         }
-        break;
-    c_ret:
-    case c_RETURN:
-        show_return_stack();
         break;
     case c_RUN:
         printf("HALT code %"PRId32" was returned\n", run());
@@ -599,7 +596,7 @@ static void do_command(int no)
             if (arg == NULL) {
                 if ((ret = single_step()))
                     printf("HALT code %"PRId32" was returned\n", ret);
-                if (no == c_TRACE) do_registers();
+                if (no == c_TRACE) do_info();
                 count[I]++;
             } else {
                 upper(arg);
@@ -609,7 +606,7 @@ static void do_command(int no)
                     check_aligned(limit, "Address");
                     while ((unsigned long)EP != limit && ret == -259) {
                         ret = single_step();
-                        if (no == c_TRACE) do_registers();
+                        if (no == c_TRACE) do_info();
                         count[I]++;
                     }
                     if (ret != 0)
@@ -619,7 +616,7 @@ static void do_command(int no)
                     unsigned long long limit = single_arg(arg, NULL), i;
                     for (i = 0; i < limit && ret == -259; i++) {
                         ret = single_step();
-                        if (no == c_TRACE) do_registers();
+                        if (no == c_TRACE) do_info();
                         count[I]++;
                     }
                     if (ret != 0)

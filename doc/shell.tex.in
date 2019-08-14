@@ -92,6 +92,10 @@ There are three types of numeric meta-parameter: \angb{number}, which is any
 number; \angb{address}, which is a valid address (see~\cite[section~\ref{exceptions}]{beetle});
 and \angb{value}, which is a number or an opcode.
 
+The command {\tt INFO} displays the contents of the stacks, and the contents
+of {\tt EP}, {\tt I} and {\tt A}, useful when following the execution of a
+program.
+
 \subsection{Comments}
 
 The string {\tt //} starts a comment, which runs to the end of the input line, and is ignored.
@@ -116,9 +120,6 @@ return stacks respectively. They are set to the initial values of {\tt RP}
 and {\tt SP}, and are provided so that they can be changed if the stacks are
 moved, so the stack display commands will still work correctly.
 
-The command {\tt REGISTERS} displays the contents of {\tt EP}, {\tt I} and
-{\tt A}, useful when following the execution of a program.
-
 \subsection{Stacks}
 
 The stacks may be manipulated crudely using the registers {\tt SP} and {\tt
@@ -138,9 +139,6 @@ it, and
 \end{center}
 
 \noindent which do the same for the return stack.
-
-The command {\tt DATA} displays the contents of the data stack, and {\tt
-RETURN} the contents of the return stack. {\tt STACKS} displays both stacks.
 
 If a stack underflows, or the base pointer or top of stack pointer is out of
 range or unaligned, an appropriate error message is displayed.
@@ -213,7 +211,7 @@ STEP} executes \angb{number} instructions. {\tt STEP TO} executes
 instructions until {\tt EP} is equal to \angb{address}.
 
 The command {\tt TRACE}, has the same syntax as {\tt STEP}, and performs the
-same function; in addition, it performs the action of the {\tt REGISTERS}
+same function; in addition, it performs the action of the {\tt INFO}
 command after each bForth instruction is executed.
 
 The command {\tt RUN} allows Beetle to execute until it reaches a {\tt HALT}
