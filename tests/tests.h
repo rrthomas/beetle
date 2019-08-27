@@ -22,7 +22,7 @@
 #include <inttypes.h>
 
 #include "public.h"
-#include "aux.h"
+#include "baux.h"
 #include "debug.h"
 #include "opcodes.h"
 #include "stringify.h"

@@ -17,7 +17,7 @@
 #include <assert.h>
 
 #include "public.h"
-#include "aux.h"
+#include "baux.h"
 
 
 int load_object(FILE *file, UCELL address)

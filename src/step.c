@@ -24,7 +24,7 @@
 #include "verify.h"
 
 #include "public.h"
-#include "aux.h"
+#include "baux.h"
 #include "private.h"
 #include "opcodes.h"
 

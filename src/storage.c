@@ -16,7 +16,7 @@
 #include <string.h>
 
 #include "public.h"
-#include "aux.h"
+#include "baux.h"
 #include "private.h"
 
 

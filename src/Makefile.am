@@ -1,6 +1,6 @@
 # Source Makefile.am
 #
-# (c) Reuben Thomas 2011-2018
+# (c) Reuben Thomas 2011-2019
 #
 # The package is distributed under the GNU Public License version 3, or,
 # at your option, any later version.
@@ -24,7 +24,7 @@ man_MANS = beetle.1 beetlei.1 beetle-dump.1
 pkgdata_DATA = completions
 beetle_LDADD = libbeetle.la $(top_builddir)/lib/libgnu.la
 beetle_SOURCES = main.c tbl_opts.h tbl_commands.h tbl_registers.h $(internal_HDRS)
-internal_HDRS = public.h aux.h debug.h opcodes.h
+internal_HDRS = public.h baux.h debug.h opcodes.h
 include_HEADERS = beetle.h beetle_aux.h beetle_debug.h beetle_opcodes.h
 
 completions: tbl_registers.h tbl_commands.h
@@ -59,8 +59,8 @@ beetle.h: public.h external-syms.txt external-defines.txt Makefile
 	cat $(srcdir)/external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $@.tmp > $@
 	rm $@.tmp
 
-beetle_aux.h: aux.h external-syms.txt external-defines.txt Makefile
-	$(do_subst) < $(srcdir)/aux.h > $@.tmp
+beetle_aux.h: baux.h external-syms.txt external-defines.txt Makefile
+	$(do_subst) < $(srcdir)/baux.h > $@.tmp
 	cat $(srcdir)/external-syms.txt external-defines.txt | $(top_srcdir)/build-aux/add-symbol-prefix $@.tmp > $@
 	rm $@.tmp
 
