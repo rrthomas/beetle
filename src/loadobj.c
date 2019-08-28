@@ -16,8 +16,8 @@
 #include <string.h>
 #include <assert.h>
 
-#include "public.h"
-#include "baux.h"
+#include "beetle.h"
+#include "beetle_aux.h"
 
 
 int load_object(FILE *file, UCELL address)

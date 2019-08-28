@@ -23,10 +23,10 @@
 #include "minmax.h"
 #include "verify.h"
 
-#include "public.h"
-#include "baux.h"
+#include "beetle.h"
+#include "beetle_aux.h"
 #include "private.h"
-#include "opcodes.h"
+#include "beetle_opcodes.h"
 
 
 // Assumption for file functions

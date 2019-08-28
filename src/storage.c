@@ -15,8 +15,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "public.h"
-#include "baux.h"
+#include "beetle.h"
+#include "beetle_aux.h"
 #include "private.h"
 
 

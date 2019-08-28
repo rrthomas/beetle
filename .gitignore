@@ -1,6 +1,5 @@
 *.o
 *~
-/.gitmodules
 /beetle*.tar.gz
 Makefile
 Makefile.in
