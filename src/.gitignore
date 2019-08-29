@@ -3,6 +3,7 @@
 *.lo
 /libbeetle.la
 /beetle
+/beetle.exe
 /beetlei
 /beetle.1
 /tbl_opts.h
