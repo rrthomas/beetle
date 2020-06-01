@@ -516,7 +516,8 @@ static void do_command(int no)
             check_range(start, end, "Address");
             while (start < end) {
                 printf("$%08lX ", (unsigned long)start);
-                const int chunk = 16;
+                // Use #define to avoid a variable-length array
+                #define chunk 16
                 char ascii[chunk];
                 for (int i = 0; i < chunk && start < end; i++) {
                     BYTE byte;

@@ -37,7 +37,6 @@ AC_ARG_ENABLE([gcc-warnings],
 if test "$gl_gcc_warnings" = yes; then
   dnl Set up the list of undesired warnings.
   nw=
-  nw="$nw -Wvla"              # Require C99, so variable-length arrays are OK
   nw="$nw -Wsystem-headers"   # Don’t let system headers trigger warnings
 
   gl_MANYWARN_ALL_GCC([warnings])
