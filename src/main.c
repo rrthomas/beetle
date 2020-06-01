@@ -1,6 +1,6 @@
 // Front-end and shell.
 //
-// (c) Reuben Thomas 1995-2019
+// (c) Reuben Thomas 1995-2020
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -800,7 +800,7 @@ struct option longopts[] = {
 };
 
 #define VERSION_STRING "Beetle shell (C Beetle release "PACKAGE_VERSION")"
-#define COPYRIGHT_STRING "(c) Reuben Thomas 1994-2019"
+#define COPYRIGHT_STRING "(c) Reuben Thomas 1994-2020"
 
 static void usage(void)
 {
