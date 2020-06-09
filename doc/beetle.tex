@@ -84,7 +84,7 @@
 
 \title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
-\date{29th October 1993; revised 8th May 2019}
+\date{29th October 1993; revised 9th June 2020}
 
 \begin{document}
 \maketitle
@@ -675,8 +675,8 @@ Subroutine call and return:
 \instpr{(DO)}{bracket-do}{\x1 \x2 --}{-- \x1 \x2}{Move the top two items on the data stack to the return stack.}
 \instpr{(LOOP)}{bracket-loop}{--}{\noru1 \noru2 -- {\tt |} \noru1 \noru3}{Add one to \noru2; if it then equals \noru1 discard both items and add four to {\tt EP}, otherwise load {\tt EP} from the cell to which it points and perform the action of {\tt NEXT}.}
 \instpr{(LOOP)I}{bracket-loop-i}{--}{\noru1 \noru2 -- {\tt |} \noru1 \noru3}{Add one to \noru2; if it then equals \noru1 discard both items, otherwise add {\tt A} $\times$ 4 to {\tt EP}. Perform the action of {\tt NEXT}.}
-\instpr{(+LOOP)}{bracket-plus-loop}{\noru1 --}{\noru2 \noru3 -- {\tt |} \noru2 \noru4}{Add \noru1 to \noru3; if \noru3 thereby crosses the $($\noru2 $-$ 1$)$ to \noru2 boundary discard both items and add four to {\tt EP}, otherwise load {\tt EP} from the cell to which it points and perform the action of {\tt NEXT}.}
-\instpr{(+LOOP)I}{bracket-plus-loop-i}{\noru1 --}{\noru2 \noru3 -- {\tt |} \noru2 \noru4}{Add \noru1 to \noru3; if \noru3 thereby crosses the $($\noru2 $-$ 1$)$ to \noru2 boundary discard both items, otherwise add {\tt A} $\times$ 4 to {\tt EP}. Perform the action of {\tt NEXT}.}
+\instpr{(+LOOP)}{bracket-plus-loop}{n --}{\noru1 \noru2 -- {\tt |} \noru1 \noru3}{Add \spic{n} to \noru2, obtaining \noru3; if \noru2 thereby crosses the $($\noru1 $-$ 1$)$ to \noru1 boundary discard both items and add four to {\tt EP}, otherwise load {\tt EP} from the cell to which it points and perform the action of {\tt NEXT}.}
+\instpr{(+LOOP)I}{bracket-plus-loop-i}{n --}{\noru1 \noru2 -- {\tt |} \noru1 \noru3}{Add \spic{n} to \noru2, obtaining \noru3; if \noru2 thereby crosses the $($\noru1 $-$ 1$)$ to \noru1 boundary discard both items, otherwise add {\tt A} $\times$ 4 to {\tt EP}. Perform the action of {\tt NEXT}.}
 \instr{UNLOOP}{--}{\x1 \x2 --}{Discard the top two items on the return stack.}
 \instr{J}{-- \x1}{\x1 \x2 \x3 -- \x1 \x2 \x3}{Copy the third item on the return stack to the data stack.}
 \end{description}

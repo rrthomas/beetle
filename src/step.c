@@ -679,7 +679,7 @@ static CELL run_or_step(bool run)
                 CELL diff = index - limit;
                 CELL inc = POP;
                 PUSH_RETURN(index + inc);
-                if (((index + inc - limit) ^ diff) < 0) {
+                if ((((diff + inc) ^ diff) & (diff ^ inc)) < 0) {
                     (void)POP_RETURN;
                     (void)POP_RETURN;
                     EP += CELL_W;
@@ -698,7 +698,7 @@ static CELL run_or_step(bool run)
                 CELL diff = index - limit;
                 CELL inc = POP;
                 PUSH_RETURN(index + inc);
-                if (((index + inc - limit) ^ diff) < 0) {
+                if ((((diff + inc) ^ diff) & (diff ^ inc)) < 0) {
                     (void)POP_RETURN;
                     (void)POP_RETURN;
                 } else
