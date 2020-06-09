@@ -28,6 +28,7 @@ typedef uint32_t beetle_UCELL;
 typedef uint64_t beetle_DUCELL;
 #define beetle_CHAR_MASK ((1 << CHAR_BIT) - 1)
 #define beetle_CELL_BIT (sizeof(beetle_CELL_W) * CHAR_BIT)
+#define beetle_CELL_MIN ((beetle_CELL)(1UL << (beetle_CELL_BIT - 1)))
 #define beetle_CELL_MAX (UINT32_MAX)
 #define beetle_CELL_MASK beetle_CELL_MAX
 

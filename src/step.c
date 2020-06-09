@@ -1,6 +1,6 @@
 // The interface calls run() : integer and single_step() : integer.
 //
-// (c) Reuben Thomas 1994-2018
+// (c) Reuben Thomas 1994-2020
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -46,8 +46,12 @@ verify(sizeof(int) <= sizeof(CELL));
 #define ABS(x) ((x) >= 0 ? (x) : -(x))
 #define SGN(x) ((x) > 0 ? 1 : -1)  // not a proper sign function!
 
-#define FDIV(a, b) ((a) / (b) - ((((a) ^ (b)) < 0) && ((a) % (b)) != 0))
-#define FMOD(a, b, t) ((t = (a) % (b), (((a) ^ (b)) >= 0 || t == 0)) ? t : \
+#define DIV_WOULD_OVERFLOW(a, b) (((a) == CELL_MIN) && ((b) == -1))
+#define DIV_WITH_OVERFLOW(a, b) (DIV_WOULD_OVERFLOW((a), (b)) ? CELL_MIN : (a) / (b))
+#define MOD_WITH_OVERFLOW(a, b) (DIV_WOULD_OVERFLOW((a), (b)) ? 0 : (a) % (b))
+
+#define FDIV(a, b) (DIV_WITH_OVERFLOW((a), (b)) - ((((a) ^ (b)) < 0) && MOD_WITH_OVERFLOW((a), (b)) != 0))
+#define FMOD(a, b, t) ((t = MOD_WITH_OVERFLOW((a), (b)), (((a) ^ (b)) >= 0 || t == 0)) ? t : \
                        SGN(b) * (ABS(b) - ABS(t)))
 
 #define DIVZERO(x)                              \
@@ -412,8 +416,8 @@ static CELL run_or_step(bool run)
                 CELL divisor = POP;
                 CELL dividend = POP;
                 DIVZERO(divisor);
-                PUSH(dividend % divisor);
-                PUSH(dividend / divisor);
+                PUSH(MOD_WITH_OVERFLOW(dividend, divisor));
+                PUSH(DIV_WITH_OVERFLOW(dividend, divisor));
             }
             break;
         case O_SLASH2:
