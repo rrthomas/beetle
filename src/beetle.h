@@ -45,7 +45,7 @@ typedef uint64_t beetle_DUCELL;
 extern beetle_UCELL beetle_EP;
 extern beetle_BYTE beetle_I;
 extern beetle_CELL beetle_A;
-extern beetle_CELL *M0;
+extern beetle_CELL *bee_M0;
 extern beetle_UCELL beetle_MEMORY;
 extern beetle_UCELL beetle_SP, beetle_RP;
 extern beetle_UCELL beetle_S0, beetle_R0;
