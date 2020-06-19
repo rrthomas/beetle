@@ -19,8 +19,6 @@ const char *correct[] = {
     "", "16128", "", "16384", "", "0", "", "0",
 };
 
-const unsigned area[] = {0x4000, 0x4004, 0x4005, 0x4008};
-
 
 int main(void)
 {
