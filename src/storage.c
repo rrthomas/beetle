@@ -1,6 +1,6 @@
 // Allocate storage for the registers and memory.
 //
-// (c) Reuben Thomas 1994-2018
+// (c) Reuben Thomas 1994-2020
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -12,7 +12,6 @@
 
 #include "external_syms.h"
 
-#include <stdlib.h>
 #include <string.h>
 
 #include "beetle.h"
@@ -34,11 +33,8 @@ UCELL BAD;
 UCELL NOT_ADDRESS;
 
 
-// Memory allocation and mapping
+// General memory access
 
-#include <stdio.h>
-#include <inttypes.h>
-#include <assert.h>
 // Return native address of a range of VM memory, or NULL if invalid
 _GL_ATTRIBUTE_PURE uint8_t *native_address_of_range(UCELL start, UCELL length)
 {
@@ -47,9 +43,6 @@ _GL_ATTRIBUTE_PURE uint8_t *native_address_of_range(UCELL start, UCELL length)
 
     return ((uint8_t *)M0) + start;
 }
-
-
-// General memory access
 
 // Macro for byte addressing
 #ifdef WORDS_BIGENDIAN
