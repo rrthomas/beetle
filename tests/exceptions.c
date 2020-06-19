@@ -36,16 +36,20 @@ int main(void)
     ass(O_LITERALI); ilit(MEMORY);
     ass(O_MINUSCELL); ass(O_SPSTORE); ass(O_TOR); ass(O_ZERO);
     ass(O_HALT); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
-    ass(O_ONE); ass(O_PLUSCELL); ass(O_SPSTORE); ass(O_NEXT00);	// test 5
-    ass(O_ONE); ass(O_EXECUTE);	ass(O_NEXT00); ass(O_NEXT00);	// test 6
-    ass(O_ONE); ass(O_ZERO); ass(O_SLASH); ass(O_NEXT00);   // test 7
+    // test 5: test setting SP to unaligned address
+    ass(O_ONE); ass(O_PLUSCELL); ass(O_SPSTORE); ass(O_NEXT00);
+    // test 6: test EXECUTE on unaligned address
+    ass(O_ONE); ass(O_EXECUTE);	ass(O_NEXT00); ass(O_NEXT00);
+    // test 7: test division by zero
+    ass(O_ONE); ass(O_ZERO); ass(O_SLASH); ass(O_NEXT00);
     // test 8: allow execution to run off the end of a memory area
     ass(O_BRANCH); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     lit(MEMORY - CELL_W);
     // test 9: fetch from an invalid address
     ass(O_LITERAL); lit(0xffffffec);
     ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00);
-    ass(O_ONE); ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00); // test 10
+    // test 10: fetch from an unaligned address
+    ass(O_ONE); ass(O_FETCH); ass(O_NEXT00); ass(O_NEXT00);
     // test 11: test invalid opcode
     ass(O_UNDEFINED); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     // test 12: test invalid 'THROW contents
