@@ -323,7 +323,7 @@ static void do_assign(char *token)
 {
     char *number = strtok(NULL, " ");
     long long value;
-    int bytes = 4;
+    int bytes = CELL_W;
 
     upper(number);
     value = parse_instruction(number);
@@ -384,6 +384,8 @@ static void do_assign(char *token)
                     store_byte(adr, value);
                 } else {
                     check_range(adr, adr + CELL_W, "Address");
+                    if (bytes > CELL_W)
+                        fatal("the value assigned to a cell must fit in a cell");
                     store_cell(adr, value);
                 }
             }
