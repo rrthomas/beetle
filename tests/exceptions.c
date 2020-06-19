@@ -1,6 +1,6 @@
 // Test the VM-generated exceptions and HALT codes.
 //
-// (c) Reuben Thomas 1995-2018
+// (c) Reuben Thomas 1995-2020
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -19,8 +19,6 @@ UCELL address[] = { -16, 16384, 0, 0, 5, 1, 0, 16384, -20, 1, 0, 1 };
 
 int main(void)
 {
-    int exception = 0;
-
     size_t size = 4096;
     init((CELL *)calloc(size, CELL_W), size);
 
@@ -82,7 +80,6 @@ int main(void)
         putchar('\n');
     }
 
-    assert(exception == 0);
     if (error == 0)
         printf("Exceptions tests ran OK\n");
     return error;

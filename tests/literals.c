@@ -1,6 +1,6 @@
 // Test the literal instructions. Also uses the NEXT instruction.
 //
-// (c) Reuben Thomas 1994-2018
+// (c) Reuben Thomas 1994-2020
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -16,8 +16,6 @@ const char *correct[] = { "", "-257", "-257 12345678", "-257 12345678 -2" };
 
 int main(void)
 {
-    int exception = 0;
-
     init((CELL *)calloc(1024, 1), 256);
 
     start_ass(EP);
@@ -33,11 +31,10 @@ int main(void)
             printf("Error in literals tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
-        single_step();
+        assert(single_step() == -259);
         printf("I = %s\n", disass(I));
     }
 
-    assert(exception == 0);
     printf("Literals tests ran OK\n");
     return 0;
 }

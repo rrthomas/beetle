@@ -1,7 +1,7 @@
 // Test extra instructions. Also uses previously-tested instructions.
 // FIXME: test file routines.
 //
-// (c) Reuben Thomas 1994-2018
+// (c) Reuben Thomas 1994-2020
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -31,31 +31,32 @@ int main(void)
 
     assert(single_step() == -259);   // load first instruction word
 
-    single_step();
+    assert(single_step() == -259);
     printf("argc is %"PRId32", and should be %d\n\n", LOAD_CELL(SP), argc);
     if (POP != argc) {
        printf("Error in extra instructions tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 
-    single_step();
-    single_step();
+    assert(single_step() == -259);
+    assert(single_step() == -259);
     printf("arg 1's length is %"PRId32", and should be %zu\n", LOAD_CELL(SP), strlen(argv[1]));
     if ((UCELL)POP != strlen(argv[1])) {
         printf("Error in extra instructions tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 
-    single_step();
-    single_step();
-    single_step();
-    single_step();
+    assert(single_step() == -259);
+    assert(single_step() == -259);
+    assert(single_step() == -259);
+    assert(single_step() == -259);
     printf("arg is %s, and should be %s\n", native_address_of_range(buf, 0), argv[1]);
     if (strcmp((char *)native_address_of_range(buf, 0), argv[1]) != 0) {
         printf("Error in extra instructions tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 
+    assert(exception == 0);
     printf("Extra instructions tests ran OK\n");
     return 0;
 }

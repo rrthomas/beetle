@@ -1,7 +1,7 @@
 // Test the register instructions, except for those operating on RP and SP
 // (see memory.c). Also uses NEXT.
 //
-// (c) Reuben Thomas 1994-2018
+// (c) Reuben Thomas 1994-2020
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -22,8 +22,6 @@ const char *correct[] = {
 
 int main(void)
 {
-    int exception = 0;
-
     init((CELL *)malloc(SIZE), SIZE / CELL_W);
 
     start_ass(EP);
@@ -42,11 +40,10 @@ int main(void)
             printf("Error in registers tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
-        single_step();
+        assert(single_step() == -259);
         printf("I = %s\n", disass(I));
     }
 
-    assert(exception == 0);
     printf("Registers tests ran OK\n");
     return 0;
 }

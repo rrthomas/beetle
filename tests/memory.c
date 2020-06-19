@@ -1,7 +1,7 @@
 // Test the memory operators. Also uses previously tested instructions.
 // See exceptions.c for address exception handling tests.
 //
-// (c) Reuben Thomas 1994-2018
+// (c) Reuben Thomas 1994-2020
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -24,8 +24,6 @@ const unsigned area[] = {0x4000, 0x4004, 0x4005, 0x4008};
 
 int main(void)
 {
-    int exception = 0;
-
     size_t size = 4096;
     init((CELL *)calloc(size, CELL_W), size);
 
@@ -48,11 +46,10 @@ int main(void)
             printf("Error in memory tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
-        single_step();
+        assert(single_step() == -259);
         printf("I = %s\n", disass(I));
     }
 
-    assert(exception == 0);
     printf("Memory tests ran OK\n");
     return 0;
 }

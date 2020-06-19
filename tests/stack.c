@@ -1,6 +1,6 @@
 // Test the stack operators. Also uses the 0 and NEXT instructions.
 //
-// (c) Reuben Thomas 1994-2011
+// (c) Reuben Thomas 1994-2020
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -43,7 +43,7 @@ int main(void)
             printf("Error in stack tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
-        single_step();
+        assert(single_step() == -259);
         printf("I = %s\n", disass(I));
     }
 
@@ -59,7 +59,7 @@ int main(void)
             printf("Error in stack tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
-        single_step();
+        assert(single_step() == -259);
         printf("I = %s\n", disass(I));
     }
 

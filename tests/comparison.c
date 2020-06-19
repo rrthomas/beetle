@@ -2,7 +2,7 @@
 // only test simple cases here, assuming that the C compiler's comparison
 // routines will work for other cases.
 //
-// (c) Reuben Thomas 1994-2018
+// (c) Reuben Thomas 1994-2020
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.

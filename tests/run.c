@@ -1,7 +1,7 @@
 // Test that run works, and that the return value of the HALT instruction is
 // correctly returned.
 //
-// (c) Reuben Thomas 1995-2018
+// (c) Reuben Thomas 1995-2020
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -14,8 +14,6 @@
 
 int main(void)
 {
-    int exception = 0;
-
     int i = init((CELL *)calloc(1024, 1), 256);
     if (i != 0) {
         printf("Error in run() tests: init with valid parameters failed\n");
@@ -41,7 +39,6 @@ int main(void)
         exit(1);
     }
 
-    assert(exception == 0);
     printf("run() tests ran OK\n");
     return 0;
 }

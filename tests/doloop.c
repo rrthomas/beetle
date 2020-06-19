@@ -1,7 +1,7 @@
 // Test the DO...LOOP support instructions. Also uses instructions with
 // lower opcodes.
 //
-// (c) Reuben Thomas 1994-2018
+// (c) Reuben Thomas 1994-2020
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -43,7 +43,7 @@ int main(void)
 
     assert(single_step() == -259);
 
-    while (EP < 20) single_step();
+    while (EP < 20) assert(single_step() == -259);
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[0]);
     if (strcmp(correct[0], val_data_stack())) {
@@ -52,7 +52,7 @@ int main(void)
     }
     SP = S0;
 
-    while (EP < 32) single_step();
+    while (EP < 32) assert(single_step() == -259);
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[1]);
     if (strcmp(correct[1], val_data_stack())) {
@@ -61,7 +61,7 @@ int main(void)
     }
     SP = S0;
 
-    while (EP < 40) single_step();
+    while (EP < 40) assert(single_step() == -259);
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[2]);
     if (strcmp(correct[2], val_data_stack())) {
@@ -70,7 +70,7 @@ int main(void)
     }
     SP = S0;
 
-    for (int i = 0; i < 12; i++) single_step();
+    for (int i = 0; i < 12; i++) assert(single_step() == -259);
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[3]);
     if (strcmp(correct[3], val_data_stack())) {
@@ -81,7 +81,7 @@ int main(void)
 
     assert(EP == 48);
     A = 0; I = 0; // Exit infinite loop
-    while (EP < 60) single_step();
+    while (EP < 60) assert(single_step() == -259);
     CELL ret3 = LOAD_CELL(RP - 2 * CELL_W * STACK_DIRECTION);
     printf("3rd item on return stack is %"PRId32" (should be %"PRId32")\n", ret3, LOAD_CELL(SP));
     if (ret3 != LOAD_CELL(SP)) {
@@ -89,7 +89,8 @@ int main(void)
         exit(1);
     }
 
-    single_step(); single_step();
+    assert(single_step() == -259);
+    assert(single_step() == -259);
     show_data_stack();
     printf("Correct stack: %s\n\n", correct[4]);
     if (strcmp(correct[4], val_data_stack())) {

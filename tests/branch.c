@@ -4,7 +4,7 @@
 // The test program contains an infinite loop, but this is only executed
 // once.
 //
-// (c) Reuben Thomas 1994-2018
+// (c) Reuben Thomas 1994-2020
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -21,8 +21,6 @@ unsigned correct[] = { 4, 100, 52, 10004, 10004, 10008, 10008, 10012, 10012, 110
 
 int main(void)
 {
-    int exception = 0;
-
     size_t size = 4096;
     init((CELL *)calloc(size, CELL_W), size);
 
@@ -67,11 +65,10 @@ int main(void)
             printf("Error in branch tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
-        single_step();
+        assert(single_step() == -259);
         printf("I = %s\n", disass(I));
     }
 
-    assert(exception == 0);
     printf("Branch tests ran OK\n");
     return 0;
 }

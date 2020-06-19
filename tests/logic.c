@@ -3,7 +3,7 @@
 // assuming that if the logic works in one case, it will work in all (if the
 // C compiler doesn't implement it correctly, we're in trouble anyway!).
 //
-// (c) Reuben Thomas 1994-2018
+// (c) Reuben Thomas 1994-2020
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -42,7 +42,7 @@ int main(void)
             printf("Error in logic tests: EP = %"PRIu32"\n", EP);
             exit(1);
         }
-        single_step();
+        assert(single_step() == -259);
         printf("I = %s\n", disass(I));
     }
 
