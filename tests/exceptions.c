@@ -32,7 +32,7 @@ int main(void)
     // test 3: test arbitrary throw code
     ass(O_LITERALI); ilit(42);
     ass(O_HALT); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
-    // test 4: test SP can point to just after a memory area
+    // test 4: test SP can point to just after memory
     ass(O_LITERALI); ilit(MEMORY);
     ass(O_MINUSCELL); ass(O_SPSTORE); ass(O_TOR); ass(O_ZERO);
     ass(O_HALT); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
@@ -42,7 +42,7 @@ int main(void)
     ass(O_ONE); ass(O_EXECUTE);	ass(O_NEXT00); ass(O_NEXT00);
     // test 7: test division by zero
     ass(O_ONE); ass(O_ZERO); ass(O_SLASH); ass(O_NEXT00);
-    // test 8: allow execution to run off the end of a memory area
+    // test 8: allow execution to run off the end of memory
     ass(O_BRANCH); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     lit(MEMORY - CELL_W);
     // test 9: fetch from an invalid address
