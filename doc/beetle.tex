@@ -84,7 +84,7 @@
 
 \title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
-\date{29th October 1993; revised 9th June 2020}
+\date{29th October 1993; 1st July 2020}
 
 \begin{document}
 \maketitle
@@ -299,7 +299,6 @@ additionally reserve exceptions $-512$ to $-4095$ for their own exceptions
 \bf Code & \bf Meaning \\ \midrule
 $-9$ & Invalid address (see below). \\
 $-10$ & Division by zero attempted (see section~\ref{arithmetic}). \\
-$-20$ & Attempt to write to a read-only memory location. \\
 $-23$ & Address alignment exception (see below). \\
 $-256$ & Illegal opcode (see section~\ref{opcodes}). \\ \bottomrule
 \end{tabular}
