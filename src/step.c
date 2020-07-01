@@ -204,14 +204,14 @@ static CELL run_or_step(bool run)
             break;
         case O_PICK:
             {
-                CELL depth = POP;
+                UCELL depth = POP;
                 CELL pickee = LOAD_CELL(SP - depth * CELL_W * STACK_DIRECTION);
                 PUSH(pickee);
             }
             break;
         case O_ROLL:
             {
-                CELL depth = POP;
+                UCELL depth = POP;
                 CELL rollee = LOAD_CELL(SP - depth * CELL_W * STACK_DIRECTION);
                 for (CELL i = depth; i > 0; i--)
                     STORE_CELL(SP - i * CELL_W * STACK_DIRECTION,
