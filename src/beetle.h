@@ -16,7 +16,6 @@
 #include "config.h"
 
 #include <stdio.h>      // for the FILE type
-#include <stdbool.h>
 #include <stdint.h>
 #include <limits.h>
 
