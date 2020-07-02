@@ -30,7 +30,7 @@
 #define load_cell beetle_load_cell
 #define LOAD_CELL beetle_LOAD_CELL
 #define load_object beetle_load_object
-#define M0 bee_M0
+#define M0 beetle_M0
 #define memory beetle_memory
 #define MEMORY beetle_MEMORY
 #define mem_realloc beetle_mem_realloc
