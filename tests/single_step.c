@@ -1,5 +1,4 @@
-// Test that single_step works, and that address alignment and bounds
-// checking is properly performed on EP.
+// Test that single_step works.
 //
 // (c) Reuben Thomas 1994-2020
 //
