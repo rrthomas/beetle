@@ -35,8 +35,8 @@
 #include "beetle_opcodes.h"
 
 
-#define DEFAULT_MEMORY 1048576 // Default size of VM memory in cells (4Mb)
-#define MAX_MEMORY 536870912 // Maximum size of memory in cells (2Gb)
+#define DEFAULT_MEMORY 1048576 // Default size of VM memory in words (4MB)
+#define MAX_MEMORY 1073741824 // Maximum size of memory in words (4GB)
 static UCELL memory_size = DEFAULT_MEMORY; // Size of VM memory in cells
 CELL *memory;
 
