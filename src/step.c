@@ -937,7 +937,7 @@ static CELL run_or_step(bool run)
                 struct stat st;
                 int fd = POP;
                 int res = fstat(fd, &st);
-                PUSH_DOUBLE(st.st_size);
+                PUSH_DOUBLE((DUCELL)st.st_size);
                 PUSH(res);
             }
             break;
