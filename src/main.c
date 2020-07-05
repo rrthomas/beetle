@@ -12,6 +12,7 @@
 
 #include "external_syms.h"
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <inttypes.h>
