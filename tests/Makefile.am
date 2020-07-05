@@ -27,7 +27,7 @@ test-parser:
 	( $(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(top_builddir)/src/beetle$(EXEEXT) ./hello.obj > hello.output ) && \
 	diff hello.output $(srcdir)/hello.correct
 
-do_load_object: load_object test-parser
+do_load_object: load_object
 	$(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(builddir)/load_object $(srcdir)
 
 check-local: do_load_object test-parser
