@@ -8,8 +8,8 @@
 #define byte_size beetle_byte_size
 #define CELL beetle_CELL
 #define CELL_BIT beetle_CELL_BIT
-#define CELL_MIN beetle_CELL_MIN
 #define CELL_MAX beetle_CELL_MAX
+#define CELL_MIN beetle_CELL_MIN
 #define CELL_pointer beetle_CELL_pointer
 #define CELL_W beetle_CELL_W
 #define CHAR_MASK beetle_CHAR_MASK
