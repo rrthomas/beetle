@@ -61,6 +61,7 @@ static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void warn(const char *format, ...)
 
     va_start(args, format);
     verror(format, args);
+    va_end(args);
 }
 
 static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void fatal(const char *format, ...)
@@ -69,6 +70,7 @@ static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void fatal(const char *format, ...)
 
     va_start(args, format);
     verror(format, args);
+    va_end(args);
     longjmp(env, 1);
 }
 
@@ -78,6 +80,7 @@ static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void die(const char *format, ...)
 
     va_start(args, format);
     verror(format, args);
+    va_end(args);
     exit(1);
 }
 
