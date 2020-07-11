@@ -59,7 +59,7 @@ int load_cell(UCELL addr, CELL *value)
     }
 
     uint8_t *ptr = native_address_of_range(addr, CELL_W);
-    if (ptr == NULL || !IS_ALIGNED((size_t)ptr)) {
+    if (ptr == NULL) {
         NOT_ADDRESS = addr;
         return -9;
     }
@@ -90,7 +90,7 @@ int store_cell(UCELL addr, CELL value)
     }
 
     uint8_t *ptr = native_address_of_range(addr, CELL_W);
-    if (ptr == NULL || !IS_ALIGNED((size_t)ptr)) {
+    if (ptr == NULL) {
         NOT_ADDRESS = addr;
         return -9;
     }
