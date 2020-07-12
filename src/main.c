@@ -618,7 +618,7 @@ static void do_command(int no)
                         count[I]++;
                     }
                     if (ret != 0)
-                        printf("HALT code %"PRId32" was returned at EP = $%X\n",
+                        printf("HALT code %"PRId32" was returned at EP = $%"PRIX32"\n",
                                ret, EP);
                 } else {
                     unsigned long long limit = single_arg(arg, NULL), i;
@@ -763,7 +763,7 @@ static void parse(char *input)
                     check_range(adr, adr + 1, "Address");
                     BYTE b;
                     load_byte(adr, &b);
-                    display = xasprintf("$%"PRIX32": $%X (%d) (byte)", (UCELL)adr,
+                    display = xasprintf("$%"PRIX32": $%"PRIX32" (%d) (byte)", (UCELL)adr,
                                         b, b);
                 } else {
                     check_range(adr, adr + CELL_W, "Address");
