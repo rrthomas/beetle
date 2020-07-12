@@ -20,7 +20,7 @@ void beetle_lit(beetle_CELL literal);	// assemble a cell literal
 bool beetle_ilit(beetle_CELL literal);    // assemble an immediate literal, returning false if it doesn't fit
 void beetle_plit(void (*literal)(void));  // assemble a machine-dependent function pointer literal,
                                    // including the relevant LITERAL instructions
-void beetle_start_ass(beetle_UCELL addr);	// start assembly, initialising variables
+void beetle_start_ass(beetle_UCELL addr);	// start assembly at the given address
 beetle_UCELL beetle_ass_current(void);	// return address of beetle_CELL currently being assembled to
 const char *beetle_disass(beetle_BYTE opcode);  // disassemble an instruction
 beetle_BYTE beetle_toass(const char *token);    // convert a instruction to its opcode
