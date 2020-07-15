@@ -9,8 +9,8 @@
 // THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER’S
 // RISK.
 
-#ifndef beetle_BEETLE_DEBUG
-#define beetle_BEETLE_DEBUG
+#ifndef BEETLE_DEBUG
+#define BEETLE_DEBUG
 
 
 int beetle_byte_size(beetle_CELL v); // return number of significant bytes in a beetle_CELL quantity

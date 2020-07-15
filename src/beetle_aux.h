@@ -9,8 +9,8 @@
 // THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER’S
 // RISK.
 
-#ifndef beetle_BEETLE_AUX
-#define beetle_BEETLE_AUX
+#ifndef BEETLE_AUX
+#define BEETLE_AUX
 
 
 #include <stdio.h>      // for the FILE type
