@@ -13,8 +13,6 @@
 #define beetle_BEETLE_AUX
 
 
-#include "config.h"
-
 #include <stdio.h>      // for the FILE type
 #include <stdbool.h>
 #include <stdint.h>

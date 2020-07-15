@@ -13,8 +13,6 @@
 #define beetle_BEETLE_BEETLE
 
 
-#include "config.h"
-
 #include <stdio.h>      // for the FILE type
 #include <stdint.h>
 #include <limits.h>
