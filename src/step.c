@@ -327,53 +327,53 @@ static CELL run_or_step(bool run)
             break;
         case O_PLUS:
             {
-                CELL a = POP;
-                CELL b = POP;
+                UCELL a = POP;
+                UCELL b = POP;
                 PUSH(b + a);
             }
             break;
         case O_MINUS:
             {
-                CELL a = POP;
-                CELL b = POP;
+                UCELL a = POP;
+                UCELL b = POP;
                 PUSH(b - a);
             }
             break;
         case O_SWAPMINUS:
             {
-                CELL a = POP;
-                CELL b = POP;
+                UCELL a = POP;
+                UCELL b = POP;
                 PUSH(a - b);
             }
             break;
         case O_PLUS1:
             {
-                CELL a = POP;
+                UCELL a = POP;
                 PUSH(a + 1);
             }
             break;
         case O_MINUS1:
             {
-                CELL a = POP;
+                UCELL a = POP;
                 PUSH(a - 1);
             }
             break;
         case O_PLUSCELL:
             {
-                CELL a = POP;
+                UCELL a = POP;
                 PUSH(a + CELL_W);
             }
             break;
         case O_MINUSCELL:
             {
-                CELL a = POP;
+                UCELL a = POP;
                 PUSH(a - CELL_W);
             }
             break;
         case O_STAR:
             {
-                CELL multiplier = POP;
-                CELL multiplicand = POP;
+                UCELL multiplier = POP;
+                UCELL multiplicand = POP;
                 PUSH(multiplier * multiplicand);
             }
             break;
