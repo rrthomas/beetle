@@ -60,7 +60,6 @@ third-party `bootstrap` module; these are installed automatically.
 To build from a Git repository, first run
 
 ```
-git submodule update --init --recursive
 ./bootstrap
 ```
 
