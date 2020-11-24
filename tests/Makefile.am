@@ -1,6 +1,6 @@
 # Tests Makefile.am
 #
-# (c) Reuben Thomas 2011-2018
+# (c) Reuben Thomas 2011-2020
 #
 # The package is distributed under the GNU Public License version 3, or,
 # at your option, any later version.
@@ -10,7 +10,7 @@
 
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/lib -I$(top_srcdir)/lib $(WARN_CFLAGS)
 
-LOG_COMPILER = $(srcdir)/run-test
+LOG_COMPILER = env $(LOG_ENV) $(srcdir)/run-test
 
 LDADD = $(top_builddir)/src/libbeetle.la
 
