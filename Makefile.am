@@ -1,6 +1,6 @@
 # Top-level Makefile.am
 #
-# (c) Reuben Thomas 2011-2018
+# (c) Reuben Thomas 2011-2020
 #
 # The package is distributed under the GNU Public License version 3, or,
 # at your option, any later version.
