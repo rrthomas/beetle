@@ -10,7 +10,7 @@
 
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/lib -I$(top_srcdir)/lib $(WARN_CFLAGS)
 
-LOG_COMPILER = env $(LOG_ENV) $(srcdir)/run-test
+LOG_COMPILER = $(srcdir)/run-test
 
 LDADD = $(top_builddir)/src/libbeetle.la
 
@@ -19,7 +19,6 @@ check_PROGRAMS = $(TESTS) load_object
 TESTS = arithmetic branch comparison doloop init literals logic memory \
 	registers stack single_step run exceptions link extra_instructions
 TESTS_ENVIRONMENT = \
-	if test -n "$(VALGRIND)"; then export VALGRIND='$(VALGRIND)'; fi; \
 	export LIBTOOL=$(top_builddir)/libtool;
 
 test-parser:
