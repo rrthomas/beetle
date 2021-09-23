@@ -83,13 +83,13 @@ int main(void)
         CELL res = run();
 
         if (result[i] != res || (result[i] != 0 && bad[i] != BAD) ||
-            ((result[i] <= -257 || result[i] == -9 || result[i] == -23) &&
+            ((result[i] <= -258 || result[i] == -9 || result[i] == -23) &&
              address[i] != NOT_ADDRESS)) {
              printf("Error in exceptions tests: test %zu failed; EP = %"PRIu32"\n", i + 1, EP);
              printf("Return code is %d; should be %d\n", res, result[i]);
              if (result[i] != 0)
                  printf("'BAD = %"PRIX32"; should be %"PRIX32"\n", BAD, bad[i]);
-             if (result[i] <= -257 || result[i] == -9 || result[i] == -23)
+             if (result[i] <= -258 || result[i] == -9 || result[i] == -23)
                  printf("-ADDRESS = %"PRIX32"; should be %"PRIX32"\n", NOT_ADDRESS, address[i]);
              error++;
         }

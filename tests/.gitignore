@@ -9,8 +9,8 @@
 /comparison
 /doloop
 /exceptions
-/extra_instructions
 /init
+/lib
 /link
 /literals
 /load_object

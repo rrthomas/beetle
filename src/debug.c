@@ -1,6 +1,6 @@
 // Functions useful for VM debugging.
 //
-// (c) Reuben Thomas 1994-2018
+// (c) Reuben Thomas 1994-2021
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -118,13 +118,13 @@ static const char *mnemonic[UINT8_MAX + 1] = {
     "'THROW!", "MEMORY@", "'BAD@", "-ADDRESS@", "BRANCH", "BRANCHI", "?BRANCH", "?BRANCHI",
     "EXECUTE", "@EXECUTE", "CALL", "CALLI", "EXIT", "(DO)", "(LOOP)", "(LOOP)I",
     "(+LOOP)", "(+LOOP)I", "UNLOOP", "J", "(LITERAL)", "(LITERAL)I", "THROW", "HALT",
-    "LINK", NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    "LIB", "LINK", NULL, NULL, NULL, NULL, NULL, NULL,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    "ARGC", "ARGLEN", "ARGCOPY", "STDIN_FILENO", "STDOUT_FILENO", "STDERR_FILENO", "OPEN-FILE", "CLOSE-FILE",
-    "READ-FILE", "WRITE-FILE", "FILE-POSITION", "REPOSITION-FILE", "FLUSH-FILE", "RENAME-FILE", "DELETE-FILE", "FILE-SIZE",
-    "RESIZE-FILE", "FILE-STATUS", NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,

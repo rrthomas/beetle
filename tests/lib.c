@@ -1,4 +1,4 @@
-// Test extra instructions. Also uses previously-tested instructions.
+// Test LIB instruction. Also uses previously-tested instructions.
 // FIXME: test file routines.
 //
 // (c) Reuben Thomas 1994-2020
@@ -26,23 +26,31 @@ int main(void)
     assert(register_args(argc, argv) == 0);
 
     start_ass(EP);
-    ass(OX_ARGC); ass(O_ONE); ass(OX_ARGLEN);
-    ass(O_ONE); ass(O_LITERAL); lit(buf); ass(OX_ARGCOPY);
+    ass(O_LITERALI); ilit(0);
+    ass(O_LIB); ilit(0); /* pad word with NEXT */
+    ass(O_ONE); ass(O_LITERALI); ilit(1);
+    ass(O_LIB); ilit(0); /* pad word with NEXT */
+    ass(O_ONE); ass(O_LITERAL); lit(buf); ass(O_LITERALI); ilit(2);
+    ass(O_LIB); ilit(0); /* pad word with NEXT */
 
     assert(single_step() == -259);   // load first instruction word
 
     assert(single_step() == -259);
+    assert(single_step() == -259);
+    assert(single_step() == -259);
     printf("argc is %"PRId32", and should be %d\n\n", LOAD_CELL(SP), argc);
     if (POP != argc) {
-       printf("Error in extra instructions tests: EP = %"PRIu32"\n", EP);
+       printf("Error in LIB tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 
     assert(single_step() == -259);
     assert(single_step() == -259);
+    assert(single_step() == -259);
+    assert(single_step() == -259);
     printf("arg 1's length is %"PRId32", and should be %zu\n", LOAD_CELL(SP), strlen(argv[1]));
     if ((UCELL)POP != strlen(argv[1])) {
-        printf("Error in extra instructions tests: EP = %"PRIu32"\n", EP);
+        printf("Error in LIB tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 
@@ -51,12 +59,12 @@ int main(void)
     assert(single_step() == -259);
     assert(single_step() == -259);
     printf("arg is %s, and should be %s\n", native_address_of_range(buf, 0), argv[1]);
-    if (strcmp((char *)native_address_of_range(buf, 0), argv[1]) != 0) {
+    if (strncmp((char *)native_address_of_range(buf, 0), argv[1], strlen(argv[1])) != 0) {
         printf("Error in extra instructions tests: EP = %"PRIu32"\n", EP);
         exit(1);
     }
 
     assert(exception == 0);
-    printf("Extra instructions tests ran OK\n");
+    printf("LIB tests ran OK\n");
     return 0;
 }

@@ -1,6 +1,6 @@
 // The interface calls run() : integer and single_step() : integer.
 //
-// (c) Reuben Thomas 1994-2020
+// (c) Reuben Thomas 1994-2021
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -779,183 +779,192 @@ static CELL run_or_step(bool run)
         case O_NOT_ADDRESSFETCH:
             PUSH(NOT_ADDRESS);
             break;
+        case O_LIB:
+            {
+                CELL routine = POP;
+                switch (routine) {
+                case 0: /* ARGC ( -- u ) */
+                    PUSH(main_argc);
+                    break;
+                case 1: // ARGLEN ( u1 -- u2 )
+                    {
+                        UCELL narg = POP;
+                        if (narg >= (UCELL)main_argc)
+                            PUSH(0);
+                        else
+                            PUSH(main_argv_len[narg]);
+                    }
+                    break;
+                case 2: // ARGCOPY ( u1 addr -- )
+                    {
+                        UCELL addr = POP;
+                        UCELL narg = POP;
+                        if (narg < (UCELL)main_argc) {
+                            UCELL len = (UCELL)main_argv_len[narg];
+                            char *ptr = (char *)native_address_of_range(addr, len);
+                            if (ptr != NULL) {
+                                UCELL end = ALIGN(addr + len);
+                                pre_dma(addr, end);
+                                strncpy(ptr, main_argv[narg], len);
+                                post_dma(addr, end);
+                            }
+                        }
+                    }
+                    break;
+                case 3: // STDIN
+                    PUSH((CELL)(STDIN_FILENO));
+                    break;
+                case 4: // STDOUT
+                    PUSH((CELL)(STDOUT_FILENO));
+                    break;
+                case 5: // STDERR
+                    PUSH((CELL)(STDERR_FILENO));
+                    break;
+                case 6: // OPEN_FILE
+                    {
+                        bool binary = false;
+                        int perm = getflags(POP, &binary);
+                        UCELL len = POP;
+                        UCELL str = POP;
+                        char *file;
+                        exception = getstr(str, len, &file);
+                        int fd = exception == 0 ? open(file, perm, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) : -1;
+                        free(file);
+                        PUSH((CELL)fd);
+                        PUSH(fd < 0 || (binary && set_binary_mode(fd, O_BINARY) < 0) ? -1 : 0);
+                    }
+                    break;
+                case 7: // CLOSE_FILE
+                    {
+                        int fd = POP;
+                        PUSH((CELL)close(fd));
+                    }
+                    break;
+                case 8: // READ_FILE
+                    {
+                        int fd = POP;
+                        UCELL nbytes = POP;
+                        UCELL buf = POP;
+
+                        ssize_t res = 0;
+                        if (exception == 0) {
+                            exception = pre_dma(buf, buf + nbytes);
+                            if (exception == 0) {
+                                res = read(fd, native_address_of_range(buf, 0), nbytes);
+                                exception = post_dma(buf, buf + nbytes);
+                            }
+                        }
+
+                        PUSH(res);
+                        PUSH((exception == 0 && res >= 0) ? 0 : -1);
+                    }
+                    break;
+                case 9: // WRITE_FILE
+                    {
+                        int fd = POP;
+                        UCELL nbytes = POP;
+                        UCELL buf = POP;
+
+                        ssize_t res = 0;
+                        if (exception == 0) {
+                            exception = pre_dma(buf, buf + nbytes);
+                            if (exception == 0) {
+                                res = write(fd, native_address_of_range(buf, 0), nbytes);
+                                exception = post_dma(buf, buf + nbytes);
+                            }
+                        }
+
+                        PUSH((exception == 0 && res >= 0) ? 0 : -1);
+                    }
+                    break;
+                case 10: // FILE_POSITION
+                    {
+                        int fd = POP;
+                        off_t res = lseek(fd, 0, SEEK_CUR);
+                        PUSH_DOUBLE((DUCELL)res);
+                        PUSH(res >= 0 ? 0 : -1);
+                    }
+                    break;
+                case 11: // REPOSITION_FILE
+                    {
+                        int fd = POP;
+                        DUCELL ud = POP_DOUBLE;
+                        off_t res = lseek(fd, (off_t)ud, SEEK_SET);
+                        PUSH(res >= 0 ? 0 : -1);
+                    }
+                    break;
+                case 12: // FLUSH_FILE
+                    {
+                        int fd = POP;
+                        int res = fdatasync(fd);
+                        PUSH(res);
+                    }
+                    break;
+                case 13: // RENAME_FILE
+                    {
+                        UCELL len1 = POP;
+                        UCELL str1 = POP;
+                        UCELL len2 = POP;
+                        UCELL str2 = POP;
+                        char *from;
+                        char *to = NULL;
+                        exception = getstr(str2, len2, &from) ||
+                            getstr(str1, len1, &to) ||
+                            rename(from, to);
+                        free(from);
+                        free(to);
+                        PUSH(exception);
+                    }
+                    break;
+                case 14: // DELETE_FILE
+                    {
+                        UCELL len = POP;
+                        UCELL str = POP;
+                        char *file;
+                        exception = getstr(str, len, &file) ||
+                            remove(file);
+                        free(file);
+                        PUSH(exception);
+                    }
+                    break;
+                case 15: // FILE_SIZE
+                    {
+                        struct stat st;
+                        int fd = POP;
+                        int res = fstat(fd, &st);
+                        PUSH_DOUBLE((DUCELL)st.st_size);
+                        PUSH(res);
+                    }
+                    break;
+                case 16: // RESIZE_FILE
+                    {
+                        int fd = POP;
+                        DUCELL ud = POP_DOUBLE;
+                        int res = ftruncate(fd, (off_t)ud);
+                        PUSH(res);
+                    }
+                    break;
+                case 17: // FILE_STATUS
+                    {
+                        struct stat st;
+                        int fd = POP;
+                        int res = fstat(fd, &st);
+                        PUSH(st.st_mode);
+                        PUSH(res);
+                    }
+                    break;
+                default: /* Unimplemented LIB call */
+                    PUSH(-257);
+                    goto throw;
+                }
+            }
+            break;
         case O_LINK:
             {
                 CELL_pointer address;
                 for (int i = POINTER_W - 1; i >= 0; i--)
                     address.cells[i] = POP;
                 address.pointer();
-            }
-            break;
-
-        case OX_ARGC: // ( -- u )
-            PUSH(main_argc);
-            break;
-        case OX_ARGLEN: // ( u1 -- u2 )
-            {
-                UCELL narg = POP;
-                if (narg >= (UCELL)main_argc)
-                    PUSH(0);
-                else
-                    PUSH(main_argv_len[narg]);
-            }
-            break;
-        case OX_ARGCOPY: // ( u1 addr -- )
-            {
-                UCELL addr = POP;
-                UCELL narg = POP;
-                if (narg < (UCELL)main_argc) {
-                    UCELL len = (UCELL)main_argv_len[narg];
-                    char *ptr = (char *)native_address_of_range(addr, len);
-                    if (ptr != NULL) {
-                        UCELL end = ALIGN(addr + len);
-                        pre_dma(addr, end);
-                        strncpy(ptr, main_argv[narg], len);
-                        post_dma(addr, end);
-                    }
-                }
-            }
-            break;
-        case OX_STDIN:
-            PUSH((CELL)(STDIN_FILENO));
-            break;
-        case OX_STDOUT:
-            PUSH((CELL)(STDOUT_FILENO));
-            break;
-        case OX_STDERR:
-            PUSH((CELL)(STDERR_FILENO));
-            break;
-        case OX_OPEN_FILE:
-            {
-                bool binary = false;
-                int perm = getflags(POP, &binary);
-                UCELL len = POP;
-                UCELL str = POP;
-                char *file;
-                exception = getstr(str, len, &file);
-                int fd = exception == 0 ? open(file, perm, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) : -1;
-                free(file);
-                PUSH((CELL)fd);
-                PUSH(fd < 0 || (binary && set_binary_mode(fd, O_BINARY) < 0) ? -1 : 0);
-            }
-            break;
-        case OX_CLOSE_FILE:
-            {
-                int fd = POP;
-                PUSH((CELL)close(fd));
-            }
-            break;
-        case OX_READ_FILE:
-            {
-                int fd = POP;
-                UCELL nbytes = POP;
-                UCELL buf = POP;
-
-                ssize_t res = 0;
-                if (exception == 0) {
-                    exception = pre_dma(buf, buf + nbytes);
-                    if (exception == 0) {
-                        res = read(fd, native_address_of_range(buf, 0), nbytes);
-                        exception = post_dma(buf, buf + nbytes);
-                    }
-                }
-
-                PUSH(res);
-                PUSH((exception == 0 && res >= 0) ? 0 : -1);
-            }
-            break;
-        case OX_WRITE_FILE:
-            {
-                int fd = POP;
-                UCELL nbytes = POP;
-                UCELL buf = POP;
-
-                ssize_t res = 0;
-                if (exception == 0) {
-                    exception = pre_dma(buf, buf + nbytes);
-                    if (exception == 0) {
-                        res = write(fd, native_address_of_range(buf, 0), nbytes);
-                        exception = post_dma(buf, buf + nbytes);
-                    }
-                }
-
-                PUSH((exception == 0 && res >= 0) ? 0 : -1);
-            }
-            break;
-        case OX_FILE_POSITION:
-            {
-                int fd = POP;
-                off_t res = lseek(fd, 0, SEEK_CUR);
-                PUSH_DOUBLE((DUCELL)res);
-                PUSH(res >= 0 ? 0 : -1);
-            }
-            break;
-        case OX_REPOSITION_FILE:
-            {
-                int fd = POP;
-                DUCELL ud = POP_DOUBLE;
-                off_t res = lseek(fd, (off_t)ud, SEEK_SET);
-                PUSH(res >= 0 ? 0 : -1);
-            }
-            break;
-        case OX_FLUSH_FILE:
-            {
-                int fd = POP;
-                int res = fdatasync(fd);
-                PUSH(res);
-            }
-            break;
-        case OX_RENAME_FILE:
-            {
-                UCELL len1 = POP;
-                UCELL str1 = POP;
-                UCELL len2 = POP;
-                UCELL str2 = POP;
-                char *from;
-                char *to = NULL;
-                exception = getstr(str2, len2, &from) ||
-                    getstr(str1, len1, &to) ||
-                    rename(from, to);
-                free(from);
-                free(to);
-                PUSH(exception);
-            }
-            break;
-        case OX_DELETE_FILE:
-            {
-                UCELL len = POP;
-                UCELL str = POP;
-                char *file;
-                exception = getstr(str, len, &file) ||
-                    remove(file);
-                free(file);
-                PUSH(exception);
-            }
-            break;
-        case OX_FILE_SIZE:
-            {
-                struct stat st;
-                int fd = POP;
-                int res = fstat(fd, &st);
-                PUSH_DOUBLE((DUCELL)st.st_size);
-                PUSH(res);
-            }
-            break;
-        case OX_RESIZE_FILE:
-            {
-                int fd = POP;
-                DUCELL ud = POP_DOUBLE;
-                int res = ftruncate(fd, (off_t)ud);
-                PUSH(res);
-            }
-            break;
-        case OX_FILE_STATUS:
-            {
-                struct stat st;
-                int fd = POP;
-                int res = fstat(fd, &st);
-                PUSH(st.st_mode);
-                PUSH(res);
             }
             break;
 

@@ -84,7 +84,7 @@
 
 \title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
-\date{29th October 1993; 1st July 2020}
+\date{29th October 1993; revised 23rd September 2021}
 
 \begin{document}
 \maketitle
@@ -121,7 +121,8 @@ certain implementation-dependent features, such as the size of the stacks, are
 purposely left unspecified, and the exact method of implementation is left to
 the implementor in many particulars.
 
-Beetle is self-contained. I/O can be implemented via extra instructions (see~\ref{extrainstructions}). Machine
+Beetle is self-contained, and performs I/O via the {\tt LIB} instruction, which
+provides access to an implementation-dependent library. Machine
 code routines on the host computer may be accessed using the {\tt LINK}
 instruction. Beetle supports a simple object module format.
 
@@ -268,7 +269,7 @@ initialisation specified above; that must be performed before calling them.
 
 When Beetle encounters a {\tt HALT} instruction (see section~\ref{exceptinst}),
 it returns the top data stack item as the reason code, unless {\tt SP} does not
-point to a valid cell, in which case reason code $-257$ is returned (see section~\ref{exceptions}).
+point to a valid cell, in which case reason code $-258$ is returned (see section~\ref{exceptions}).
 
 Reason codes which are also valid exception codes (either reserved (see section~\ref{exceptions})
 or user exception codes) should not normally be used. This
@@ -300,7 +301,8 @@ additionally reserve exceptions $-512$ to $-4095$ for their own exceptions
 $-9$ & Invalid address (see below). \\
 $-10$ & Division by zero attempted (see section~\ref{arithmetic}). \\
 $-23$ & Address alignment exception (see below). \\
-$-256$ & Illegal opcode (see section~\ref{opcodes}). \\ \bottomrule
+$-256$ & Illegal opcode (see section~\ref{opcodes}). \\
+$-257$ & Library routine not implemented (see section~\ref{accessinst}). \\ \bottomrule
 \end{tabular}
 \caption{\label{excepttable}Exceptions raised by Beetle}
 \end{center}
@@ -323,9 +325,9 @@ Address and alignment exceptions are only raised if {\tt CHECKED} is 1. When
 
 If {\tt SP} is unaligned when an exception is raised, or putting the code on the
 stack would cause {\tt SP} to be out of range, the effect of a {\tt HALT} with
-code $-257$ is performed (although the actual mechanics are not, as that too
+code $-258$ is performed (although the actual mechanics are not, as that too
 would involve putting a number on the stack). Similarly, if {\tt 'THROW}
-contains an invalid address, the effect of {\tt HALT} with code $-258$ is
+contains an invalid address, the effect of {\tt HALT} with code $-259$ is
 performed.
 
 
@@ -698,8 +700,8 @@ These instructions encode literal values which are placed on the stack.
 These instructions give access to Beetle's exception mechanisms.
 
 \begin{description}
-\instp{THROW}{throw}{--}{Put the contents of {\tt EP} into {\tt 'BAD}, then load {\tt EP} from {\tt 'THROW}. Perform the action of {\tt NEXT}. If {\tt 'THROW} contains an out of range or unaligned address stop Beetle, returning reason code $-258$ to the calling program (see section~\ref{calls}).}
-\inst{HALT}{x --}{Stop Beetle, returning reason code \spic{x} to the calling program (see section~\ref{calls}). If {\tt SP} is out of range or unaligned, $-257$ is returned as the reason code.}
+\instp{THROW}{throw}{--}{Put the contents of {\tt EP} into {\tt 'BAD}, then load {\tt EP} from {\tt 'THROW}. Perform the action of {\tt NEXT}. If {\tt 'THROW} contains an out of range or unaligned address stop Beetle, returning reason code $-259$ to the calling program (see section~\ref{calls}).}
+\inst{HALT}{x --}{Stop Beetle, returning reason code \spic{x} to the calling program (see section~\ref{calls}). If {\tt SP} is out of range or unaligned, $-258$ is returned as the reason code.}
 \end{description}
 
 
@@ -710,21 +712,16 @@ These instructions allow access to Beetle's libraries, the operating system and
 native machine code.
 
 \begin{description}
+\inst{LIB}{i*x n -- j*x}{Call library routine \spic{n}. The parameters passed and returned depend on \spic{n}. If the library routine is not currently available, raise exception $-257$.}
 \inst{LINK}{i*x --}{Make a subroutine call to the routine at the address given (in the host machine's format, padded out to a number of cells) on the data stack. The size and format of this address are machine-dependent.}
 \end{description}
-
-
-\subsection{Extra instructions}
-\label{extrainstructions}
-
-Instructions with opcodes from \$80 to \$FE inclusive may be implemented to provide system-dependent functionality, such as I/O.
 
 
 \subsection{Opcodes}
 \label{opcodes}
 
 In table~\ref{opcodetable} are listed the opcodes in numerical order. All
-undefined opcodes (\$61–\$FE) raise exception $-256$.
+undefined opcodes (62h--FEh) raise exception $-256$.
 
 \begin{table}[htb]
 \begin{center}
@@ -761,8 +758,8 @@ undefined opcodes (\$61–\$FE) raise exception $-256$.
 \opcodetbl{1B}{-1}	{3C}{C!}        {5D}{(LITERAL)I}
 \opcodetbl{1C}{CELL}	{3D}{+!}        {5E}{THROW}
 \opcodetbl{1D}{-CELL}	{3E}{SP@}	{5F}{HALT}
-\opcodetbl{1E}{+}	{3F}{SP!}       {60}{LINK}
-\opcodetbl{1F}{-}	{40}{RP@}	{80–\$FE}{\textrm{extra instructions}}
+\opcodetbl{1E}{+}	{3F}{SP!}       {60}{LIB}
+\opcodetbl{1F}{-}	{40}{RP@}       {61}{LINK}
 \opcodetbl{20}{>-<}	{41}{RP!}       {FF}{NEXT}
  \bottomrule
 \end{tabular}
@@ -774,7 +771,8 @@ undefined opcodes (\$61–\$FE) raise exception $-256$.
 \section{External interface}
 
 Beetle's external interface comes in three parts. The calling interface allows
-Beetle to be controlled by other programs. The {\tt LINK} instruction and extra instructions mechanism allow implementations to provide access to system facilities, previously written code,
+Beetle to be controlled by other programs. The {\tt LINK} and {\tt LIB} instructions allow
+implementations to provide access to system facilities, previously written code,
 code written in other languages, and the speed of machine code in time-critical
 situations. The object module format allows compiled code to be saved, reloaded
 and shared between systems. pForth is loaded from an object module.
