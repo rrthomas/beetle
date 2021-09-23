@@ -32,7 +32,7 @@
 
 \title{An implementation of the Beetle virtual machine\\for POSIX\\version @VERSION@}
 \author{Reuben Thomas}
-\date{18th July 2019}
+\date{23rd September 2021}
 
 \begin{document}
 \maketitle
@@ -97,9 +97,9 @@ and assigned to accordingly, bearing in mind the restrictions on their use
 given in~\cite{beetle}. {\tt THROW}, {\tt BAD} and {\tt ADDRESS} are mapped into Beetle's memory, so they are automatically updated when the corresponding memory locations are written to, and vice versa. {\tt CHECKED} is the constant $1$; it may be read but not assigned to.
 
 
-\subsection{Extra instructions}
+\subsection{Extra library calls}
 
-C Beetle provides the following extra instructions.
+C Beetle provides the following {\tt LIB} calls.
 
 \subsubsection{Command-line arguments}
 
@@ -107,44 +107,44 @@ Two calls are provided to access command-line arguments passed to C Beetle (excl
 
 \begin{center}
 \begin{tabular}{S[table-format=2.0]lll} \toprule
-\bf Opcode & \bf Forth word & \bf Stack effect & \bf Description \\ \midrule
-\$80 & {\tt ARGC} & \spic{-- u} & the number of arguments \\
-\$81 & {\tt ARG} & \spic{u1 -- c-addr u2} & the \spic{u1}th argument \\ \bottomrule
+\bf Number & \bf Forth word & \bf Stack effect & \bf Description \\ \midrule
+0 & {\tt ARGC} & \spic{-- u} & the number of arguments \\
+1 & {\tt ARG} & \spic{u1 -- c-addr u2} & the \spic{u1}th argument \\ \bottomrule
 \end{tabular}
 \end{center}
 
 \subsubsection{Standard I/O streams}
 
-These extra instructions provide access to POSIX standard input, output and error. Each call returns a corresponding file identifier.
+These {\tt LIB} calls provide access to POSIX standard input, output and error. Each call returns a corresponding file identifier.
 
 \begin{center}
 \begin{tabular}{S[table-format=2.0]l} \toprule
-\bf Opcode & \bf POSIX file descriptor \\ \midrule
-\$82 & {\tt STDIN\_FILENO} \\
-\$83 & {\tt STDOUT\_FILENO} \\
-\$84 & {\tt STDERR\_FILENO} \\ \bottomrule
+\bf Number & \bf POSIX file descriptor \\ \midrule
+2 & {\tt STDIN\_FILENO} \\
+3 & {\tt STDOUT\_FILENO} \\
+4 & {\tt STDERR\_FILENO} \\ \bottomrule
 \end{tabular}
 \end{center}
 
-\subsubsection{File system}
+\subsubsection{File system calls}
 
-The file system extra instructions correspond directly to ANS Forth words, as defined in~\cite{ANSIforth}.
+The file system calls correspond directly to ANS Forth words, as defined in~\cite{ANSIforth}.
 
 \begin{center}
 \begin{tabular}{S[table-format=2.0]l} \toprule
-\bf Opcode & \bf Forth word \\ \midrule
-\$85 & {\tt OPEN-FILE} \\
-\$86 & {\tt CLOSE-FILE} \\
-\$87 & {\tt READ-FILE} \\
-\$88 & {\tt WRITE-FILE} \\
-\$89 & {\tt FILE-POSITION} \\
-\$8A & {\tt REPOSITION-FILE} \\
-\$8B & {\tt FLUSH-FILE} \\
-\$8C & {\tt RENAME-FILE} \\
-\$8D & {\tt DELETE-FILE} \\
-\$8E & {\tt FILE-SIZE} \\
-\$8F & {\tt RESIZE-FILE} \\
-\$90 & {\tt FILE-STATUS} \\
+\bf Number & \bf Forth word \\ \midrule
+5 & {\tt OPEN-FILE} \\
+6 & {\tt CLOSE-FILE} \\
+7 & {\tt READ-FILE} \\
+8 & {\tt WRITE-FILE} \\
+9 & {\tt FILE-POSITION} \\
+10 & {\tt REPOSITION-FILE} \\
+11 & {\tt FLUSH-FILE} \\
+12 & {\tt RENAME-FILE} \\
+13 & {\tt DELETE-FILE} \\
+14 & {\tt FILE-SIZE} \\
+15 & {\tt RESIZE-FILE} \\
+16 & {\tt FILE-STATUS} \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -207,7 +207,7 @@ The following routines allow direct native access to Beetle’s memory. On succe
 \ifacec{int beetle\_post\_dma(beetle\_UCELL from, beetle\_UCELL to)}{Convert the given range to Beetle byte order, so that it can be used by Beetle after a direct access.}
 \end{description}
 
-The following routine allows the calling program to register command-line arguments that can be retrieved by the {\tt ARG} and {\tt ARGC} extra instructions.
+The following routine allows the calling program to register command-line arguments that can be retrieved by the {\tt ARG} and {\tt ARGC} {\tt LIB} calls.
 
 \begin{description}
 \ifacec{int beetle\_register\_args(int argc, const char *argv[])}{Registers the given argument list, which has the same format as that supplied to {\bf main()}. Returns $0$ on success and $-1$ if memory could not be allocated.}
