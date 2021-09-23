@@ -26,11 +26,11 @@ int main(void)
     assert(register_args(argc, argv) == 0);
 
     start_ass(EP);
-    ass(O_LITERALI); ilit(0);
+    ass(O_LITERALI); ilit(16);
     ass(O_LIB); ilit(0); /* pad word with NEXT */
-    ass(O_ONE); ass(O_LITERALI); ilit(1);
+    ass(O_ONE); ass(O_LITERALI); ilit(17);
     ass(O_LIB); ilit(0); /* pad word with NEXT */
-    ass(O_ONE); ass(O_LITERAL); lit(buf); ass(O_LITERALI); ilit(2);
+    ass(O_ONE); ass(O_LITERAL); lit(buf); ass(O_LITERALI); ilit(18);
     ass(O_LIB); ilit(0); /* pad word with NEXT */
 
     assert(single_step() == -259);   // load first instruction word

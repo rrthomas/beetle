@@ -783,44 +783,26 @@ static CELL run_or_step(bool run)
             {
                 CELL routine = POP;
                 switch (routine) {
-                case 0: /* ARGC ( -- u ) */
-                    PUSH(main_argc);
+                case 0: // BL
+                    PUSH((CELL)' ');
                     break;
-                case 1: // ARGLEN ( u1 -- u2 )
+                case 1: // CR
+                    PUSH((CELL)'\n');
+                    break;
+                case 2: // EMIT
                     {
-                        UCELL narg = POP;
-                        if (narg >= (UCELL)main_argc)
-                            PUSH(0);
-                        else
-                            PUSH(main_argv_len[narg]);
+                        char c = (char)POP;
+                        write(STDOUT_FILENO, &c, 1);
                     }
                     break;
-                case 2: // ARGCOPY ( u1 addr -- )
+                case 3: // KEY
                     {
-                        UCELL addr = POP;
-                        UCELL narg = POP;
-                        if (narg < (UCELL)main_argc) {
-                            UCELL len = (UCELL)main_argv_len[narg];
-                            char *ptr = (char *)native_address_of_range(addr, len);
-                            if (ptr != NULL) {
-                                UCELL end = ALIGN(addr + len);
-                                pre_dma(addr, end);
-                                strncpy(ptr, main_argv[narg], len);
-                                post_dma(addr, end);
-                            }
-                        }
+                        char c;
+                        read(STDIN_FILENO, &c, 1);
+                        PUSH((CELL)c);
                     }
                     break;
-                case 3: // STDIN
-                    PUSH((CELL)(STDIN_FILENO));
-                    break;
-                case 4: // STDOUT
-                    PUSH((CELL)(STDOUT_FILENO));
-                    break;
-                case 5: // STDERR
-                    PUSH((CELL)(STDERR_FILENO));
-                    break;
-                case 6: // OPEN_FILE
+                case 4: // OPEN-FILE
                     {
                         bool binary = false;
                         int perm = getflags(POP, &binary);
@@ -834,13 +816,13 @@ static CELL run_or_step(bool run)
                         PUSH(fd < 0 || (binary && set_binary_mode(fd, O_BINARY) < 0) ? -1 : 0);
                     }
                     break;
-                case 7: // CLOSE_FILE
+                case 5: // CLOSE-FILE
                     {
                         int fd = POP;
                         PUSH((CELL)close(fd));
                     }
                     break;
-                case 8: // READ_FILE
+                case 6: // READ-FILE
                     {
                         int fd = POP;
                         UCELL nbytes = POP;
@@ -859,7 +841,7 @@ static CELL run_or_step(bool run)
                         PUSH((exception == 0 && res >= 0) ? 0 : -1);
                     }
                     break;
-                case 9: // WRITE_FILE
+                case 7: // WRITE-FILE
                     {
                         int fd = POP;
                         UCELL nbytes = POP;
@@ -877,7 +859,7 @@ static CELL run_or_step(bool run)
                         PUSH((exception == 0 && res >= 0) ? 0 : -1);
                     }
                     break;
-                case 10: // FILE_POSITION
+                case 8: // FILE-POSITION
                     {
                         int fd = POP;
                         off_t res = lseek(fd, 0, SEEK_CUR);
@@ -885,7 +867,7 @@ static CELL run_or_step(bool run)
                         PUSH(res >= 0 ? 0 : -1);
                     }
                     break;
-                case 11: // REPOSITION_FILE
+                case 9: // REPOSITION-FILE
                     {
                         int fd = POP;
                         DUCELL ud = POP_DOUBLE;
@@ -893,14 +875,14 @@ static CELL run_or_step(bool run)
                         PUSH(res >= 0 ? 0 : -1);
                     }
                     break;
-                case 12: // FLUSH_FILE
+                case 10: // FLUSH-FILE
                     {
                         int fd = POP;
                         int res = fdatasync(fd);
                         PUSH(res);
                     }
                     break;
-                case 13: // RENAME_FILE
+                case 11: // RENAME-FILE
                     {
                         UCELL len1 = POP;
                         UCELL str1 = POP;
@@ -916,7 +898,7 @@ static CELL run_or_step(bool run)
                         PUSH(exception);
                     }
                     break;
-                case 14: // DELETE_FILE
+                case 12: // DELETE-FILE
                     {
                         UCELL len = POP;
                         UCELL str = POP;
@@ -927,7 +909,7 @@ static CELL run_or_step(bool run)
                         PUSH(exception);
                     }
                     break;
-                case 15: // FILE_SIZE
+                case 13: // FILE-SIZE
                     {
                         struct stat st;
                         int fd = POP;
@@ -936,7 +918,7 @@ static CELL run_or_step(bool run)
                         PUSH(res);
                     }
                     break;
-                case 16: // RESIZE_FILE
+                case 14: // RESIZE-FILE
                     {
                         int fd = POP;
                         DUCELL ud = POP_DOUBLE;
@@ -944,7 +926,7 @@ static CELL run_or_step(bool run)
                         PUSH(res);
                     }
                     break;
-                case 17: // FILE_STATUS
+                case 15: // FILE-STATUS
                     {
                         struct stat st;
                         int fd = POP;
@@ -952,6 +934,43 @@ static CELL run_or_step(bool run)
                         PUSH(st.st_mode);
                         PUSH(res);
                     }
+                    break;
+                case 16: // ARGC ( -- u )
+                    PUSH(main_argc);
+                    break;
+                case 17: // ARGLEN ( u1 -- u2 )
+                    {
+                        UCELL narg = POP;
+                        if (narg >= (UCELL)main_argc)
+                            PUSH(0);
+                        else
+                            PUSH(main_argv_len[narg]);
+                    }
+                    break;
+                case 18: // ARGCOPY ( u1 addr -- )
+                    {
+                        UCELL addr = POP;
+                        UCELL narg = POP;
+                        if (narg < (UCELL)main_argc) {
+                            UCELL len = (UCELL)main_argv_len[narg];
+                            char *ptr = (char *)native_address_of_range(addr, len);
+                            if (ptr != NULL) {
+                                UCELL end = ALIGN(addr + len);
+                                pre_dma(addr, end);
+                                strncpy(ptr, main_argv[narg], len);
+                                post_dma(addr, end);
+                            }
+                        }
+                    }
+                    break;
+                case 19: // STDIN
+                    PUSH((CELL)(STDIN_FILENO));
+                    break;
+                case 20: // STDOUT
+                    PUSH((CELL)(STDOUT_FILENO));
+                    break;
+                case 21: // STDERR
+                    PUSH((CELL)(STDERR_FILENO));
                     break;
                 default: /* Unimplemented LIB call */
                     PUSH(-257);
