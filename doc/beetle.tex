@@ -728,39 +728,39 @@ undefined opcodes (62h--FEh) raise exception $-256$.
 \begin{tabular}{*{3}{cc}} \toprule
 \bf Opcode & \bf Instruction & \bf Opcode & \bf
     Instruction & \bf Opcode & \bf Instruction \\ \midrule
-\opcodetbl{00}{NEXT}	{21}{1+}	{42}{EP@}
-\opcodetbl{01}{DUP}	{22}{1-}	{43}{S0@}
-\opcodetbl{02}{DROP}	{23}{CELL+}	{44}{S0!}
-\opcodetbl{03}{SWAP}	{24}{CELL-}	{45}{R0@}
-\opcodetbl{04}{OVER}	{25}{*}		{46}{R0!}
-\opcodetbl{05}{ROT}	{26}{/}		{47}{'THROW@}
-\opcodetbl{06}{-ROT}	{27}{MOD}	{48}{'THROW!}
-\opcodetbl{07}{TUCK}	{28}{/MOD}	{49}{MEMORY@}
-\opcodetbl{08}{NIP}	{29}{U/MOD}	{4A}{'BAD@}
-\opcodetbl{09}{PICK}	{2A}{S/REM}	{4B}{-ADDRESS@}
-\opcodetbl{0A}{ROLL}	{2B}{2/}	{4C}{BRANCH}
-\opcodetbl{0B}{?DUP}	{2C}{CELLS}	{4D}{BRANCHI}
-\opcodetbl{0C}{>R}	{2D}{ABS}	{4E}{?BRANCH}
-\opcodetbl{0D}{R>}	{2E}{NEGATE}	{4F}{?BRANCHI}
-\opcodetbl{0E}{R@}	{2F}{MAX}	{50}{EXECUTE}
-\opcodetbl{0F}{<}	{30}{MIN}	{51}{@EXECUTE}
-\opcodetbl{10}{>}	{31}{INVERT}	{52}{CALL}
-\opcodetbl{11}{=}	{32}{AND}	{53}{CALLI}
-\opcodetbl{12}{<>}	{33}{OR}	{54}{EXIT}
-\opcodetbl{13}{0<}	{34}{XOR}	{55}{(DO)}
-\opcodetbl{14}{0>}	{35}{LSHIFT}	{56}{(LOOP)}
-\opcodetbl{15}{0=}	{36}{RSHIFT}	{57}{(LOOP)I}
-\opcodetbl{16}{0<>}	{37}{1LSHIFT}	{58}{(+LOOP)}
-\opcodetbl{17}{U<}	{38}{1RSHIFT}	{59}{(+LOOP)I}
-\opcodetbl{18}{U>}	{39}{@}		{5A}{UNLOOP}
-\opcodetbl{19}{0}	{3A}{!}		{5B}{J}
-\opcodetbl{1A}{1}	{3B}{C@}	{5C}{(LITERAL)}
-\opcodetbl{1B}{-1}	{3C}{C!}        {5D}{(LITERAL)I}
-\opcodetbl{1C}{CELL}	{3D}{+!}        {5E}{THROW}
-\opcodetbl{1D}{-CELL}	{3E}{SP@}	{5F}{HALT}
-\opcodetbl{1E}{+}	{3F}{SP!}       {60}{LIB}
-\opcodetbl{1F}{-}	{40}{RP@}       {61}{LINK}
-\opcodetbl{20}{>-<}	{41}{RP!}       {FF}{NEXT}
+\opcodetbl{00/\$FF}{NEXT}	{21}{1+}	{42}{BRANCH}
+\opcodetbl{01}{DUP}	{22}{1-}	{43}{BRANCHI}
+\opcodetbl{02}{DROP}	{23}{CELL+}	{44}{?BRANCH}
+\opcodetbl{03}{SWAP}	{24}{CELL-}	{45}{?BRANCHI}
+\opcodetbl{04}{OVER}	{25}{*}		{46}{EXECUTE}
+\opcodetbl{05}{ROT}	{26}{/}		{47}{@EXECUTE}
+\opcodetbl{06}{-ROT}	{27}{MOD}	{48}{CALL}
+\opcodetbl{07}{TUCK}	{28}{/MOD}	{49}{CALLI}
+\opcodetbl{08}{NIP}	{29}{U/MOD}	{4A}{EXIT}
+\opcodetbl{09}{PICK}	{2A}{S/REM}	{4B}{(DO)}
+\opcodetbl{0A}{ROLL}	{2B}{2/}	{4C}{(LOOP)}
+\opcodetbl{0B}{?DUP}	{2C}{CELLS}	{4D}{(LOOP)I}
+\opcodetbl{0C}{>R}	{2D}{ABS}	{4E}{(+LOOP)}
+\opcodetbl{0D}{R>}	{2E}{NEGATE}	{4F}{(+LOOP)I}
+\opcodetbl{0E}{R@}	{2F}{MAX}	{50}{UNLOOP}
+\opcodetbl{0F}{<}	{30}{MIN}	{51}{J}
+\opcodetbl{10}{>}	{31}{INVERT}	{52}{(LITERAL)}
+\opcodetbl{11}{=}	{32}{AND}	{53}{(LITERAL)I}
+\opcodetbl{12}{<>}	{33}{OR}	{54}{THROW}
+\opcodetbl{13}{0<}	{34}{XOR}	{55}{HALT}
+\opcodetbl{14}{0>}	{35}{LSHIFT}	{56}{EP@}
+\opcodetbl{15}{0=}	{36}{RSHIFT}	{57}{LIB}
+\opcodetbltwo{16}{0<>}	{37}{1LSHIFT}
+\opcodetbl{17}{U<}	{38}{1RSHIFT}	{59}{LINK}
+\opcodetbl{18}{U>}	{39}{@}		{5A}{S0@}
+\opcodetbl{19}{0}	{3A}{!}		{5B}{S0!}
+\opcodetbl{1A}{1}	{3B}{C@}	{5C}{R0@}
+\opcodetbl{1B}{-1}	{3C}{C!}        {5D}{R0!}
+\opcodetbl{1C}{CELL}	{3D}{+!}        {5E}{'THROW@}
+\opcodetbl{1D}{-CELL}	{3E}{SP@}	{5F}{'THROW!}
+\opcodetbl{1E}{+}	{3F}{SP!}       {60}{MEMORY@}
+\opcodetbl{1F}{-}	{40}{RP@}       {61}{'BAD@}
+\opcodetbl{20}{>-<}	{41}{RP!}       {62}{-ADDRESS@}
  \bottomrule
 \end{tabular}
 \caption{\label{opcodetable}Beetle's opcodes}
