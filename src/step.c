@@ -502,7 +502,7 @@ static CELL run_or_step(bool run)
         case O_LSHIFT1:
             {
                 CELL value = POP;
-                PUSH(value << 1);
+                PUSH((UCELL)value << 1);
             }
             break;
         case O_RSHIFT1:

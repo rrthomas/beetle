@@ -121,8 +121,8 @@ _GL_ATTRIBUTE_CONST CELL reverse_cell(CELL value)
         unsigned lopos = CHAR_BIT * i;
         unsigned hipos = CHAR_BIT * (CELL_W - 1 - i);
         unsigned move = hipos - lopos;
-        res |= ((((UCELL)value) & (CHAR_MASK << hipos)) >> move)
-            | ((((UCELL)value) & (CHAR_MASK << lopos)) << move);
+        res |= ((((UCELL)value) & ((UCELL)CHAR_MASK << hipos)) >> move)
+            | ((((UCELL)value) & ((UCELL)CHAR_MASK << lopos)) << move);
     }
     return res;
 }

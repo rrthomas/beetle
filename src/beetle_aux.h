@@ -65,7 +65,7 @@ uint8_t *native_address_of_range(beetle_UCELL start, beetle_UCELL length);
 
 // Portable arithmetic right shift (the behaviour of >> on signed
 // quantities is implementation-defined in C99)
-#define beetle_ARSHIFT(n, p) ((n) = ((n) >> (p)) | (-((n) < 0) << (beetle_CELL_BIT - p)))
+#define beetle_ARSHIFT(n, p) ((n) = ((n) >> (p)) | ((UCELL)(-((n) < 0)) << (beetle_CELL_BIT - p)))
 
 
 #endif
