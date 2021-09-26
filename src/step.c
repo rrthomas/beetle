@@ -787,7 +787,10 @@ static CELL run_or_step(bool run)
                     PUSH((CELL)' ');
                     break;
                 case 1: // CR
-                    PUSH((CELL)'\n');
+                    {
+                        char c = '\n';
+                        write(STDOUT_FILENO, &c, 1);
+                    }
                     break;
                 case 2: // EMIT
                     {

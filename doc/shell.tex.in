@@ -28,7 +28,7 @@
 
 \title{A simple shell for the\\Beetle virtual machine\\version @VERSION@}
 \author{Reuben Thomas}
-\date{18th July 2019}
+\date{26th September 2021}
 
 \begin{document}
 \maketitle
@@ -38,7 +38,7 @@
 
 This is the manual for the shell for C Beetle~\cite{cbeetle}, which provides access to Beetle's registers, allows the stacks to be displayed, and provides assembly, disassembly and single-stepping.
 
-There are two main ways to access the shell: either start {\tt beetle} with no arguments, or, when passing an object file on the command line, give the {\tt -\/-debug} option, which causes the shell to be entered on exception (interpreted as a negative value being passed to {\tt HALT}). The shell can also be used in batch mode, by supplying commands on standard input. Refer to the man page \textbf{beetle}(1) or {\tt beetle -\/-help} for more details and options.
+There are two main ways to access the shell: either start {\tt beetle} with no arguments, or, when passing an object file on the command line, give the {\tt -\/-debug} option, which causes the shell to be entered on exception (interpreted as a negative value being passed to {\tt HALT}). The shell can also be used in batch mode, by supplying commands on standard input; in this case, the interactive debugger is entered once the given commands have been executed. Refer to the man page \textbf{beetle}(1) or {\tt beetle -\/-help} for more details and options.
 
 
 \section{Initialisation}
@@ -74,6 +74,8 @@ If an unrecognised command is given, or the command has too few arguments, or
 they are badly formed, an error message is displayed. Command lines
 containing extraneous characters after a valid command are generally
 accepted, and the extra characters ignored.
+
+While in interactive mode, the previous command may be repeated by entering an empty command (just press ``RETURN'' or ``ENTER'').
 
 Numbers are all integral, and may be given in either decimal or hexadecimal
 (which must be preceded by ``\$''), with an optional minus

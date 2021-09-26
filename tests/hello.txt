@@ -40,3 +40,4 @@ BLITERAL $64
 BLITERAL $21
 
 SAVE hello.obj 0 36
+QUIT

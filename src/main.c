@@ -1,6 +1,6 @@
 // Front-end and shell.
 //
-// (c) Reuben Thomas 1995-2020
+// (c) Reuben Thomas 1995-2021
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
@@ -912,6 +912,7 @@ int main(int argc, char *argv[])
     } else
         interactive_printf("%s\n%s\n\n", VERSION_STRING, COPYRIGHT_STRING);
 
+    static char *prev_input = NULL;
     while (1) {
         int jmp_val = setjmp(env);
         if (jmp_val == 0) {
@@ -920,16 +921,27 @@ int main(int argc, char *argv[])
             interactive_printf(">");
             if (getline(&input, &len, stdin) == -1) {
                 if (feof(stdin)) {
-                    interactive_printf("\n"); // Empty line after prompt
-                    exit(EXIT_SUCCESS);
-                }
-                die("input error");
+                    char term[L_ctermid];
+                    char *ptr = ctermid(term);
+                    if (freopen(ptr, "rb", stdin) == NULL)
+                        die("could not open the terminal");
+                    interactive = true;
+                } else
+                    die("input error");
             }
             lineno++;
             char *nl;
             if ((nl = strrchr(input, '\n')))
                 *nl = '\0';
-            parse(input);
+            if (interactive && *input == '\0' && prev_input != NULL)
+                parse(prev_input);
+            else {
+                parse(input);
+                if (interactive) {
+                    free(prev_input);
+                    prev_input = xstrdup(input);
+                }
+            }
         } else if (interactive == false)
             exit(jmp_val);
     }
