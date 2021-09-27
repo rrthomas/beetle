@@ -489,7 +489,7 @@ static CELL run_or_step(bool run)
             {
                 CELL shift = POP;
                 CELL value = POP;
-                PUSH(shift < (CELL)CELL_BIT ? value << shift : 0);
+                PUSH(beetle_LSHIFT(value, shift));
             }
             break;
         case O_RSHIFT:
@@ -502,7 +502,7 @@ static CELL run_or_step(bool run)
         case O_LSHIFT1:
             {
                 CELL value = POP;
-                PUSH((UCELL)value << 1);
+                PUSH(beetle_LSHIFT(value, 1));
             }
             break;
         case O_RSHIFT1:

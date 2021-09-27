@@ -63,6 +63,11 @@ uint8_t *native_address_of_range(beetle_UCELL start, beetle_UCELL length);
 // Check whether a VM address is aligned
 #define beetle_IS_ALIGNED(a)     (((a) & (beetle_CELL_W - 1)) == 0)
 
+// Portable left shift (the behaviour of << with overflow (including on any
+// negative number) is undefined)
+#define beetle_LSHIFT(n, p)                     \
+    (((n) & (beetle_CELL_MAX >> (p))) << (p))
+
 // Portable arithmetic right shift (the behaviour of >> on signed
 // quantities is implementation-defined in C99)
 #define beetle_ARSHIFT(n, p) ((n) = ((n) >> (p)) | ((UCELL)(-((n) < 0)) << (beetle_CELL_BIT - p)))

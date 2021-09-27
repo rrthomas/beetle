@@ -57,7 +57,7 @@ _GL_ATTRIBUTE_CONST int byte_size(CELL v)
 
 void ass(BYTE instr)
 {
-    icell |= instr << ibytes * 8;
+    icell |= beetle_LSHIFT(instr, ibytes * 8);
     store_cell(current, icell);
     ibytes++;
     if (ibytes == CELL_W) {
@@ -78,7 +78,7 @@ bool ilit(CELL literal)
     if (byte_size(literal) > CELL_W - ibytes)
         return false;
 
-    icell |= literal << ibytes * 8;
+    icell |= beetle_LSHIFT(literal, ibytes * 8);
     store_cell(current, icell);  current = here;  here += CELL_W;
     icell = 0;  ibytes = 0;
     return true;

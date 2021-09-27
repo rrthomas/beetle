@@ -1,6 +1,6 @@
 // Private implementation-specific APIs that are shared between modules.
 //
-// (c) Reuben Thomas 1994-2018
+// (c) Reuben Thomas 1994-2021
 //
 // The package is distributed under the GNU Public License version 3, or,
 // at your option, any later version.
