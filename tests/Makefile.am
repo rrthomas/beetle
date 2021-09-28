@@ -22,7 +22,7 @@ TESTS_ENVIRONMENT = \
 	export LIBTOOL=$(top_builddir)/libtool;
 
 test-parser:
-	( $(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(top_builddir)/src/beetle$(EXEEXT) < $(srcdir)/hello.txt ) && \
+	( $(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(top_builddir)/src/beetle$(EXEEXT) --commands $(srcdir)/hello.txt ) && \
 	( $(TESTS_ENVIRONMENT) $(LOG_COMPILER) $(top_builddir)/src/beetle$(EXEEXT) ./hello.obj > hello.output ) && \
 	diff hello.output $(srcdir)/hello.correct
 

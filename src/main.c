@@ -297,7 +297,7 @@ static void disassemble(UCELL start, UCELL end)
                 }
             }
 
-            printf("\n");
+            putchar('\n');
             if (a == 0 || a == -1)
                 break;
             printf("           ");
@@ -585,7 +585,7 @@ static void do_command(int no)
         }
         break;
     case c_QUIT:
-        exit(0);
+        exit(EXIT_SUCCESS);
     case c_RFROM:
         {
             CELL value = POP_RETURN;
@@ -844,6 +844,7 @@ static CELL parse_memory_size(UCELL max)
 
 int main(int argc, char *argv[])
 {
+    FILE *inputfp = stdin;
     set_program_name(argv[0]);
     interactive = isatty(fileno(stdin));
 
@@ -851,7 +852,7 @@ int main(int argc, char *argv[])
     // leading ':' so as to return ':' for a missing arg, not '?'
     for (;;) {
         int this_optind = optind ? optind : 1, longindex = -1;
-        int c = getopt_long(argc, argv, "+:dm:", longopts, &longindex);
+        int c = getopt_long(argc, argv, "+:cdm:", longopts, &longindex);
 
         if (c == -1)
             break;
@@ -859,6 +860,8 @@ int main(int argc, char *argv[])
             die("option '%s' requires an argument", argv[this_optind]);
         else if (c == '?')
             die("unrecognised option '%s'\nTry '%s --help' for more information.", argv[this_optind], program_name);
+        else if (c == 'c')
+            longindex = 2;
         else if (c == 'd')
             longindex = 1;
         else if (c == 'm')
@@ -872,9 +875,13 @@ int main(int argc, char *argv[])
                 debug_on_error = true;
                 break;
             case 2:
+                inputfp = fopen(optarg, "r");
+                interactive = false;
+                break;
+            case 3:
                 usage();
                 exit(EXIT_SUCCESS);
-            case 3:
+            case 4:
                 printf("Beetle " VERSION "\n"
                        COPYRIGHT_STRING "\n"
                        "Beetle comes with ABSOLUTELY NO WARRANTY.\n"
@@ -919,12 +926,12 @@ int main(int argc, char *argv[])
             static char *input = NULL;
             static size_t len = 0;
             interactive_printf(">");
-            if (getline(&input, &len, stdin) == -1) {
-                if (feof(stdin)) {
-                    char term[L_ctermid];
-                    char *ptr = ctermid(term);
-                    if (freopen(ptr, "rb", stdin) == NULL)
-                        die("could not open the terminal");
+            if (getline(&input, &len, inputfp) == -1) {
+                if (feof(inputfp)) {
+                    fclose(inputfp);
+                    interactive_printf("\n"); // Empty line after prompt
+                    if (inputfp == stdin)
+                        exit(EXIT_SUCCESS);
                     interactive = true;
                 } else
                     die("input error");

@@ -38,7 +38,7 @@
 
 This is the manual for the shell for C Beetle~\cite{cbeetle}, which provides access to Beetle's registers, allows the stacks to be displayed, and provides assembly, disassembly and single-stepping.
 
-There are two main ways to access the shell: either start {\tt beetle} with no arguments, or, when passing an object file on the command line, give the {\tt -\/-debug} option, which causes the shell to be entered on exception (interpreted as a negative value being passed to {\tt HALT}). The shell can also be used in batch mode, by supplying commands on standard input; in this case, the interactive debugger is entered once the given commands have been executed. Refer to the man page \textbf{beetle}(1) or {\tt beetle -\/-help} for more details and options.
+There are two main ways to access the shell: either start {\tt beetle} with no arguments, or, when passing an object file on the command line, give the {\tt -\/-debug} option, which causes the shell to be entered on exception (interpreted as a negative value being passed to {\tt HALT}). The shell can also be used in batch mode, by supplying a file of commands with the {\tt -\/-commands} option; in this case, the interactive debugger is entered once the given commands have been executed, if standard input is a terminal. Refer to the man page \textbf{beetle}(1) or {\tt beetle -\/-help} for more details and options.
 
 
 \section{Initialisation}
