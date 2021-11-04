@@ -7,3 +7,6 @@
 [submodule "gl-mod/bootstrap"]
 	path = gl-mod/bootstrap
 	url = https://github.com/gnulib-modules/bootstrap.git
+[submodule "mijit-beetle"]
+	path = mijit-beetle
+	url = https://github.com/rrthomas/mijit-beetle

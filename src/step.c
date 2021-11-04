@@ -28,6 +28,15 @@
 #include "private.h"
 #include "beetle_opcodes.h"
 
+#ifdef HAVE_RUST
+#include "mijit-beetle/c-decls.h"
+
+mijit_beetle_jit *beetle_jit;
+#endif
+
+#define BEETLE_DATA_CELLS 64
+#define BEETLE_RETURN_CELLS 64
+
 
 // VM registers
 
@@ -165,7 +174,15 @@ int post_dma(UCELL from, UCELL to)
 
 int init(size_t size)
 {
+#ifdef HAVE_RUST
+    beetle_jit = mijit_beetle_new();
+    if (beetle_jit == NULL)
+        return -1;
+    R(CHECKED) = 0; // address checking is disabled in this implementation
+#else
     R(CHECKED) = 1; // address checking is mandatory in this implementation
+#endif
+
     R(MEMORY) = size * CELL_W;
     M0 = (beetle_CELL *)calloc(size, CELL_W);
     if (M0 == NULL)
@@ -173,7 +190,7 @@ int init(size_t size)
 
     R(EP) = 0;
     R(A) = 0;
-    R(S0) = R(SP) = R(MEMORY) - 0x100;
+    R(S0) = R(SP) = R(MEMORY) - BEETLE_RETURN_CELLS * 4;
     R(R0) = R(RP) = R(MEMORY);
     R(THROW) = 0;
     R(BAD) = CELL_MAX;
@@ -1138,8 +1155,8 @@ static CELL run_or_step(bool run)
                     PUSH((CELL)(STDERR_FILENO));
                     break;
                 default: /* Unimplemented LIB call */
-                    PUSH(EXIT_UNIMPLEMENTED_LIB);
-                    goto throw;
+                    exception = EXIT_UNIMPLEMENTED_LIB;
+                    break;
                 }
             }
             break;
@@ -1153,15 +1170,15 @@ static CELL run_or_step(bool run)
             break;
 
         default:
-            PUSH(EXIT_INVALID_OPCODE);
-            goto throw;
+            exception = EXIT_INVALID_OPCODE;
+            break;
         }
 
         if (exception != 0) {
             // Deal with address exceptions during execution cycle.
-            // Since we have already had an exception, and must return a
-            // different code from usual if SP is now invalid, push the
-            // exception code "manually".
+            // We must push the exception code "manually", as PUSH does nothing
+            // when exception is non-zero. Also, we must return a different
+            // code from usual if SP is now invalid.
         badadr:
             R(SP) += CELL_W * STACK_DIRECTION;
             if (!IS_VALID(R(SP)) || !IS_ALIGNED(R(SP)))
@@ -1184,5 +1201,18 @@ CELL single_step(void)
 
 CELL run(void)
 {
+#ifdef HAVE_RUST
+    CELL exception;
+    do {
+        mijit_beetle_run(
+            beetle_jit,
+            (uint32_t *)M0,
+            (mijit_beetle_registers *)(void *)&beetle_registers
+        );
+        exception = single_step();
+    } while (exception == EXIT_SINGLE_STEP);
+    return exception;
+#else
     return run_or_step(true);
+#endif
 }

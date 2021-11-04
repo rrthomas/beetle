@@ -13,6 +13,9 @@ AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib $(WARN_CFLAGS)
 lib_LTLIBRARIES = libbeetle.la
 libbeetle_la_SOURCES = step.c debug.c loadobj.c private.h stringify.h
 libbeetle_la_LIBADD = $(top_builddir)/lib/libgnu.la
+if HAVE_RUST
+libbeetle_la_LIBADD += $(top_srcdir)/mijit-beetle/target/release/libmijit_beetle.la
+endif
 
 bin_PROGRAMS = beetle
 bin_SCRIPTS = beetle-dump
@@ -29,6 +32,12 @@ completions: tbl_registers.h tbl_commands.h
 	$(CPP) -I$(srcdir) $(srcdir)/completions.h | grep -v "^#" > $@
 
 main.o: tbl_opts.h
+
+if HAVE_RUST
+.PHONY: mijit-beetle
+$(top_srcdir)/mijit-beetle/target/release/libmijit_beetle.la: mijit-beetle
+	cargo build --release --manifest-path $(top_srcdir)/mijit-beetle/Cargo.toml
+endif
 
 # Depend on beetle$(EXEEXT) rather than explicitly make-ing it, as otherwise
 # we break parallel builds, as libbeetle.la can be built twice in parallel,

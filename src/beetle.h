@@ -79,6 +79,7 @@ beetle_CELL beetle_single_step(void);
 int beetle_load_object(FILE *file, beetle_UCELL address);
 
 // Additional implementation-specific routines, macros, types and quantities
+// init and register_args return 0 on success, otherwise a negative number
 int beetle_init(size_t size);
 void beetle_destroy(void);
 int beetle_register_args(int argc, const char *argv[]);

@@ -23,6 +23,18 @@ dnl Readline wrapper
 AC_PATH_PROG(RLWRAP, rlwrap)
 AM_CONDITIONAL([HAVE_RLWRAP], [test -n "$ac_cv_path_RLWRAP"])
 
+dnl Rust
+AC_CHECK_SIZEOF([size_t])
+if test "$ac_cv_sizeof_size_t" = 8; then
+  AC_PATH_PROG(CARGO, cargo)
+  if test -n "$ac_cv_path_CARGO"; then
+    AC_DEFINE(HAVE_RUST, 1, [Whether Rust is available.])
+  else
+    AC_MSG_WARN([System is not 64-bit, so not trying to use Rust backend.])
+  fi
+fi
+AM_CONDITIONAL([HAVE_RUST], [test -n "$ac_cv_path_CARGO"])
+
 dnl Extra warnings with GCC
 AC_ARG_ENABLE([gcc-warnings],
   [AS_HELP_STRING([--disable-gcc-warnings],
