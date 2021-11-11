@@ -1,6 +1,8 @@
 *.o
 *~
 /beetle*.tar.gz
+.gdb_history
+/.vscode
 Makefile
 Makefile.in
 TAGS
