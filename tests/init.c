@@ -14,18 +14,7 @@
 
 int main(void)
 {
-    int i = init((CELL *)NULL, 4);
-    printf("init((CELL *)NULL, 4) should return -1; returns: %d\n", i);
-    if (i != -1) {
-        printf("Error in init() tests: init with invalid parameters "
-            "succeeded\n");
-        exit(1);
-    }
-
-    size_t size = 1024;
-    CELL *ptr = (CELL *)malloc(size);
-    assert(ptr);
-    i = init(ptr, size / CELL_W);
+    int i = init(256);
     if (i != 0) {
         printf("Error in init() tests: init with valid parameters failed\n");
         exit(1);

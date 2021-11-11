@@ -97,14 +97,14 @@ enum commands {
 static int commands = sizeof(command) / sizeof(*command);
 
 static const char *regist[] = {
-#define R(reg) #reg,
+#define REG(reg) #reg,
 #include "tbl_registers.h"
-#undef R
+#undef REG
 };
 enum registers {
-#define R(reg) r_##reg,
+#define REG(reg) r_##reg,
 #include "tbl_registers.h"
-#undef R
+#undef REG
 };
 static int registers = sizeof(regist) / sizeof(*regist);
 
@@ -339,13 +339,13 @@ static void do_assign(char *token)
     int no = search(token, regist, registers);
     switch (no) {
         case r_A:
-            A = value;
+            R(A) = value;
             break;
         case r_NOT_ADDRESS:
-            NOT_ADDRESS = value;
+            R(NOT_ADDRESS) = value;
             break;
         case r_BAD:
-            BAD = value;
+            R(BAD) = value;
             break;
         case r_CHECKED:
         case r_ENDISM:
@@ -354,28 +354,28 @@ static void do_assign(char *token)
             fatal("cannot assign to %s", regist[no]);
             break;
         case r_EP:
-            EP = value;
-            start_ass(EP);
+            R(EP) = value;
+            start_ass(R(EP));
             break;
         case r_I:
             if (bytes > 1)
                 fatal("only one byte can be assigned to I");
-            I = value;
+            R(I) = value;
             break;
         case r_RP:
-            RP = value;
+            R(RP) = value;
             break;
         case r_R0:
-            R0 = value;
+            R(R0) = value;
             break;
         case r_SP:
-            SP = value;
+            R(SP) = value;
             break;
         case r_S0:
-            S0 = value;
+            R(S0) = value;
             break;
         case r_THROW:
-            THROW = value;
+            R(THROW) = value;
             break;
         default:
             {
@@ -402,13 +402,13 @@ static void do_display(size_t no, const char *format)
 
     switch (no) {
         case r_A:
-            display = xasprintf("A = $%"PRIX32, (UCELL)A);
+            display = xasprintf("A = $%"PRIX32, (UCELL)R(A));
             break;
         case r_NOT_ADDRESS:
-            display = xasprintf("-ADDRESS = $%"PRIX32" (%"PRIu32")", NOT_ADDRESS, NOT_ADDRESS);
+            display = xasprintf("-ADDRESS = $%"PRIX32" (%"PRIu32")", R(NOT_ADDRESS), R(NOT_ADDRESS));
             break;
         case r_BAD:
-            display = xasprintf("'BAD = $%"PRIX32" (%"PRIu32")", BAD, BAD);
+            display = xasprintf("'BAD = $%"PRIX32" (%"PRIu32")", R(BAD), R(BAD));
             break;
         case r_CHECKED:
             display = xasprintf("CHECKED = %d", CHECKED);
@@ -417,31 +417,31 @@ static void do_display(size_t no, const char *format)
             display = xasprintf("ENDISM = %d", ENDISM);
             break;
         case r_EP:
-            display = xasprintf("EP = $%"PRIX32" (%"PRIu32")", EP, EP);
+            display = xasprintf("EP = $%"PRIX32" (%"PRIu32")", R(EP), R(EP));
             break;
         case r_I:
-            display = xasprintf("I = %-10s ($%02X)", disass(I), I);
+            display = xasprintf("I = %-10s ($%02X)", disass(R(I)), R(I));
             break;
         case r_M0:
             display = xasprintf("M0 = %p", M0);
             break;
         case r_MEMORY:
-            display = xasprintf("MEMORY = $%"PRIX32" (%"PRIu32")", MEMORY, MEMORY);
+            display = xasprintf("MEMORY = $%"PRIX32" (%"PRIu32")", R(MEMORY), R(MEMORY));
             break;
         case r_RP:
-            display = xasprintf("RP = $%"PRIX32" (%"PRIu32")", RP, RP);
+            display = xasprintf("RP = $%"PRIX32" (%"PRIu32")", R(RP), R(RP));
             break;
         case r_R0:
-            display = xasprintf("R0 = $%"PRIX32" (%"PRIu32")", R0, R0);
+            display = xasprintf("R0 = $%"PRIX32" (%"PRIu32")", R(R0), R(R0));
             break;
         case r_SP:
-            display = xasprintf("SP = $%"PRIX32" (%"PRIu32")", SP, SP);
+            display = xasprintf("SP = $%"PRIX32" (%"PRIu32")", R(SP), R(SP));
             break;
         case r_S0:
-            display = xasprintf("S0 = $%"PRIX32" (%"PRIu32")", S0, S0);
+            display = xasprintf("S0 = $%"PRIX32" (%"PRIu32")", R(S0), R(S0));
             break;
         case r_THROW:
-            display = xasprintf("'THROW = $%"PRIX32" (%"PRIu32")", THROW, THROW);
+            display = xasprintf("'THROW = $%"PRIX32" (%"PRIu32")", R(THROW), R(THROW));
             break;
         default:
             display = xasprintf("unknown register");
@@ -501,7 +501,7 @@ static void do_command(int no)
         break;
     case c_DISASSEMBLE:
         {
-            long long start = (EP <= 16 ? 0 : EP - 16), end = 64;
+            long long start = (R(EP) <= 16 ? 0 : R(EP) - 16), end = 64;
             double_arg(strtok(NULL, ""), &start, &end, true);
             check_aligned(start, "Address");
             check_aligned(end, "Address");
@@ -517,7 +517,7 @@ static void do_command(int no)
         break;
     case c_DUMP:
         {
-            long long start = (EP <= 64 ? 0 : EP - 64), end = 256;
+            long long start = (R(EP) <= 64 ? 0 : R(EP) - 64), end = 256;
             double_arg(strtok(NULL, ""), &start, &end, true);
             check_range(start, end, "Address");
             while (start < end) {
@@ -543,7 +543,7 @@ static void do_command(int no)
             char *arg = strtok(NULL, " ");
             if (arg != NULL) {
                 long adr = single_arg(arg, NULL);
-                EP = adr;
+                R(EP) = adr;
             }
             CELL ret = single_step();
             if (ret)
@@ -605,27 +605,27 @@ static void do_command(int no)
                 if ((ret = single_step()))
                     printf("HALT code %"PRId32" was returned\n", ret);
                 if (no == c_TRACE) do_info();
-                count[I]++;
+                count[R(I)]++;
             } else {
                 upper(arg);
                 if (strcmp(arg, "TO") == 0) {
                     unsigned long long limit = single_arg(strtok(NULL, " "), NULL);
                     check_range(limit, limit, "Address");
                     check_aligned(limit, "Address");
-                    while ((unsigned long)EP != limit && ret == -259) {
+                    while ((unsigned long)R(EP) != limit && ret == -259) {
                         ret = single_step();
                         if (no == c_TRACE) do_info();
-                        count[I]++;
+                        count[R(I)]++;
                     }
                     if (ret != 0)
                         printf("HALT code %"PRId32" was returned at EP = $%"PRIX32"\n",
-                               ret, EP);
+                               ret, R(EP));
                 } else {
                     unsigned long long limit = single_arg(arg, NULL), i;
                     for (i = 0; i < limit && ret == -259; i++) {
                         ret = single_step();
                         if (no == c_TRACE) do_info();
-                        count[I]++;
+                        count[R(I)]++;
                     }
                     if (ret != 0)
                         printf("HALT code %"PRId32" was returned after %llu "
@@ -894,11 +894,9 @@ int main(int argc, char *argv[])
             }
     }
 
-    if ((memory = (CELL *)calloc(memory_size, CELL_W)) == NULL)
-        die("could not allocate %"PRIu32" cells of memory", memory_size);
-    memset(count, 0, 256 * sizeof(long));
-    init(memory, memory_size);
-    start_ass(EP);
+    if (init(memory_size) == -1)
+        die("init() failed");
+    start_ass(R(EP));
 
     argc -= optind;
     if (argc >= 1) {

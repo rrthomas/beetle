@@ -22,10 +22,10 @@ int main(void)
     UCELL buf = 16;
     const char *argv[] = {"foo", "bard", "basilisk"};
 
-    init((CELL *)malloc(4096), 1024);
+    init(1024);
     assert(register_args(argc, argv) == 0);
 
-    start_ass(EP);
+    start_ass(R(EP));
     ass(O_LITERALI); ilit(16);
     ass(O_LIB); ilit(0); /* pad word with NEXT */
     ass(O_ONE); ass(O_LITERALI); ilit(17);
@@ -38,9 +38,9 @@ int main(void)
     assert(single_step() == -259);
     assert(single_step() == -259);
     assert(single_step() == -259);
-    printf("argc is %"PRId32", and should be %d\n\n", LOAD_CELL(SP), argc);
+    printf("argc is %"PRId32", and should be %d\n\n", LOAD_CELL(R(SP)), argc);
     if (POP != argc) {
-       printf("Error in LIB tests: EP = %"PRIu32"\n", EP);
+       printf("Error in LIB tests: EP = %"PRIu32"\n", R(EP));
         exit(1);
     }
 
@@ -48,9 +48,9 @@ int main(void)
     assert(single_step() == -259);
     assert(single_step() == -259);
     assert(single_step() == -259);
-    printf("arg 1's length is %"PRId32", and should be %zu\n", LOAD_CELL(SP), strlen(argv[1]));
+    printf("arg 1's length is %"PRId32", and should be %zu\n", LOAD_CELL(R(SP)), strlen(argv[1]));
     if ((UCELL)POP != strlen(argv[1])) {
-        printf("Error in LIB tests: EP = %"PRIu32"\n", EP);
+        printf("Error in LIB tests: EP = %"PRIu32"\n", R(EP));
         exit(1);
     }
 
@@ -60,7 +60,7 @@ int main(void)
     assert(single_step() == -259);
     printf("arg is %s, and should be %s\n", native_address_of_range(buf, 0), argv[1]);
     if (strncmp((char *)native_address_of_range(buf, 0), argv[1], strlen(argv[1])) != 0) {
-        printf("Error in extra instructions tests: EP = %"PRIu32"\n", EP);
+        printf("Error in extra instructions tests: EP = %"PRIu32"\n", R(EP));
         exit(1);
     }
 

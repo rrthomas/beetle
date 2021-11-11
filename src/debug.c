@@ -157,8 +157,8 @@ static char *_val_data_stack(bool with_hex)
 
     free(picture);
     picture = xasprintf("%s", "");
-    if (!STACK_UNDERFLOW(SP, S0))
-        for (UCELL i = S0; i != SP;) {
+    if (!STACK_UNDERFLOW(R(SP), R(S0)))
+        for (UCELL i = R(S0); i != R(SP);) {
             CELL c;
             char *ptr;
             i += CELL_W * STACK_DIRECTION;
@@ -177,7 +177,7 @@ static char *_val_data_stack(bool with_hex)
                 free(picture);
                 picture = ptr;
             }
-            if (i != SP) {
+            if (i != R(SP)) {
                 ptr = xasprintf("%s ", picture);
                 free(picture);
                 picture = ptr;
@@ -194,9 +194,9 @@ char *val_data_stack(void)
 
 void show_data_stack(void)
 {
-    if (SP == S0)
+    if (R(SP) == R(S0))
         printf("Data stack empty\n");
-    else if (STACK_UNDERFLOW(SP, S0))
+    else if (STACK_UNDERFLOW(R(SP), R(S0)))
         printf("Data stack underflow\n");
     else
         printf("Data stack: %s\n", _val_data_stack(true));
@@ -204,13 +204,13 @@ void show_data_stack(void)
 
 void show_return_stack(void)
 {
-    if (RP == R0)
+    if (R(RP) == R(R0))
         printf("Return stack empty\n");
-    else if (STACK_UNDERFLOW(RP, R0))
+    else if (STACK_UNDERFLOW(R(RP), R(R0)))
         printf("Return stack underflow\n");
     else {
         printf("Return stack: ");
-        for (UCELL i = R0; i != RP;) {
+        for (UCELL i = R(R0); i != R(RP);) {
             CELL c;
             i += CELL_W * STACK_DIRECTION;
             int exception = load_cell(i, &c);

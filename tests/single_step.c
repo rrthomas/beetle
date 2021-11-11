@@ -13,16 +13,16 @@
 
 int main(void)
 {
-    init((CELL *)calloc(1024, 1), 256);
+    init(256);
 
     for (int i = 0; i < 10; i++) {
-        printf("EP = %u\n", EP);
+        printf("EP = %u\n", R(EP));
         assert(single_step() == -259);
     }
 
     printf("EP should now be 40\n");
-    if (EP != 40) {
-        printf("Error in single_step() tests: EP = %"PRIu32"\n", EP);
+    if (R(EP) != 40) {
+        printf("Error in single_step() tests: EP = %"PRIu32"\n", R(EP));
         exit(1);
     }
 

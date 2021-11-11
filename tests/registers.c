@@ -22,9 +22,9 @@ const char *correct[] = {
 
 int main(void)
 {
-    init((CELL *)malloc(SIZE), SIZE / CELL_W);
+    init(SIZE / CELL_W);
 
-    start_ass(EP);
+    start_ass(R(EP));
     ass(O_EPFETCH); ass(O_DROP);  ass(O_S0FETCH); ass(O_DROP);
     ass(O_R0FETCH); ass(O_DROP);  ass(O_LITERAL); ass(O_THROWSTORE);
     lit(168); // 42 CELLS
@@ -37,11 +37,11 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in registers tests: EP = %"PRIu32"\n", EP);
+            printf("Error in registers tests: EP = %"PRIu32"\n", R(EP));
             exit(1);
         }
         assert(single_step() == -259);
-        printf("I = %s\n", disass(I));
+        printf("I = %s\n", disass(R(I)));
     }
 
     printf("Registers tests ran OK\n");

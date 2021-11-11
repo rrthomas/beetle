@@ -39,19 +39,19 @@ int beetle_reverse(beetle_UCELL start, beetle_UCELL length);
 #define beetle_STORE_BYTE(a, v)                                                \
     (exception = exception ? exception : beetle_store_byte((a), (v)))
 #define beetle_PUSH(v)                                 \
-    (beetle_SP += beetle_CELL_W * beetle_STACK_DIRECTION, beetle_STORE_CELL(beetle_SP, (v)))
+    (beetle_R(SP) += beetle_CELL_W * beetle_STACK_DIRECTION, beetle_STORE_CELL(beetle_R(SP), (v)))
 #define beetle_POP                                     \
-    (beetle_SP -= beetle_CELL_W * beetle_STACK_DIRECTION, beetle_LOAD_CELL(beetle_SP + beetle_CELL_W * beetle_STACK_DIRECTION))
+    (beetle_R(SP) -= beetle_CELL_W * beetle_STACK_DIRECTION, beetle_LOAD_CELL(beetle_R(SP) + beetle_CELL_W * beetle_STACK_DIRECTION))
 #define beetle_PUSH_DOUBLE(ud)                         \
     beetle_PUSH((beetle_UCELL)(ud & beetle_CELL_MASK));              \
     beetle_PUSH((beetle_UCELL)((ud >> beetle_CELL_BIT) & beetle_CELL_MASK))
 #define beetle_POP_DOUBLE                              \
-    (beetle_SP -= 2 * beetle_CELL_W * beetle_STACK_DIRECTION, (beetle_UCELL)beetle_LOAD_CELL(beetle_SP + beetle_CELL_W * beetle_STACK_DIRECTION), temp | \
-     ((beetle_DUCELL)(beetle_UCELL)beetle__LOAD_CELL(beetle_SP + 2 * beetle_CELL_W * beetle_STACK_DIRECTION, temp2) << beetle_CELL_BIT))
+    (beetle_R(SP) -= 2 * beetle_CELL_W * beetle_STACK_DIRECTION, (beetle_UCELL)beetle_LOAD_CELL(beetle_R(SP) + beetle_CELL_W * beetle_STACK_DIRECTION), temp | \
+     ((beetle_DUCELL)(beetle_UCELL)beetle__LOAD_CELL(beetle_R(SP) + 2 * beetle_CELL_W * beetle_STACK_DIRECTION, temp2) << beetle_CELL_BIT))
 #define beetle_PUSH_RETURN(v)                          \
-    (beetle_RP += beetle_CELL_W * beetle_STACK_DIRECTION, beetle_STORE_CELL(beetle_RP, (v)))
+    (beetle_R(RP) += beetle_CELL_W * beetle_STACK_DIRECTION, beetle_STORE_CELL(beetle_R(RP), (v)))
 #define beetle_POP_RETURN                              \
-    (beetle_RP -= beetle_CELL_W * beetle_STACK_DIRECTION, beetle_LOAD_CELL(beetle_RP + beetle_CELL_W * beetle_STACK_DIRECTION))
+    (beetle_R(RP) -= beetle_CELL_W * beetle_STACK_DIRECTION, beetle_LOAD_CELL(beetle_R(RP) + beetle_CELL_W * beetle_STACK_DIRECTION))
 #define beetle_STACK_UNDERFLOW(ptr, base)              \
     (ptr - base == 0 ? false : (beetle_STACK_DIRECTION > 0 ? ptr < base : ptr > base))
 

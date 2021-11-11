@@ -39,16 +39,20 @@ typedef uint64_t beetle_DUCELL;
 #define beetle_ENDISM ((beetle_BYTE)0)
 #endif
 
-extern beetle_UCELL beetle_EP;
-extern beetle_BYTE beetle_I;
-extern beetle_CELL beetle_A;
+typedef struct {
+    beetle_UCELL beetle_EP;
+    beetle_UCELL beetle_I;
+    beetle_CELL beetle_A;
+    beetle_UCELL beetle_MEMORY;
+    beetle_UCELL beetle_SP, beetle_RP;
+    beetle_UCELL beetle_S0, beetle_R0;
+    beetle_UCELL beetle_THROW;
+    beetle_UCELL beetle_BAD;
+    beetle_UCELL beetle_NOT_ADDRESS;
+} beetle_Registers;
+extern beetle_Registers beetle_registers;
+#define beetle_R(r) (beetle_registers.beetle_ ## r)
 extern beetle_CELL *beetle_M0;
-extern beetle_UCELL beetle_MEMORY;
-extern beetle_UCELL beetle_SP, beetle_RP;
-extern beetle_UCELL beetle_S0, beetle_R0;
-extern beetle_UCELL beetle_THROW;
-extern beetle_UCELL beetle_BAD;
-extern beetle_UCELL beetle_NOT_ADDRESS;
 #define beetle_CHECKED 1       // address checking is mandatory in this implementation
 
 // Memory access
@@ -69,7 +73,8 @@ beetle_CELL beetle_single_step(void);
 int beetle_load_object(FILE *file, beetle_UCELL address);
 
 // Additional implementation-specific routines, macros, types and quantities
-int beetle_init(beetle_CELL *c_array, size_t size);
+int beetle_init(size_t size);
+void beetle_destroy(void);
 int beetle_register_args(int argc, const char *argv[]);
 
 #define BEETLE_TRUE beetle_CELL_MASK            // VM TRUE flag

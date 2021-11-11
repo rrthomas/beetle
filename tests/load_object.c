@@ -47,8 +47,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    CELL *memory = (CELL *)calloc(1024, 1);
-    init(memory, 256);
+    init(256);
 
     size_t i;
     for (i = 0; i < 4; i++) {
@@ -77,7 +76,7 @@ int main(int argc, char *argv[])
             printf("Error in load_object() tests: file %s\n", files[i]);
             exit(1);
         }
-        memset(memory, 0, MEMORY); // Zero memory for next test
+        memset(M0, 0, R(MEMORY)); // Zero memory for next test
     }
 
     printf("load_object() tests ran OK\n");

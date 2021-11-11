@@ -19,8 +19,7 @@ UCELL test[sizeof(result) / sizeof(result[0])];
 
 int main(void)
 {
-    size_t size = 4096;
-    init((CELL *)calloc(size, CELL_W), size);
+    init(4096);
 
     start_ass(0);
     // test 1: DUP into non-existent memory
@@ -29,7 +28,7 @@ int main(void)
     ass(O_SPSTORE); ass(O_DUP); ass(O_NEXT00);
     // test 2: set SP to MEMORY, then try to pop (>R) the stack
     test[1] = ass_current();
-    ass(O_LITERALI); ilit(MEMORY);
+    ass(O_LITERALI); ilit(R(MEMORY));
     ass(O_SPSTORE); ass(O_TOR); ass(O_NEXT00); ass(O_NEXT00);
     // test 3: test arbitrary throw code
     test[2] = ass_current();
@@ -37,7 +36,7 @@ int main(void)
     ass(O_HALT); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     // test 4: test SP can point to just after memory
     test[3] = ass_current();
-    ass(O_LITERALI); ilit(MEMORY);
+    ass(O_LITERALI); ilit(R(MEMORY));
     ass(O_MINUSCELL); ass(O_SPSTORE); ass(O_TOR); ass(O_ZERO);
     ass(O_HALT); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
     // test 5: test setting SP to unaligned address
@@ -52,7 +51,7 @@ int main(void)
     // test 8: allow execution to run off the end of memory
     test[7] = ass_current();
     ass(O_BRANCH); ass(O_NEXT00); ass(O_NEXT00); ass(O_NEXT00);
-    lit(MEMORY - CELL_W);
+    lit(R(MEMORY) - CELL_W);
     // test 9: fetch from an invalid address
     test[8] = ass_current();
     ass(O_LITERAL); lit(0xffffffec);
@@ -71,26 +70,26 @@ int main(void)
     start_ass(200);
     ass(O_HALT);
 
-    THROW = 200;   // set address of exception handler
+    R(THROW) = 200;   // set address of exception handler
 
     UCELL error = 0;
     for (size_t i = 0; i < sizeof(test) / sizeof(test[0]); i++) {
-        SP = S0;    // reset stack pointer
+        R(SP) = R(S0);    // reset stack pointer
 
         printf("Test %zu\n", i + 1);
-        EP = test[i];
+        R(EP) = test[i];
         assert(single_step() == -259);   // load first instruction word
         CELL res = run();
 
-        if (result[i] != res || (result[i] != 0 && bad[i] != BAD) ||
+        if (result[i] != res || (result[i] != 0 && bad[i] != R(BAD)) ||
             ((result[i] <= -258 || result[i] == -9 || result[i] == -23) &&
-             address[i] != NOT_ADDRESS)) {
-             printf("Error in exceptions tests: test %zu failed; EP = %"PRIu32"\n", i + 1, EP);
+             address[i] != R(NOT_ADDRESS))) {
+             printf("Error in exceptions tests: test %zu failed; EP = %"PRIu32"\n", i + 1, R(EP));
              printf("Return code is %d; should be %d\n", res, result[i]);
              if (result[i] != 0)
-                 printf("'BAD = %"PRIX32"; should be %"PRIX32"\n", BAD, bad[i]);
+                 printf("'BAD = %"PRIX32"; should be %"PRIX32"\n", R(BAD), bad[i]);
              if (result[i] <= -258 || result[i] == -9 || result[i] == -23)
-                 printf("-ADDRESS = %"PRIX32"; should be %"PRIX32"\n", NOT_ADDRESS, address[i]);
+                 printf("-ADDRESS = %"PRIX32"; should be %"PRIX32"\n", R(NOT_ADDRESS), address[i]);
              error++;
         }
         putchar('\n');

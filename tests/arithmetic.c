@@ -30,9 +30,9 @@ const char *correct[] = {
 
 int main(void)
 {
-    init((CELL *)calloc(1024, 1), 256);
+    init(256);
 
-    start_ass(EP);
+    start_ass(R(EP));
     ass(O_ZERO); ass(O_ONE); ass(O_MONE); ass(O_CELL);
     ass(O_MCELL); ass(O_ROT); ass(O_PLUS); ass(O_PLUS);
     ass(O_MINUS); ass(O_PLUS1); ass(O_MINUS1); ass(O_SWAP);
@@ -51,11 +51,11 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in arithmetic tests: EP = %"PRIu32"\n", EP);
+            printf("Error in arithmetic tests: EP = %"PRIu32"\n", R(EP));
             exit(1);
         }
         assert(single_step() == -259);
-        printf("I = %s\n", disass(I));
+        printf("I = %s\n", disass(R(I)));
     }
 
     printf("Arithmetic tests ran OK\n");

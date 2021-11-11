@@ -22,11 +22,11 @@ int main(void)
 {
     int exception = 0;
 
-    init((CELL *)malloc(1024), 256);
+    init(256);
 
     PUSH(1); PUSH(2); PUSH(3);	// initialise the stack
 
-    start_ass(EP);
+    start_ass(R(EP));
     ass(O_DUP); ass(O_DROP); ass(O_SWAP); ass(O_OVER);
     ass(O_ROT); ass(O_NROT); ass(O_TUCK); ass(O_NIP);
     ass(O_PICK); ass(O_PICK); ass(O_DUP); ass(O_ROLL);
@@ -40,14 +40,14 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in stack tests: EP = %"PRIu32"\n", EP);
+            printf("Error in stack tests: EP = %"PRIu32"\n", R(EP));
             exit(1);
         }
         assert(single_step() == -259);
-        printf("I = %s\n", disass(I));
+        printf("I = %s\n", disass(R(I)));
     }
 
-    SP = S0;	// reset stack
+    R(SP) = R(S0);	// reset stack
     PUSH(2); PUSH(1); PUSH(0);	// initialise the stack
     printf("Next stack is wrong!\n");
 
@@ -56,11 +56,11 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack()) && i != first) {
-            printf("Error in stack tests: EP = %"PRIu32"\n", EP);
+            printf("Error in stack tests: EP = %"PRIu32"\n", R(EP));
             exit(1);
         }
         assert(single_step() == -259);
-        printf("I = %s\n", disass(I));
+        printf("I = %s\n", disass(R(I)));
     }
 
     assert(exception == 0);

@@ -14,7 +14,7 @@
 
 int main(void)
 {
-    int i = init((CELL *)calloc(1024, 1), 256);
+    int i = init(256);
     if (i != 0) {
         printf("Error in run() tests: init with valid parameters failed\n");
         exit(1);
@@ -34,8 +34,8 @@ int main(void)
     }
 
     printf("EP should now be 56\n");
-    if (EP != 60) {
-        printf("Error in run() tests: EP = %"PRIu32"\n", EP);
+    if (R(EP) != 60) {
+        printf("Error in run() tests: EP = %"PRIu32"\n", R(EP));
         exit(1);
     }
 

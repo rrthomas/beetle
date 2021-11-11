@@ -21,10 +21,9 @@ unsigned correct[] = { 4, 100, 52, 10004, 10004, 10008, 10008, 10012, 10012, 110
 
 int main(void)
 {
-    size_t size = 4096;
-    init((CELL *)calloc(size, CELL_W), size);
+    init(4096);
 
-    start_ass(EP);
+    start_ass(R(EP));
     ass(O_BRANCHI); ilit(23);
 
     start_ass(96);
@@ -60,13 +59,13 @@ int main(void)
     assert(single_step() == -259);   // load first instruction word
 
     for (size_t i = 0; i < sizeof(correct) / sizeof(correct[0]); i++) {
-        printf("Instruction %zu: EP = %u; should be %u\n\n", i, EP, correct[i]);
-        if (correct[i] != EP) {
-            printf("Error in branch tests: EP = %"PRIu32"\n", EP);
+        printf("Instruction %zu: EP = %u; should be %u\n\n", i, R(EP), correct[i]);
+        if (correct[i] != R(EP)) {
+            printf("Error in branch tests: EP = %"PRIu32"\n", R(EP));
             exit(1);
         }
         assert(single_step() == -259);
-        printf("I = %s\n", disass(I));
+        printf("I = %s\n", disass(R(I)));
     }
 
     printf("Branch tests ran OK\n");

@@ -16,9 +16,9 @@ const char *correct[] = { "", "-257", "-257 12345678", "-257 12345678 -2" };
 
 int main(void)
 {
-    init((CELL *)calloc(1024, 1), 256);
+    init(256);
 
-    start_ass(EP);
+    start_ass(R(EP));
     ass(O_LITERAL); lit(-257); ass(O_LITERAL); lit(12345678);
     ass(O_LITERALI); ilit(-2);
 
@@ -28,11 +28,11 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in literals tests: EP = %"PRIu32"\n", EP);
+            printf("Error in literals tests: EP = %"PRIu32"\n", R(EP));
             exit(1);
         }
         assert(single_step() == -259);
-        printf("I = %s\n", disass(I));
+        printf("I = %s\n", disass(R(I)));
     }
 
     printf("Literals tests ran OK\n");

@@ -22,24 +22,15 @@
 
 // VM registers
 
-UCELL EP;
-BYTE I;
-CELL A;
-UCELL SP, RP;
-UCELL S0, R0;
-UCELL THROW;
-CELL *M0;
-UCELL MEMORY;
-UCELL BAD;
-UCELL NOT_ADDRESS;
-
+beetle_Registers beetle_registers;
+beetle_CELL *M0;
 
 // General memory access
 
 // Return native address of a range of VM memory, or NULL if invalid
 _GL_ATTRIBUTE_PURE uint8_t *native_address_of_range(UCELL start, UCELL length)
 {
-    if (start > MEMORY || MEMORY - start < length)
+    if (start > R(MEMORY) || R(MEMORY) - start < length)
         return NULL;
 
     return ((uint8_t *)M0) + start;
@@ -54,14 +45,16 @@ _GL_ATTRIBUTE_PURE uint8_t *native_address_of_range(UCELL start, UCELL length)
 
 int load_cell(UCELL addr, CELL *value)
 {
-    if (!IS_ALIGNED(addr)) {
-        NOT_ADDRESS = addr;
+    if (!IS_ALIGNED(addr))
+    {
+        R(NOT_ADDRESS) = addr;
         return -23;
     }
 
     uint8_t *ptr = native_address_of_range(addr, CELL_W);
-    if (ptr == NULL) {
-        NOT_ADDRESS = addr;
+    if (ptr == NULL)
+    {
+        R(NOT_ADDRESS) = addr;
         return -9;
     }
 
@@ -75,8 +68,9 @@ int load_cell(UCELL addr, CELL *value)
 int load_byte(UCELL addr, BYTE *value)
 {
     uint8_t *ptr = native_address_of_range(FLIP(addr), 1);
-    if (ptr == NULL) {
-        NOT_ADDRESS = addr;
+    if (ptr == NULL)
+    {
+        R(NOT_ADDRESS) = addr;
         return -9;
     }
     *value = *ptr;
@@ -85,14 +79,16 @@ int load_byte(UCELL addr, BYTE *value)
 
 int store_cell(UCELL addr, CELL value)
 {
-    if (!IS_ALIGNED(addr)) {
-        NOT_ADDRESS = addr;
+    if (!IS_ALIGNED(addr))
+    {
+        R(NOT_ADDRESS) = addr;
         return -23;
     }
 
     uint8_t *ptr = native_address_of_range(addr, CELL_W);
-    if (ptr == NULL) {
-        NOT_ADDRESS = addr;
+    if (ptr == NULL)
+    {
+        R(NOT_ADDRESS) = addr;
         return -9;
     }
 
@@ -106,24 +102,24 @@ int store_cell(UCELL addr, CELL value)
 int store_byte(UCELL addr, BYTE value)
 {
     uint8_t *ptr = native_address_of_range(FLIP(addr), 1);
-    if (ptr == NULL) {
-        NOT_ADDRESS = addr;
+    if (ptr == NULL)
+    {
+        R(NOT_ADDRESS) = addr;
         return -9;
     }
     *ptr = value;
     return 0;
 }
 
-
 _GL_ATTRIBUTE_CONST CELL reverse_cell(CELL value)
 {
     CELL res = 0;
-    for (unsigned i = 0; i < CELL_W / 2; i++) {
+    for (unsigned i = 0; i < CELL_W / 2; i++)
+    {
         unsigned lopos = CHAR_BIT * i;
         unsigned hipos = CHAR_BIT * (CELL_W - 1 - i);
         unsigned move = hipos - lopos;
-        res |= ((((UCELL)value) & ((UCELL)CHAR_MASK << hipos)) >> move)
-            | ((((UCELL)value) & ((UCELL)CHAR_MASK << lopos)) << move);
+        res |= ((((UCELL)value) & ((UCELL)CHAR_MASK << hipos)) >> move) | ((((UCELL)value) & ((UCELL)CHAR_MASK << lopos)) << move);
     }
     return res;
 }
@@ -131,10 +127,10 @@ _GL_ATTRIBUTE_CONST CELL reverse_cell(CELL value)
 int reverse(UCELL start, UCELL length)
 {
     int ret = 0;
-    for (UCELL i = 0; ret == 0 && i < length; i ++) {
+    for (UCELL i = 0; ret == 0 && i < length; i++)
+    {
         CELL c;
-        ret = load_cell(start + i * CELL_W, &c)
-            || store_cell(start + i, reverse_cell(c));
+        ret = load_cell(start + i * CELL_W, &c) || store_cell(start + i, reverse_cell(c));
     }
     return ret;
 }
@@ -162,24 +158,30 @@ int post_dma(UCELL from, UCELL to)
     return pre_dma(from, to);
 }
 
-
 // Initialise registers that are not fixed
 
-int init(CELL *buf, size_t size)
+int init(size_t size)
 {
-    if (buf == NULL)
+    R(MEMORY) = size * CELL_W;
+    M0 = (beetle_CELL *)calloc(size, CELL_W);
+    if (M0 == NULL)
         return -1;
-    M0 = buf;
-    MEMORY = size * CELL_W;
-    memset(M0, 0, MEMORY);
 
-    EP = 0;
-    A = 0;
-    S0 = SP = MEMORY - 0x100;
-    R0 = RP = MEMORY;
-    THROW = 0;
-    BAD = CELL_MAX;
-    NOT_ADDRESS = CELL_MAX;
+    R(EP) = 0;
+    R(A) = 0;
+    R(S0) = R(SP) = R(MEMORY) - 0x100;
+    R(R0) = R(RP) = R(MEMORY);
+    R(THROW) = 0;
+    R(BAD) = CELL_MAX;
+    R(NOT_ADDRESS) = CELL_MAX;
 
     return 0;
+}
+
+void destroy(void)
+{
+    free(M0);
+#ifdef HAVE_MIJIT
+    mijit_beetle_drop(beetle_jit);
+#endif
 }

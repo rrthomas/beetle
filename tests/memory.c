@@ -22,10 +22,9 @@ const char *correct[] = {
 
 int main(void)
 {
-    size_t size = 4096;
-    init((CELL *)calloc(size, CELL_W), size);
+    init(4096);
 
-    start_ass(EP);
+    start_ass(R(EP));
     ass(O_MEMORYFETCH); ass(O_MINUSCELL); ass(O_LITERAL); lit(513);
     ass(O_OVER); ass(O_STORE); ass(O_DUP); ass(O_FETCH);
     ass(O_DROP); ass(O_DUP); ass(O_CFETCH); ass(O_PLUS);
@@ -41,11 +40,11 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in memory tests: EP = %"PRIu32"\n", EP);
+            printf("Error in memory tests: EP = %"PRIu32"\n", R(EP));
             exit(1);
         }
         assert(single_step() == -259);
-        printf("I = %s\n", disass(I));
+        printf("I = %s\n", disass(R(I)));
     }
 
     printf("Memory tests ran OK\n");

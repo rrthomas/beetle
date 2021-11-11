@@ -22,9 +22,9 @@ static void test(void)
 
 int main(void)
 {
-    init((CELL *)malloc(16384), 4096);
+    init(4096);
 
-    start_ass(EP);
+    start_ass(R(EP));
     plit(test); ass(O_LINK); ass(O_ZERO); ass(O_HALT);
 
     assert(single_step() == -259);   // load first instruction word
@@ -34,9 +34,9 @@ int main(void)
         exit(1);
     }
 
-    printf("Top of stack is %d; should be %d\n", LOAD_CELL(SP), 37);
+    printf("Top of stack is %d; should be %d\n", LOAD_CELL(R(SP)), 37);
     show_data_stack();
-    if (LOAD_CELL(SP) != 37) {
+    if (LOAD_CELL(R(SP)) != 37) {
         printf("Error in LINK tests: incorrect value on top of stack\n");
         exit(1);
     }

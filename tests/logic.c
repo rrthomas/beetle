@@ -24,11 +24,11 @@ int main(void)
 {
     int exception = 0;
 
-    init((CELL *)malloc(1024), 256);
+    init(256);
 
     PUSH(0xff000000); PUSH(8); PUSH(0xff); PUSH(8);
 
-    start_ass(EP);
+    start_ass(R(EP));
     ass(O_LSHIFT); ass(O_NROT); ass(O_RSHIFT); ass(O_OR);
     ass(O_LSHIFT1); ass(O_RSHIFT1); ass(O_INVERT); ass(O_ONE);
     ass(O_MONE); ass(O_XOR); ass(O_AND);
@@ -39,11 +39,11 @@ int main(void)
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
-            printf("Error in logic tests: EP = %"PRIu32"\n", EP);
+            printf("Error in logic tests: EP = %"PRIu32"\n", R(EP));
             exit(1);
         }
         assert(single_step() == -259);
-        printf("I = %s\n", disass(I));
+        printf("I = %s\n", disass(R(I)));
     }
 
     assert(exception == 0);

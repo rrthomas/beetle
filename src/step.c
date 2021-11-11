@@ -134,18 +134,18 @@ static CELL run_or_step(bool run)
         CELL temp = 0, temp2 = 0;
         BYTE byte = 0;
 
-        I = (BYTE)A;
-        ARSHIFT(A, 8);
-        switch (I) {
+        R(I) = (BYTE)R(A);
+        ARSHIFT(R(A), 8);
+        switch (R(I)) {
         case O_NEXT00:
         case O_NEXTFF:
         next:
-            EP += CELL_W;
-            exception = load_cell(EP - CELL_W, &A);
+            R(EP) += CELL_W;
+            exception = load_cell(R(EP) - CELL_W, &R(A));
             break;
         case O_DUP:
             {
-                CELL top = LOAD_CELL(SP);
+                CELL top = LOAD_CELL(R(SP));
                 PUSH(top);
             }
             break;
@@ -162,7 +162,7 @@ static CELL run_or_step(bool run)
             break;
         case O_OVER:
             {
-                CELL next = LOAD_CELL(SP - CELL_W * STACK_DIRECTION);
+                CELL next = LOAD_CELL(R(SP) - CELL_W * STACK_DIRECTION);
                 PUSH(next);
             }
             break;
@@ -205,23 +205,23 @@ static CELL run_or_step(bool run)
         case O_PICK:
             {
                 UCELL depth = POP;
-                CELL pickee = LOAD_CELL(SP - depth * CELL_W * STACK_DIRECTION);
+                CELL pickee = LOAD_CELL(R(SP) - depth * CELL_W * STACK_DIRECTION);
                 PUSH(pickee);
             }
             break;
         case O_ROLL:
             {
                 UCELL depth = POP;
-                CELL rollee = LOAD_CELL(SP - depth * CELL_W * STACK_DIRECTION);
+                CELL rollee = LOAD_CELL(R(SP) - depth * CELL_W * STACK_DIRECTION);
                 for (CELL i = depth; i > 0; i--)
-                    STORE_CELL(SP - i * CELL_W * STACK_DIRECTION,
-                               LOAD_CELL(SP - (i - 1) * CELL_W * STACK_DIRECTION));
-                STORE_CELL(SP, rollee);
+                    STORE_CELL(R(SP) - i * CELL_W * STACK_DIRECTION,
+                               LOAD_CELL(R(SP) - (i - 1) * CELL_W * STACK_DIRECTION));
+                STORE_CELL(R(SP), rollee);
             }
             break;
         case O_QDUP:
             {
-                CELL value = LOAD_CELL(SP);
+                CELL value = LOAD_CELL(R(SP));
                 if (value != 0)
                     PUSH(value);
             }
@@ -240,7 +240,7 @@ static CELL run_or_step(bool run)
             break;
         case O_RFETCH:
             {
-                CELL value = LOAD_CELL(RP);
+                CELL value = LOAD_CELL(R(RP));
                 PUSH(value);
             }
             break;
@@ -549,7 +549,7 @@ static CELL run_or_step(bool run)
             break;
         case O_SPFETCH:
             {
-                CELL value = SP;
+                CELL value = R(SP);
                 PUSH(value);
             }
             break;
@@ -557,51 +557,51 @@ static CELL run_or_step(bool run)
             {
                 CELL value = POP;
                 CHECK_ALIGNED(value);
-                SP = value;
+                R(SP) = value;
             }
             break;
         case O_RPFETCH:
-            PUSH(RP);
+            PUSH(R(RP));
             break;
         case O_RPSTORE:
             {
                 CELL value = POP;
                 CHECK_ALIGNED(value);
-                RP = value;
+                R(RP) = value;
             }
             break;
         case O_BRANCH:
             {
-                CELL addr = LOAD_CELL(EP);
+                CELL addr = LOAD_CELL(R(EP));
                 CHECK_VALID_CELL(addr);
-                EP = addr;
+                R(EP) = addr;
                 goto next;
             }
             break;
         case O_BRANCHI:
-            EP += A * CELL_W;
+            R(EP) += R(A) * CELL_W;
             goto next;
             break;
         case O_QBRANCH:
             if (POP == BEETLE_FALSE) {
-                CELL addr = LOAD_CELL(EP);
+                CELL addr = LOAD_CELL(R(EP));
                 CHECK_VALID_CELL(addr);
-                EP = addr;
+                R(EP) = addr;
                 goto next;
             } else
-                EP += CELL_W;
+                R(EP) += CELL_W;
             break;
         case O_QBRANCHI:
             if (POP == BEETLE_FALSE)
-                EP += A * CELL_W;
+                R(EP) += R(A) * CELL_W;
             goto next;
             break;
         case O_EXECUTE:
             {
                 CELL addr = POP;
                 CHECK_VALID_CELL(addr);
-                PUSH_RETURN(EP);
-                EP = addr;
+                PUSH_RETURN(R(EP));
+                R(EP) = addr;
                 goto next;
             }
             break;
@@ -609,32 +609,32 @@ static CELL run_or_step(bool run)
             {
                 CELL addr = POP;
                 CHECK_VALID_CELL(addr);
-                PUSH_RETURN(EP);
+                PUSH_RETURN(R(EP));
                 addr = LOAD_CELL(addr);
                 CHECK_VALID_CELL(addr);
-                EP = addr;
+                R(EP) = addr;
                 goto next;
             }
             break;
         case O_CALL:
             {
-                PUSH_RETURN(EP + CELL_W);
-                CELL addr = LOAD_CELL(EP);
+                PUSH_RETURN(R(EP) + CELL_W);
+                CELL addr = LOAD_CELL(R(EP));
                 CHECK_VALID_CELL(addr);
-                EP = addr;
+                R(EP) = addr;
                 goto next;
             }
             break;
         case O_CALLI:
-            PUSH_RETURN(EP);
-            EP += A * CELL_W;
+            PUSH_RETURN(R(EP));
+            R(EP) += R(A) * CELL_W;
             goto next;
             break;
         case O_EXIT:
             {
                 CELL addr = POP_RETURN;
                 CHECK_VALID_CELL(addr);
-                EP = addr;
+                R(EP) = addr;
                 goto next;
             }
             break;
@@ -649,16 +649,16 @@ static CELL run_or_step(bool run)
         case O_LOOP:
             {
                 CELL index = POP_RETURN;
-                CELL limit = LOAD_CELL(RP);
+                CELL limit = LOAD_CELL(R(RP));
                 PUSH_RETURN(index + 1);
                 if (index + 1 == limit) {
                     (void)POP_RETURN;
                     (void)POP_RETURN;
-                    EP += CELL_W;
+                    R(EP) += CELL_W;
                 } else {
-                    CELL addr = LOAD_CELL(EP);
+                    CELL addr = LOAD_CELL(R(EP));
                     CHECK_VALID_CELL(addr);
-                    EP = addr;
+                    R(EP) = addr;
                     goto next;
                 }
             }
@@ -666,31 +666,31 @@ static CELL run_or_step(bool run)
         case O_LOOPI:
             {
                 CELL index = POP_RETURN;
-                CELL limit = LOAD_CELL(RP);
+                CELL limit = LOAD_CELL(R(RP));
                 PUSH_RETURN(index + 1);
                 if (index + 1 == limit) {
                     (void)POP_RETURN;
                     (void)POP_RETURN;
                 } else
-                    EP += A * CELL_W;
+                    R(EP) += R(A) * CELL_W;
                 goto next;
             }
             break;
         case O_PLOOP:
             {
                 CELL index = POP_RETURN;
-                CELL limit = LOAD_CELL(RP);
+                CELL limit = LOAD_CELL(R(RP));
                 CELL diff = index - limit;
                 CELL inc = POP;
                 PUSH_RETURN(index + inc);
                 if ((((diff + inc) ^ diff) & (diff ^ inc)) < 0) {
                     (void)POP_RETURN;
                     (void)POP_RETURN;
-                    EP += CELL_W;
+                    R(EP) += CELL_W;
                 } else {
-                    CELL addr = LOAD_CELL(EP);
+                    CELL addr = LOAD_CELL(R(EP));
                     CHECK_VALID_CELL(addr);
-                    EP = addr;
+                    R(EP) = addr;
                     goto next;
                 }
             }
@@ -698,7 +698,7 @@ static CELL run_or_step(bool run)
         case O_PLOOPI:
             {
                 CELL index = POP_RETURN;
-                CELL limit = LOAD_CELL(RP);
+                CELL limit = LOAD_CELL(R(RP));
                 CELL diff = index - limit;
                 CELL inc = POP;
                 PUSH_RETURN(index + inc);
@@ -706,7 +706,7 @@ static CELL run_or_step(bool run)
                     (void)POP_RETURN;
                     (void)POP_RETURN;
                 } else
-                    EP += A * CELL_W;
+                    R(EP) += R(A) * CELL_W;
                 goto next;
             }
             break;
@@ -715,69 +715,69 @@ static CELL run_or_step(bool run)
             (void)POP_RETURN;
             break;
         case O_J:
-            PUSH(LOAD_CELL(RP - 2 * CELL_W * STACK_DIRECTION));
+            PUSH(LOAD_CELL(R(RP) - 2 * CELL_W * STACK_DIRECTION));
             break;
         case O_LITERAL:
-            PUSH(LOAD_CELL(EP));
-            EP += CELL_W;
+            PUSH(LOAD_CELL(R(EP)));
+            R(EP) += CELL_W;
             break;
         case O_LITERALI:
-            PUSH(A);
+            PUSH(R(A));
             goto next;
             break;
         throw:
         case O_THROW:
             // exception may already be set, so CELL_STORE may have no effect here.
-            BAD = EP;
-            if (!IS_VALID(THROW) || !IS_ALIGNED(THROW))
+            R(BAD) = R(EP);
+            if (!IS_VALID(R(THROW)) || !IS_ALIGNED(R(THROW)))
                 return -258;
-            EP = THROW;
+            R(EP) = R(THROW);
             exception = 0; // Any exception has now been dealt with
             goto next;
             break;
         case O_HALT:
             return POP;
         case O_EPFETCH:
-            PUSH(EP);
+            PUSH(R(EP));
             break;
         case O_S0FETCH:
-            PUSH(S0);
+            PUSH(R(S0));
             break;
         case O_S0STORE:
             {
                 CELL value = POP;
                 CHECK_ALIGNED(value);
-                S0 = value;
+                R(S0) = value;
             }
             break;
         case O_R0FETCH:
-            PUSH(R0);
+            PUSH(R(R0));
             break;
         case O_R0STORE:
             {
                 CELL value = POP;
                 CHECK_ALIGNED(value);
-                R0 = value;
+                R(R0) = value;
             }
             break;
         case O_THROWFETCH:
-            PUSH(THROW);
+            PUSH(R(THROW));
             break;
         case O_THROWSTORE:
             {
                 CELL value = POP;
                 CHECK_ALIGNED(value);
-                THROW = value;
+                R(THROW) = value;
             }
             break;
         case O_MEMORYFETCH:
-            PUSH(MEMORY);
+            PUSH(R(MEMORY));
             break;
         case O_BADFETCH:
-            PUSH(BAD);
+            PUSH(R(BAD));
             break;
         case O_NOT_ADDRESSFETCH:
-            PUSH(NOT_ADDRESS);
+            PUSH(R(NOT_ADDRESS));
             break;
         case O_LIB:
             {
@@ -1001,10 +1001,10 @@ static CELL run_or_step(bool run)
             // different code from usual if SP is now invalid, push the
             // exception code "manually".
         badadr:
-            SP += CELL_W * STACK_DIRECTION;
-            if (!IS_VALID(SP) || !IS_ALIGNED(SP))
+            R(SP) += CELL_W * STACK_DIRECTION;
+            if (!IS_VALID(R(SP)) || !IS_ALIGNED(R(SP)))
                 return -257;
-            store_cell(SP, exception);
+            store_cell(R(SP), exception);
             goto throw;
         }
     } while (run == true);
