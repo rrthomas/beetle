@@ -45,15 +45,13 @@ _GL_ATTRIBUTE_PURE uint8_t *native_address_of_range(UCELL start, UCELL length)
 
 int load_cell(UCELL addr, CELL *value)
 {
-    if (!IS_ALIGNED(addr))
-    {
+    if (!IS_ALIGNED(addr)) {
         R(NOT_ADDRESS) = addr;
         return -23;
     }
 
     uint8_t *ptr = native_address_of_range(addr, CELL_W);
-    if (ptr == NULL)
-    {
+    if (ptr == NULL) {
         R(NOT_ADDRESS) = addr;
         return -9;
     }
@@ -68,8 +66,7 @@ int load_cell(UCELL addr, CELL *value)
 int load_byte(UCELL addr, BYTE *value)
 {
     uint8_t *ptr = native_address_of_range(FLIP(addr), 1);
-    if (ptr == NULL)
-    {
+    if (ptr == NULL) {
         R(NOT_ADDRESS) = addr;
         return -9;
     }
@@ -79,15 +76,13 @@ int load_byte(UCELL addr, BYTE *value)
 
 int store_cell(UCELL addr, CELL value)
 {
-    if (!IS_ALIGNED(addr))
-    {
+    if (!IS_ALIGNED(addr)) {
         R(NOT_ADDRESS) = addr;
         return -23;
     }
 
     uint8_t *ptr = native_address_of_range(addr, CELL_W);
-    if (ptr == NULL)
-    {
+    if (ptr == NULL) {
         R(NOT_ADDRESS) = addr;
         return -9;
     }
@@ -102,8 +97,7 @@ int store_cell(UCELL addr, CELL value)
 int store_byte(UCELL addr, BYTE value)
 {
     uint8_t *ptr = native_address_of_range(FLIP(addr), 1);
-    if (ptr == NULL)
-    {
+    if (ptr == NULL) {
         R(NOT_ADDRESS) = addr;
         return -9;
     }
