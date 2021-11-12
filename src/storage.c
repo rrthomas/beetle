@@ -12,6 +12,7 @@
 
 #include "external_syms.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 #include "beetle.h"
