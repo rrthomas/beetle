@@ -35,7 +35,7 @@ int main(void)
 
     assert(single_step() == -259);   // load first instruction word
 
-    for (size_t i = 0; i + i / 5 < sizeof(correct) / sizeof(correct[0]); i++) {
+    for (size_t i = 0; i - i / 5 < sizeof(correct) / sizeof(correct[0]); i++) {
         show_data_stack();
         printf("Correct stack: %s\n\n", correct[i - i / 5]);
         if (strcmp(correct[i - i / 5], val_data_stack())) {
