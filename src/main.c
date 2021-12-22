@@ -411,7 +411,7 @@ static void do_display(size_t no, const char *format)
             display = xasprintf("'BAD = $%"PRIX32" (%"PRIu32")", R(BAD), R(BAD));
             break;
         case r_CHECKED:
-            display = xasprintf("CHECKED = %d", CHECKED);
+            display = xasprintf("CHECKED = %u", R(CHECKED));
             break;
         case r_ENDISM:
             display = xasprintf("ENDISM = %d", ENDISM);

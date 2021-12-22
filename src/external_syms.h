@@ -11,7 +11,6 @@
 #define CELL_pointer beetle_CELL_pointer
 #define CELL_W beetle_CELL_W
 #define CHAR_MASK beetle_CHAR_MASK
-#define CHECKED beetle_CHECKED
 #define destroy beetle_destroy
 #define disass beetle_disass
 #define DUCELL beetle_DUCELL

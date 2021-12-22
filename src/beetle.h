@@ -49,11 +49,11 @@ typedef struct {
     beetle_UCELL beetle_THROW;
     beetle_UCELL beetle_BAD;
     beetle_UCELL beetle_NOT_ADDRESS;
+    beetle_UCELL beetle_CHECKED;
 } beetle_Registers;
 extern beetle_Registers beetle_registers;
 #define beetle_R(r) (beetle_registers.beetle_ ## r)
 extern beetle_CELL *beetle_M0;
-#define beetle_CHECKED 1       // address checking is mandatory in this implementation
 
 // Memory access
 

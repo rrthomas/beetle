@@ -74,15 +74,19 @@ int main(void)
 
     UCELL error = 0;
     for (size_t i = 0; i < sizeof(test) / sizeof(test[0]); i++) {
-        R(SP) = R(S0);    // reset stack pointer
+        bool address_used = result[i] == EXIT_INVALID_SP || result[i] == EXIT_INVALID_THROW ||
+            result[i] == -9 || result[i] == -23;
+        // don't test memory checking unless it is implemented
+        if (address_used && !R(CHECKED))
+            continue;
+
+        R(SP) = R(S0);   // reset stack pointer
 
         printf("Test %zu\n", i + 1);
         R(EP) = test[i];
         assert(single_step() == EXIT_SINGLE_STEP);   // load first instruction word
         CELL res = run();
 
-        bool address_used = result[i] == EXIT_INVALID_SP || result[i] == EXIT_INVALID_THROW ||
-            result[i] == -9 || result[i] == -23;
         if (result[i] != res || (result[i] != 0 && bad[i] != R(BAD)) ||
             (address_used && address[i] != R(NOT_ADDRESS))) {
              printf("Error in exceptions tests: test %zu failed; EP = %"PRIu32"\n", i + 1, R(EP));

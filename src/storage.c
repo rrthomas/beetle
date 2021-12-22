@@ -156,6 +156,7 @@ int post_dma(UCELL from, UCELL to)
 
 int init(size_t size)
 {
+    R(CHECKED) = 1; // address checking is mandatory in this implementation
     R(MEMORY) = size * CELL_W;
     M0 = (beetle_CELL *)calloc(size, CELL_W);
     if (M0 == NULL)
