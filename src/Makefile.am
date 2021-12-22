@@ -13,7 +13,7 @@ AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib $(WARN_CFLAGS)
 lib_LTLIBRARIES = libbeetle.la
 libbeetle_la_SOURCES = step.c debug.c loadobj.c private.h stringify.h
 libbeetle_la_LIBADD = $(top_builddir)/lib/libgnu.la
-if HAVE_RUST
+if HAVE_MIJIT
 libbeetle_la_LIBADD += $(top_srcdir)/mijit-beetle/target/release/libmijit_beetle.la
 endif
 
@@ -33,7 +33,7 @@ completions: tbl_registers.h tbl_commands.h
 
 main.o: tbl_opts.h
 
-if HAVE_RUST
+if HAVE_MIJIT
 .PHONY: mijit-beetle
 $(top_srcdir)/mijit-beetle/target/release/libmijit_beetle.la: mijit-beetle
 	cargo build --release --manifest-path $(top_srcdir)/mijit-beetle/Cargo.toml

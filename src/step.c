@@ -28,7 +28,7 @@
 #include "private.h"
 #include "beetle_opcodes.h"
 
-#ifdef HAVE_RUST
+#ifdef HAVE_MIJIT
 #include "mijit-beetle/c-decls.h"
 
 mijit_beetle_jit *beetle_jit;
@@ -174,7 +174,7 @@ int post_dma(UCELL from, UCELL to)
 
 int init(size_t size)
 {
-#ifdef HAVE_RUST
+#ifdef HAVE_MIJIT
     beetle_jit = mijit_beetle_new();
     if (beetle_jit == NULL)
         return -1;
@@ -1201,7 +1201,7 @@ CELL single_step(void)
 
 CELL run(void)
 {
-#ifdef HAVE_RUST
+#ifdef HAVE_MIJIT
     CELL exception;
     do {
         mijit_beetle_run(
