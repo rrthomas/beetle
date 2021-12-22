@@ -33,31 +33,31 @@ int main(void)
     ass(O_ONE); ass(O_LITERAL); lit(buf); ass(O_LITERALI); ilit(18);
     ass(O_LIB); ilit(0); /* pad word with NEXT */
 
-    assert(single_step() == -259);   // load first instruction word
+    assert(single_step() == EXIT_SINGLE_STEP);   // load first instruction word
 
-    assert(single_step() == -259);
-    assert(single_step() == -259);
-    assert(single_step() == -259);
+    assert(single_step() == EXIT_SINGLE_STEP);
+    assert(single_step() == EXIT_SINGLE_STEP);
+    assert(single_step() == EXIT_SINGLE_STEP);
     printf("argc is %"PRId32", and should be %d\n\n", LOAD_CELL(R(SP)), argc);
     if (POP != argc) {
        printf("Error in LIB tests: EP = %"PRIu32"\n", R(EP));
         exit(1);
     }
 
-    assert(single_step() == -259);
-    assert(single_step() == -259);
-    assert(single_step() == -259);
-    assert(single_step() == -259);
+    assert(single_step() == EXIT_SINGLE_STEP);
+    assert(single_step() == EXIT_SINGLE_STEP);
+    assert(single_step() == EXIT_SINGLE_STEP);
+    assert(single_step() == EXIT_SINGLE_STEP);
     printf("arg 1's length is %"PRId32", and should be %zu\n", LOAD_CELL(R(SP)), strlen(argv[1]));
     if ((UCELL)POP != strlen(argv[1])) {
         printf("Error in LIB tests: EP = %"PRIu32"\n", R(EP));
         exit(1);
     }
 
-    assert(single_step() == -259);
-    assert(single_step() == -259);
-    assert(single_step() == -259);
-    assert(single_step() == -259);
+    assert(single_step() == EXIT_SINGLE_STEP);
+    assert(single_step() == EXIT_SINGLE_STEP);
+    assert(single_step() == EXIT_SINGLE_STEP);
+    assert(single_step() == EXIT_SINGLE_STEP);
     printf("arg is %s, and should be %s\n", native_address_of_range(buf, 0), argv[1]);
     if (strncmp((char *)native_address_of_range(buf, 0), argv[1], strlen(argv[1])) != 0) {
         printf("Error in extra instructions tests: EP = %"PRIu32"\n", R(EP));

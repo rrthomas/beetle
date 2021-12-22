@@ -11,7 +11,7 @@
 #include "tests.h"
 
 
-CELL result[] = { -257, -257, 42, 0, -23, -23, -10, -9, -9, -23, -256, -258 };
+CELL result[] = { EXIT_INVALID_SP, EXIT_INVALID_SP, 42, 0, -23, -23, -10, -9, -9, -23, EXIT_INVALID_OPCODE, EXIT_INVALID_THROW };
 UCELL bad[] = { -1, -1, -1, 28, 40, 44, 48, 16388, 64, 68, 72, 80 };
 UCELL address[] = { -16, 16384, 0, 0, 5, 1, 0, 16384, -20, 1, 0, 1 };
 UCELL test[sizeof(result) / sizeof(result[0])];
@@ -78,17 +78,18 @@ int main(void)
 
         printf("Test %zu\n", i + 1);
         R(EP) = test[i];
-        assert(single_step() == -259);   // load first instruction word
+        assert(single_step() == EXIT_SINGLE_STEP);   // load first instruction word
         CELL res = run();
 
+        bool address_used = result[i] == EXIT_INVALID_SP || result[i] == EXIT_INVALID_THROW ||
+            result[i] == -9 || result[i] == -23;
         if (result[i] != res || (result[i] != 0 && bad[i] != R(BAD)) ||
-            ((result[i] <= -258 || result[i] == -9 || result[i] == -23) &&
-             address[i] != R(NOT_ADDRESS))) {
+            (address_used && address[i] != R(NOT_ADDRESS))) {
              printf("Error in exceptions tests: test %zu failed; EP = %"PRIu32"\n", i + 1, R(EP));
              printf("Return code is %d; should be %d\n", res, result[i]);
              if (result[i] != 0)
                  printf("'BAD = %"PRIX32"; should be %"PRIX32"\n", R(BAD), bad[i]);
-             if (result[i] <= -258 || result[i] == -9 || result[i] == -23)
+             if (address_used)
                  printf("-ADDRESS = %"PRIX32"; should be %"PRIX32"\n", R(NOT_ADDRESS), address[i]);
              error++;
         }

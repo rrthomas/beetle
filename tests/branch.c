@@ -56,7 +56,7 @@ int main(void)
     start_ass(300);
     ass(O_EXIT);
 
-    assert(single_step() == -259);   // load first instruction word
+    assert(single_step() == EXIT_SINGLE_STEP);   // load first instruction word
 
     for (size_t i = 0; i < sizeof(correct) / sizeof(correct[0]); i++) {
         printf("Instruction %zu: EP = %u; should be %u\n\n", i, R(EP), correct[i]);
@@ -64,7 +64,7 @@ int main(void)
             printf("Error in branch tests: EP = %"PRIu32"\n", R(EP));
             exit(1);
         }
-        assert(single_step() == -259);
+        assert(single_step() == EXIT_SINGLE_STEP);
         printf("I = %s\n", disass(R(I)));
     }
 

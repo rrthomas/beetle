@@ -33,7 +33,7 @@ int main(void)
     ass(O_DUP); ass(O_ROLL); ass(O_TOR); ass(O_RFETCH);
     ass(O_RFROM); ass(O_QDUP); ass(O_ZERO); ass(O_QDUP);
 
-    assert(single_step() == -259);   // load first instruction word
+    assert(single_step() == EXIT_SINGLE_STEP);   // load first instruction word
 
     size_t i;
     for (i = 0; i < 10; i++) {
@@ -43,7 +43,7 @@ int main(void)
             printf("Error in stack tests: EP = %"PRIu32"\n", R(EP));
             exit(1);
         }
-        assert(single_step() == -259);
+        assert(single_step() == EXIT_SINGLE_STEP);
         printf("I = %s\n", disass(R(I)));
     }
 
@@ -59,7 +59,7 @@ int main(void)
             printf("Error in stack tests: EP = %"PRIu32"\n", R(EP));
             exit(1);
         }
-        assert(single_step() == -259);
+        assert(single_step() == EXIT_SINGLE_STEP);
         printf("I = %s\n", disass(R(I)));
     }
 

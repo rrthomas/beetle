@@ -27,7 +27,7 @@ int main(void)
     start_ass(R(EP));
     plit(test); ass(O_LINK); ass(O_ZERO); ass(O_HALT);
 
-    assert(single_step() == -259);   // load first instruction word
+    assert(single_step() == EXIT_SINGLE_STEP);   // load first instruction word
     CELL res = run();
     if (res != 0) {
         printf("Error in LINK tests: test aborted with return code %"PRId32"\n", res);

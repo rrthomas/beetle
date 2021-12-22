@@ -33,7 +33,7 @@ int main(void)
     ass(O_LSHIFT1); ass(O_RSHIFT1); ass(O_INVERT); ass(O_ONE);
     ass(O_MONE); ass(O_XOR); ass(O_AND);
 
-    assert(single_step() == -259);   // load first instruction word
+    assert(single_step() == EXIT_SINGLE_STEP);   // load first instruction word
 
     for (size_t i = 0; i - i / 5 < sizeof(correct) / sizeof(correct[0]); i++) {
         show_data_stack();
@@ -42,7 +42,7 @@ int main(void)
             printf("Error in logic tests: EP = %"PRIu32"\n", R(EP));
             exit(1);
         }
-        assert(single_step() == -259);
+        assert(single_step() == EXIT_SINGLE_STEP);
         printf("I = %s\n", disass(R(I)));
     }
 

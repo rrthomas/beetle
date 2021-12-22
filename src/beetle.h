@@ -67,6 +67,12 @@ int beetle_pre_dma(beetle_UCELL from, beetle_UCELL to);
 int beetle_post_dma(beetle_UCELL from, beetle_UCELL to);
 
 // Interface calls
+#define beetle_EXIT_INVALID_OPCODE (-256)
+#define beetle_EXIT_UNIMPLEMENTED_LIB (-257)
+#define beetle_EXIT_INVALID_SP (-258)
+#define beetle_EXIT_INVALID_THROW (-259)
+#define beetle_EXIT_SINGLE_STEP (-260)
+
 uint8_t *native_address_of_range(beetle_UCELL addr, beetle_UCELL length);
 beetle_CELL beetle_run(void);
 beetle_CELL beetle_single_step(void);

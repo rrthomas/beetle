@@ -16,6 +16,11 @@
 #define disass beetle_disass
 #define DUCELL beetle_DUCELL
 #define ENDISM beetle_ENDISM
+#define EXIT_INVALID_OPCODE beetle_EXIT_INVALID_OPCODE
+#define EXIT_INVALID_SP beetle_EXIT_INVALID_SP
+#define EXIT_INVALID_THROW beetle_EXIT_INVALID_THROW
+#define EXIT_SINGLE_STEP beetle_EXIT_SINGLE_STEP
+#define EXIT_UNIMPLEMENTED_LIB beetle_EXIT_UNIMPLEMENTED_LIB
 #define HASHR beetle_HASHR
 #define HASHS beetle_HASHS
 #define ilit beetle_ilit

@@ -730,7 +730,7 @@ static CELL run_or_step(bool run)
             // exception may already be set, so CELL_STORE may have no effect here.
             R(BAD) = R(EP);
             if (!IS_VALID(R(THROW)) || !IS_ALIGNED(R(THROW)))
-                return -258;
+                return EXIT_INVALID_THROW;
             R(EP) = R(THROW);
             exception = 0; // Any exception has now been dealt with
             goto next;
@@ -976,7 +976,7 @@ static CELL run_or_step(bool run)
                     PUSH((CELL)(STDERR_FILENO));
                     break;
                 default: /* Unimplemented LIB call */
-                    PUSH(-257);
+                    PUSH(EXIT_UNIMPLEMENTED_LIB);
                     goto throw;
                 }
             }
@@ -991,7 +991,7 @@ static CELL run_or_step(bool run)
             break;
 
         default:
-            PUSH(-256);
+            PUSH(EXIT_INVALID_OPCODE);
             goto throw;
         }
 
@@ -1003,14 +1003,14 @@ static CELL run_or_step(bool run)
         badadr:
             R(SP) += CELL_W * STACK_DIRECTION;
             if (!IS_VALID(R(SP)) || !IS_ALIGNED(R(SP)))
-                return -257;
+                return EXIT_INVALID_SP;
             store_cell(R(SP), exception);
             goto throw;
         }
     } while (run == true);
 
     if (exception == 0 && run == false)
-        exception = -259; // single_step terminated OK
+        exception = EXIT_SINGLE_STEP;
     return exception;
 }
 

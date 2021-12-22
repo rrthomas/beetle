@@ -24,7 +24,7 @@ int main(void)
     ass(O_LITERALI); ilit(37);
     ass(O_HALT);
 
-    assert(single_step() == -259);
+    assert(single_step() == EXIT_SINGLE_STEP);
     CELL ret = run();
 
     printf("Return value should be 37 and is %"PRId32"\n", ret);

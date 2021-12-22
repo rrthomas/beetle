@@ -17,7 +17,7 @@ int main(void)
 
     for (int i = 0; i < 10; i++) {
         printf("EP = %u\n", R(EP));
-        assert(single_step() == -259);
+        assert(single_step() == EXIT_SINGLE_STEP);
     }
 
     printf("EP should now be 40\n");
