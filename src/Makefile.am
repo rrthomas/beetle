@@ -11,8 +11,7 @@
 AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib $(WARN_CFLAGS)
 
 lib_LTLIBRARIES = libbeetle.la
-libbeetle_la_SOURCES = storage.c step.c debug.c loadobj.c \
-	private.h stringify.h
+libbeetle_la_SOURCES = step.c debug.c loadobj.c private.h stringify.h
 libbeetle_la_LIBADD = $(top_builddir)/lib/libgnu.la
 
 bin_PROGRAMS = beetle
