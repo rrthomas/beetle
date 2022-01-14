@@ -4,8 +4,8 @@ environment:
   global:
     VERBOSE: 1 # Get test logs in output
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu2004
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu2004
       ASAN: 'yes'
       LSAN_OPTIONS: verbosity=1:log_threads=1
     - APPVEYOR_BUILD_WORKER_IMAGE: macos
@@ -20,8 +20,9 @@ for:
 -
   matrix:
     only:
-      - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu2004
   init:
+    - sudo apt-get update
     - sudo apt-get -y install texlive-latex-extra texlive-science texlive-fonts-recommended texlive-fonts-extra help2man latexmk hevea valgrind
 -
   matrix:
@@ -36,6 +37,7 @@ for:
       - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
   init:
     - cmd: git config --global core.autocrlf input
+    - cmd: C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S libtool autoconf automake help2man"
 
 install:
   - git submodule update --init --recursive
@@ -45,4 +47,4 @@ build_script:
   - sh: ./bootstrap
   - sh: if [[ "$ASAN" == "yes" ]]; then ./configure --enable-silent-rules CFLAGS="-g3 -fsanitize=address -fsanitize=undefined" LDFLAGS="-fsanitize=address -fsanitize=undefined"; else ./configure --enable-silent-rules; fi
   - sh: make check
-  - sh: if [[ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Ubuntu" ]]; then make distcheck; fi
+  - sh: if [[ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Ubuntu2004" ]]; then make distcheck; fi
