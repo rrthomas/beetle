@@ -46,7 +46,7 @@ beetle_CELL *M0;
 // General memory access
 
 // Return native address of a range of VM memory, or NULL if invalid
-_GL_EXTERN_INLINE _GL_ATTRIBUTE_PURE uint8_t *native_address_of_range(UCELL start, UCELL length)
+inline _GL_ATTRIBUTE_PURE uint8_t *native_address_of_range(UCELL start, UCELL length)
 {
     if (start > R(MEMORY) || R(MEMORY) - start < length)
         return NULL;
@@ -61,7 +61,7 @@ _GL_EXTERN_INLINE _GL_ATTRIBUTE_PURE uint8_t *native_address_of_range(UCELL star
 #define FLIP(addr) (addr)
 #endif
 
-_GL_EXTERN_INLINE int load_cell(UCELL addr, CELL *value)
+inline int load_cell(UCELL addr, CELL *value)
 {
     if (!IS_ALIGNED(addr)) {
         R(NOT_ADDRESS) = addr;
@@ -81,7 +81,7 @@ _GL_EXTERN_INLINE int load_cell(UCELL addr, CELL *value)
     return 0;
 }
 
-_GL_EXTERN_INLINE int load_byte(UCELL addr, BYTE *value)
+inline int load_byte(UCELL addr, BYTE *value)
 {
     uint8_t *ptr = native_address_of_range(FLIP(addr), 1);
     if (ptr == NULL) {
@@ -92,7 +92,7 @@ _GL_EXTERN_INLINE int load_byte(UCELL addr, BYTE *value)
     return 0;
 }
 
-_GL_EXTERN_INLINE int store_cell(UCELL addr, CELL value)
+inline int store_cell(UCELL addr, CELL value)
 {
     if (!IS_ALIGNED(addr)) {
         R(NOT_ADDRESS) = addr;
@@ -112,7 +112,7 @@ _GL_EXTERN_INLINE int store_cell(UCELL addr, CELL value)
     return 0;
 }
 
-_GL_EXTERN_INLINE int store_byte(UCELL addr, BYTE value)
+inline int store_byte(UCELL addr, BYTE value)
 {
     uint8_t *ptr = native_address_of_range(FLIP(addr), 1);
     if (ptr == NULL) {
