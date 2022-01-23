@@ -136,11 +136,11 @@ The code for the first scheme looks like this:
 
 move.b (IP)+,I & get opcode & ldrb I,{[}IP{]},\#1 & get opcode\\
 
-move.b IP,X & see if this is the last & and T,E,\#3 & if this is the last instruction\\
+move.b IP,X & see if this is the last & tst IP,\#3 & if this is the last instruction\\
 
-and.b \#3,X & instruction in the & cmp T,\#3 & in the current word,\\
+and.b \#3,X & instruction in the & & in the current word,\\
 
-cmp.b \#3,X & current word & moveq IP,LP & copy LP to IP and\\
+cmp.b \#0,X & current word & moveq IP,LP & copy LP to IP and\\
 
 bne.s skip & if not, skip add else & addeq LP,LP,\#4 & make LP point to the next
 word\\
