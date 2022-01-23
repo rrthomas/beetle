@@ -107,7 +107,7 @@ details are out of date:
 * _[An Introduction to the Beetle Forth Virtual Processor](doc/papers/intro.pdf)_  
 An introduction to the system; this is the best paper to read first. It was
 published in ACM SIGPLAN Notices February 1997.
-* _[Beetle and pForth: a Forth virtual machine and compiler](https://rrt.sc3d.org/Software/Beetle/dissertation/report/badiss.pdf)_  
+* _[Beetle and pForth: a Forth virtual machine and compiler](https://rrt.sc3d.org/Software/beetle/dissertation/report/badiss.pdf)_  
 I developed Beetle for my BA dissertation project. _(I used to refer to it
 as a “virtual processor”; I now use the now-standard term “virtual
 machine”.)_ My BA dissertation contains older versions of all the papers
