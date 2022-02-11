@@ -11,7 +11,7 @@
 AM_CPPFLAGS = -I$(top_builddir)/lib -I$(top_srcdir)/lib $(WARN_CFLAGS)
 
 lib_LTLIBRARIES = libbeetle.la
-libbeetle_la_SOURCES = step.c debug.c loadobj.c private.h stringify.h
+libbeetle_la_SOURCES = vm.c debug.c loadobj.c private.h stringify.h
 libbeetle_la_LIBADD = $(top_builddir)/lib/libgnu.la
 if HAVE_MIJIT
 libbeetle_la_LIBADD += $(top_srcdir)/mijit-beetle/target/release/libmijit_beetle.la
@@ -66,7 +66,7 @@ CLOC = cloc --force-lang="C",h
 loc:
 	$(CLOC) $(libbeetle_la_SOURCES) $(beetle_SOURCES)
 
-EXTRA_DIST = ARMbeetle.bas beetlei.in beetlei.1 beetle-dump beetle-dump.1 completions.h tbl_opts.h.in step.c external_syms.h
+EXTRA_DIST = ARMbeetle.bas beetlei.in beetlei.1 beetle-dump beetle-dump.1 completions.h tbl_opts.h.in vm.c external_syms.h
 
 DISTCLEANFILES = beetlei beetle.1 completions tbl_opts.h $(include_HEADERS)
 # Ignore built files that are part of the distribution (specifically,

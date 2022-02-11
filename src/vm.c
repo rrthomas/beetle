@@ -1,4 +1,4 @@
-// The interface calls run() : integer and single_step() : integer.
+// The interface calls init(), run() and single_step().
 //
 // (c) Reuben Thomas 1994-2021
 //
