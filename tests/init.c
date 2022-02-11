@@ -1,5 +1,5 @@
 // Test that the VM headers compile properly, and that the
-// storage allocation and register initialisation in storage.c works.
+// storage allocation and register initialisation works.
 //
 // (c) Reuben Thomas 1994-2018
 //
