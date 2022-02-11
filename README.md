@@ -19,8 +19,8 @@ This package comprises the definition of the Beetle virtual machine and an
 implementation in ISO C99 using POSIX APIs. Detailed documentation is in the
 `doc` directory; installation instructions follow.
 
-The package is distributed under the GNU Public License version 3, or,
-at your option, any later version.
+The package is distributed under the GNU General Public License version 3,
+or, at your option, any later version.
 
 THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER’S
 RISK.
