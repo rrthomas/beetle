@@ -140,9 +140,7 @@ This file should be part of file >= 5.33.
 ## Hand-written ARM assembler version
 
 `ARMbeetle.bas` contains a hand-written ARM assembler version of Beetle,
-written in the BBC BASIC assembler (for RISC OS). It produces AOF
-format objects equivalent to those produced by run.c and step.c, which
-can be linked in their place.
+written in the BBC BASIC assembler (for RISC OS).
 
 
 ## Bugs and comments
