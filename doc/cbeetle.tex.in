@@ -107,7 +107,7 @@ Two calls are provided to access command-line arguments passed to C Beetle (excl
 
 \begin{center}
 \begin{tabular}{S[table-format=2.0]lll} \toprule
-\bf Number & \bf Forth word & \bf Stack effect & \bf Description \\ \midrule
+{\bf Number} & {\bf Forth word} & {\bf Stack effect} & {\bf Description} \\ \midrule
 0 & {\tt ARGC} & \spic{-- u} & the number of arguments \\
 1 & {\tt ARG} & \spic{u1 -- c-addr u2} & the \spic{u1}th argument \\ \bottomrule
 \end{tabular}
@@ -119,7 +119,7 @@ These {\tt LIB} calls provide access to POSIX standard input, output and error. 
 
 \begin{center}
 \begin{tabular}{S[table-format=2.0]l} \toprule
-\bf Number & \bf POSIX file descriptor \\ \midrule
+{\bf Number} & {\bf POSIX file descriptor} \\ \midrule
 2 & {\tt STDIN\_FILENO} \\
 3 & {\tt STDOUT\_FILENO} \\
 4 & {\tt STDERR\_FILENO} \\ \bottomrule
@@ -132,7 +132,7 @@ The file system calls correspond directly to ANS Forth words, as defined in~\cit
 
 \begin{center}
 \begin{tabular}{S[table-format=2.0]l} \toprule
-\bf Number & \bf Forth word \\ \midrule
+{\bf Number} & {\bf Forth word} \\ \midrule
 5 & {\tt OPEN-FILE} \\
 6 & {\tt CLOSE-FILE} \\
 7 & {\tt READ-FILE} \\
