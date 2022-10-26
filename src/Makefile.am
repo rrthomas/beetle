@@ -41,7 +41,7 @@ endif
 
 # Depend on beetle$(EXEEXT) rather than explicitly make-ing it, as otherwise
 # we break parallel builds, as libbeetle.la can be built twice in parallel,
-# which can fail. Set distcleancheck_listfiles below to fix distcheck.
+# which can fail.
 beetle.1: beetle$(EXEEXT)
 ## Exit gracefully if beetle.1 is not writeable, such as during distcheck!
 	$(AM_V_GEN)if ( touch $@.w && rm -f $@.w; ) >/dev/null 2>&1; then \
@@ -69,8 +69,3 @@ loc:
 EXTRA_DIST = ARMbeetle.bas beetlei.in beetlei.1 beetle-dump beetle-dump.1 completions.h tbl_opts.h.in vm.c external_syms.h
 
 DISTCLEANFILES = beetlei beetle.1 completions tbl_opts.h $(include_HEADERS)
-# Ignore built files that are part of the distribution (specifically,
-# beetle.1)
-distcleancheck_listfiles = \
-       find . -type f -exec sh -c 'test -f $(srcdir)/$$1 || echo $$1' \
-	    sh '{}' ';'
