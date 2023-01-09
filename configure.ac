@@ -1,7 +1,7 @@
 # configure.ac for Beetle
 # Process this file with autoconf to produce a configure script
 #
-# (c) Reuben Thomas 2011-2022
+# (c) Reuben Thomas 2011-2023
 #
 # The package is distributed under the GNU General Public License version 3,
 # or, at your option, any later version.
@@ -9,12 +9,13 @@
 # THIS PROGRAM IS PROVIDED AS IS, WITH NO WARRANTY. USE IS AT THE USER’S
 # RISK.
 
-AC_INIT(Beetle, 3.0.1, rrt@sc3d.org)
+AC_PREREQ([2.71])
+AC_INIT([Beetle],[3.0.1],[rrt@sc3d.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 # Check for programs
-AC_PROG_CC_C99
+AC_PROG_CC
 gl_EARLY
 AM_PROG_AR
 LT_INIT
@@ -82,9 +83,6 @@ else
   ISYSTEM='-I'
 fi
 AC_SUBST([ISYSTEM])
-
-# Check for header files
-AC_HEADER_STDC
 gl_INIT
 
 # Check features
