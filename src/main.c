@@ -47,7 +47,7 @@ static jmp_buf env;
 
 static bool debug_on_error = false;
 
-static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 0) void verror(const char *format, va_list args)
+static _GL_ATTRIBUTE_FORMAT_PRINTF_STANDARD(1, 0) void verror(const char *format, va_list args)
 {
     if (!interactive)
         fprintf(stderr, "Beetle:%lu: ", lineno);
@@ -55,7 +55,7 @@ static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 0) void verror(const char *format, va_list
     fprintf(stderr, "\n");
 }
 
-static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void warn(const char *format, ...)
+static _GL_ATTRIBUTE_FORMAT_PRINTF_STANDARD(1, 2) void warn(const char *format, ...)
 {
     va_list args;
 
@@ -64,7 +64,7 @@ static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void warn(const char *format, ...)
     va_end(args);
 }
 
-static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void fatal(const char *format, ...)
+static _GL_ATTRIBUTE_FORMAT_PRINTF_STANDARD(1, 2) void fatal(const char *format, ...)
 {
     va_list args;
 
@@ -74,7 +74,7 @@ static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void fatal(const char *format, ...)
     longjmp(env, 1);
 }
 
-static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void die(const char *format, ...)
+static _GL_ATTRIBUTE_FORMAT_PRINTF_STANDARD(1, 2) void die(const char *format, ...)
 {
     va_list args;
 
@@ -781,7 +781,7 @@ static void parse(char *input)
 }
 
 
-static _GL_ATTRIBUTE_FORMAT_PRINTF(1, 2) void interactive_printf(const char *format, ...)
+static _GL_ATTRIBUTE_FORMAT_PRINTF_STANDARD(1, 2) void interactive_printf(const char *format, ...)
 {
     if (interactive == false)
         return;
