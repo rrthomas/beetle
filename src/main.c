@@ -806,7 +806,7 @@ struct option longopts[] = {
 };
 
 #define VERSION_STRING "Beetle shell (C Beetle release "PACKAGE_VERSION")"
-#define COPYRIGHT_STRING "(c) Reuben Thomas 1994-2021"
+#define COPYRIGHT_STRING "(c) Reuben Thomas 1994-2025"
 
 static void usage(void)
 {
