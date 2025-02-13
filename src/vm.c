@@ -35,7 +35,6 @@
 mijit_beetle_jit *beetle_jit;
 #endif
 
-#define BEETLE_DATA_CELLS 64
 #define BEETLE_RETURN_CELLS 64
 
 
