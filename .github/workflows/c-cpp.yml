@@ -44,7 +44,7 @@ jobs:
     - name: Install dependencies (macOS)
       if: ${{ matrix.os == 'macos-latest' }}
       run: |
-        brew install help2man automake
+        brew install help2man automake libtool
         # Prepend optional brew binary directories to PATH
         echo "/usr/local/opt/m4/bin" >> $GITHUB_PATH
     - name: Set up environment (Ubuntu)
