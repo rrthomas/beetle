@@ -46,7 +46,7 @@ jobs:
       run: |
         brew install help2man automake libtool
         # Prepend optional brew binary directories to PATH
-        echo "/usr/local/opt/m4/bin" >> $GITHUB_PATH
+        echo "$(brew --prefix m4)/bin" >> $GITHUB_PATH
     - name: Set up environment (Ubuntu)
       if: ${{ matrix.os == 'ubuntu-latest' }}
       run: |
