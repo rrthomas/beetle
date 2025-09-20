@@ -84,7 +84,7 @@
 
 \title{The Beetle Forth Virtual Machine}
 \author{Reuben Thomas}
-\date{29th October 1993; revised 23rd September 2021}
+\date{29th October 1993; revised 20th September 2025}
 
 \begin{document}
 \maketitle
@@ -334,7 +334,7 @@ performed.
 \section{Instruction set}
 \label{instset}
 
-The bForth instruction set is listed in sections~\ref{stackinst} to~\ref{accessinst},
+The bForth instruction set is listed in sections~\ref{executioninst} to~\ref{accessinst},
 with the instructions grouped according to function. The
 instructions are given in the following format:
 
@@ -450,6 +450,7 @@ the most significant end of the instruction cell.
 
 
 \subsection{Execution cycle}
+\label{executioninst}
 
 {\tt NEXT} performs an instruction fetch when Beetle runs out of
 instructions in the {\tt A} register.
