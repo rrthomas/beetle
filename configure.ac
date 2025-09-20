@@ -1,7 +1,7 @@
 # configure.ac for Beetle
 # Process this file with autoconf to produce a configure script
 #
-# (c) Reuben Thomas 2011-2023
+# (c) Reuben Thomas 2011-2025
 #
 # The package is distributed under the GNU General Public License version 3,
 # or, at your option, any later version.
@@ -19,8 +19,7 @@ AC_PROG_CC
 gl_EARLY
 AM_PROG_AR
 LT_INIT
-AC_PATH_PROG(LATEXMK, latexmk, true)
-AM_CONDITIONAL([HAVE_LATEXMK], [test "$ac_cv_path_LATEXMK" != "true"])
+AC_PATH_PROG([LATEXMK], [latexmk], [AC_MSG_ERROR([latexmk not found])])
 
 # help2man
 # Set a value even if not found, so that an invocation via build-aux/missing works
