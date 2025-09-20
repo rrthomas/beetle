@@ -39,11 +39,3 @@ clean-local:
 		$(builddir)/beetle.tex $(builddir)/cbeetle.tex $(builddir)/shell.tex
 
 EXTRA_DIST = $(LATEX_SRCS) $(LATEX_PDFS) cbeetle.tex.in shell.tex.in latexmkrc
-
-# TODO: mv works around a bug in latexmk < 4.54, which sets $out_dir when it
-# shouldn't. Remove when we can require latexmk >= 4.54 (Ubuntu 20.04).
-.tex.pdf:
-	env BIBINPUTS=$(abs_srcdir)/bibtex/bib $(LATEXMK) -r $(abs_srcdir)/latexmkrc -cd -f $< && \
-	if test -e `basename $@` -a ! `basename $@` -ef $@; then \
-	    mv `basename $@` $@; \
-	fi
