@@ -1,6 +1,6 @@
 # Docs Makefile.am
 #
-# (c) Reuben Thomas 2011-2018
+# (c) Reuben Thomas 2011-2025
 #
 # The package is distributed under the GNU General Public License version 3,
 # or, at your option, any later version.
@@ -9,6 +9,7 @@
 # RISK.
 
 LATEX_SRCS = \
+	$(srcdir)/beetle.tex \
 	$(srcdir)/papers/intro.tex \
 	$(srcdir)/papers/litencode.tex \
 	$(srcdir)/papers/tradeoffs.tex \
